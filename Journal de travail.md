@@ -31,7 +31,7 @@
 | Tâches | Temps estimé |
 | ----- | ----- |
 | Mise en place du journal de travail   | 15 minutes   |
-| Rédaction du cahier des charges | N/A |
+| Rédaction du cahier des charges | 40 minutes |
 | UML du meta schema | 1 heures |
  
 
