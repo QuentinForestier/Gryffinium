@@ -33,6 +33,7 @@
 | Mise en place du journal de travail   | 15 minutes   |
 | Mise en place d'un projet "Hello world" avec Play | 1 heure |
 | UML du meta schema | 1 heure |
+| Entretien avec M.Donini et M.Duc | 40 minutes |
  
 
 ## Semaine 2 (Semaine du 28 février 2022)
