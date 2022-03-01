@@ -31,11 +31,16 @@
 | Tâches | Temps estimé |
 | ----- | ----- |
 | Mise en place du journal de travail   | 15 minutes   |
-| Rédaction du cahier des charges | 40 minutes |
-| UML du meta schema | 1 heures |
+| Mise en place d'un projet "Hello world" avec Play | 1 heure |
+| UML du meta schema | 1 heure |
+| Entretien avec M.Donini et M.Duc | 40 minutes |
  
 
 ## Semaine 2 (Semaine du 28 février 2022)
+
+| Tâches | Temps estimé |
+| ----- | ----- |
+| Rédaction du cahier des charges | 40 minutes |
 
 ## Semaine 3 (Semaine du 7 mars 2022)
 
