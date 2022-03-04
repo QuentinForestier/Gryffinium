@@ -1,0 +1,29 @@
+Play!
+
+Léger
+liberté
+pas trop de contraintes
+
+Open source
+
+Tout à fait OK en Java
+
+Akka:
+Facile pour Docker
+Bcp outils pour gérer websocket -> Représentation client connecté
+Permet de synchroniser entre clients
+Vaut la peine de prendre du temps pour apprendre
+
+
+Besoin de système de comm entre clients -> Websocket
+
+Définir navigateur supporté
+
+
+
+
+
+Team gaps travaille avec Bootstrap / Grands classiques
+
+Eviter Hibernate ORM
+
