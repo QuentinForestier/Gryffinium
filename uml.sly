@@ -17,9 +17,6 @@
       <child>5532</child>
       <parent>16193</parent>
     </inheritance>
-    <entity entityType="INTERFACE" id="16193" isAbstract="true" name="BinaryRelation" visibility="PUBLIC">
-      <method isAbstract="true" isStatic="false" name="swapOrientation" returnType="void" view="DEFAULT" visibility="PUBLIC"/>
-    </entity>
     <inheritance id="8184" innerClass="true">
       <child>7820</child>
       <parent>12874</parent>
@@ -468,6 +465,9 @@
         </multiplicity>
       </role>
     </association>
+    <entity entityType="INTERFACE" id="16193" isAbstract="true" name="BinaryRelation" visibility="PUBLIC">
+      <method isAbstract="true" isStatic="false" name="swapOrientation" returnType="void" view="DEFAULT" visibility="PUBLIC"/>
+    </entity>
     <entity entityType="CLASS" id="8405" isAbstract="false" name="Inner" visibility="PUBLIC">
       <method is-constructor="true" isAbstract="false" isStatic="false" name="Inner" returnType="" view="DEFAULT" visibility="PUBLIC">
         <variable const="false" name="inner" type="Entity"/>
@@ -491,6 +491,15 @@
       <attribute const="false" defaultValue="" isStatic="false" name="name" type="String" visibility="PRIVATE"/>
     </entity>
     <entity entityType="CLASS" id="3310" isAbstract="false" name="PrimitiveType" visibility="PUBLIC">
+      <attribute const="false" defaultValue="" isStatic="true" name="BOOLEAN_TYPE" type="PrimitiveType" visibility="PUBLIC"/>
+      <attribute const="false" defaultValue="" isStatic="true" name="BYTE_TYPE" type="PrimitiveType" visibility="PUBLIC"/>
+      <attribute const="false" defaultValue="" isStatic="true" name="SHORT_TYPE" type="PrimitiveType" visibility="PUBLIC"/>
+      <attribute const="false" defaultValue="" isStatic="true" name="INT_TYPE" type="PrimitiveType" visibility="PUBLIC"/>
+      <attribute const="false" defaultValue="" isStatic="true" name="LONG_TYPE" type="PrimitiveType" visibility="PUBLIC"/>
+      <attribute const="false" defaultValue="" isStatic="true" name="FLOAT_TYPE" type="PrimitiveType" visibility="PUBLIC"/>
+      <attribute const="false" defaultValue="" isStatic="true" name="DOUBLE_TYPE" type="PrimitiveType" visibility="PUBLIC"/>
+      <attribute const="false" defaultValue="" isStatic="false" name="CHAR_TYPE" type="PrimitiveType" visibility="PUBLIC"/>
+      <attribute const="false" defaultValue="" isStatic="false" name="STRING_TYPE" type="PrimitiveType" visibility="PUBLIC"/>
       <method is-constructor="true" isAbstract="false" isStatic="false" name="PrimitiveType" returnType="" view="DEFAULT" visibility="PRIVATE">
         <variable const="false" name="name" type="String"/>
       </method>
@@ -2485,7 +2494,7 @@
         <x>170</x>
         <y>310</y>
         <w>200</w>
-        <h>70</h>
+        <h>205</h>
       </geometry>
     </componentView>
     <componentView color="-10040065" componentID="6923" displayAttributes="true" displayDefault="true" displayMethods="true">
