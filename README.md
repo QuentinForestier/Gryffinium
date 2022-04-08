@@ -1,1 +1,1 @@
-# Griffinium
+# Gryffinium
