@@ -517,8 +517,8 @@
       <attribute const="false" defaultValue="" isStatic="true" name="LONG_TYPE" type="PrimitiveType" visibility="PUBLIC"/>
       <attribute const="false" defaultValue="" isStatic="true" name="FLOAT_TYPE" type="PrimitiveType" visibility="PUBLIC"/>
       <attribute const="false" defaultValue="" isStatic="true" name="DOUBLE_TYPE" type="PrimitiveType" visibility="PUBLIC"/>
-      <attribute const="false" defaultValue="" isStatic="false" name="CHAR_TYPE" type="PrimitiveType" visibility="PUBLIC"/>
-      <attribute const="false" defaultValue="" isStatic="false" name="STRING_TYPE" type="PrimitiveType" visibility="PUBLIC"/>
+      <attribute const="false" defaultValue="" isStatic="true" name="CHAR_TYPE" type="PrimitiveType" visibility="PUBLIC"/>
+      <attribute const="false" defaultValue="" isStatic="true" name="STRING_TYPE" type="PrimitiveType" visibility="PUBLIC"/>
       <method is-constructor="true" isAbstract="false" isStatic="false" name="PrimitiveType" returnType="" view="DEFAULT" visibility="PRIVATE">
         <variable const="false" name="name" type="String"/>
       </method>
@@ -2491,7 +2491,7 @@
     </note>
   </umlView>
   <umlView grid="10" name="Unnamed view" open="false"/>
-  <umlView grid="10" name="Griffinium" open="true">
+  <umlView grid="10" name="Gryffinium" open="true">
     <relationView color="-12566464" relationId="8219">
       <line>
         <point>
@@ -2668,7 +2668,7 @@
         <h>16</h>
       </roleAssociation>
       <multipliciteAssociation>
-        <x>1278</x>
+        <x>1275</x>
         <y>275</y>
         <w>7</w>
         <h>16</h>
@@ -3195,7 +3195,7 @@
       </roleAssociation>
       <roleAssociation>
         <x>1301</x>
-        <y>318</y>
+        <y>306</y>
         <w>18</w>
         <h>16</h>
       </roleAssociation>
