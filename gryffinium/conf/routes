@@ -3,9 +3,10 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET     /                           controllers.HomeController.index()
-GET     /chat/:id                   controllers.HomeController.chat(id : Int)
-GET     /ws/:id                     controllers.HomeController.ws(id:Int)
+GET     /                           controllers.ApplicationController.index()
+
+GET     /diagram/:uuid              controllers.DiagramController.project(uuid : String)
+GET     /socket/:uuid               controllers.DiagramController.socket(uuid : String)
 
 
 # Map static resources from the /public folder to the /assets URL path

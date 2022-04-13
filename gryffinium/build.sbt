@@ -1,5 +1,5 @@
-name := """websocket_test"""
-organization := "com.example"
+name := """Gryffinium"""
+organization := "com.quentinforestier"
 
 version := "1.0-SNAPSHOT"
 
