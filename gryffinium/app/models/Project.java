@@ -1,7 +1,7 @@
 package models;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import models.messages.Command;
+import models.commands.Command;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +10,9 @@ public class Project
 {
     private List<ProjectUser> users = new ArrayList<>();
 
-    public void handleMessage(Command command, ProjectUser sender)
+    public void executeCommand(Command command, ProjectUser sender)
     {
-        System.out.println("Project.handleMessage");
-        JsonNode response = command.execute();
-        System.out.println(response);
+        JsonNode response = command.execute(this, sender);
         for (ProjectUser user : users)
         {
             user.send(response);

@@ -1,8 +1,11 @@
 package models;
 
 import actors.UserActor;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import models.messages.Command;
+import models.commands.ChatMessageCommand;
+import models.commands.Command;
+import play.libs.Json;
 
 public class ProjectUser
 {
@@ -23,9 +26,20 @@ public class ProjectUser
         this.user = user;
     }
 
-    public void handleMessage(Command command){
-        System.out.println("ProjectUser.handleMessage");
-        project.handleMessage(command, this);
+    public void handleMessage(JsonNode message) throws JsonProcessingException
+    {
+
+        Command cmd;
+        switch(message.get("type").asText()){
+            case "ChatMessage":
+
+                cmd = Json.fromJson(message, ChatMessageCommand.class);
+            break;
+            default:
+                throw new IllegalArgumentException("Unknown message type");
+        }
+
+        project.executeCommand(cmd, this);
     }
 
     public void send(JsonNode message){

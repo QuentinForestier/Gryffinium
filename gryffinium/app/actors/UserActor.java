@@ -4,10 +4,7 @@ import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import models.ProjectUser;
-import models.messages.ChatMessageCommand;
-import models.messages.Command;
 
 public class UserActor extends AbstractActor
 {
@@ -17,7 +14,6 @@ public class UserActor extends AbstractActor
 
     public static Props props(ActorRef out, ProjectUser user)
     {
-        System.out.println("Creating UserActor");
         return Props.create(UserActor.class, out, user);
     }
 
@@ -30,7 +26,6 @@ public class UserActor extends AbstractActor
     }
 
     public void send(JsonNode message){
-        System.out.println("Sending message to user : " + message);
         out.tell(message, self());
     }
 
@@ -38,8 +33,8 @@ public class UserActor extends AbstractActor
     public Receive createReceive()
     {
         return receiveBuilder()
-                .match(JsonNode.class, command ->
-                        user.handleMessage(new ObjectMapper().treeToValue(command, ChatMessageCommand.class)))
+                .match(JsonNode.class, message ->
+                        user.handleMessage(message))
                 .build();
     }
 }

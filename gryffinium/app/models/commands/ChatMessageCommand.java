@@ -1,7 +1,10 @@
-package models.messages;
+package models.commands;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import models.Project;
+import models.ProjectUser;
+import play.libs.Json;
 
 public class ChatMessageCommand implements Command
 {
@@ -31,11 +34,8 @@ public class ChatMessageCommand implements Command
     }
 
     @Override
-    public JsonNode execute()
+    public JsonNode execute(Project project, ProjectUser user)
     {
-        ObjectMapper mapper = new ObjectMapper();
-        System.out.println("ChatMessageCommand: " + message);
-
-        return mapper.valueToTree(this);
+        return Json.toJson(this);
     }
 }
