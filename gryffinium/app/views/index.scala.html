@@ -1,8 +1,29 @@
-@()
+@import controllers.ProjectController.ProjectCreation
 
-@main("Welcome to Play") {
-  <h1>Welcome to Play!</h1>
-  <a href="@routes.DiagramController.project("1")">Room 1</a>
-  <a href="@routes.DiagramController.project("2")">Room 2</a>
-  <a href="@routes.DiagramController.project("3")">Room 3</a>
-}
+@(form: Form[ProjectCreation])(implicit request: Http.Request)
+
+    @main("Welcome to Play") {
+
+        @request.session().get("user").map { user =>
+        <div>Logged in as @user</div>
+        }.getOrElse {
+            <div>Not logged in</div>
+        }
+
+        @request.flash.get("success").orElse("Welcome!")
+
+        @helper.form(routes.ProjectController.create(), Symbol("method") -> "POST") {
+            <input type="text" class="form-control" name="name" id="name" placeholder="Enter the project name"/>
+            <button type="submit" class="btn btn-primary btn-lg btn-block login-button">Create</button>
+        }
+
+        <h1>Welcome to Play!</h1>
+        <a href="@routes.ProjectController.project("1")">Room 1</a>
+        <a href="@routes.ProjectController.project("2")">Room 2</a>
+        <a href="@routes.ProjectController.project("3")">Room 3</a>
+
+
+
+        <a href="@routes.UserController.login()">Login</a>
+        <a href="@routes.UserController.logout()">Logout</a>
+    }

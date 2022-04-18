@@ -4,7 +4,7 @@ import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import com.fasterxml.jackson.databind.JsonNode;
-import models.ProjectUser;
+import tmp.ProjectUser;
 
 public class UserActor extends AbstractActor
 {

@@ -2,12 +2,27 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# An example controller showing a sample home page
-GET     /                           controllers.ApplicationController.index()
+# Application Controller
+GET         /                     controllers.ApplicationController.index(request : Request)
 
-GET     /diagram/:uuid              controllers.DiagramController.project(uuid : String)
-GET     /socket/:uuid               controllers.DiagramController.socket(uuid : String)
 
+
+# Project Controller
+GET         /project/:uuid        controllers.ProjectController.project(request: Request, uuid : String)
+#GET         /socket/:uuid         controllers.ProjectController.socket(uuid : String)
+
+POST        /project              controllers.ProjectController.create(request: Request)
+
+# User Controller
+
+GET         /login                controllers.UserController.login(request : Request)
+GET         /register             controllers.UserController.register(request : Request)
+GET         /logout               controllers.UserController.logout(request : Request)
+
++ nocsrf
+POST        /authenticate         controllers.UserController.authenticate(request : Request)
++ nocsrf
+POST        /signup               controllers.UserController.signup(request : Request)
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file         controllers.Assets.versioned(path="/public", file: Asset)
