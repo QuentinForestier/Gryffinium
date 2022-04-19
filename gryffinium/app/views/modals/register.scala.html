@@ -1,0 +1,56 @@
+@import controllers.UserController.Signup
+@import play.mvc.Http.Request
+
+@(modalId: String, form: Form[Signup])(implicit request: Request)
+
+<div class="modal fade" id="@modalId" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        @helper.form(routes.UserController.register(), Symbol("method") -> "POST", Symbol("class") -> "row-g3 needs-validation") {
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Register</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @if(form.hasErrors) {
+                    @for(error <- form.errors) {
+                        <div class="alert alert-danger">
+                        @error.message
+                        </div>
+                    }
+                }
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="registerName-addon"><i class="fa fa-user"></i></span>
+                    <input type="text" class="form-control" placeholder="Enter your Name"
+                    aria-label="Enter your Name" aria-describedby="registerName-addon"
+                    name="name" id="name"/>
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="registerEmail-addon"><i class="fa fa-envelope"></i></span>
+                    <input type="text" class="form-control" placeholder="Enter your Email"
+                    aria-label="Enter your Email" aria-describedby="registerEmail-addon"
+                    name="email" id="email"/>
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="registerPassword-addon"><i class="fa fa-lock"></i></span>
+                    <input type="password" class="form-control" placeholder="Enter your Password"
+                    aria-label="Enter your Password" aria-describedby="registerPassword-addon"
+                    name="password" id="password"/>
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="registerPassword-addon"><i class="fa fa-lock"></i></span>
+                    <input type="password" class="form-control" placeholder="Enter your Password"
+                    aria-label="Confirm your Password" aria-describedby="registerPassword-addon"
+                    name="confirmPassword" id="confirmPassword"/>
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Sign up</button>
+            </div>
+        }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,42 @@
+@import controllers.UserController.Login
+@import play.mvc.Http.Request
+
+@(modalId: String, form: Form[Login])(implicit request: Request)
+
+<div class="modal fade" id="@modalId" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        @helper.form(routes.UserController.login(), Symbol("method") -> "POST", Symbol("class") -> "row-g3 needs-validation") {
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @if(form.hasErrors) {
+                    @for(error <- form.errors) {
+                        <div class="alert alert-danger">
+                        @error.message
+                        </div>
+                    }
+                }
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="loginEmail-addon"><i class="fa fa-envelope"></i></span>
+                    <input type="text" class="form-control" placeholder="Enter your Email"
+                    aria-label="Enter your Email" aria-describedby="loginEmail-addon"
+                    name="email" id="email"/>
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="loginPassword-addon"><i class="fa fa-lock"></i></span>
+                    <input type="password" class="form-control" placeholder="Enter your Password"
+                    aria-label="Enter your Password" aria-describedby="loginPassword-addon"
+                    name="password" id="password"/>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Log In</button>
+            </div>
+        }
+        </div>
+    </div>
+</div>

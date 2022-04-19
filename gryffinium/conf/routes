@@ -9,20 +9,18 @@ GET         /                     controllers.ApplicationController.index(reques
 
 # Project Controller
 GET         /project/:uuid        controllers.ProjectController.project(request: Request, uuid : String)
-#GET         /socket/:uuid         controllers.ProjectController.socket(uuid : String)
+GET         /socket/:uuid         controllers.ProjectController.socket(uuid : String)
 
 POST        /project              controllers.ProjectController.create(request: Request)
 
 # User Controller
 
-GET         /login                controllers.UserController.login(request : Request)
-GET         /register             controllers.UserController.register(request : Request)
 GET         /logout               controllers.UserController.logout(request : Request)
 
 + nocsrf
-POST        /authenticate         controllers.UserController.authenticate(request : Request)
+POST        /login         controllers.UserController.login(request : Request)
 + nocsrf
-POST        /signup               controllers.UserController.signup(request : Request)
+POST        /register               controllers.UserController.register(request : Request)
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file         controllers.Assets.versioned(path="/public", file: Asset)

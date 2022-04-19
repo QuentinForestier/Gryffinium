@@ -4,7 +4,7 @@ import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import com.fasterxml.jackson.databind.JsonNode;
-import tmp.ProjectUser;
+import models.ProjectUser;
 
 public class UserActor extends AbstractActor
 {
@@ -22,7 +22,7 @@ public class UserActor extends AbstractActor
         this.out = out;
         this.user = user;
 
-        user.setUser(this);
+        user.setActor(this);
     }
 
     public void send(JsonNode message){
@@ -34,7 +34,9 @@ public class UserActor extends AbstractActor
     {
         return receiveBuilder()
                 .match(JsonNode.class, message ->
-                        user.handleMessage(message))
+                {
+                    user.handleMessage(message);
+                })
                 .build();
     }
 }

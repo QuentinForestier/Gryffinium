@@ -7,6 +7,7 @@ import models.User;
 import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -26,6 +27,13 @@ public class UserRepository {
                 .findOne(), executionContext).join();
     }
 
+    public User findById(UUID uuid) {
+        return supplyAsync(() -> DB.find(User.class)
+                .where()
+                .eq("id", uuid)
+                .findOne(), executionContext).join();
+    }
+
     /**
      * Save a user.
      * @param user
@@ -38,14 +46,6 @@ public class UserRepository {
         }, executionContext);
     }
 
-    public CompletionStage<Map<String,String>> options(){
-        return supplyAsync(() -> DB.find(User.class).orderBy("name").findList(), executionContext)
-                .thenApply(users -> {
-                    HashMap<String, String> options = new HashMap<>();
-                    for(User u : users){
-                        options.put(u.getId().toString(), u.getName());
-                    }
-                    return options;
-                });
-    }
+
+
 }

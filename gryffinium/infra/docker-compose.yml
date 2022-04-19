@@ -1,0 +1,29 @@
+version: '3.1'
+
+services:
+
+  postgres:
+    container_name: postgres
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: gryffinium_user
+      POSTGRES_PASSWORD: gryffinium_password
+      POSTGRES_DB: gryffinium
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres:/docker-entrypoint-initdb.d
+  pgadmin:
+    links:
+      - postgres:postgres
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: root@localhost.ch
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "8081:80"
+    volumes:
+      - /data/pgadmin:/root/.pgadmin
+
