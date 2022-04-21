@@ -1,27 +1,23 @@
-@import controllers.ProjectController.ProjectCreation
 @import controllers.UserController.Login
 @import java.util
 @import controllers.UserController.Signup
 
 @(
-        projectForm: Form[ProjectCreation],
         loginForm: Form[Login],
-        signupForm: Form[Signup],
-        projects: util.List[Project])(implicit request: Http.Request)
+        signupForm: Form[Signup])(implicit request: Http.Request)
 
 
 @main("Gryffinium") {
 
-    <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#login-modal">
-        Login
-    </button>
-
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#register-modal">
-        Login
-    </button>
+    @views.html.components.navbar("login-modal", "register-modal", "project-modal")
 
     @views.html.modals.login("login-modal", loginForm)
 
     @views.html.modals.register("register-modal", signupForm)
+
+    @views.html.modals.project_list("project-modal", "project-creation-modal")
+
+    @views.html.modals.project_creation("project-creation-modal")
+
+    @views.html.modals.chat("chat-modal", "chat-modal-input", "chat-modal-button")
 }

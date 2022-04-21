@@ -34,20 +34,10 @@ public class ApplicationController extends Controller {
     }
 
     public Result index(Http.Request request) {
-        List<Project> projects = new ArrayList<>();
-        if (request.session().get("userId").isPresent()) {
-            projects = projectRepository.findProjectOfUser(
-                    UUID.fromString(request.session().get("userId").get())
-            );
-        }
-
-        System.out.println(projects);
 
         return ok(views.html.index.render(
-                formFactory.form(ProjectController.ProjectCreation.class),
                 formFactory.form(UserController.Login.class),
                 formFactory.form(UserController.Signup.class),
-                projects,
                 request));
     }
 

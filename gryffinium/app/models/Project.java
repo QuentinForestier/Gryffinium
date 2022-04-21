@@ -14,12 +14,12 @@ import java.util.UUID;
 @Entity
 public class Project extends Model {
     @Id
-    public UUID id;
+    private UUID id;
 
     @NotNull
-    public String name;
+    private String name;
 
-    public XML diagram;
+    private XML diagram;
 
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
@@ -31,6 +31,26 @@ public class Project extends Model {
 
     public void setDiagram(XML diagram) {
         this.diagram = diagram;
+    }
+
+    public XML getDiagram() {
+        return diagram;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void addUser(ProjectUser user) {

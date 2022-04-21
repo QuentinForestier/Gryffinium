@@ -1,0 +1,35 @@
+:root{
+    --main-color: rgba(255,128,0,1);
+}
+.btn-primary{
+    background-color: var(--main-color);
+    border-color: var(--main-color);
+}
+
+.btn-primary:hover{
+    background-color: var(--main-color);
+    border-color: var(--main-color);
+    opacity: 80%;
+}
+
+.offcanvas-footer{
+    align-items:center;
+    padding: 1rem 1rem;
+}
+
+i{
+    font-size: 1.2rem;
+}
+
+hr{
+    margin: 0.2rem 0;
+}
+
+.offcanvas-body{
+    padding:0.1rem 1rem;
+}
+
+.chatbox{
+    margin-top: 0;
+}
+

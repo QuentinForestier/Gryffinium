@@ -15,19 +15,19 @@ import javax.persistence.ManyToOne;
 @Entity
 public class ProjectUser extends Model {
     @ManyToOne(optional = false)
-    public User user;
+    private User user;
 
     @ManyToOne(optional = false)
-    public Project project;
+    private Project project;
 
     @NotNull
-    public boolean isOwner;
+    private boolean isOwner;
 
     @NotNull
-    public boolean canRead;
+    private boolean canRead;
 
     @NotNull
-    public boolean canWrite;
+    private boolean canWrite;
 
     private UserActor actor;
 
@@ -49,8 +49,44 @@ public class ProjectUser extends Model {
         return actor;
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public User getUser() {
         return user;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setIsOwner(boolean isOwner) {
+        this.isOwner = isOwner;
+    }
+
+    public boolean getIsOwner() {
+        return isOwner;
+    }
+
+    public void setCanRead(boolean canRead) {
+        this.canRead = canRead;
+    }
+
+    public boolean getCanRead() {
+        return canRead;
+    }
+
+    public void setCanWrite(boolean canWrite) {
+        this.canWrite = canWrite;
+    }
+
+    public boolean getCanWrite() {
+        return canWrite;
     }
 
     public void handleMessage(JsonNode message)

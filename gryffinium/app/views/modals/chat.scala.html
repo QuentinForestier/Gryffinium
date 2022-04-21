@@ -1,0 +1,118 @@
+@(chatId: String, inputMessageId: String, sendMessageId: String)
+
+<button class="btn position-absolute bottom-0 end-0" data-bs-toggle="offcanvas" data-bs-target="#@chatId" style="margin: 1%;">
+    <i class="fa fa-comments"></i>
+</button>
+
+<div class="offcanvas offcanvas-end w-5" tabindex="-1" id="@chatId" data-bs-keyboard="false" data-bs-backdrop="false">
+    <div class="offcanvas-header">
+        <h4 class="offcanvas-title d-none d-sm-block" id="chatOffcanvas">Chat</h4>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <hr>
+    <div class="offcanvas-body bg-light">
+        <div class="list-group-flush bg-light chatbox">
+            <div class="row list-group-item bg-light">
+                <div class="col">
+                    <em>Sender</em>
+                </div>
+                <div class="col">
+                    Message
+                </div>
+            </div>
+            <div class="row list-group-item bg-light">
+                <div class="col">
+                    <em>Sender</em>
+                </div>
+                <div class="col">
+                    Message
+                </div>
+            </div>
+            <div class="row list-group-item bg-light">
+                <div class="col">
+                    <em>Sender</em>
+                </div>
+                <div class="col">
+                    Message
+                </div>
+            </div>
+            <div class="row list-group-item bg-light">
+                <div class="col">
+                    <em>Sender</em>
+                </div>
+                <div class="col">
+                    Message
+                </div>
+            </div>
+            <div class="row list-group-item bg-light">
+                <div class="col">
+                    <em>Sender</em>
+                </div>
+                <div class="col">
+                    Message
+                </div>
+            </div>
+            <div class="row list-group-item bg-light">
+                <div class="col">
+                    <em>Sender</em>
+                </div>
+                <div class="col">
+                    Message
+                </div>
+            </div>
+            <div class="row list-group-item bg-light">
+                <div class="col">
+                    <em>Sender</em>
+                </div>
+                <div class="col">
+                    Message
+                </div>
+            </div>
+            <div class="row list-group-item bg-light">
+                <div class="col">
+                    <em>Sender</em>
+                </div>
+                <div class="col">
+                    Message
+                </div>
+            </div>
+            <div class="row list-group-item bg-light">
+                <div class="col">
+                    <em>Sender</em>
+                </div>
+                <div class="col">
+                    Message
+                </div>
+            </div>
+            <div class="row list-group-item bg-light">
+                <div class="col">
+                    <em>Sender</em>
+                </div>
+                <div class="col">
+                    Message
+                </div>
+            </div>
+            <div class="row list-group-item bg-light">
+                <div class="col">
+                    <em>Sender</em>
+                </div>
+                <div class="col">
+                    Message
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="offcanvas-footer">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Send message"
+            aria-label="Send message"
+            name="message" id="@inputMessageId"/>
+            <span class="input-group-append">
+                <button type="button" class="btn btn-primary" id="@sendMessageId" onclick="alert('TODO')">
+                    <i class="fa fa-paper-plane"></i>
+                </button>
+            </span>
+        </div>
+    </div>
+</div>

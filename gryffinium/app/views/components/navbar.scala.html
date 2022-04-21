@@ -1,0 +1,38 @@
+@import play.mvc.Http.Request
+
+@(loginModalId: String, registerModalId: String, projectOffCanvasId: String = "")(implicit request: Request)
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light p-10">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="@routes.ApplicationController.index()">
+            <img src="@routes.Assets.versioned("images/logo.png")" width="50" height="50" class="d-inline-block" alt="Logo">
+            Gryffinium
+        </a>
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+        @if(request.session.get("userId").isDefined) {
+            <li class="nav-item">
+                <div class="nav-link" href="@routes.UserController.logout()">
+                    Hello, @(request.session.get("userName").get)</div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="@routes.UserController.logout()">Logout</a>
+            </li>
+        } else {
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="modal" data-bs-target="#@loginModalId" href="">
+                    Login
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="modal" data-bs-target="#@registerModalId" href="">
+                    Register
+                </a>
+            </li>
+        }
+        </ul>
+        <button class="btn float-end align-middle" data-bs-toggle="offcanvas" data-bs-target="#@projectOffCanvasId" role="button">
+            <i class="fa fa-bars"></i>
+        </button>
+    </div>
+
+</nav>

@@ -4,7 +4,7 @@
 @(modalId: String, form: Form[Login])(implicit request: Request)
 
 <div class="modal fade" id="@modalId" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog ">
         <div class="modal-content">
         @helper.form(routes.UserController.login(), Symbol("method") -> "POST", Symbol("class") -> "row-g3 needs-validation") {
             <div class="modal-header">
@@ -40,3 +40,8 @@
         </div>
     </div>
 </div>
+<script type="text/javascript">
+        if (window.location.href.indexOf("login") > -1) {
+            new bootstrap.Modal(document.getElementById('@modalId'), {focus: true}).show();
+        }
+</script>

@@ -1,0 +1,71 @@
+@import play.mvc.Http.Request
+
+@(modalId: String)(implicit request: Request)
+
+<div class="modal fade" id="@modalId" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Project informations</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex bd-highlight">
+                    <div class="p-2 bd-highlight">
+                        <label for="projectName" class="col-form-label">Project name</label>
+                    </div>
+                    <div class="p-2 bd-highlight flex-fill input-group">
+                        <input type="text" id="projectName" class="form-control" >
+                        <div id="projectnameFeedback" class="valid-feedback d-block" style="visibility: hidden;">
+                            User has been added
+                        </div>
+                    </div>
+
+                    <div class="p-2 bd-highlight">
+                        <button class="btn btn-primary">Create</button>
+                    </div>
+                </div>
+                <hr>
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Invite a collaborator"
+                    aria-label="Invite a collaborator"
+                    name="inputCollaborator" id="inputCollaborator"/>
+                    <span class="input-group-append">
+                        <button type="button" class="btn btn-primary" id="addCollaborator"
+                        onclick="alert('TODO')">
+                            <i class="fa fa-plus"></i>
+                        </button>
+                    </span>
+                    <div id="collaboratorFeedback" class="invalid-feedback d-block" style="visibility: hidden;">
+                        This user does not exist.
+                    </div>
+                </div>
+                <br>
+                <ul class="list-group">
+                    <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <div class="overflow-hidden">First item</div>
+                        <button class="btn btn-default btn-xs pull-right">
+                            <span class="fa fa-edit"></span>
+                        </button>
+                    </li>
+                    <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <div class="overflow-hidden">First item</div>
+                        <div class="pull-right">
+                            <button class="btn btn-default btn-xs">
+                                <span class="fa fa-eye"></span>
+                            </button>
+                            <button class="btn btn-default btn-xs">
+                                <span class="fa fa-trash"></span>
+                            </button>
+                        </div>
+                    </li>
+                </ul>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>

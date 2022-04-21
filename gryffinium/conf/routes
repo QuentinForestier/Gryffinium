@@ -3,24 +3,23 @@
 # ~~~~
 
 # Application Controller
-GET         /                     controllers.ApplicationController.index(request : Request)
-
-
+GET         /                       controllers.ApplicationController.index(request : Request)
 
 # Project Controller
-GET         /project/:uuid        controllers.ProjectController.project(request: Request, uuid : String)
-GET         /socket/:uuid         controllers.ProjectController.socket(uuid : String)
+GET         /projects/:uuid         controllers.ProjectController.project(request: Request, uuid : String)
+GET         /socket/:uuid           controllers.ProjectController.socket(uuid : String)
 
-POST        /project              controllers.ProjectController.create(request: Request)
+POST        /projects/create        controllers.ProjectController.create(request: Request)
+GET         /projects               controllers.ProjectController.projects(request: Request)
 
 # User Controller
 
-GET         /logout               controllers.UserController.logout(request : Request)
+GET         /logout                 controllers.UserController.logout(request : Request)
 
 + nocsrf
-POST        /login         controllers.UserController.login(request : Request)
+POST        /login                  controllers.UserController.login(request : Request)
 + nocsrf
 POST        /register               controllers.UserController.register(request : Request)
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file         controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file           controllers.Assets.versioned(path="/public", file: Asset)

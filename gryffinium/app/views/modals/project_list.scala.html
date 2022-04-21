@@ -1,0 +1,41 @@
+@import play.mvc.Http.Request
+
+@(canvasId: String, projectCreationModalId : String)(implicit request: Request)
+
+
+<div class="offcanvas offcanvas-end w-5" tabindex="-1" id="@canvasId" data-bs-keyboard="false" data-bs-backdrop="false">
+    <div class="offcanvas-header">
+        <h4 class="offcanvas-title d-none d-sm-block" id="offcanvas">Projects List</h4>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="input-group">
+            <span class="input-group-text" id="filterproject-addon"><i class="fa fa-search"></i></span>
+            <input type="text" class="form-control" placeholder="Filter by name"
+            aria-label="Filter by name" aria-describedby="filterproject-addon"
+            name="filter" id="filter"/>
+            <span class="input-group-append">
+                <button type="button" class="btn btn-primary" id="addProject"
+                data-bs-toggle="modal" data-bs-target="#@projectCreationModalId">
+                    <i class="fa fa-plus"></i>
+                </button>
+            </span>
+        </div>
+        <br>
+        <ul class="list-group">
+            <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" onclick="alert('TODO')">
+                <div class="overflow-hidden">First item</div>
+                <button class="btn btn-default btn-xs pull-right" onclick="alert('TODO')">
+                    <i class="fa fa-edit"></i>
+                </button>
+            </li>
+            <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" onclick="alert('TODO')">
+                <div class="overflow-hidden">First item</div>
+                <button class="btn btn-default btn-xs pull-right" onclick="alert('TODO')">
+                    <i class="fa fa-eye"></i>
+                </button>
+            </li>
+        </ul>
+
+    </div>
+</div>

@@ -57,16 +57,16 @@ public class UserController extends Controller {
     // POST
     public Result login(Http.Request request) {
         Form<Login> loginForm = formFactory.form(Login.class).bindFromRequest(request);
-        Form<Signup> signupForm = formFactory.form(Signup.class).bindFromRequest(request);
-        Form<ProjectController.ProjectCreation> projectCreationForm = formFactory.form(ProjectController.ProjectCreation.class);
+        Form<Signup> signupForm = formFactory.form(Signup.class).bindFromRequest(request).discardingErrors();
+
         if (loginForm.hasErrors()) {
-            return badRequest(views.html.index.render(projectCreationForm, loginForm, signupForm, new ArrayList<>(), request));
+            return badRequest(views.html.index.render(loginForm, signupForm, request));
         } else {
             User user = userRepository.findByEmail(loginForm.get().email);
 
             if (user == null || !BCrypt.checkpw(loginForm.get().password, user.getPassword())) {
                 loginForm = loginForm.withError("Credentials", "Invalid credentials");
-                return notFound(views.html.index.render(projectCreationForm, loginForm, signupForm, new ArrayList<>(), request));
+                return notFound(views.html.index.render(loginForm, signupForm, request));
             }
 
             return redirect(routes.ApplicationController.index())
@@ -76,29 +76,29 @@ public class UserController extends Controller {
 
     }
 
+    // GET
     public Result logout(Http.Request request) {
         return redirect(routes.ApplicationController.index()).withNewSession();
     }
 
     // POST
     public Result register(Http.Request request) {
-        Form<ProjectController.ProjectCreation> creationForm = formFactory.form(ProjectController.ProjectCreation.class).bindFromRequest(request);
-        Form<UserController.Login> loginForm = formFactory.form(UserController.Login.class).bindFromRequest(request);
-        Form<UserController.Signup> signupForm = formFactory.form(UserController.Signup.class).bindFromRequest(request);
+        Form<Signup> signupForm = formFactory.form(Signup.class).bindFromRequest(request);
+
+        Form<Login> loginForm = formFactory.form(Login.class).bindFromRequest(request).discardingErrors();
 
         if (signupForm.hasErrors()) {
-            return badRequest(views.html.index.render(creationForm, loginForm, signupForm, new ArrayList<>(), request));
+            return badRequest(views.html.index.render(loginForm, signupForm, request));
         } else if (!signupForm.get().password.equals(signupForm.get().confirmPassword)) {
 
-            return badRequest(views.html.index.render(creationForm, loginForm,
+            return badRequest(views.html.index.render(loginForm,
                     signupForm.withError("Password", "Password and confirmation password must be the same"),
-                    new ArrayList<>(),
                     request));
         } else {
             if (userRepository.findByEmail(signupForm.get().email) != null) {
-                return badRequest(views.html.index.render(creationForm, loginForm,
+                return badRequest(views.html.index.render(loginForm,
                         signupForm.withError("Email", "Email already exists"),
-                        new ArrayList<>(), request));
+                        request));
             }
 
             User user = new User(
@@ -108,7 +108,7 @@ public class UserController extends Controller {
             );
             userRepository.create(user);
 
-            return redirect(routes.UserController.login());
+            return redirect(routes.ApplicationController.index());
         }
     }
 }
