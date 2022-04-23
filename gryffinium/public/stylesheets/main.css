@@ -33,3 +33,8 @@ i{
     margin-top: 0;
 }
 
+.offcanvas-end{
+    top: auto;
+    height: 90%;
+}
+

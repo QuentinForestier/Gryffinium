@@ -2,10 +2,10 @@
 
 @(loginModalId: String, registerModalId: String, projectOffCanvasId: String = "")(implicit request: Request)
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light p-10">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark p-10">
     <div class="container-fluid">
         <a class="navbar-brand" href="@routes.ApplicationController.index()">
-            <img src="@routes.Assets.versioned("images/logo.png")" width="50" height="50" class="d-inline-block" alt="Logo">
+            <img src="@routes.Assets.versioned("images/logo.png")" height="70" class="d-inline-block" alt="Logo">
             Gryffinium
         </a>
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
@@ -30,7 +30,7 @@
             </li>
         }
         </ul>
-        <button class="btn float-end align-middle" data-bs-toggle="offcanvas" data-bs-target="#@projectOffCanvasId" role="button">
+        <button class="btn float-end text-light dark align-middle" data-bs-toggle="offcanvas" data-bs-target="#@projectOffCanvasId" role="button">
             <i class="fa fa-bars"></i>
         </button>
     </div>
