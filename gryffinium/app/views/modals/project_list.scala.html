@@ -1,6 +1,6 @@
 @import play.mvc.Http.Request
 
-@(canvasId: String, projectCreationModalId : String)(implicit request: Request)
+@(canvasId: String)(implicit request: Request)
 
 
 <div class="offcanvas offcanvas-end w-5" tabindex="-1" id="@canvasId" data-bs-keyboard="false" data-bs-backdrop="false">
@@ -16,26 +16,81 @@
             name="filter" id="filter"/>
             <span class="input-group-append">
                 <button type="button" class="btn btn-primary" id="addProject"
-                data-bs-toggle="modal" data-bs-target="#@projectCreationModalId">
+                data-bs-toggle="modal" onclick="openNewProject()">
                     <i class="fa fa-plus"></i>
                 </button>
             </span>
         </div>
         <br>
-        <ul class="list-group">
-            <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" onclick="alert('TODO')">
-                <div class="overflow-hidden">First item</div>
-                <button class="btn btn-default btn-xs pull-right" onclick="alert('TODO')">
-                    <i class="fa fa-edit"></i>
-                </button>
-            </li>
-            <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" onclick="alert('TODO')">
-                <div class="overflow-hidden">First item</div>
-                <button class="btn btn-default btn-xs pull-right" onclick="alert('TODO')">
-                    <i class="fa fa-eye"></i>
-                </button>
-            </li>
-        </ul>
+        <ul class="list-group" id="projectsList">
 
+        </ul>
     </div>
 </div>
+
+<script type="text/javascript">
+
+        let projectsList = document.getElementById('projectsList');
+
+        collaborators = [
+            {name: 'Owner', id: '1', email: 'owner@@gmail.com', canEdit: true},
+            {name: 'editor', id: '2', email: 'editor@@gmail.com', canEdit: true},
+            {name: 'reader', id: '3', email: 'reader@@gmail.com', canEdit: false},
+        ]
+        project = {id: 1, name: 'First item', isOwner: true, collaborators: collaborators};
+        project2 = {id: 2, name: 'Second item', isOwner: false, collaborators: collaborators};
+
+        addProjectToListItem(project);
+        addProjectToListItem(project2);
+
+        function addProjectToListItem(project) {
+            let listItem = document.createElement('li');
+            listItem.classList.add('list-group-item');
+            listItem.classList.add('list-group-item-action');
+            listItem.classList.add('d-flex');
+            listItem.classList.add('justify-content-between');
+            listItem.classList.add('align-items-center');
+            listItem.onclick = function (e) {
+                openProject(e, project);
+            };
+
+            let name = document.createElement('div');
+            name.classList.add('overflow-hidden');
+            name.innerHTML = project.name;
+
+            let editButton = document.createElement('button');
+            editButton.classList.add('btn');
+            editButton.classList.add('btn-default');
+            editButton.classList.add('btn-xs');
+            editButton.classList.add('pull-right');
+            editButton.onclick = function () {
+                editProject(project);
+            };
+            editButton.innerHTML = '<i class="fa fa-edit"></i>';
+
+            listItem.appendChild(name);
+            listItem.appendChild(editButton);
+
+            projectsList.appendChild(listItem);
+        }
+
+        function editProject(project) {
+            updateProject(project);
+            openProjectCreationModal();
+        }
+
+        function openProject(event, project) {
+
+            if (event.target.nodeName !== 'LI') {
+                return;
+            }
+            let url = "@routes.ProjectController.project("uuid")";
+            url = url.replace("uuid", project.id);
+            window.location.href = url;
+        }
+
+        function openNewProject() {
+            newProject();
+            openProjectCreationModal();
+        }
+</script>

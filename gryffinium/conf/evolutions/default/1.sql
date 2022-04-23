@@ -13,7 +13,6 @@ create table project_user (
   user_id                       uuid not null,
   project_id                    uuid not null,
   is_owner                      boolean default false not null,
-  can_read                      boolean default false not null,
   can_write                     boolean default false not null
 );
 

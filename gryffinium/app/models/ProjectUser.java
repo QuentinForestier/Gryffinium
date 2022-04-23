@@ -24,18 +24,14 @@ public class ProjectUser extends Model {
     private boolean isOwner;
 
     @NotNull
-    private boolean canRead;
-
-    @NotNull
     private boolean canWrite;
 
     private UserActor actor;
 
-    public ProjectUser(User user, Project project, boolean isOwner, boolean canRead, boolean canWrite) {
+    public ProjectUser(User user, Project project, boolean isOwner, boolean canWrite) {
         this.user = user;
         this.project = project;
         this.isOwner = isOwner;
-        this.canRead = canRead;
         this.canWrite = canWrite;
     }
 
@@ -71,14 +67,6 @@ public class ProjectUser extends Model {
 
     public boolean getIsOwner() {
         return isOwner;
-    }
-
-    public void setCanRead(boolean canRead) {
-        this.canRead = canRead;
-    }
-
-    public boolean getCanRead() {
-        return canRead;
     }
 
     public void setCanWrite(boolean canWrite) {

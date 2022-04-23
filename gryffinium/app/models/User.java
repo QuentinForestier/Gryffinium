@@ -1,6 +1,7 @@
 package models;
 
 import io.ebean.Model;
+import io.ebean.annotation.JsonIgnore;
 import io.ebean.annotation.NotNull;
 
 import javax.persistence.*;
@@ -20,6 +21,7 @@ public class User extends Model {
     private String email;
 
     @NotNull
+    @JsonIgnore
     private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

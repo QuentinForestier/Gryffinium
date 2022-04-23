@@ -12,7 +12,7 @@
             <div class="modal-body">
                 <div class="d-flex bd-highlight">
                     <div class="p-2 bd-highlight">
-                        <label for="projectName" class="col-form-label">Project name</label>
+                        <label for="projectName" class="col-form-label">Name</label>
                     </div>
                     <div class="p-2 bd-highlight flex-fill input-group">
                         <input type="text" id="projectName" class="form-control" >
@@ -22,17 +22,16 @@
                     </div>
 
                     <div class="p-2 bd-highlight">
-                        <button class="btn btn-primary">Create</button>
+                        <button class="btn btn-primary" id="createProject" onclick="createOrUpdateProject()"><i class="fa-solid fa-floppy-disk"></i></button>
                     </div>
                 </div>
                 <hr>
-                <div class="input-group">
+                <div class="input-group" id="inviteCollaboratorBlock">
                     <input type="text" class="form-control" placeholder="Invite a collaborator"
                     aria-label="Invite a collaborator"
                     name="inputCollaborator" id="inputCollaborator"/>
                     <span class="input-group-append">
-                        <button type="button" class="btn btn-primary" id="addCollaborator"
-                        onclick="alert('TODO')">
+                        <button type="button" class="btn btn-primary" id="addCollaborator" onclick="addCollaborator()">
                             <i class="fa fa-plus"></i>
                         </button>
                     </span>
@@ -40,8 +39,7 @@
                         This user does not exist.
                     </div>
                 </div>
-                <br>
-                <ul class="list-group">
+                <ul class="list-group" id="collaboratorsList">
                     <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                         <div class="overflow-hidden">First item</div>
                         <button class="btn btn-default btn-xs pull-right">
@@ -64,8 +62,146 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn-danger btn" >Delete</button>
             </div>
 
         </div>
     </div>
 </div>
+<script type="text/javascript">
+        let inputProjectName = document.getElementById('projectName');
+        let buttonCreate = document.getElementById('createProject');
+        let collaboratorBlock = document.getElementById('inviteCollaboratorBlock');
+        let collaboratorList = document.getElementById('collaboratorsList');
+        let inputCollaborator = document.getElementById('inputCollaborator');
+
+        let collaboratorFeedback = document.getElementById('collaboratorFeedback');
+
+        let projectNameFeedback = document.getElementById('projectNameFeedback');
+
+        const addCollaboratorURL = "@routes.ProjectController.addCollaborator("uuid")";
+
+        let project = {};
+
+        function newProject() {
+            project = {};
+            inputProjectName.value = '';
+            buttonCreate.style.visibility = 'visible';
+            collaboratorBlock.style.display = 'flex';
+            collaboratorList.innerHTML = '';
+        }
+
+        function createOrUpdateProject() {
+
+
+            fetch('@routes.ProjectController.create()', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: inputProjectName.value
+                })
+            }).then(response =>  {
+                console.log(response.body);
+                console.log(response);
+                if (response.success) {
+                    project = response.project;
+                    updateProject(project);
+                } else {
+                    projectNameFeedback.innerHTML = response.message;
+                }
+            });
+        }
+
+
+        function updateProject(project) {
+
+            this.project = project;
+
+            inputProjectName.value = project.name;
+
+            inputProjectName.disabled = !project.isOwner;
+
+
+            buttonCreate.style.visibility = project.isOwner ? 'visible' : 'hidden';
+            collaboratorBlock.style.display = project.isOwner ? 'flex' : 'none';
+
+
+            collaboratorList.innerHTML = '';
+            for (let collaborator of project.collaborators) {
+                addCollaboratorItem(project, collaborator);
+            }
+        }
+
+        function addCollaborator() {
+            if (project == null || project.id == null || inputCollaborator.value === '') {
+                return;
+            }
+
+            fetch(addCollaboratorURL.replace('uuid', project.id), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: inputCollaborator.value
+                })
+            }).then(function (response) {
+                if (response.status === 200) {
+                    collaboratorFeedback.classList.remove('invalid-feedback');
+                    collaboratorFeedback.classList.add('valid-feedback');
+                    collaboratorFeedback.innerHTML = 'Collaborator added';
+                    project.collaborators.push(response.data);
+
+                    project.collaborators = project.collaborators.sort();
+
+                    updateProject(project);
+                } else {
+                    collaboratorFeedback.classList.remove('valid-feedback');
+                    collaboratorFeedback.classList.add('invalid-feedback');
+
+                    collaboratorFeedback.innerHTML = response.statusText;
+                }
+            });
+        }
+
+        function addCollaboratorItem(project, collaborator) {
+            let li = document.createElement('li');
+            li.className = 'list-group-item list-group-item-action d-flex justify-content-between align-items-center';
+
+            let div = document.createElement('div');
+            div.className = 'overflow-hidden';
+            div.innerHTML = collaborator.email;
+            li.appendChild(div);
+
+            let div2 = document.createElement('div');
+            div2.className = 'pull-right';
+
+
+            let buttonModify = document.createElement('button');
+            buttonModify.className = 'btn btn-default btn-xs pull-right';
+            if (collaborator.canEdit) {
+                buttonModify.innerHTML = '<span class="fa fa-edit"></span>';
+            } else {
+                buttonModify.innerHTML = '<span class="fa fa-eye"></span>';
+            }
+
+            div2.appendChild(buttonModify);
+
+            if (project.isOwner) {
+                let buttonDelete = document.createElement('button');
+                buttonDelete.className = 'btn btn-default btn-xs pull-right';
+                buttonDelete.innerHTML = '<span class="fa fa-trash"></span>';
+                div2.appendChild(buttonDelete);
+            }
+
+            li.appendChild(div2);
+
+            collaboratorList.appendChild(li);
+        }
+
+        function openProjectCreationModal() {
+            new bootstrap.Modal(document.getElementById("@modalId")).show();
+        }
+</script>

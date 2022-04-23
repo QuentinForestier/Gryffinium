@@ -2,7 +2,6 @@ package repository;
 
 import io.ebean.DB;
 import models.Project;
-import models.User;
 
 import javax.inject.Inject;
 
@@ -20,7 +19,7 @@ public class ProjectRepository {
         this.executionContext = executionContext;
     }
 
-    public CompletionStage<Project> create(Project project) {
+    public CompletionStage<Project> save(Project project) {
         return supplyAsync(() -> {
             project.save();
             return project;

@@ -5,25 +5,19 @@ import akka.actor.ActorSystem;
 import akka.stream.Materializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import constraints.PasswordConstraint;
 import models.Project;
 import models.ProjectUser;
 import models.User;
-import org.mindrot.jbcrypt.BCrypt;
-import org.postgresql.jdbc.PgSQLXML;
-import play.data.Form;
 import play.data.FormFactory;
-import play.data.validation.Constraints;
 import play.libs.Json;
-import play.libs.XML;
 import play.mvc.*;
 import repository.ProjectRepository;
 import repository.UserRepository;
 import securities.Secured;
 import play.libs.streams.ActorFlow;
+import utils.Utils;
 
 import javax.inject.Inject;
-import java.sql.SQLXML;
 import java.util.*;
 
 public class ProjectController extends Controller {
@@ -51,26 +45,28 @@ public class ProjectController extends Controller {
         this.userRepository = userRepository;
     }
 
-    @Security.Authenticated(Secured.class)
+    // POST
     public Result create(Http.Request request) {
+
+        System.out.println("create project");
 
         JsonNode json = request.body().asJson();
 
-        if(json == null || json.get("name").size() < 3) {
-            badRequest("Project name must be at least 3 characters long");
+        if (json == null || json.get("name").size() < 3) {
+            badRequest(Utils.createResponse("Project name must be at least 3 characters long", false));
         }
 
         Project project = new Project(json.get("name").asText());
 
         User user = userRepository.findById(UUID.fromString(request.session().get("userId").get()));
 
-        ProjectUser projectUser = new ProjectUser(user, project, true, true, true);
+        ProjectUser projectUser = new ProjectUser(user, project, true, true);
         project.addUser(projectUser);
-        projectRepository.create(project);
+        projectRepository.save(project);
 
         ObjectNode result = (ObjectNode) Json.toJson(project);
         result.remove("projectUsers");
-        return ok(result);
+        return ok(Utils.createResponse(result, true));
     }
 
     // GET
@@ -101,13 +97,35 @@ public class ProjectController extends Controller {
 
             Project p = findOpenProject(UUID.fromString(uuid));
 
-            ProjectUser user = p.projectUsers
+            ProjectUser user = p.getProjectUsers()
                     .stream()
                     .filter(pu ->
                             Objects.equals(pu.getUser().getId(), UUID.fromString(request.session().get("userId").get()))).findFirst().get();
             return ActorFlow.actorRef(out -> UserActor.props(out, user), actorSystem,
                     materializer);
         });
+    }
+
+    // POST
+    @Security.Authenticated(Secured.class)
+    public Result addCollaborator(Http.Request request, String uuid) {
+        JsonNode json = request.body().asJson();
+        String email = json.get("email").asText();
+        Project project = findOpenProject(UUID.fromString(uuid));
+
+        if (project == null || project.getProjectUsers().stream().anyMatch(pu -> pu.getUser().getId().equals(
+                request.session().get("userId").get()) && !pu.getIsOwner())) {
+            return forbidden("You are not allowed to add collaborators to this project");
+        }
+
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            return badRequest("User not found");
+        }
+        ProjectUser projectUser = new ProjectUser(user, project, false, false);
+        project.addUser(projectUser);
+        projectRepository.save(project);
+        return ok("User added");
     }
 
     private Project findOpenProject(UUID uuid) {

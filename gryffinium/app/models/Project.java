@@ -23,7 +23,7 @@ public class Project extends Model {
 
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    public List<ProjectUser> projectUsers;
+    private List<ProjectUser> projectUsers;
 
     public Project(String name) {
         this.name = name;
@@ -51,6 +51,14 @@ public class Project extends Model {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<ProjectUser> getProjectUsers() {
+        return projectUsers;
+    }
+
+    public void setProjectUsers(List<ProjectUser> projectUsers) {
+        this.projectUsers = projectUsers;
     }
 
     public void addUser(ProjectUser user) {

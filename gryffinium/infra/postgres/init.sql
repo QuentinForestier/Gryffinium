@@ -21,7 +21,6 @@ CREATE TABLE IF NOT EXISTS project_user
 (
     project_id uuid    NOT NULL,
     user_id    uuid    NOT NULL,
-    can_read    BOOLEAN NOT NULL,
     can_write   BOOLEAN NOT NULL,
     is_owner    BOOLEAN NOT NULL,
     PRIMARY KEY (project_id, user_id),
