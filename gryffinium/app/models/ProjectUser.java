@@ -1,8 +1,11 @@
 package models;
 
 import actors.UserActor;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import commands.ChatMessageCommand;
 import commands.Command;
 import io.ebean.Model;
@@ -15,16 +18,17 @@ import javax.persistence.ManyToOne;
 @Entity
 public class ProjectUser extends Model {
     @ManyToOne(optional = false)
-    private User user;
+    public User user;
 
     @ManyToOne(optional = false)
-    private Project project;
+    @JsonBackReference
+    public Project project;
 
     @NotNull
-    private boolean isOwner;
+    public boolean isOwner;
 
     @NotNull
-    private boolean canWrite;
+    public boolean canWrite;
 
     private UserActor actor;
 
@@ -89,13 +93,22 @@ public class ProjectUser extends Model {
                 throw new IllegalArgumentException("Unknown message type");
         }
 
-        System.out.println("project");
-        System.out.println(project);
         project.executeCommand(cmd, this);
     }
 
     public void send(JsonNode message){
         actor.send(message);
+    }
+
+    public JsonNode toJsonCollaborator(){
+        ObjectNode json = Json.newObject();
+
+        json.put("id", user.getId().toString());
+        json.put("name", user.getName());
+        json.put("email", user.getEmail());
+        json.put("isOwner", isOwner);
+        json.put("canWrite", canWrite);
+        return json;
     }
 
 }

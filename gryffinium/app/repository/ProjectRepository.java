@@ -34,10 +34,10 @@ public class ProjectRepository {
     }
 
     public List<Project> findProjectOfUser(UUID id) {
+
         return supplyAsync(() -> DB.find(Project.class)
-                .fetch("projectUsers", "user")
                 .where()
-                .eq("user_id", id)
+                .eq("projectUsers.user.id", id)
                 .findList(), executionContext).join();
     }
 }

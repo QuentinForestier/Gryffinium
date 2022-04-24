@@ -77,9 +77,10 @@
 
         let collaboratorFeedback = document.getElementById('collaboratorFeedback');
 
-        let projectNameFeedback = document.getElementById('projectNameFeedback');
+        let projectNameFeedback = document.getElementById('projectnameFeedback');
 
         const addCollaboratorURL = "@routes.ProjectController.addCollaborator("uuid")";
+        const removeCollaboratorURL = "@routes.ProjectController.removeCollaborator("uuid")";
 
         let project = {};
 
@@ -93,39 +94,43 @@
 
         function createOrUpdateProject() {
 
-
             fetch('@routes.ProjectController.create()', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
+                    id: project.id,
                     name: inputProjectName.value
                 })
-            }).then(response =>  {
-                console.log(response.body);
-                console.log(response);
-                if (response.success) {
-                    project = response.project;
-                    updateProject(project);
+            }).then(response => response.json()).then(data => {
+                projectNameFeedback.style.visibility = 'visible';
+                if (data.success) {
+                    projectNameFeedback.innerHTML = project.id ? "Project updated" : "Project created";
+                    projectNameFeedback.classList.remove('invalid-feedback');
+                    projectNameFeedback.classList.add('valid-feedback');
+                    updateProject(data.body);
                 } else {
-                    projectNameFeedback.innerHTML = response.message;
+                    projectNameFeedback.innerHTML = data.body;
+                    projectNameFeedback.classList.remove('valid-feedback');
+                    projectNameFeedback.classList.add('invalid-feedback');
                 }
             });
         }
 
+        function updateProject(pro) {
 
-        function updateProject(project) {
+            project = pro;
 
-            this.project = project;
+            let owner = isOwner(project);
 
             inputProjectName.value = project.name;
 
-            inputProjectName.disabled = !project.isOwner;
+            inputProjectName.disabled = !owner;
 
 
-            buttonCreate.style.visibility = project.isOwner ? 'visible' : 'hidden';
-            collaboratorBlock.style.display = project.isOwner ? 'flex' : 'none';
+            buttonCreate.style.visibility = owner ? 'visible' : 'hidden';
+            collaboratorBlock.style.display = owner ? 'flex' : 'none';
 
 
             collaboratorList.innerHTML = '';
@@ -147,12 +152,12 @@
                 body: JSON.stringify({
                     email: inputCollaborator.value
                 })
-            }).then(function (response) {
-                if (response.status === 200) {
+            }).then(response => response.json()).then(data => {
+                if (data.success) {
                     collaboratorFeedback.classList.remove('invalid-feedback');
                     collaboratorFeedback.classList.add('valid-feedback');
                     collaboratorFeedback.innerHTML = 'Collaborator added';
-                    project.collaborators.push(response.data);
+                    project.collaborators.push(data.body);
 
                     project.collaborators = project.collaborators.sort();
 
@@ -161,7 +166,7 @@
                     collaboratorFeedback.classList.remove('valid-feedback');
                     collaboratorFeedback.classList.add('invalid-feedback');
 
-                    collaboratorFeedback.innerHTML = response.statusText;
+                    collaboratorFeedback.innerHTML = data.body;
                 }
             });
         }
@@ -181,7 +186,7 @@
 
             let buttonModify = document.createElement('button');
             buttonModify.className = 'btn btn-default btn-xs pull-right';
-            if (collaborator.canEdit) {
+            if (collaborator.canWrite) {
                 buttonModify.innerHTML = '<span class="fa fa-edit"></span>';
             } else {
                 buttonModify.innerHTML = '<span class="fa fa-eye"></span>';
@@ -189,10 +194,13 @@
 
             div2.appendChild(buttonModify);
 
-            if (project.isOwner) {
+            if (isOwner(project)) {
                 let buttonDelete = document.createElement('button');
                 buttonDelete.className = 'btn btn-default btn-xs pull-right';
                 buttonDelete.innerHTML = '<span class="fa fa-trash"></span>';
+                buttonDelete.onclick = function (e) {
+
+                }
                 div2.appendChild(buttonDelete);
             }
 
@@ -204,4 +212,34 @@
         function openProjectCreationModal() {
             new bootstrap.Modal(document.getElementById("@modalId")).show();
         }
+
+        function isOwner(project) {
+            let userId = '@request.session.get("userId")';
+            let owner = project.collaborators.find(c => c.isOwner === true);
+            return owner !== undefined && userId === owner.id
+        }
+
+        function deleteCollaborator(project, collaborator) {
+            /*if (project == null || project.id == null || inputCollaborator.value === '') {
+                return;
+            }
+
+            fetch(removeCollaboratorURL.replace('uuid', project.id), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: collaborator.id
+                })
+            }).then(response => response.json()).then(data => {
+                if (data.success) {
+                    project.collaborators = project.collaborators.filter(c => c.id !== collaborator.id);
+
+                    updateProject(project);
+                }
+            });
+*/
+        }
+
 </script>

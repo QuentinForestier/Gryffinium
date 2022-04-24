@@ -69,6 +69,8 @@ public class UserController extends Controller {
                 return notFound(views.html.index.render(loginForm, signupForm, request));
             }
 
+            System.out.println("User: " + user.getName());
+
             return redirect(routes.ApplicationController.index())
                     .addingToSession(request, "userId", user.getId().toString())
                     .addingToSession(request, "userName", user.getName());

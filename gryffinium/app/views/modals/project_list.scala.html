@@ -1,5 +1,6 @@
 @import play.mvc.Http.Request
 
+@import views.html.helper.CSRF
 @(canvasId: String)(implicit request: Request)
 
 
@@ -16,7 +17,7 @@
             name="filter" id="filter"/>
             <span class="input-group-append">
                 <button type="button" class="btn btn-primary" id="addProject"
-                data-bs-toggle="modal" onclick="openNewProject()">
+                onclick="openNewProject()">
                     <i class="fa fa-plus"></i>
                 </button>
             </span>
@@ -32,16 +33,27 @@
 
         let projectsList = document.getElementById('projectsList');
 
-        collaborators = [
-            {name: 'Owner', id: '1', email: 'owner@@gmail.com', canEdit: true},
-            {name: 'editor', id: '2', email: 'editor@@gmail.com', canEdit: true},
-            {name: 'reader', id: '3', email: 'reader@@gmail.com', canEdit: false},
-        ]
-        project = {id: 1, name: 'First item', isOwner: true, collaborators: collaborators};
-        project2 = {id: 2, name: 'Second item', isOwner: false, collaborators: collaborators};
+        getProjects();
 
-        addProjectToListItem(project);
-        addProjectToListItem(project2);
+        function getProjects() {
+            fetch('@routes.ProjectController.projects()', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '@CSRF'
+                }
+            })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            let projects = data.body;
+                            projects.forEach(project => {
+
+                                addProjectToListItem(project);
+                            });
+                        }
+                    })
+        }
 
         function addProjectToListItem(project) {
             let listItem = document.createElement('li');
@@ -66,8 +78,12 @@
             editButton.onclick = function () {
                 editProject(project);
             };
-            editButton.innerHTML = '<i class="fa fa-edit"></i>';
 
+            if (isOwner(project)) {
+                editButton.innerHTML = '<i class="fa fa-edit"></i>';
+            } else {
+                editButton.innerHTML = '<i class="fa fa-eye"></i>';
+            }
             listItem.appendChild(name);
             listItem.appendChild(editButton);
 
@@ -93,4 +109,6 @@
             newProject();
             openProjectCreationModal();
         }
+
+
 </script>

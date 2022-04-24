@@ -4,6 +4,7 @@ import actors.UserActor;
 import akka.actor.ActorSystem;
 import akka.stream.Materializer;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import models.Project;
 import models.ProjectUser;
@@ -12,6 +13,7 @@ import play.data.FormFactory;
 import play.libs.Json;
 import play.mvc.*;
 import repository.ProjectRepository;
+import repository.ProjectUserRepository;
 import repository.UserRepository;
 import securities.Secured;
 import play.libs.streams.ActorFlow;
@@ -20,15 +22,18 @@ import utils.Utils;
 import javax.inject.Inject;
 import java.util.*;
 
-public class ProjectController extends Controller {
+public class ProjectController extends Controller
+{
 
     private final ActorSystem actorSystem;
     private final Materializer materializer;
 
     private ProjectRepository projectRepository;
     private UserRepository userRepository;
+    private ProjectUserRepository projectUserRepository;
 
-    private static final Map<UUID, Project> openProjects = new HashMap<UUID, Project>();
+    private static final Map<UUID, Project> openProjects = new HashMap<UUID,
+            Project>();
 
     private FormFactory formFactory;
 
@@ -37,98 +42,197 @@ public class ProjectController extends Controller {
                              Materializer materializer,
                              FormFactory formFactory,
                              ProjectRepository projectRepository,
-                             UserRepository userRepository) {
+                             UserRepository userRepository,
+                             ProjectUserRepository projectUserRepository)
+    {
         this.actorSystem = actorSystem;
         this.materializer = materializer;
         this.formFactory = formFactory;
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
+        this.projectUserRepository = projectUserRepository;
     }
 
     // POST
-    public Result create(Http.Request request) {
-
-        System.out.println("create project");
+    @Security.Authenticated(Secured.class)
+    public Result create(Http.Request request)
+    {
 
         JsonNode json = request.body().asJson();
 
-        if (json == null || json.get("name").size() < 3) {
-            badRequest(Utils.createResponse("Project name must be at least 3 characters long", false));
+        if (json == null || json.get("name").asText().length() < 3)
+        {
+            return badRequest(Utils.createResponse("Project name must be at " +
+                    "least 3 " +
+                    "characters long", false));
         }
 
-        Project project = new Project(json.get("name").asText());
+        Project project;
 
-        User user = userRepository.findById(UUID.fromString(request.session().get("userId").get()));
+        if (json.has("id"))
+        {
+            project = projectRepository.findById(UUID.fromString(json.get("id"
+            ).asText()));
+            project.setName(json.get("name").asText());
+        }
+        else
+        {
+            project = new Project(json.get("name").asText());
+            User user =
+                    userRepository.findById(UUID.fromString(request.session().get("userId").get()));
 
-        ProjectUser projectUser = new ProjectUser(user, project, true, true);
-        project.addUser(projectUser);
-        projectRepository.save(project);
+            ProjectUser projectUser = new ProjectUser(user, project, true,
+                    true);
+            project.addUser(projectUser);
+        }
+        project = projectRepository.save(project).toCompletableFuture().join();
 
-        ObjectNode result = (ObjectNode) Json.toJson(project);
-        result.remove("projectUsers");
-        return ok(Utils.createResponse(result, true));
+        return ok(Utils.createResponse(project.toJson(), true));
     }
 
     // GET
     @Security.Authenticated(Secured.class)
-    public Result projects(Http.Request request) {
-        User user = userRepository.findById(UUID.fromString(request.session().get("userId").get()));
-        List<Project> projects = projectRepository.findProjectOfUser(user.getId());
-        return ok(Json.toJson(projects));
+    public Result projects(Http.Request request)
+    {
+        User user =
+                userRepository.findById(UUID.fromString(request.session().get("userId").get()));
+
+        ArrayNode arrayNode = Json.newArray();
+
+        for (ProjectUser pu : user.projects)
+        {
+            arrayNode.add(pu.project.toJson());
+        }
+
+        return ok(Utils.createResponse(arrayNode, true));
     }
 
     // GET
-    public Result project(Http.Request request, String uuid) {
-        Project project = openProjects.get(UUID.fromString(uuid));
-        if (project == null) {
-            project = projectRepository.findById(UUID.fromString(uuid));
+    @Security.Authenticated(Secured.class)
+    public Result project(Http.Request request, String uuid)
+    {
 
-            if (project == null) {
+        User user =
+                userRepository.findById(UUID.fromString(request.session().get("userId").get()));
+
+        if (user.projects.stream().noneMatch(pu -> pu.project.getId().toString().equals(uuid)))
+        {
+            return forbidden(Utils.createResponse("You are not a member of " +
+                    "this project", false));
+        }
+
+        Project project = openProjects.get(UUID.fromString(uuid));
+
+        if (project == null)
+        {
+            project = projectRepository.findById(UUID.fromString(uuid));
+            if (project == null)
+            {
                 return notFound("Project not found");
             }
-            openProjects.put(UUID.fromString(uuid), project);
+            openProjects.put(project.id, project);
         }
-        return ok(views.html.project.render(project.getId().toString(), request));
+
+
+        return ok(views.html.project.render(project.getId().toString(),
+                request));
     }
 
     // WS
-    public WebSocket socket(String uuid) {
-        return WebSocket.Json.accept(request -> {
+    @Security.Authenticated(Secured.class)
+    public WebSocket socket(String uuid)
+    {
+        return WebSocket.Json.accept(request ->
+        {
 
-            Project p = findOpenProject(UUID.fromString(uuid));
+            Project p = openProjects.get(UUID.fromString(uuid));
 
             ProjectUser user = p.getProjectUsers()
                     .stream()
                     .filter(pu ->
-                            Objects.equals(pu.getUser().getId(), UUID.fromString(request.session().get("userId").get()))).findFirst().get();
-            return ActorFlow.actorRef(out -> UserActor.props(out, user), actorSystem,
+                            Objects.equals(pu.getUser().getId(),
+                                    UUID.fromString(request.session().get(
+                                            "userId").get()))).findFirst().get();
+            return ActorFlow.actorRef(out -> UserActor.props(out, user),
+                    actorSystem,
                     materializer);
         });
     }
 
     // POST
     @Security.Authenticated(Secured.class)
-    public Result addCollaborator(Http.Request request, String uuid) {
+    public Result addCollaborator(Http.Request request, String uuid)
+    {
         JsonNode json = request.body().asJson();
         String email = json.get("email").asText();
-        Project project = findOpenProject(UUID.fromString(uuid));
+        Project project = findProject(UUID.fromString(uuid));
 
         if (project == null || project.getProjectUsers().stream().anyMatch(pu -> pu.getUser().getId().equals(
-                request.session().get("userId").get()) && !pu.getIsOwner())) {
-            return forbidden("You are not allowed to add collaborators to this project");
+                request.session().get("userId").get()) && !pu.getIsOwner()))
+        {
+            return forbidden(Utils.createResponse("You are not allowed to add" +
+                    " collaborators to " +
+                    "this project", false));
         }
 
+        if (project.projectUsers.stream().anyMatch(pu -> pu.getUser().getEmail().equals(email)))
+        {
+            return badRequest(Utils.createResponse("User is already a member " +
+                    "of the project", false));
+        }
         User user = userRepository.findByEmail(email);
-        if (user == null) {
-            return badRequest("User not found");
+        if (user == null)
+        {
+            return badRequest(Utils.createResponse("User not found", false));
         }
-        ProjectUser projectUser = new ProjectUser(user, project, false, false);
+        ProjectUser projectUser = new ProjectUser(user, project, false,
+                false);
         project.addUser(projectUser);
-        projectRepository.save(project);
-        return ok("User added");
+
+        projectUserRepository.save(projectUser);
+        return ok(Utils.createResponse(projectUser.toJsonCollaborator(),
+                true));
     }
 
-    private Project findOpenProject(UUID uuid) {
-        return openProjects.get(uuid);
+    // DELETE
+    public Result removeCollaborator(Http.Request request, String uuid)
+    {
+        JsonNode json = request.body().asJson();
+        String id = json.get("id").asText();
+        Project project = findProject(UUID.fromString(uuid));
+
+        if (project == null || project.getProjectUsers().stream().anyMatch(pu -> pu.getUser().getId().equals(
+                request.session().get("userId").get()) && !pu.getIsOwner()))
+        {
+            return forbidden(Utils.createResponse("You are not allowed to " +
+                    "remove" +
+                    " collaborators from " +
+                    "this project", false));
+        }
+
+        if (project.projectUsers.stream().noneMatch(pu -> pu.getUser().getId().equals(id)))
+        {
+            return badRequest(Utils.createResponse("User is not a member " +
+                    "of the project", false));
+        }
+
+        projectUserRepository.delete(project.id, UUID.fromString(id));
+
+        project.removeUser(UUID.fromString(id));
+
+        return ok(Utils.createResponse("User removed from project", true));
+
     }
+
+    private Project findProject(UUID uuid)
+    {
+        Project p = openProjects.get(uuid);
+        if (p == null)
+        {
+            p = projectRepository.findById(uuid);
+        }
+
+        return p;
+    }
+
 }

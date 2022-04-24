@@ -13,7 +13,10 @@ GET         /socket/:uuid                          controllers.ProjectController
 POST        /projects/create                       controllers.ProjectController.create(request: Request)
 GET         /projects                              controllers.ProjectController.projects(request: Request)
 
++ nocsrf
 POST        /projects/:uuid/addCollaborator              controllers.ProjectController.addCollaborator(request: Request, uuid : String)
++ nocsrf
+DELETE    /projects/:uuid/removeCollaborator           controllers.ProjectController.removeCollaborator(request: Request, uuid : String)
 
 # User Controller
 

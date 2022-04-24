@@ -11,16 +11,20 @@ import models.*;
 import javax.naming.Context;
 import java.util.Optional;
 
-public class Secured extends Security.Authenticator {
+public class Secured extends Security.Authenticator
+{
 
     @Override
-    public Optional<String> getUsername(Request req) {
+    public Optional<String> getUsername(Request req)
+    {
         System.out.println(req.session().get("userName"));
         return req.session().get("userName");
     }
 
     @Override
-    public Result onUnauthorized(Request req) {
-        return redirect(routes.UserController.login());
+    public Result onUnauthorized(Request req)
+    {
+        return redirect(routes.ApplicationController.index()).flashing("error"
+                , "You must be logged in to access this page");
     }
 }

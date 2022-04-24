@@ -1,5 +1,7 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.ebean.Model;
 import io.ebean.annotation.JsonIgnore;
 import io.ebean.annotation.NotNull;
@@ -12,20 +14,19 @@ import java.util.UUID;
 @Table(name = "users")
 public class User extends Model {
     @Id
-    private UUID id;
+    public UUID id;
 
     @NotNull
-    private String name;
+    public String name;
 
     @NotNull
-    private String email;
+    public String email;
 
     @NotNull
-    @JsonIgnore
-    private String password;
+    public String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<ProjectUser> projects;
+    public List<ProjectUser> projects;
 
     public User(String name, String email, String password) {
         this.name = name;
