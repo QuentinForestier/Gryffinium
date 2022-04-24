@@ -90,9 +90,9 @@ public class Project extends Model
         }
     }
 
-    public void removeUser(UUID id)
+    public void removeUser(ProjectUser user)
     {
-        projectUsers.stream().filter(pu -> pu.getUser().getId().equals(id)).forEach(user -> projectUsers.remove(user));
+        projectUsers.remove(user);
     }
 
     public JsonNode toJson()

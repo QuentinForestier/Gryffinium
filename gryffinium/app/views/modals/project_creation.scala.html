@@ -199,7 +199,7 @@
                 buttonDelete.className = 'btn btn-default btn-xs pull-right';
                 buttonDelete.innerHTML = '<span class="fa fa-trash"></span>';
                 buttonDelete.onclick = function (e) {
-
+                    removeCollaborator(project, collaborator);
                 }
                 div2.appendChild(buttonDelete);
             }
@@ -219,13 +219,14 @@
             return owner !== undefined && userId === owner.id
         }
 
-        function deleteCollaborator(project, collaborator) {
-            /*if (project == null || project.id == null || inputCollaborator.value === '') {
+        function removeCollaborator(project, collaborator) {
+
+            if (project == null || project.id == null) {
                 return;
             }
 
             fetch(removeCollaboratorURL.replace('uuid', project.id), {
-                method: 'POST',
+                method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -239,7 +240,7 @@
                     updateProject(project);
                 }
             });
-*/
+
         }
 
 </script>

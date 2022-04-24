@@ -49,6 +49,6 @@ public class ProjectUserRepository
             }
 
             return null;
-        }, executionContext);
+        }, executionContext).join();
     }
 }
