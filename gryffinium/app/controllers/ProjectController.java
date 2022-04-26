@@ -201,7 +201,7 @@ public class ProjectController extends Controller
         String id = json.get("id").asText();
         Project project = findProject(UUID.fromString(uuid));
 
-        if (project == null || findOwner(project).getUser().getId().toString()
+        if (project == null || !findOwner(project).getUser().getId().toString()
                 .equals(request.session().get("userId").get()))
         {
             return forbidden(Utils.createResponse(
@@ -230,7 +230,7 @@ public class ProjectController extends Controller
 
         pu.setCanWrite(!pu.getCanWrite());
 
-        projectUserRepository.save(pu);
+        projectUserRepository.setCanWrite(pu);
 
         return ok(Utils.createResponse("User rights updated", true));
     }
@@ -243,7 +243,7 @@ public class ProjectController extends Controller
         String id = json.get("id").asText();
         Project project = findProject(UUID.fromString(uuid));
 
-        if (project == null || findOwner(project).getUser().getId().toString()
+        if (project == null || !findOwner(project).getUser().getId().toString()
                 .equals(request.session().get("userId").get()))
         {
             return forbidden(Utils.createResponse(

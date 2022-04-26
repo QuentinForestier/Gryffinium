@@ -30,9 +30,14 @@
             </li>
         }
         </ul>
-        <button class="btn float-end text-light dark align-middle" data-bs-toggle="offcanvas" data-bs-target="#@projectOffCanvasId" role="button">
-            <i class="fa fa-bars"></i>
-        </button>
+        @if(request.session.get("userId").isDefined) {
+            <button class="btn float-end text-light dark align-middle" data-bs-toggle="offcanvas" data-bs-target="#@projectOffCanvasId" role="button">
+                <i class="fa fa-bars"></i>
+            </button>
+        }else{
+            <div></div>
+        }
+
     </div>
 
 </nav>

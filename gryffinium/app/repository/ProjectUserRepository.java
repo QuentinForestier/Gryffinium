@@ -32,7 +32,7 @@ public class ProjectUserRepository
     {
         return supplyAsync(() ->
         {
-            pu.save();
+            DB.save(pu);
             return pu;
         }, executionContext);
     }
@@ -43,6 +43,19 @@ public class ProjectUserRepository
                 .where().eq("user_id", userId)
                 .eq("project_id", projectId)
                 .findOne(), executionContext).join();
+    }
+
+    public ProjectUser setCanWrite(ProjectUser pu)
+    {
+        return supplyAsync(() ->
+        {
+            DB.sqlUpdate("UPDATE project_user SET can_write = :canwrite WHERE project_id = :project AND user_id = :user")
+                    .setParameter("canwrite", pu.canWrite)
+                    .setParameter("project", pu.getProject().getId())
+                    .setParameter("user", pu.getUser().getId())
+                    .execute();
+            return pu;
+        }, executionContext).join();
     }
 
     public void delete(UUID project, UUID user)

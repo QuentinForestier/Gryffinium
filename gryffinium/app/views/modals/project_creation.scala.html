@@ -112,6 +112,14 @@
                     projectNameFeedback.innerHTML = project.id ? "Project updated" : "Project created";
                     projectNameFeedback.classList.remove('invalid-feedback');
                     projectNameFeedback.classList.add('valid-feedback');
+
+                    if(project.id === undefined){
+                        addProjectToListItem(data.body);
+                    }else{
+                        data.body.label = project.label;
+                    }
+
+
                     updateProject(data.body);
                 } else {
                     projectNameFeedback.innerHTML = data.body;
@@ -136,11 +144,13 @@
             buttonCreate.style.visibility = owner ? 'visible' : 'hidden';
             collaboratorBlock.style.display = owner ? 'flex' : 'none';
 
+            project.label.innerHTML = project.name;
 
             collaboratorList.innerHTML = '';
             for (let collaborator of project.collaborators) {
                 addCollaboratorItem(project, collaborator);
             }
+
         }
 
         function addCollaborator() {
@@ -191,6 +201,9 @@
 
             let buttonModify = document.createElement('button');
             buttonModify.className = 'btn btn-default btn-xs pull-right';
+            buttonModify.onclick = function (e) {
+                updateCollaboratorRights(project, collaborator);
+            }
             if (collaborator.canWrite) {
                 buttonModify.innerHTML = '<span class="fa fa-edit"></span>';
             } else {
@@ -220,6 +233,9 @@
 
         function openProjectCreationModal() {
             new bootstrap.Modal(document.getElementById("@modalId")).show();
+
+            projectNameFeedback.style.visibility = 'hidden';
+            collaboratorFeedback.style.visibility = 'hidden';
         }
 
         function isOwner(project) {
@@ -266,7 +282,7 @@
                 return;
             }
 
-            fetch(removeCollaboratorURL.replace('uuid', project.id), {
+            fetch(updateCollaboratorURL.replace('uuid', project.id), {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'
@@ -275,9 +291,10 @@
                     id: collaborator.id
                 })
             }).then(response => response.json()).then(data => {
+                console.log(data);
                 collaboratorFeedback.style.visibility = 'visible';
                 if (data.success) {
-                    project.collaborators.stream().find(c => c.id === collaborator.id).canWrite = !collaborator.canWrite;
+                    project.collaborators.find(c => c.id === collaborator.id).canWrite = !collaborator.canWrite;
                     collaboratorFeedback.classList.remove('invalid-feedback');
                     collaboratorFeedback.classList.add('valid-feedback');
                     collaboratorFeedback.innerHTML = 'Collaborator rights updated successfully';

@@ -46,6 +46,7 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
+                            projectsList.innerHTML = '';
                             let projects = data.body;
                             projects.forEach(project => {
 
@@ -69,6 +70,8 @@
             let name = document.createElement('div');
             name.classList.add('overflow-hidden');
             name.innerHTML = project.name;
+
+            project.label = name;
 
             let editButton = document.createElement('button');
             editButton.classList.add('btn');
