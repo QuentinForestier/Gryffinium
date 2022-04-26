@@ -11,21 +11,25 @@ import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
-public class ProjectUserRepository {
+public class ProjectUserRepository
+{
     private final DatabaseExecutionContext executionContext;
 
     @Inject
-    public ProjectUserRepository(DatabaseExecutionContext executionContext) {
+    public ProjectUserRepository(DatabaseExecutionContext executionContext)
+    {
         this.executionContext = executionContext;
     }
 
-    public List<ProjectUser> getUsersOfProject(UUID projectId) {
+    public List<ProjectUser> getUsersOfProject(UUID projectId)
+    {
         return supplyAsync(() -> DB.find(ProjectUser.class)
                 .where().eq("project_id", projectId)
                 .findList(), executionContext).join();
     }
 
-    public CompletionStage<ProjectUser> save(ProjectUser pu) {
+    public CompletionStage<ProjectUser> save(ProjectUser pu)
+    {
         return supplyAsync(() ->
         {
             pu.save();
@@ -33,11 +37,21 @@ public class ProjectUserRepository {
         }, executionContext);
     }
 
-    public void delete(UUID project, UUID user) {
-        DB.sqlUpdate("DELETE FROM project_user WHERE project_id = :project AND user_id = :user")
+    public ProjectUser getUser(UUID userId, UUID projectId)
+    {
+        return supplyAsync(() -> DB.find(ProjectUser.class)
+                .where().eq("user_id", userId)
+                .eq("project_id", projectId)
+                .findOne(), executionContext).join();
+    }
+
+    public void delete(UUID project, UUID user)
+    {
+        supplyAsync(() -> DB.sqlUpdate("DELETE FROM project_user WHERE " +
+                        "project_id = :project AND user_id = :user")
                 .setParameter("project", project)
                 .setParameter("user", user)
-                .execute();
+                .execute(), executionContext);
 
     }
 }

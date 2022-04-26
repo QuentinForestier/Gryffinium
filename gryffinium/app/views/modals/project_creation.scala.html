@@ -83,6 +83,7 @@
 
         const addCollaboratorURL = "@routes.ProjectController.addCollaborator("uuid")";
         const removeCollaboratorURL = "@routes.ProjectController.removeCollaborator("uuid")";
+        const updateCollaboratorURL = "@routes.ProjectController.updateCollaborator("uuid")";
 
         let project = {};
 
@@ -248,6 +249,38 @@
                     collaboratorFeedback.classList.remove('invalid-feedback');
                     collaboratorFeedback.classList.add('valid-feedback');
                     collaboratorFeedback.innerHTML = 'Collaborator removed successfully';
+                    updateProject(project);
+                } else {
+                    collaboratorFeedback.classList.remove('valid-feedback');
+                    collaboratorFeedback.classList.add('invalid-feedback');
+
+                    collaboratorFeedback.innerHTML = data.body;
+                }
+            });
+
+        }
+
+        function updateCollaboratorRights(project, collaborator) {
+
+            if (project == null || project.id == null) {
+                return;
+            }
+
+            fetch(removeCollaboratorURL.replace('uuid', project.id), {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: collaborator.id
+                })
+            }).then(response => response.json()).then(data => {
+                collaboratorFeedback.style.visibility = 'visible';
+                if (data.success) {
+                    project.collaborators.stream().find(c => c.id === collaborator.id).canWrite = !collaborator.canWrite;
+                    collaboratorFeedback.classList.remove('invalid-feedback');
+                    collaboratorFeedback.classList.add('valid-feedback');
+                    collaboratorFeedback.innerHTML = 'Collaborator rights updated successfully';
                     updateProject(project);
                 } else {
                     collaboratorFeedback.classList.remove('valid-feedback');
