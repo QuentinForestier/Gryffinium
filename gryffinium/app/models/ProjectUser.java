@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 
 @Entity
 public class ProjectUser extends Model {
+
     @ManyToOne(optional = false)
     public User user;
 

@@ -195,22 +195,26 @@ public class ProjectController extends Controller {
                     "of the project", false));
         }
 
-        projectUserRepository.delete(project.id, UUID.fromString(id));
-
-        project.removeUser(
-                project.projectUsers.stream().filter(pu -> pu.getUser().getId().equals(UUID.fromString(id))).findFirst().get());
-
-        return ok(Utils.createResponse("User removed from project", true));
-
-    }
-
-    private Project findProject(UUID uuid) {
-        Project p = openProjects.get(uuid);
-        if (p == null) {
-            p = projectRepository.findById(uuid);
+        if (id.equals(request.session().get("userId").get())) {
+            return badRequest(Utils.createResponse("You can't remove yourself from a project", false));
         }
 
-        return p;
-    }
+            projectUserRepository.delete(project.id, UUID.fromString(id));
 
-}
+            project.removeUser(
+                    project.projectUsers.stream().filter(pu -> pu.getUser().getId().equals(UUID.fromString(id))).findFirst().get());
+
+            return ok(Utils.createResponse("User removed from project", true));
+
+        }
+
+        private Project findProject (UUID uuid){
+            Project p = openProjects.get(uuid);
+            if (p == null) {
+                p = projectRepository.findById(uuid);
+            }
+
+            return p;
+        }
+
+    }

@@ -62,7 +62,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn-danger btn" >Delete</button>
+                <button type="button" id="deleteProject" class="btn-danger btn" >Delete</button>
             </div>
 
         </div>
@@ -74,6 +74,8 @@
         let collaboratorBlock = document.getElementById('inviteCollaboratorBlock');
         let collaboratorList = document.getElementById('collaboratorsList');
         let inputCollaborator = document.getElementById('inputCollaborator');
+
+        let deleteProjectButton = document.getElementById('deleteProject');
 
         let collaboratorFeedback = document.getElementById('collaboratorFeedback');
 
@@ -128,6 +130,7 @@
 
             inputProjectName.disabled = !owner;
 
+            deleteProjectButton.style.display = owner ? 'block' : 'none';
 
             buttonCreate.style.visibility = owner ? 'visible' : 'hidden';
             collaboratorBlock.style.display = owner ? 'flex' : 'none';
@@ -153,10 +156,11 @@
                     email: inputCollaborator.value
                 })
             }).then(response => response.json()).then(data => {
+                collaboratorFeedback.style.visibility = 'visible';
                 if (data.success) {
                     collaboratorFeedback.classList.remove('invalid-feedback');
                     collaboratorFeedback.classList.add('valid-feedback');
-                    collaboratorFeedback.innerHTML = 'Collaborator added';
+                    collaboratorFeedback.innerHTML = 'Collaborator added successfully';
                     project.collaborators.push(data.body);
 
                     project.collaborators = project.collaborators.sort();
@@ -195,6 +199,7 @@
             div2.appendChild(buttonModify);
 
             if (isOwner(project)) {
+
                 let buttonDelete = document.createElement('button');
                 buttonDelete.className = 'btn btn-default btn-xs pull-right';
                 buttonDelete.innerHTML = '<span class="fa fa-trash"></span>';
@@ -202,6 +207,9 @@
                     removeCollaborator(project, collaborator);
                 }
                 div2.appendChild(buttonDelete);
+
+            } else {
+                buttonModify.disabled = true;
             }
 
             li.appendChild(div2);
@@ -234,10 +242,18 @@
                     id: collaborator.id
                 })
             }).then(response => response.json()).then(data => {
+                collaboratorFeedback.style.visibility = 'visible';
                 if (data.success) {
                     project.collaborators = project.collaborators.filter(c => c.id !== collaborator.id);
-
+                    collaboratorFeedback.classList.remove('invalid-feedback');
+                    collaboratorFeedback.classList.add('valid-feedback');
+                    collaboratorFeedback.innerHTML = 'Collaborator removed successfully';
                     updateProject(project);
+                } else {
+                    collaboratorFeedback.classList.remove('valid-feedback');
+                    collaboratorFeedback.classList.add('invalid-feedback');
+
+                    collaboratorFeedback.innerHTML = data.body;
                 }
             });
 
