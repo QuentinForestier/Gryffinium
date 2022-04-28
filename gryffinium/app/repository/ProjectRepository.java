@@ -11,29 +11,40 @@ import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
-public class ProjectRepository {
+public class ProjectRepository
+{
     private final DatabaseExecutionContext executionContext;
 
     @Inject
-    public ProjectRepository(DatabaseExecutionContext executionContext) {
+    public ProjectRepository(DatabaseExecutionContext executionContext)
+    {
         this.executionContext = executionContext;
     }
 
-    public CompletionStage<Project> save(Project project) {
-        return supplyAsync(() -> {
+    public CompletionStage<Project> save(Project project)
+    {
+        return supplyAsync(() ->
+        {
             project.save();
             return project;
         }, executionContext);
     }
 
-    public Project findById(UUID id) {
+    public void delete(Project project)
+    {
+        supplyAsync(() -> DB.delete(project));
+    }
+
+    public Project findById(UUID id)
+    {
         return supplyAsync(() -> DB.find(Project.class)
                 .where()
                 .eq("id", id)
                 .findOne(), executionContext).join();
     }
 
-    public List<Project> findProjectOfUser(UUID id) {
+    public List<Project> findProjectOfUser(UUID id)
+    {
 
         return supplyAsync(() -> DB.find(Project.class)
                 .where()

@@ -4,39 +4,56 @@
 
 @main("Diagram"){
 
-    <h1>Chat room n°@uuid</h1>
-    <input type="text" id="sender"/>
+    @views.html.components.navbar("login-modal", "register-modal")
 
-    <ul id="chat" style="text-decoration: none">
-
-    </ul>
-    <input type="text" id="message" name="message"  />
-    <button onclick="sendMessage()">Send</button>
+    @views.html.modals.chat("chat-modal", "list-message", "input-message", "button-send")
 
     <script>
             const socket = new WebSocket('ws://localhost:9000/socket/@uuid');
 
-            const messageInput = document.getElementById('message');
-            const chat = document.getElementById('chat');
+            const messageInput = document.getElementById('input-message');
+            const chat = document.getElementById('list-message');
+            const buttonSend = document.getElementById('button-send');
 
 
             function sendMessage() {
                 socket.send(JSON.stringify({
                     'message': messageInput.value,
-                    'sender': document.getElementById('sender').value,
                     'type': 'ChatMessage'
                 }));
 
                 messageInput.value = '';
             }
 
+            function receiveMessage(message){
+                let row = document.createElement('div');
+                row.className = "row list-group-item bg-light";
+
+                let div = document.createElement('div');
+                div.classList.add('col');
+
+                let sender = document.createElement('em');
+                sender.innerHTML = message.sender;
+
+                let content = document.createElement('div');
+                content.innerHTML = message.message;
+
+                div.appendChild(sender);
+                div.appendChild(content);
+                row.appendChild(div);
+
+                chat.appendChild(row);
+            }
+
             socket.onopen = function() {
 
+                buttonSend.onclick = function() {
+                    sendMessage();
+                };
+
                 socket.onmessage = function(event){
-                    let li = document.createElement('li');
                     let message = JSON.parse(event.data);
-                    li.innerHTML = message.sender + ': ' + message.message;
-                    chat.appendChild(li);
+                    receiveMessage(message);
                 };
             }
     </script>

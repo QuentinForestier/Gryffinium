@@ -62,7 +62,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" id="deleteProject" class="btn-danger btn" >Delete</button>
+                <button type="button" id="deleteProject" class="btn-danger btn" onclick="deleteProject()">Delete</button>
             </div>
 
         </div>
@@ -81,6 +81,9 @@
 
         let projectNameFeedback = document.getElementById('projectnameFeedback');
 
+        const modal = new bootstrap.Modal(document.getElementById("@modalId"));
+
+        const deleteProjectURL = "@routes.ProjectController.delete("uuid")";
         const addCollaboratorURL = "@routes.ProjectController.addCollaborator("uuid")";
         const removeCollaboratorURL = "@routes.ProjectController.removeCollaborator("uuid")";
         const updateCollaboratorURL = "@routes.ProjectController.updateCollaborator("uuid")";
@@ -93,6 +96,21 @@
             buttonCreate.style.visibility = 'visible';
             collaboratorBlock.style.display = 'flex';
             collaboratorList.innerHTML = '';
+        }
+
+        function deleteProject() {
+            if (confirm('Are you sure you want to delete this project?')) {
+                fetch(deleteProjectURL.replace("uuid", project.id), {
+                    method: 'DELETE'
+                }).then(response => response.json()).then(data => {
+                    if (data.success) {
+                        project.label.parentNode.remove();
+                        closeProjectCreationModal();
+                    } else {
+                        alert(data.body);
+                    }
+                });
+            }
         }
 
         function createOrUpdateProject() {
@@ -113,9 +131,9 @@
                     projectNameFeedback.classList.remove('invalid-feedback');
                     projectNameFeedback.classList.add('valid-feedback');
 
-                    if(project.id === undefined){
+                    if (project.id === undefined) {
                         addProjectToListItem(data.body);
-                    }else{
+                    } else {
                         data.body.label = project.label;
                     }
 
@@ -188,7 +206,7 @@
 
         function addCollaboratorItem(project, collaborator) {
             let li = document.createElement('li');
-            li.className = 'list-group-item list-group-item-action d-flex justify-content-between align-items-center';
+            li.className = 'list-group-item list-group-item d-flex justify-content-between align-items-center';
 
             let div = document.createElement('div');
             div.className = 'overflow-hidden';
@@ -232,11 +250,16 @@
         }
 
         function openProjectCreationModal() {
-            new bootstrap.Modal(document.getElementById("@modalId")).show();
+            modal.show();
 
             projectNameFeedback.style.visibility = 'hidden';
             collaboratorFeedback.style.visibility = 'hidden';
         }
+
+        function closeProjectCreationModal() {
+            modal.hide();
+        }
+
 
         function isOwner(project) {
             let userId = '@request.session.get("userId")';

@@ -30,7 +30,7 @@
             </li>
         }
         </ul>
-        @if(request.session.get("userId").isDefined) {
+        @if(request.session.get("userId").isDefined && projectOffCanvasId.nonEmpty) {
             <button class="btn float-end text-light dark align-middle" data-bs-toggle="offcanvas" data-bs-target="#@projectOffCanvasId" role="button">
                 <i class="fa fa-bars"></i>
             </button>

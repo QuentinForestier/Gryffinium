@@ -1,4 +1,4 @@
-@(chatId: String, inputMessageId: String, sendMessageId: String)
+@(chatId: String, listMessageId: String, inputMessageId: String, sendMessageId: String)
 
 <button class="btn position-absolute bottom-0 end-0" data-bs-toggle="offcanvas" data-bs-target="#@chatId" style="margin: 1%;">
     <i class="fa fa-comments"></i>
@@ -11,95 +11,8 @@
     </div>
     <hr class="chat-separator">
     <div class="offcanvas-body bg-light">
-        <div class="list-group-flush bg-light chatbox">
-            <div class="row list-group-item bg-light">
-                <div class="col">
-                    <em>Sender</em>
-                </div>
-                <div class="col">
-                    Message
-                </div>
-            </div>
-            <div class="row list-group-item bg-light">
-                <div class="col">
-                    <em>Sender</em>
-                </div>
-                <div class="col">
-                    Message
-                </div>
-            </div>
-            <div class="row list-group-item bg-light">
-                <div class="col">
-                    <em>Sender</em>
-                </div>
-                <div class="col">
-                    Message
-                </div>
-            </div>
-            <div class="row list-group-item bg-light">
-                <div class="col">
-                    <em>Sender</em>
-                </div>
-                <div class="col">
-                    Message
-                </div>
-            </div>
-            <div class="row list-group-item bg-light">
-                <div class="col">
-                    <em>Sender</em>
-                </div>
-                <div class="col">
-                    Message
-                </div>
-            </div>
-            <div class="row list-group-item bg-light">
-                <div class="col">
-                    <em>Sender</em>
-                </div>
-                <div class="col">
-                    Message
-                </div>
-            </div>
-            <div class="row list-group-item bg-light">
-                <div class="col">
-                    <em>Sender</em>
-                </div>
-                <div class="col">
-                    Message
-                </div>
-            </div>
-            <div class="row list-group-item bg-light">
-                <div class="col">
-                    <em>Sender</em>
-                </div>
-                <div class="col">
-                    Message
-                </div>
-            </div>
-            <div class="row list-group-item bg-light">
-                <div class="col">
-                    <em>Sender</em>
-                </div>
-                <div class="col">
-                    Message
-                </div>
-            </div>
-            <div class="row list-group-item bg-light">
-                <div class="col">
-                    <em>Sender</em>
-                </div>
-                <div class="col">
-                    Message
-                </div>
-            </div>
-            <div class="row list-group-item bg-light">
-                <div class="col">
-                    <em>Sender</em>
-                </div>
-                <div class="col">
-                    Message
-                </div>
-            </div>
+        <div class="list-group-flush bg-light chatbox" id="@listMessageId">
+
         </div>
     </div>
     <hr class="chat-separator">

@@ -89,6 +89,24 @@ public class ProjectController extends Controller
         return ok(Utils.createResponse(project.toJson(), true));
     }
 
+    // DELETE
+    @Security.Authenticated(Secured.class)
+    public Result delete(Http.Request request, String id)
+    {
+        Project project = projectRepository.findById(UUID.fromString(id));
+
+
+        if (project == null || !findOwner(project).getUser().getId().equals(
+                UUID.fromString(request.session().get("userId").get())))
+        {
+            return forbidden(Utils.createResponse("You are not allowed to " +
+                    "delete this project", false));
+        }
+        projectRepository.delete(project);
+
+        return ok(Utils.createResponse("Project deleted successfully", true));
+    }
+
     // GET
     @Security.Authenticated(Secured.class)
     public Result projects(Http.Request request)
@@ -222,13 +240,16 @@ public class ProjectController extends Controller
                     " rights", false));
         }
 
-        ProjectUser pu = projectUserRepository.getUser(UUID.fromString(id), project.getId());
+        ProjectUser pu = projectUserRepository.getUser(UUID.fromString(id),
+                project.getId());
         if (pu == null)
         {
             return badRequest(Utils.createResponse("User not found", false));
         }
 
+
         pu.setCanWrite(!pu.getCanWrite());
+        project.findProjectUser(pu.getUser().getId()).setCanWrite(pu.getCanWrite());
 
         projectUserRepository.setCanWrite(pu);
 

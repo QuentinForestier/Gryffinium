@@ -13,7 +13,8 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-public class Project extends Model {
+public class Project extends Model
+{
     @Id
     public UUID id;
 
@@ -26,66 +27,95 @@ public class Project extends Model {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     public List<ProjectUser> projectUsers;
 
-    public Project(String name) {
+    public Project(String name)
+    {
         this.name = name;
     }
 
-    public void setDiagram(XML diagram) {
+    public void setDiagram(XML diagram)
+    {
         this.diagram = diagram;
     }
 
-    public XML getDiagram() {
+    public XML getDiagram()
+    {
         return diagram;
     }
 
-    public void setId(UUID id) {
+    public void setId(UUID id)
+    {
         this.id = id;
     }
 
-    public UUID getId() {
+    public UUID getId()
+    {
         return id;
     }
 
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(String name)
+    {
         this.name = name;
     }
 
-    public List<ProjectUser> getProjectUsers() {
+    public List<ProjectUser> getProjectUsers()
+    {
         return projectUsers;
     }
 
-    public void setProjectUsers(List<ProjectUser> projectUsers) {
+    public void setProjectUsers(List<ProjectUser> projectUsers)
+    {
         this.projectUsers = projectUsers;
     }
 
-    public void addUser(ProjectUser user) {
+    public void addUser(ProjectUser user)
+    {
         this.projectUsers.add(user);
     }
 
-    public void executeCommand(Command command, ProjectUser sender) {
-        JsonNode response = command.execute(this, sender);
-        for (ProjectUser user : projectUsers) {
-            if (user.getActor() != null)
-                user.send(response);
+    public void executeCommand(Command command, ProjectUser sender)
+    {
+        sender = findProjectUser(sender.getUser().getId());
+        if (sender != null && sender.getCanWrite())
+        {
+            JsonNode response = command.execute(this, sender);
+            for (ProjectUser user : projectUsers)
+            {
+                if (user.getActor() != null)
+                    user.send(response);
+            }
         }
     }
 
-    public void removeUser(ProjectUser user) {
+    public void removeUser(ProjectUser user)
+    {
         projectUsers.remove(user);
     }
 
-    public JsonNode toJson() {
+    public JsonNode toJson()
+    {
         ObjectNode json = Json.newObject();
         json.put("id", id.toString());
         json.put("name", name);
         json.putArray("collaborators");
-        for (ProjectUser user : projectUsers) {
+        for (ProjectUser user : projectUsers)
+        {
             json.withArray("collaborators").add(user.toJsonCollaborator());
         }
         return json;
+    }
+
+    public ProjectUser findProjectUser(UUID userId){
+        for (ProjectUser user : projectUsers)
+        {
+            if (user.getUser().getId().equals(userId))
+                return user;
+        }
+
+        return null;
     }
 }
