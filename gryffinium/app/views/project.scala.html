@@ -4,9 +4,13 @@
 
 @main("Diagram"){
 
-    @views.html.components.navbar("login-modal", "register-modal")
+    @views.html.components.navbar("login-modal", "register-modal", "project-modal")
 
     @views.html.modals.chat("chat-modal", "list-message", "input-message", "button-send")
+
+        @views.html.modals.project_list("project-modal")
+
+        @views.html.modals.project_creation("project-creation-modal")
 
     <script>
             const socket = new WebSocket('ws://localhost:9000/socket/@uuid');

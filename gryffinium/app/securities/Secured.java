@@ -17,7 +17,6 @@ public class Secured extends Security.Authenticator
     @Override
     public Optional<String> getUsername(Request req)
     {
-        System.out.println(req.session().get("userName"));
         return req.session().get("userName");
     }
 

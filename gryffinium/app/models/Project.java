@@ -118,4 +118,8 @@ public class Project extends Model
 
         return null;
     }
+
+    public ProjectUser getOwner(){
+        return projectUsers.stream().filter(ProjectUser::getIsOwner).findFirst().get();
+    }
 }
