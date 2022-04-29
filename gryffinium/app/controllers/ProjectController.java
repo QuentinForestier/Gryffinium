@@ -219,7 +219,7 @@ public class ProjectController extends Controller {
         pu.setCanWrite(!pu.getCanWrite());
         project.findProjectUser(pu.getUser().getId()).setCanWrite(pu.getCanWrite());
 
-        projectUserRepository.setCanWrite(pu);
+        projectUserRepository.save(pu);
 
         return ok(Utils.createResponse("User rights updated", true));
     }
@@ -248,7 +248,7 @@ public class ProjectController extends Controller {
                     " from a project", false));
         }
 
-        projectUserRepository.delete(project.id, UUID.fromString(id));
+        projectUserRepository.delete(project.findProjectUser(UUID.fromString(id)));
 
         project.removeUser(project.findProjectUser(UUID.fromString(id)));
 

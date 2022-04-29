@@ -2,9 +2,7 @@ package models;
 
 import actors.UserActor;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import commands.ChatMessageCommand;
 import commands.Command;
@@ -12,11 +10,49 @@ import io.ebean.Model;
 import io.ebean.annotation.NotNull;
 import play.libs.Json;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import java.util.Objects;
+import java.util.UUID;
 
 @Entity
-public class ProjectUser extends Model {
+public class ProjectUser extends Model
+{
+
+    @Embeddable
+    public static class ProjectUserId
+    {
+        @Column(name = "project_id")
+        public UUID projectId;
+
+        @Column(name = "user_id")
+        public UUID userId;
+
+
+        public ProjectUserId(UUID projectId,
+                             UUID userId)
+        {
+            this.projectId = projectId;
+            this.userId = userId;
+        }
+
+        @Override
+        public boolean equals(Object o)
+        {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ProjectUserId that = (ProjectUserId) o;
+            return Objects.equals(projectId, that.projectId) && Objects.equals(userId, that.userId);
+        }
+
+        @Override
+        public int hashCode()
+        {
+            return Objects.hash(projectId, userId);
+        }
+    }
+
+    @EmbeddedId
+    public ProjectUserId id;
 
     @ManyToOne(optional = false)
     public User user;
@@ -33,7 +69,9 @@ public class ProjectUser extends Model {
 
     private UserActor actor;
 
-    public ProjectUser(User user, Project project, boolean isOwner, boolean canWrite) {
+    public ProjectUser(User user, Project project, boolean isOwner,
+                       boolean canWrite)
+    {
         this.user = user;
         this.project = project;
         this.isOwner = isOwner;
@@ -50,42 +88,51 @@ public class ProjectUser extends Model {
         return actor;
     }
 
-    public void setUser(User user) {
+    public void setUser(User user)
+    {
         this.user = user;
     }
 
-    public User getUser() {
+    public User getUser()
+    {
         return user;
     }
 
-    public void setProject(Project project) {
+    public void setProject(Project project)
+    {
         this.project = project;
     }
 
-    public Project getProject() {
+    public Project getProject()
+    {
         return project;
     }
 
-    public void setIsOwner(boolean isOwner) {
+    public void setIsOwner(boolean isOwner)
+    {
         this.isOwner = isOwner;
     }
 
-    public boolean getIsOwner() {
+    public boolean getIsOwner()
+    {
         return isOwner;
     }
 
-    public void setCanWrite(boolean canWrite) {
+    public void setCanWrite(boolean canWrite)
+    {
         this.canWrite = canWrite;
     }
 
-    public boolean getCanWrite() {
+    public boolean getCanWrite()
+    {
         return canWrite;
     }
 
     public void handleMessage(JsonNode message)
     {
         Command cmd;
-        switch(message.get("type").asText()){
+        switch (message.get("type").asText())
+        {
             case "ChatMessage":
 
                 cmd = Json.fromJson(message, ChatMessageCommand.class);
@@ -97,11 +144,13 @@ public class ProjectUser extends Model {
         project.executeCommand(cmd, this);
     }
 
-    public void send(JsonNode message){
+    public void send(JsonNode message)
+    {
         actor.send(message);
     }
 
-    public JsonNode toJsonCollaborator(){
+    public JsonNode toJsonCollaborator()
+    {
         ObjectNode json = Json.newObject();
 
         json.put("id", user.getId().toString());

@@ -10,10 +10,11 @@ create table project (
 );
 
 create table project_user (
-  user_id                       uuid not null,
   project_id                    uuid not null,
+  user_id                       uuid not null,
   is_owner                      boolean default false not null,
-  can_write                     boolean default false not null
+  can_write                     boolean default false not null,
+  constraint pk_project_user primary key (project_id,user_id)
 );
 
 create table users (
@@ -24,20 +25,20 @@ create table users (
   constraint pk_users primary key (id)
 );
 
-create index ix_project_user_user_id on project_user (user_id);
-alter table project_user add constraint fk_project_user_user_id foreign key (user_id) references users (id) on delete restrict on update restrict;
-
 create index ix_project_user_project_id on project_user (project_id);
 alter table project_user add constraint fk_project_user_project_id foreign key (project_id) references project (id) on delete restrict on update restrict;
+
+create index ix_project_user_user_id on project_user (user_id);
+alter table project_user add constraint fk_project_user_user_id foreign key (user_id) references users (id) on delete restrict on update restrict;
 
 
 # --- !Downs
 
-alter table if exists project_user drop constraint if exists fk_project_user_user_id;
-drop index if exists ix_project_user_user_id;
-
 alter table if exists project_user drop constraint if exists fk_project_user_project_id;
 drop index if exists ix_project_user_project_id;
+
+alter table if exists project_user drop constraint if exists fk_project_user_user_id;
+drop index if exists ix_project_user_user_id;
 
 drop table if exists project cascade;
 
