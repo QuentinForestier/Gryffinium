@@ -31,9 +31,32 @@
 
 <script type="text/javascript">
 
-        let projectsList = document.getElementById('projectsList');
+        let filterProjectInput = document.getElementById("filter");
+        let projectsListElements = document.getElementById('projectsList');
+
+        let projectsList = [];
+
+        filterProjectInput.addEventListener('input', function(e){
+            updateProjectListElement(filterProjectInput.value);
+        });
 
         getProjects();
+
+        function setProjectsList(projects) {
+            projectsList = projects;
+            updateProjectListElement(filterProjectInput.value);
+        }
+
+        function removeProjectFromList(project){
+            let projectIndex = projectsList.findIndex(p => p.id === project.id);
+            projectsList.splice(projectIndex, 1);
+            updateProjectListElement(filterProjectInput.value);
+        }
+
+        function addToProjectsList(project) {
+            projectsList.push(project);
+            updateProjectListElement(filterProjectInput.value);
+        }
 
         function getProjects() {
             fetch('@routes.ProjectController.projects()', {
@@ -46,14 +69,18 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            projectsList.innerHTML = '';
-                            let projects = data.body;
-                            projects.forEach(project => {
-
-                                addProjectToListItem(project);
-                            });
+                            setProjectsList(data.body);
                         }
                     })
+        }
+
+        function updateProjectListElement(nameFilter = "") {
+            projectsListElements.innerHTML = '';
+            projectsList
+                    .filter(project => project.name.toLowerCase().includes(nameFilter.toLowerCase()))
+                    .forEach(project => {
+                        addProjectToListItem(project);
+                    });
         }
 
         function addProjectToListItem(project) {
@@ -70,8 +97,6 @@
             let name = document.createElement('div');
             name.classList.add('overflow-hidden');
             name.innerHTML = project.name;
-
-            project.label = name;
 
             let editButton = document.createElement('button');
             editButton.classList.add('btn');
@@ -90,7 +115,7 @@
             listItem.appendChild(name);
             listItem.appendChild(editButton);
 
-            projectsList.appendChild(listItem);
+            projectsListElements.appendChild(listItem);
         }
 
         function editProject(project) {
@@ -113,5 +138,7 @@
             openProjectCreationModal();
         }
 
-
+        function openProjectListModal() {
+            new bootstrap.Offcanvas(document.getElementById('@canvasId'), {focus: true}).show();
+        }
 </script>

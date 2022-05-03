@@ -42,6 +42,10 @@
 </div>
 <script type="text/javascript">
         if (window.location.href.indexOf("login") > -1) {
+            openLoginModal();
+        }
+
+        function openLoginModal() {
             new bootstrap.Modal(document.getElementById('@modalId'), {focus: true}).show();
         }
 </script>

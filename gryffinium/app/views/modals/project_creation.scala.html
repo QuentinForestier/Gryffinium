@@ -104,7 +104,7 @@
                     method: 'DELETE'
                 }).then(response => response.json()).then(data => {
                     if (data.success) {
-                        project.label.parentNode.remove();
+                        removeProjectFromList(project);
                         closeProjectCreationModal();
                     } else {
                         alert(data.body);
@@ -132,12 +132,11 @@
                     projectNameFeedback.classList.add('valid-feedback');
 
                     if (project.id === undefined) {
-                        addProjectToListItem(data.body);
-                    } else {
-                        data.body.label = project.label;
+
+                        addToProjectsList(data.body);
                     }
 
-
+                    updateProjectListElement(filterProjectInput.value);
                     updateProject(data.body);
                 } else {
                     projectNameFeedback.innerHTML = data.body;
@@ -162,7 +161,6 @@
             buttonCreate.style.visibility = owner ? 'visible' : 'hidden';
             collaboratorBlock.style.display = owner ? 'flex' : 'none';
 
-            project.label.innerHTML = project.name;
 
             collaboratorList.innerHTML = '';
             for (let collaborator of project.collaborators) {
