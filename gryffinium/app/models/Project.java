@@ -21,6 +21,7 @@ public class Project extends Model
     @NotNull
     public String name;
 
+    @Transient
     public XML diagram;
 
 
@@ -30,6 +31,11 @@ public class Project extends Model
     public Project(String name)
     {
         this.name = name;
+    }
+
+    public Project()
+    {
+
     }
 
     public void setDiagram(XML diagram)

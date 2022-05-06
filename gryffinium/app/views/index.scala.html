@@ -16,8 +16,9 @@
         <h1 class="display-5 fw-bold">Gryffinium</h1>
         <div class="col-lg-6 mx-auto">
             <p class="lead mb-4">
-                Quickly think and create class diagrams with your team ! <br/>
-                    Live collaboration, easy to use, and no more time wasted to transfer files. All you need is here, manage your projects and manage who can see or contribute to your work !
+                Quickly think and create classes diagrams with your team ! <br/>
+                Live collaboration, easy to use, and no more time wasted to transfer files.<br/>
+                All you need is here, manage your projects and grant who can see or contribute <br/> to your work in on click !
             </p>
             <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
                 <button type="button" class="btn btn-primary btn-lg px-4 gap-3" onclick="start()">Start Now !</button>
@@ -36,13 +37,13 @@
     }
 
     <script type="text/javascript">
-        function start() {
+            function start() {
 
-            @if(request.session.get("userId").isDefined) {
-                    openProjectListModal();
-            } else {
-                    openLoginModal();
+                @if(request.session.get("userId").isDefined) {
+                openProjectListModal();
+                } else {
+                openLoginModal();
+                }
             }
-        }
     </script>
 }

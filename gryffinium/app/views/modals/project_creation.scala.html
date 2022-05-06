@@ -83,6 +83,7 @@
 
         const modal = new bootstrap.Modal(document.getElementById("@modalId"));
 
+        const updateProjectURL = "@routes.ProjectController.update("uuid")";
         const deleteProjectURL = "@routes.ProjectController.delete("uuid")";
         const addCollaboratorURL = "@routes.ProjectController.addCollaborator("uuid")";
         const removeCollaboratorURL = "@routes.ProjectController.removeCollaborator("uuid")";
@@ -115,13 +116,23 @@
 
         function createOrUpdateProject() {
 
-            fetch('@routes.ProjectController.create()', {
-                method: 'POST',
+            let url = '';
+            let method = 'POST';
+
+            if (project.id === undefined) {
+                method = 'POST';
+                url = "@routes.ProjectController.create()";
+            } else {
+                method = 'POST';
+                url = updateProjectURL.replace("uuid", project.id);
+            }
+
+            fetch(url, {
+                method: method,
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    id: project.id,
                     name: inputProjectName.value
                 })
             }).then(response => response.json()).then(data => {
@@ -136,8 +147,8 @@
                         addToProjectsList(data.body);
                     }
 
-                    updateProjectListElement(filterProjectInput.value);
                     updateProject(data.body);
+                    updateProjectInList(project);
                 } else {
                     projectNameFeedback.innerHTML = data.body;
                     projectNameFeedback.classList.remove('valid-feedback');

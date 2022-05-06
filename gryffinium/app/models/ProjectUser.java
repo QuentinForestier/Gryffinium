@@ -18,6 +18,11 @@ import java.util.UUID;
 public class ProjectUser extends Model
 {
 
+    public ProjectUser()
+    {
+
+    }
+
     @Embeddable
     public static class ProjectUserId
     {
@@ -33,6 +38,11 @@ public class ProjectUser extends Model
         {
             this.projectId = projectId;
             this.userId = userId;
+        }
+
+        public ProjectUserId()
+        {
+
         }
 
         @Override

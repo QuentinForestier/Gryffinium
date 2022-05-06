@@ -53,6 +53,12 @@
             updateProjectListElement(filterProjectInput.value);
         }
 
+        function updateProjectInList(project){
+            let projectIndex = projectsList.findIndex(p => p.id === project.id);
+            projectsList[projectIndex] = project;
+            updateProjectListElement(filterProjectInput.value);
+        }
+
         function addToProjectsList(project) {
             projectsList.push(project);
             updateProjectListElement(filterProjectInput.value);
