@@ -66,24 +66,14 @@ public class ProjectController extends Controller
                     "characters long", false));
         }
 
-        Project project;
+        Project project = new Project(json.get("name").asText());
 
-        if (json.has("id"))
-        {
-            project = projectRepository.findById(UUID.fromString(json.get("id"
-            ).asText()));
-            project.setName(json.get("name").asText());
-        }
-        else
-        {
-            project = new Project(json.get("name").asText());
-            User user =
-                    userRepository.findById(UUID.fromString(request.session().get("userId").get()));
+        User user =
+                userRepository.findById(UUID.fromString(request.session().get("userId").get()));
 
-            ProjectUser projectUser = new ProjectUser(user, project, true,
-                    true);
-            project.addUser(projectUser);
-        }
+        ProjectUser projectUser = new ProjectUser(user, project, true,
+                true);
+        project.addUser(projectUser);
         project = projectRepository.save(project).toCompletableFuture().join();
 
         return ok(Utils.createResponse(project.toJson(), true));
