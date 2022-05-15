@@ -9,8 +9,7 @@ import play.libs.XML;
 import commands.Command;
 
 import javax.persistence.*;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 public class Project extends Model
@@ -24,13 +23,22 @@ public class Project extends Model
     @Transient
     public XML diagram;
 
-
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     public List<ProjectUser> projectUsers;
+
+    public static final Map<UUID, Project> openProjects = new HashMap<>();
+
 
     public Project(String name)
     {
         this.name = name;
+    }
+
+    public Project(String name, User user)
+    {
+        this.name = name;
+        this.projectUsers = new ArrayList<>();
+        this.projectUsers.add(new ProjectUser(user, this, true, true));
     }
 
     public Project()
@@ -86,14 +94,14 @@ public class Project extends Model
     public void executeCommand(Command command, ProjectUser sender)
     {
         sender = findProjectUser(sender.getUser().getId());
-        if (sender != null && sender.getCanWrite())
+        if (sender == null || !sender.getCanWrite())
+            return;
+
+        JsonNode response = command.execute(this, sender);
+        for (ProjectUser user : projectUsers)
         {
-            JsonNode response = command.execute(this, sender);
-            for (ProjectUser user : projectUsers)
-            {
-                if (user.getActor() != null)
-                    user.send(response);
-            }
+            if (user.getActor() != null)
+                user.send(response);
         }
     }
 
@@ -115,7 +123,8 @@ public class Project extends Model
         return json;
     }
 
-    public ProjectUser findProjectUser(UUID userId){
+    public ProjectUser findProjectUser(UUID userId)
+    {
         for (ProjectUser user : projectUsers)
         {
             if (user.getUser().getId().equals(userId))
@@ -125,7 +134,22 @@ public class Project extends Model
         return null;
     }
 
-    public ProjectUser getOwner(){
+    public ProjectUser getOwner()
+    {
         return projectUsers.stream().filter(ProjectUser::getIsOwner).findFirst().get();
+    }
+
+    public void close(){
+        for(ProjectUser user : projectUsers){
+            user.disconnect();
+        }
+
+        Project.openProjects.remove(this.id);
+    }
+
+    public void checkConnectedUsers(){
+        if(this.projectUsers.stream().filter(pu -> pu.getActor() != null).count() == 0){
+            this.close();
+        }
     }
 }

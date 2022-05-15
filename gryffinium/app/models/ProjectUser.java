@@ -90,6 +90,10 @@ public class ProjectUser extends Model
 
     public void setActor(UserActor actor)
     {
+
+        if(actor == null){
+            project.checkConnectedUsers();
+        }
         this.actor = actor;
     }
 
@@ -144,7 +148,6 @@ public class ProjectUser extends Model
         switch (message.get("type").asText())
         {
             case "ChatMessage":
-
                 cmd = Json.fromJson(message, ChatMessageCommand.class);
                 break;
             default:
@@ -169,6 +172,13 @@ public class ProjectUser extends Model
         json.put("isOwner", isOwner);
         json.put("canWrite", canWrite);
         return json;
+    }
+
+    public void disconnect(){
+        if(actor != null)
+        {
+            actor.disconnect();
+        }
     }
 
 }

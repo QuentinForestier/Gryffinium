@@ -2,6 +2,7 @@ package actors;
 
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
+import akka.actor.PoisonPill;
 import akka.actor.Props;
 import com.fasterxml.jackson.databind.JsonNode;
 import models.ProjectUser;
@@ -38,5 +39,13 @@ public class UserActor extends AbstractActor
                     user.handleMessage(message);
                 })
                 .build();
+    }
+
+    public void postStop(){
+        user.setActor(null);
+    }
+
+    public void disconnect(){
+        self().tell(PoisonPill.getInstance(), self());
     }
 }

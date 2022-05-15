@@ -59,6 +59,14 @@
                     let message = JSON.parse(event.data);
                     receiveMessage(message);
                 };
+
+                socket.onclose = function() {
+                    console.log('WebSocket closed');
+                };
+            }
+
+            socket.onclose = function(e) {
+                console.log(e);
             }
     </script>
 }

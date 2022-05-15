@@ -3,11 +3,13 @@ package controllers;
 import actors.UserActor;
 import akka.actor.ActorSystem;
 import akka.stream.Materializer;
+import akka.stream.javadsl.Flow;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import models.Project;
 import models.ProjectUser;
 import models.User;
+import play.libs.F;
 import play.libs.Json;
 import play.mvc.*;
 import repository.ProjectRepository;
@@ -19,6 +21,8 @@ import utils.Utils;
 
 import javax.inject.Inject;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 public class ProjectController extends Controller
 {
@@ -29,8 +33,6 @@ public class ProjectController extends Controller
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
     private final ProjectUserRepository projectUserRepository;
-
-    private static final Map<UUID, Project> openProjects = new HashMap<>();
 
 
     @Inject
@@ -61,14 +63,12 @@ public class ProjectController extends Controller
                     "characters long", false));
         }
 
-        Project project = new Project(json.get("name").asText());
 
         User user =
                 userRepository.findById(UUID.fromString(request.session().get("userId").get()));
 
-        ProjectUser projectUser = new ProjectUser(user, project, true,
-                true);
-        project.addUser(projectUser);
+        Project project = new Project(json.get("name").asText(), user);
+
         project = projectRepository.save(project).toCompletableFuture().join();
 
         return ok(Utils.createResponse(project.toJson(), true));
@@ -118,6 +118,8 @@ public class ProjectController extends Controller
         }
         projectRepository.delete(project);
 
+        project.close();
+
         return ok(Utils.createResponse("Project deleted successfully", true));
     }
 
@@ -148,6 +150,7 @@ public class ProjectController extends Controller
 
         if (user.projects.stream().noneMatch(pu -> pu.project.getId().toString().equals(uuid)))
         {
+            // TODO redirect to index avec flash error
             return forbidden(Utils.createResponse("You are not a member of " +
                     "this project", false));
         }
@@ -164,20 +167,28 @@ public class ProjectController extends Controller
     }
 
     // WS
-    // TODO : add security and check project existence
     @Security.Authenticated(Secured.class)
     public WebSocket socket(String uuid)
     {
-        return WebSocket.Json.accept(request ->
+        return WebSocket.Json.acceptOrResult(request -> createActorFlow(request, uuid));
+    }
+
+    private CompletionStage<F.Either<Result, Flow<JsonNode, JsonNode, ?>>> createActorFlow(Http.RequestHeader request, String uuid)
+    {
+        Project p = Project.openProjects.get(UUID.fromString(uuid));
+        ProjectUser user =
+                p.findProjectUser(UUID.fromString(request.session().get(
+                        "userId").get()));
+
+        if (user == null)
         {
-            Project p = openProjects.get(UUID.fromString(uuid));
-            ProjectUser user =
-                    p.findProjectUser(UUID.fromString(request.session().get(
-                            "userId").get()));
-            return ActorFlow.actorRef(out -> UserActor.props(out, user),
-                    actorSystem,
-                    materializer);
-        });
+            return CompletableFuture.completedFuture(F.Either.Left(forbidden(Utils.createResponse("You are not " +
+                    "a member of the project", false))));
+        }
+        return CompletableFuture.completedFuture(F.Either.Right(ActorFlow.actorRef(out -> UserActor.props(out,
+                        user),
+                actorSystem,
+                materializer)));
     }
 
     // POST
@@ -300,13 +311,14 @@ public class ProjectController extends Controller
 
     private Project findProject(UUID uuid, boolean findAndOpen)
     {
-        Project p = openProjects.get(uuid);
+        Project p = Project.openProjects.get(uuid);
         if (p == null)
         {
             p = projectRepository.findById(uuid);
 
-            if(findAndOpen && p != null){
-                openProjects.put(p.getId(), p);
+            if (findAndOpen && p != null)
+            {
+                Project.openProjects.put(p.getId(), p);
             }
         }
 

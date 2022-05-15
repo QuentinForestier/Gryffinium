@@ -12,8 +12,6 @@ public class ChatMessageCommand implements Command
 {
     private String message;
 
-
-
     public String getMessage()
     {
         return message;
