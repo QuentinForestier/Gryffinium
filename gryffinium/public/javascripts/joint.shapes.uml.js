@@ -5,18 +5,22 @@ This Source Code Form is subject to the terms of the Mozilla Public
 License, v. 2.0. If a copy of the MPL was not distributed with this
 file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
+
+
+const umlColor = '#FFF7E1';
+
 this.joint = this.joint || {};
 this.joint.shapes = this.joint.shapes || {};
 (function (exports, ElementView_mjs, Link_mjs, basic_mjs) {
     'use strict';
 
-    var Class = basic_mjs.Generic.define('uml.Class', {
+    let Class = basic_mjs.Generic.define('uml.Class', {
         attrs: {
             rect: { 'width': 200 },
 
-            '.uml-class-name-rect': { 'stroke': 'black', 'stroke-width': 2, 'fill': '#3498db' },
-            '.uml-class-attrs-rect': { 'stroke': 'black', 'stroke-width': 2, 'fill': '#2980b9' },
-            '.uml-class-methods-rect': { 'stroke': 'black', 'stroke-width': 2, 'fill': '#2980b9' },
+            '.uml-class-name-rect': { 'stroke': 'black', 'stroke-width': 1, 'fill': umlColor },
+            '.uml-class-attrs-rect': { 'stroke': 'black', 'stroke-width': 1, 'fill': umlColor },
+            '.uml-class-methods-rect': { 'stroke': 'black', 'stroke-width': 1, 'fill': umlColor },
 
             '.uml-class-name-text': {
                 'ref': '.uml-class-name-rect',
@@ -95,7 +99,8 @@ this.joint.shapes = this.joint.shapes || {};
 
     });
 
-    var ClassView = ElementView_mjs.ElementView.extend({
+
+    let ClassView = ElementView_mjs.ElementView.extend({
 
         initialize: function() {
 
@@ -108,11 +113,11 @@ this.joint.shapes = this.joint.shapes || {};
         }
     });
 
-    var Abstract = Class.define('uml.Abstract', {
+    let Abstract = Class.define('uml.Abstract', {
         attrs: {
-            '.uml-class-name-rect': { fill: '#e74c3c' },
-            '.uml-class-attrs-rect': { fill: '#c0392b' },
-            '.uml-class-methods-rect': { fill: '#c0392b' }
+            '.uml-class-name-rect': { fill: umlColor },
+            '.uml-class-attrs-rect': { fill: umlColor },
+            '.uml-class-methods-rect': { fill: umlColor }
         }
     }, {
 
@@ -121,45 +126,45 @@ this.joint.shapes = this.joint.shapes || {};
         }
 
     });
-    var AbstractView = ClassView;
+    let AbstractView = ClassView;
 
-    var Interface = Class.define('uml.Interface', {
+    let Interface = Class.define('uml.Interface', {
         attrs: {
-            '.uml-class-name-rect': { fill: '#f1c40f' },
-            '.uml-class-attrs-rect': { fill: '#f39c12' },
-            '.uml-class-methods-rect': { fill: '#f39c12' }
+            '.uml-class-name-rect': { fill: umlColor },
+            '.uml-class-attrs-rect': { fill: umlColor },
+            '.uml-class-methods-rect': { fill: umlColor }
         }
     }, {
         getClassName: function() {
             return ['<<Interface>>', this.get('name')];
         }
     });
-    var InterfaceView = ClassView;
+    let InterfaceView = ClassView;
 
-    var Generalization = Link_mjs.Link.define('uml.Generalization', {
+    let Generalization = Link_mjs.Link.define('uml.Generalization', {
         attrs: { '.marker-target': { d: 'M 20 0 L 0 10 L 20 20 z', fill: 'white' }}
     });
 
-    var Implementation = Link_mjs.Link.define('uml.Implementation', {
+    let Implementation = Link_mjs.Link.define('uml.Implementation', {
         attrs: {
             '.marker-target': { d: 'M 20 0 L 0 10 L 20 20 z', fill: 'white' },
             '.connection': { 'stroke-dasharray': '3,3' }
         }
     });
 
-    var Aggregation = Link_mjs.Link.define('uml.Aggregation', {
+    let Aggregation = Link_mjs.Link.define('uml.Aggregation', {
         attrs: { '.marker-target': { d: 'M 40 10 L 20 20 L 0 10 L 20 0 z', fill: 'white' }}
     });
 
-    var Composition = Link_mjs.Link.define('uml.Composition', {
+    let Composition = Link_mjs.Link.define('uml.Composition', {
         attrs: { '.marker-target': { d: 'M 40 10 L 20 20 L 0 10 L 20 0 z', fill: 'black' }}
     });
 
-    var Association = Link_mjs.Link.define('uml.Association');
+    let Association = Link_mjs.Link.define('uml.Association');
 
     // Statechart
 
-    var State = basic_mjs.Generic.define('uml.State', {
+    let State = basic_mjs.Generic.define('uml.State', {
         attrs: {
             '.uml-state-body': {
                 'width': 200, 'height': 200, 'rx': 10, 'ry': 10,

@@ -1,6 +1,6 @@
 @import play.mvc.Http.Request
 
-@(uuid: String)(implicit request: Request)
+@(uuid: String, name: String)(implicit request: Request)
 
 @main("Diagram") {
 
@@ -70,24 +70,73 @@
                 console.log(e);
             }
 
-            var graph = new joint.dia.Graph();
+            let graph = new joint.dia.Graph();
 
             let paper = new joint.dia.Paper({
                 el: document.getElementById('paper'),
-                width: 1920,
-                height: 900,
+                width: document.documentElement.clientWidth,
+                height: document.documentElement.clientHeight,
                 gridSize: 10,
                 model: graph,
                 drawGrid: true,
-
                 interactive: {
                     labelMove: true
                 }
             });
 
-            var uml = joint.shapes.uml;
 
-            var classes = {
+            paper.el.addEventListener('wheel', function (evt, x, y) {
+                let s = paper.scale().sx;
+                let newScale = s * (evt.deltaY < 0 ? 1.1 : 0.9);
+                if (newScale > 0.2 && newScale < 10) {
+                    paper.scale(newScale, newScale, {x: x, y: y});
+                }
+            });
+
+            let movePaper = false;
+            let startPos = {x: 0, y: 0};
+
+            let dragStartPosition = null;
+            paper.on('blank:pointerdown', function (evt, x, y) {
+                let scale = V(paper.viewport).scale();
+                dragStartPosition = {x: x * scale.sx, y: y * scale.sy};
+            });
+
+            paper.on('cell:pointerup blank:pointerup', function (cellView, x, y) {
+                dragStartPosition = null;
+            });
+
+            paper.el.addEventListener('mousemove', function (evt) {
+                if (dragStartPosition) {
+                    paper.translate(
+                            evt.offsetX - dragStartPosition.x,
+                            evt.offsetY - dragStartPosition.y);
+                }
+            });
+
+
+            let uml = joint.shapes.uml;
+
+            let person = new uml.Abstract({
+                position: {x: 300, y: 300},
+                size: {width: 100, height: 100},
+                name: 'Person',
+            });
+
+            let woman = new uml.Class({
+                position: {x:150, y:300},
+                size: {width: 100, height: 100},
+                name:'Person'
+            })
+
+            let gen = new uml.Association({source: {id: woman.id}, target: {id: person.id}});
+
+            console.log(gen);
+
+
+
+
+            /*var classes = {
 
                 mammal: new uml.Interface({
                     position: {x: 300, y: 50},
@@ -95,34 +144,6 @@
                     name: 'Mammal',
                     attributes: ['dob: Date'],
                     methods: ['+ setDateOfBirth(dob: Date): Void', '+ getAgeAsDays(): Numeric'],
-                    attrs: {
-                        '.uml-class-name-rect': {
-                            fill: '#feb662',
-                            stroke: '#ffffff',
-                            'stroke-width': 0.5
-                        },
-                        '.uml-class-attrs-rect': {
-                            fill: '#fdc886',
-                            stroke: '#fff',
-                            'stroke-width': 0.5
-                        },
-                        '.uml-class-methods-rect': {
-                            fill: '#fdc886',
-                            stroke: '#fff',
-                            'stroke-width': 0.5
-                        },
-                        '.uml-class-attrs-text': {
-                            ref: '.uml-class-attrs-rect',
-                            'ref-y': 0.5,
-                            'y-alignment': 'middle'
-                        },
-                        '.uml-class-methods-text': {
-                            ref: '.uml-class-methods-rect',
-                            'ref-y': 0.5,
-                            'y-alignment': 'middle'
-                        }
-
-                    }
                 }),
 
                 person: new uml.Abstract({
@@ -270,23 +291,21 @@
                 })
 
 
-            };
+            };*/
 
-            Object.keys(classes).forEach(function (key) {
-                graph.addCell(classes[key]);
-            });
+            graph.addCells(woman);
+            graph.addCell(person);
+            graph.addCell(gen);
 
-            let test = new uml.Generalization({source: {id: classes.man.id}, target: {id: classes.person.id}});
 
-            var relations = [
-                test,
+           /* var relations = [
                 new uml.Generalization({source: {id: classes.woman.id}, target: {id: classes.person.id}}),
                 new uml.Implementation({source: {id: classes.person.id}, target: {id: classes.mammal.id}}),
                 new uml.Aggregation({source: {id: classes.person.id}, target: {id: classes.address.id}}),
                 new uml.Composition({source: {id: classes.person.id}, target: {id: classes.bloodgroup.id}})
-            ];
+            ];*/
 
-
+/*
             test.appendLabel({
                 attrs: {
                     text: {
@@ -299,8 +318,8 @@
                         x: 0,
                         y: -50
                     },
-                    args:{
-                        keepGradient : true
+                    args: {
+                        keepGradient: true
                     }
                 }
             });
@@ -310,18 +329,9 @@
             })
 
 
-
             Object.keys(relations).forEach(function (key) {
                 graph.addCell(relations[key]);
             });
-
-
-            paper.on('element:delete', function (elementView, evt) {
-                // Stop any further actions with the element view e.g. dragging
-                evt.stopPropagation();
-                if (confirm('Are you sure you want to delete this element?')) {
-                    elementView.model.remove();
-                }
-            });
+*/
     </script>
 }

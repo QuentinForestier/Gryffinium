@@ -162,8 +162,7 @@ public class ProjectController extends Controller
             return notFound("Project not found");
         }
 
-        return ok(views.html.project.render(project.getId().toString(),
-                request));
+        return ok(views.html.project.render(project.getId().toString(), project.getName(), request));
     }
 
     // WS

@@ -1,6 +1,11 @@
 :root{
     --main-color: rgba(240,120,15,1);
 }
+
+body{
+    overflow: hidden;
+}
+
 .btn-primary{
     background-color: var(--main-color);
     border-color: var(--main-color);
