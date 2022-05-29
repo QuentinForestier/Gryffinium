@@ -11,8 +11,31 @@
     @views.html.modals.project_list("project-modal")
 
     @views.html.modals.project_creation("project-creation-modal")
-    <div id="paper"></div>
 
+
+    <nav class="navbar navbar-default">
+
+        <div>
+            <div class="btn btn-sm navbar-btn">Class</div>
+            <div class="btn btn-sm navbar-btn">Enum</div>
+            <div class="btn btn-sm navbar-btn">Interface</div>
+            <div class="btn btn-sm navbar-btn">Association Class</div>
+            <div class="btn btn-sm navbar-btn">Generalization / Realization</div>
+            <div class="btn btn-sm navbar-btn">Association</div>
+            <div class="btn btn-sm navbar-btn">Aggregation</div>
+            <div class="btn btn-sm navbar-btn">Composition</div>
+            <div class="btn btn-sm navbar-btn">Mutli association</div>
+            <div class="btn btn-sm navbar-btn">Inner class</div>
+            <div class="btn btn-sm navbar-btn">Dependency</div>
+                <!--<div class="btn btn-sm navbar-btn fa fa-lock"></div>-->
+        </div>
+    </nav>
+
+    <div id="diagram">
+        <div id="paper"></div>
+    </div>
+
+    <script src="@routes.Assets.versioned("javascript/custom.uml.js")"></script>
     <script>
             const socket = new WebSocket('ws://localhost:9000/socket/@uuid');
 
@@ -50,6 +73,76 @@
                 chat.appendChild(row);
             }
 
+            function createLink(element) {
+                let line = {
+                    targetMarker: {
+                    }
+                };
+                switch (element.type) {
+                    case 'aggregation':
+                        line = {
+                            targetMarker: {
+                                'type': 'path',
+                                d: 'M 40 0 L 20 10 L 0 00 L 20 -10 z',
+                                'fill': 'white'
+                            }
+                        }
+                        break;
+                    case 'composition':
+                        line = {
+                            targetMarker: {
+                                type: 'path',
+                                d: 'M 40 0 L 20 10 L 0 00 L 20 -10 z',
+                                fill: 'black'
+                            }
+                        }
+                        break;
+                    case 'realization':
+                        line = {
+                            strokeDasharray: '5 5',
+                            targetMarker: {
+                                'type': 'path',
+                                'd': 'M 20 -10 L 0 0 L 20 10 z',
+                                'fill': 'white'
+                            }
+                        }
+                        break;
+                    case 'generalization':
+                        line = {
+                            targetMarker: {
+                                'type': 'path',
+                                'd': 'M 20 -10 L 0 0 L 20 10 z',
+                                'fill': 'white'
+                            }
+                        }
+                        break;
+                    case 'association':
+
+                        break;
+                }
+
+
+                if (element.isDirected) {
+                    line.sourceMarker = {
+                        'type': 'path',
+                        'd': 'M 20 -10 0 0 20 10 0 0 Z'
+
+                    }
+                }
+
+
+                let link = new joint.shapes.standard.Link();
+                link.source(element.source);
+                link.target(element.target);
+                link.attr({
+                    line
+                });
+                link.connector('jumpover', {size: 5});
+
+                return link;
+            }
+
+
             socket.onopen = function () {
 
                 buttonSend.onclick = function () {
@@ -80,25 +173,27 @@
                 model: graph,
                 drawGrid: true,
                 interactive: {
-                    labelMove: true
+                    labelMove: true,
                 }
             });
 
 
-            paper.el.addEventListener('wheel', function (evt, x, y) {
-                let s = paper.scale().sx;
-                let newScale = s * (evt.deltaY < 0 ? 1.1 : 0.9);
-                if (newScale > 0.2 && newScale < 10) {
-                    paper.scale(newScale, newScale, {x: x, y: y});
+            paper.on("blank:mousewheel", function (evt, x, y, delta) {
+                evt.preventDefault();
+                const oldScale = paper.scale().sx;
+                const newScale = oldScale + 0.2 * delta * oldScale
+
+                if (newScale > 0.2 && newScale < 5) {
+                    paper.scale(newScale, newScale, x, y);
+                    paper.translate(-x * newScale + evt.offsetX, -y * newScale + evt.offsetY);
                 }
             });
 
-            let movePaper = false;
-            let startPos = {x: 0, y: 0};
 
             let dragStartPosition = null;
-            paper.on('blank:pointerdown', function (evt, x, y) {
-                let scale = V(paper.viewport).scale();
+
+            paper.on('blank:pointerdown', function (event, x, y) {
+                let scale = paper.scale();
                 dragStartPosition = {x: x * scale.sx, y: y * scale.sy};
             });
 
@@ -106,7 +201,7 @@
                 dragStartPosition = null;
             });
 
-            paper.el.addEventListener('mousemove', function (evt) {
+            document.getElementById('diagram').addEventListener('mousemove', function (evt) {
                 if (dragStartPosition) {
                     paper.translate(
                             evt.offsetX - dragStartPosition.x,
@@ -114,6 +209,20 @@
                 }
             });
 
+            let verticesTool = new joint.linkTools.Vertices();
+            let segmentsTool = new joint.linkTools.Segments();
+            let sourceArrowheadTool = new joint.linkTools.SourceArrowhead();
+            let targetArrowheadTool = new joint.linkTools.TargetArrowhead();
+            let boundaryTool = new joint.linkTools.Boundary();
+            let removeButton = new joint.linkTools.Remove();
+
+            let toolsView = new joint.dia.ToolsView({
+                tools: [
+                    verticesTool, segmentsTool,
+                    sourceArrowheadTool, targetArrowheadTool,
+                    boundaryTool, removeButton
+                ]
+            });
 
             let uml = joint.shapes.uml;
 
@@ -124,214 +233,50 @@
             });
 
             let woman = new uml.Class({
-                position: {x:150, y:300},
+                position: {x: 150, y: 300},
                 size: {width: 100, height: 100},
-                name:'Person'
+                name: 'Woamn'
             })
 
-            let gen = new uml.Association({source: {id: woman.id}, target: {id: person.id}});
+            let man = new uml.Class({
+                position: {x: 500, y: 300},
+                size: {width: 100, height: 100},
+                name: 'man'
+            })
 
-            console.log(gen);
-
-
-
-
-            /*var classes = {
-
-                mammal: new uml.Interface({
-                    position: {x: 300, y: 50},
-                    size: {width: 240, height: 100},
-                    name: 'Mammal',
-                    attributes: ['dob: Date'],
-                    methods: ['+ setDateOfBirth(dob: Date): Void', '+ getAgeAsDays(): Numeric'],
-                }),
-
-                person: new uml.Abstract({
-                    position: {x: 300, y: 300},
-                    size: {width: 260, height: 100},
-                    name: 'Person',
-                    attributes: ['firstName: String', 'lastName: String'],
-                    methods: ['+ setName(first: String, last: String): Void', '+ getName(): String'],
-                    attrs: {
-                        '.uml-class-name-rect': {
-                            fill: '#68ddd5',
-                            stroke: '#ffffff',
-                            'stroke-width': 0.5
-                        },
-                        '.uml-class-attrs-rect': {
-                            fill: '#9687fe',
-                            stroke: '#fff',
-                            'stroke-width': 0.5
-                        },
-                        '.uml-class-methods-rect': {
-                            fill: '#9687fe',
-                            stroke: '#fff',
-                            'stroke-width': 0.5
-                        },
-                        '.uml-class-methods-text, .uml-class-attrs-text': {
-                            fill: '#fff'
-                        }
-                    }
-                }),
-
-                bloodgroup: new uml.Class({
-                    position: {x: 20, y: 190},
-                    size: {width: 220, height: 100},
-                    name: 'BloodGroup',
-                    attributes: ['bloodGroup: String'],
-                    methods: ['+ isCompatible(bG: String): Boolean'],
-                    attrs: {
-                        '.uml-class-name-rect': {
-                            fill: '#ff8450',
-                            stroke: '#fff',
-                            'stroke-width': 0.5,
-                        },
-                        '.uml-class-attrs-rect': {
-                            fill: '#fe976a',
-                            stroke: '#fff',
-                            'stroke-width': 0.5
-                        },
-                        '.uml-class-methods-rect': {
-                            fill: '#fe976a',
-                            stroke: '#fff',
-                            'stroke-width': 0.5
-                        },
-                        '.uml-class-attrs-text': {
-                            ref: '.uml-class-attrs-rect',
-                            'ref-y': 0.5,
-                            'y-alignment': 'middle'
-                        },
-                        '.uml-class-methods-text': {
-                            ref: '.uml-class-methods-rect',
-                            'ref-y': 0.5,
-                            'y-alignment': 'middle'
-                        }
-                    }
-                }),
-
-                address: new uml.Class({
-                    position: {x: 630, y: 190},
-                    size: {width: 160, height: 100},
-                    name: 'Address',
-                    attributes: ['houseNumber: Integer', 'streetName: String', 'town: String', 'postcode: String'],
-                    methods: [],
-                    attrs: {
-                        '.uml-class-name-rect': {
-                            fill: '#ff8450',
-                            stroke: '#fff',
-                            'stroke-width': 0.5
-                        },
-                        '.uml-class-attrs-rect': {
-                            fill: '#fe976a',
-                            stroke: '#fff',
-                            'stroke-width': 0.5
-                        },
-                        '.uml-class-methods-rect': {
-                            fill: '#fe976a',
-                            stroke: '#fff',
-                            'stroke-width': 0.5
-                        },
-                        '.uml-class-attrs-text': {
-                            'ref-y': 0.5,
-                            'y-alignment': 'middle'
-                        }
-                    }
-
-                }),
-
-                man: new uml.Class({
-                    position: {x: 200, y: 500},
-                    size: {width: 180, height: 50},
-                    name: 'Man',
-                    attrs: {
-                        '.uml-class-name-rect': {
-                            fill: '#ff8450',
-                            stroke: '#fff',
-                            'stroke-width': 0.5
-                        },
-                        '.uml-class-attrs-rect': {
-                            fill: '#fe976a',
-                            stroke: '#fff',
-                            'stroke-width': 0.5
-                        },
-                        '.uml-class-methods-rect': {
-                            fill: '#fe976a',
-                            stroke: '#fff',
-                            'stroke-width': 0.5
-                        }
-                    }
-                }),
-
-                woman: new uml.Class({
-                    position: {x: 450, y: 500},
-                    size: {width: 180, height: 50},
-                    name: 'Woman',
-                    methods: ['+ giveABrith(): Person []'],
-                    attrs: {
-                        '.uml-class-name-rect': {
-                            fill: '#ff8450',
-                            stroke: '#fff',
-                            'stroke-width': 0.5
-                        },
-                        '.uml-class-attrs-rect': {
-                            fill: '#fe976a',
-                            stroke: '#fff',
-                            'stroke-width': 0.5
-                        },
-                        '.uml-class-methods-rect': {
-                            fill: '#fe976a',
-                            stroke: '#fff',
-                            'stroke-width': 0.5
-                        },
-                        '.uml-class-methods-text': {
-                            'ref-y': 0.5,
-                            'y-alignment': 'middle'
-                        }
-                    }
-                })
-
-
-            };*/
-
-            graph.addCells(woman);
-            graph.addCell(person);
-            graph.addCell(gen);
-
-
-           /* var relations = [
-                new uml.Generalization({source: {id: classes.woman.id}, target: {id: classes.person.id}}),
-                new uml.Implementation({source: {id: classes.person.id}, target: {id: classes.mammal.id}}),
-                new uml.Aggregation({source: {id: classes.person.id}, target: {id: classes.address.id}}),
-                new uml.Composition({source: {id: classes.person.id}, target: {id: classes.bloodgroup.id}})
-            ];*/
-
-/*
-            test.appendLabel({
-                attrs: {
-                    text: {
-                        text: 'Hello, World'
-                    }
-                },
-                position: {
-                    distance: 0.1,
-                    offset: {
-                        x: 0,
-                        y: -50
-                    },
-                    args: {
-                        keepGradient: true
-                    }
-                }
-            });
-
-            test.on('change:source', function () {
-                alert('source of the link changed')
+            let test = new uml.Class({
+                position: {x: 0, y: 300},
+                size: {width: 100, height: 100},
+                name: 'Test'
             })
 
 
-            Object.keys(relations).forEach(function (key) {
-                graph.addCell(relations[key]);
+            let aggregation = {type: 'aggregation', isDirected: false, source: woman, target: test}
+            let composition = {type: 'composition', isDirected: true, source: man, target: test}
+            let realization = {type: 'realization', source: woman, target: person}
+            let association = {type: 'association', isDirected: true, source: woman, target: man}
+            let generalization = {type: 'generalization', source: man, target: person}
+
+
+            graph.addCells([
+                woman,
+                person,
+                man,
+                test,
+                createLink(aggregation),
+                createLink(composition),
+                createLink(realization),
+                createLink(association),
+                createLink(generalization)]);
+
+
+            paper.on('link:mouseenter', function (linkView) {
+                linkView.addTools(toolsView);
             });
-*/
+
+            paper.on('blank:mouseover', function () {
+                paper.removeTools();
+            });
+
     </script>
 }
