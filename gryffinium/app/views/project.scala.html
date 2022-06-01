@@ -37,9 +37,16 @@
 
     <script type="module">
 
-            import {createLink} from "@routes.Assets.versioned("javascripts/gryffinium.uml.js")"
-
-            import {openWebSocket} from "@routes.Assets.versioned("javascripts/gryffinium.websocket.js")"
+            import {
+                Association,
+                Aggregation,
+                Composition,
+                Realization,
+                Generalization,
+                Class,
+                AbstractClass,
+                Interface
+            } from "@routes.Assets.versioned("javascripts/gryffinium.uml.js")"
 
             const socket = new WebSocket('ws://localhost:9000/socket/@uuid');
 
@@ -50,8 +57,6 @@
 
             function sendMessage() {
                 socket.send(JSON.stringify());
-
-
             }
 
             function receiveMessage(message) {
@@ -161,48 +166,39 @@
 
             let uml = joint.shapes.uml;
 
-            let person = new uml.Abstract({
-                position: {x: 300, y: 300},
-                size: {width: 100, height: 100},
-                name: 'Person',
-            });
+            let person = new AbstractClass({name: 'Person'}, {x: 300, y: 300});
 
-            let woman = new uml.Class({
-                position: {x: 150, y: 300},
-                size: {width: 100, height: 100},
-                name: 'Woamn'
-            })
+            let woman = new Class({name: 'Woman'}, {x: 150, y: 300});
 
-            let man = new uml.Class({
+            let man = new Class({name: 'Man'}, {x: 500, y: 300});
+
+
+            let askdf = new uml.Class({
                 position: {x: 500, y: 300},
                 size: {width: 100, height: 100},
                 name: 'man'
             })
-
-            let test = new uml.Class({
-                position: {x: 0, y: 300},
-                size: {width: 100, height: 100},
-                name: 'Test'
-            })
+            let test = new Interface({name: 'Test'}, {x: 0, y: 300});
 
 
-            let aggregation = {type: 'aggregation', isDirected: false, source: woman, target: test}
-            let composition = {type: 'composition', isDirected: true, source: man, target: test}
-            let realization = {type: 'realization', source: woman, target: person}
-            let association = {type: 'association', isDirected: true, source: woman, target: man}
-            let generalization = {type: 'generalization', source: man, target: person}
+            let aggregation = new Aggregation({isDirected: false, source: woman, target: test})
+            let composition = new Composition({isDirected: true, source: man, target: test})
+            let realization = new Realization({source: woman, target: person})
+            let association = new Association({isDirected: true, source: woman, target: man})
+            let generalization = new Generalization({source: man, target: person}, [{x: 20, y: 30}])
 
+            let tmp = man.getCell();
 
             graph.addCells([
-                woman,
-                person,
-                man,
-                test,
-                createLink(aggregation),
-                createLink(composition),
-                createLink(realization),
-                createLink(association),
-                createLink(generalization)]);
+               woman.getCell(),
+                person.getCell(),
+                    man.getCell(),
+               test.getCell(),
+                aggregation.getCell(),
+                composition.getCell(),
+                realization.getCell(),
+                association.getCell(),
+                generalization.getCell()]);
 
 
             paper.on('link:mouseenter', function (linkView) {
@@ -211,6 +207,14 @@
 
             paper.on('blank:mouseover', function () {
                 paper.removeTools();
+            });
+
+            paper.on('element:mouseenter', function (elementView) {
+                elementView.showTools();
+            });
+
+            paper.on('element:mouseleave', function (elementView) {
+                elementView.hideTools();
             });
 
     </script>
