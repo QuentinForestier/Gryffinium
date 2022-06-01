@@ -35,8 +35,12 @@
         <div id="paper"></div>
     </div>
 
-    <script src="@routes.Assets.versioned("javascript/custom.uml.js")"></script>
-    <script>
+    <script type="module">
+
+            import {createLink} from "@routes.Assets.versioned("javascripts/gryffinium.uml.js")"
+
+            import {openWebSocket} from "@routes.Assets.versioned("javascripts/gryffinium.websocket.js")"
+
             const socket = new WebSocket('ws://localhost:9000/socket/@uuid');
 
             const messageInput = document.getElementById('input-message');
@@ -45,12 +49,9 @@
 
 
             function sendMessage() {
-                socket.send(JSON.stringify({
-                    'message': messageInput.value,
-                    'type': 'ChatMessage'
-                }));
+                socket.send(JSON.stringify());
 
-                messageInput.value = '';
+
             }
 
             function receiveMessage(message) {
@@ -73,81 +74,15 @@
                 chat.appendChild(row);
             }
 
-            function createLink(element) {
-                let line = {
-                    targetMarker: {
-                    }
+            buttonSend.onclick = function () {
+                let command = {
+                    'message': messageInput.value,
+                    'type': 'ChatMessage'
                 };
-                switch (element.type) {
-                    case 'aggregation':
-                        line = {
-                            targetMarker: {
-                                'type': 'path',
-                                d: 'M 40 0 L 20 10 L 0 00 L 20 -10 z',
-                                'fill': 'white'
-                            }
-                        }
-                        break;
-                    case 'composition':
-                        line = {
-                            targetMarker: {
-                                type: 'path',
-                                d: 'M 40 0 L 20 10 L 0 00 L 20 -10 z',
-                                fill: 'black'
-                            }
-                        }
-                        break;
-                    case 'realization':
-                        line = {
-                            strokeDasharray: '5 5',
-                            targetMarker: {
-                                'type': 'path',
-                                'd': 'M 20 -10 L 0 0 L 20 10 z',
-                                'fill': 'white'
-                            }
-                        }
-                        break;
-                    case 'generalization':
-                        line = {
-                            targetMarker: {
-                                'type': 'path',
-                                'd': 'M 20 -10 L 0 0 L 20 10 z',
-                                'fill': 'white'
-                            }
-                        }
-                        break;
-                    case 'association':
-
-                        break;
-                }
-
-
-                if (element.isDirected) {
-                    line.sourceMarker = {
-                        'type': 'path',
-                        'd': 'M 20 -10 0 0 20 10 0 0 Z'
-
-                    }
-                }
-
-
-                let link = new joint.shapes.standard.Link();
-                link.source(element.source);
-                link.target(element.target);
-                link.attr({
-                    line
-                });
-                link.connector('jumpover', {size: 5});
-
-                return link;
-            }
-
-
+                messageInput.value = '';
+            };
             socket.onopen = function () {
 
-                buttonSend.onclick = function () {
-                    sendMessage();
-                };
 
                 socket.onmessage = function (event) {
                     let message = JSON.parse(event.data);
