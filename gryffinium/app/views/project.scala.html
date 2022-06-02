@@ -181,7 +181,7 @@
             let test = new Interface({name: 'Test'}, {x: 0, y: 300});
 
 
-            let aggregation = new Aggregation({isDirected: false, source: woman, target: test})
+            let aggregation = new Aggregation({isDirected: false, source: woman, target: test, label:'aggregation', sourceLabel:'from', sourceMultiplicity:'1..*'})
             let composition = new Composition({isDirected: true, source: man, target: test})
             let realization = new Realization({source: woman, target: person})
             let association = new Association({isDirected: true, source: woman, target: man})

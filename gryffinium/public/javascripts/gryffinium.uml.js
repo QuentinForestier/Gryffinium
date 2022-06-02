@@ -30,9 +30,9 @@ class Link extends Cell {
 
         link.vertices(vertices)
         link.router('normal', {
-            padding:10,
+            padding: 10,
             startDirections: ['top'],
-            endDirections:['bottom']
+            endDirections: ['bottom']
         })
 
         super(element, link)
@@ -55,6 +55,63 @@ export class Association extends Link {
         }
         super(element, line, vertices);
 
+
+        this.cell.appendLabel({
+            attrs: {
+                text: {
+                    text: element.label ? element.label : '    ',
+                }
+            },
+            position: {
+                distance: 0.5,
+                offset: {
+                    x:0,
+                    y:-10
+                },
+                args: {
+                    keepGradient: true,
+                    ensureLegibility: true
+                }
+            }
+        })
+
+        this.cell.appendLabel({
+            attrs: {
+                text: {
+                    text: element.sourceLabel ? element.sourceLabel : '   ',
+                }
+            },
+            position: {
+                distance: 0.1,
+                offset: {
+                    x:0,
+                    y:-20
+                },
+                args: {
+                    keepGradient: true,
+                    ensureLegibility: true
+                }
+            }
+        })
+
+        this.cell.appendLabel({
+            attrs: {
+                text: {
+                    text: element.sourceMultiplicity ? element.sourceMultiplicity : '*',
+                }
+            },
+            position: {
+                distance: 0.1,
+                offset: {
+                    x:0,
+                    y:20
+                },
+                args: {
+                    keepGradient: true,
+                    ensureLegibility: true
+                }
+            }
+        })
     }
 }
 
@@ -117,7 +174,7 @@ export class AbstractClass extends Class {
     }
 }
 
-export class Interface extends Class{
+export class Interface extends Class {
     constructor(element, position) {
         super(element, position, new uml.Interface({}))
     }
