@@ -534,7 +534,7 @@
     </entity>
     <entity entityType="CLASS" id="11975" isAbstract="false" name="SimpleType" visibility="PUBLIC"/>
     <entity entityType="CLASS" id="12221" isAbstract="true" name="ClassRelationship" visibility="PUBLIC"/>
-    <entity entityType="CLASS" id="12222" isAbstract="false" name="Inheritance" visibility="PUBLIC"/>
+    <entity entityType="CLASS" id="12222" isAbstract="false" name="Generalization" visibility="PUBLIC"/>
     <entity entityType="CLASS" id="12223" isAbstract="false" name="Realization" visibility="PUBLIC"/>
     <entity entityType="INTERFACE" id="12472" isAbstract="true" name="Implementor" visibility="PUBLIC"/>
     <entity entityType="CLASS" id="12874" isAbstract="false" name="Aggregation" visibility="PUBLIC">
