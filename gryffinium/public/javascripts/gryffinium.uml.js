@@ -100,10 +100,10 @@ export class Realization extends Generalization {
 }
 
 export class Class extends Cell {
-    constructor(element, position, cell = new uml.Class()) {
+    constructor(element,  cell = new uml.Class()) {
         cell.attributes.name = element.name;
-        cell.attributes.size = {width: 100, height: 100};
-        cell.attributes.position = position;
+        cell.attributes.size = {width: element.width, height: element.height};
+        cell.attributes.position = {x: element.x, y: element.y};
 
 
         cell.updateRectangles();

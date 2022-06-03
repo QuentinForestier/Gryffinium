@@ -7,6 +7,7 @@ import io.ebean.annotation.NotNull;
 import play.libs.Json;
 import play.libs.XML;
 import commands.Command;
+import uml.ClassDiagram;
 
 import javax.persistence.*;
 import java.util.*;
@@ -21,7 +22,7 @@ public class Project extends Model
     public String name;
 
     @Transient
-    public XML diagram;
+    public ClassDiagram diagram = new ClassDiagram();
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     public List<ProjectUser> projectUsers;
@@ -46,12 +47,12 @@ public class Project extends Model
 
     }
 
-    public void setDiagram(XML diagram)
+    public void setDiagram(ClassDiagram diagram)
     {
         this.diagram = diagram;
     }
 
-    public XML getDiagram()
+    public ClassDiagram getDiagram()
     {
         return diagram;
     }
@@ -97,7 +98,9 @@ public class Project extends Model
         if (sender == null || !sender.getCanWrite())
             return;
 
-        JsonNode response = command.execute(this, sender);
+        ObjectNode response = (ObjectNode) command.execute(this);
+        response.put("type", command.getClass().getSimpleName());
+
         for (ProjectUser user : projectUsers)
         {
             if (user.getActor() != null)

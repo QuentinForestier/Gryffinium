@@ -4,8 +4,10 @@ import actors.UserActor;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import commands.ChatMessageCommand;
+import commands.chat.ChatMessageCommand;
 import commands.Command;
+import commands.entities.classes.CreateClassCommand;
+import commands.entities.classes.UpdateClassCommand;
 import io.ebean.Model;
 import io.ebean.annotation.NotNull;
 import play.libs.Json;
@@ -147,9 +149,18 @@ public class ProjectUser extends Model
         Command cmd;
         switch (message.get("type").asText())
         {
-            case "ChatMessage":
+            case "ChatMessageCommand":
+                ((ObjectNode) message).put("sender", this.user.getName());
                 cmd = Json.fromJson(message, ChatMessageCommand.class);
+
                 break;
+            case "CreateClassCommand":
+                cmd = Json.fromJson(message, CreateClassCommand.class);
+                break;
+            case "UpdateClassCommand":
+                cmd = Json.fromJson(message, UpdateClassCommand.class);
+                break;
+
             default:
                 throw new IllegalArgumentException("Unknown message type");
         }

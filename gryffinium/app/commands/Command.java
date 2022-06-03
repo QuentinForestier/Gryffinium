@@ -6,7 +6,5 @@ import models.ProjectUser;
 
 public interface Command
 {
-    JsonNode execute(Project project, ProjectUser user);
-
-
+    JsonNode execute(Project project);
 }
