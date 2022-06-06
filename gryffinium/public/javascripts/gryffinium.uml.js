@@ -56,7 +56,7 @@ export class Association extends Link {
         super(element, line, vertices);
 
 
-        this.cell.appendLabel({
+        /*this.cell.appendLabel({
             attrs: {
                 text: {
                     text: element.label ? element.label : '    ',
@@ -111,7 +111,7 @@ export class Association extends Link {
                     ensureLegibility: true
                 }
             }
-        })
+        })*/
     }
 }
 
@@ -157,27 +157,47 @@ export class Realization extends Generalization {
 }
 
 export class Class extends Cell {
-    constructor(element,  cell = new uml.Class()) {
-        cell.attributes.name = element.name;
-        cell.attributes.size = {width: element.width, height: element.height};
-        cell.attributes.position = {x: element.x, y: element.y};
-
-
-        cell.updateRectangles();
+    constructor(element, cell) {
+        if(cell === undefined) {
+            cell = new uml.Class({});
+        }
         super(element, cell)
+        this.setGraphicalAttributes(element);
     }
-}
 
-export class AbstractClass extends Class {
-    constructor(element, position) {
-        super(element, position, new uml.Abstract({}))
+    setGraphicalAttributes(element) {
+        this.cell.attributes.name = element.name;
+        this.cell.attributes.size = {width: element.width, height: element.height};
+        this.cell.attributes.position = {x: element.x, y: element.y};
+        this.cell.updateRectangles();
     }
 }
 
 export class Interface extends Class {
-    constructor(element, position) {
-        super(element, position, new uml.Interface({}))
+    constructor(element) {
+        super(element, new uml.Interface({}))
     }
 }
 
+
+export class ElementType {
+    static Class = new ElementType("CLASS");
+    static Enum = new ElementType("ENUM");
+
+    static Interface = new ElementType("INTERFACE");
+    static AssociationClass = new ElementType("ASSOCIATION_CLASS");
+    static Generalization = new ElementType("GENERALIZATION");
+    static BinaryAssociation = new ElementType("BINARY_ASSOCIATION");
+    static Aggregation = new ElementType("AGGREGATION");
+    static Composition = new ElementType("COMPOSITION");
+
+    static MultiAssociation = new ElementType("MUTLI_ASSOCIATION");
+    static InnerClass = new ElementType("INNER_CLASS");
+    static Dependency = new ElementType("DEPENDENCY");
+
+    constructor(name) {
+        this.name = name;
+    }
+
+}
 

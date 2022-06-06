@@ -1,14 +1,35 @@
 package uml.entities;
 
+import graphical.entities.GraphicalEnum;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class Enum extends ConstructableEntity
 {
-    private final ArrayList<String> values = new ArrayList<>();
+    public List<String> getValues()
+    {
+        return values;
+    }
+
+    public void setValues(List<String> values)
+    {
+        this.values = values;
+    }
+
+    private List<String> values;
 
     public Enum(String name)
     {
         super(name);
+        values = new ArrayList<>();
+    }
+
+    public Enum(GraphicalEnum ge)
+    {
+        super(ge);
+        values = new ArrayList<>();
+        setGraphical(ge);
     }
 
     private boolean isValueExisting(String name)
@@ -24,4 +45,13 @@ public class Enum extends ConstructableEntity
         }
         values.add(name);
     }
+
+
+    public void setGraphical(GraphicalEnum ge)
+    {
+        super.setGraphical(ge);
+        if (ge.getValues() != null)
+            this.setValues(ge.getValues());
+    }
+
 }

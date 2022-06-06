@@ -6,6 +6,7 @@ import akka.stream.Materializer;
 import akka.stream.javadsl.Flow;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import models.Project;
 import models.ProjectUser;
 import models.User;
@@ -17,9 +18,13 @@ import repository.ProjectUserRepository;
 import repository.UserRepository;
 import securities.Secured;
 import play.libs.streams.ActorFlow;
+import uml.ClassDiagram;
 import utils.Utils;
 
 import javax.inject.Inject;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import java.io.StringWriter;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -98,6 +103,8 @@ public class ProjectController extends Controller
         }
 
         project.setName(json.get("name").asText());
+
+
         projectRepository.save(project);
 
         return ok(Utils.createResponse(project.toJson(), true));
@@ -161,8 +168,28 @@ public class ProjectController extends Controller
         {
             return notFound("Project not found");
         }
+        try
+        {
+            JAXBContext jaxbContext = JAXBContext.newInstance(ClassDiagram.class);
 
-        return ok(views.html.project.render(project.getId().toString(), project.getName(), request));
+            Marshaller marshaller = jaxbContext.createMarshaller();
+
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+            StringWriter sw = new StringWriter();
+
+            marshaller.marshal(project.getDiagram(), sw);
+
+            System.out.println(sw.toString());
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+
+        return ok(views.html.project.render(project.getId().toString(),
+                project.getName(), request));
     }
 
     // WS

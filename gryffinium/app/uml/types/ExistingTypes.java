@@ -4,26 +4,21 @@ import java.util.ArrayList;
 
 public class ExistingTypes
 {
-    private static final ExistingTypes instance = new ExistingTypes();
 
-    private static final ArrayList<Type> existingTypes = new ArrayList<>();
+    private final ArrayList<Type> existingTypes;
 
-    private ExistingTypes()
+    public ExistingTypes()
     {
-
+        existingTypes = new ArrayList<>();
     }
 
-    public static ExistingTypes getInstance()
-    {
-        return instance;
-    }
 
-    public static boolean isTypeExisting(Type type)
+    public boolean isTypeExisting(Type type)
     {
         return existingTypes.stream().anyMatch(t -> t.getName().equals(type.getName()));
     }
 
-    public static void addType(Type type)
+    public void addType(Type type)
     {
         if (isTypeExisting(type))
         {
@@ -31,10 +26,14 @@ public class ExistingTypes
         }
         existingTypes.add(type);
 
-        System.out.println("Type " + type.getName() + " added");
     }
 
-    public static Type getTypeByName(String name)
+    public void removeType(Type type)
+    {
+        existingTypes.remove(type);
+    }
+
+    public Type getTypeByName(String name)
     {
         return existingTypes.stream().filter(t -> t.getName().equals(name)).findFirst().orElse(null);
     }

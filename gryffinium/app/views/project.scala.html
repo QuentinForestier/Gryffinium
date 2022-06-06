@@ -16,17 +16,18 @@
     <nav class="navbar navbar-default">
 
         <div>
-            <div class="btn btn-sm navbar-btn">Class</div>
-            <div class="btn btn-sm navbar-btn">Enum</div>
-            <div class="btn btn-sm navbar-btn">Interface</div>
-            <div class="btn btn-sm navbar-btn">Association Class</div>
-            <div class="btn btn-sm navbar-btn">Generalization / Realization</div>
-            <div class="btn btn-sm navbar-btn">Association</div>
-            <div class="btn btn-sm navbar-btn">Aggregation</div>
-            <div class="btn btn-sm navbar-btn">Composition</div>
-            <div class="btn btn-sm navbar-btn">Mutli association</div>
-            <div class="btn btn-sm navbar-btn">Inner class</div>
-            <div class="btn btn-sm navbar-btn">Dependency</div>
+            <div class="btn btn-sm navbar-btn" onclick="select('CLASS')">Class</div>
+            <div class="btn btn-sm navbar-btn" onclick="select('ENUM')">Enum</div>
+            <div class="btn btn-sm navbar-btn" onclick="select('INTERFACE')">Interface</div>
+            <div class="btn btn-sm navbar-btn" onclick="select('ASSOCIATION_CLASS')">Association Class</div>
+            <div class="btn btn-sm navbar-btn" onclick="select('GENERALIZATION')">
+                Generalization / Realization</div>
+            <div class="btn btn-sm navbar-btn" onclick="select('BINARY_ASSOCIATION')">Association</div>
+            <div class="btn btn-sm navbar-btn" onclick="select('AGGREGATION')">Aggregation</div>
+            <div class="btn btn-sm navbar-btn" onclick="select('COMPOSITION')">Composition</div>
+            <div class="btn btn-sm navbar-btn" onclick="select('ElementType.MUTLI_ASSOCIATION')">Mutli association</div>
+            <div class="btn btn-sm navbar-btn" onclick="select('ElementType.INNER_CLASS')">Inner class</div>
+            <div class="btn btn-sm navbar-btn" onclick="select('ElementType.DEPENDENCY')">Dependency</div>
                 <!--<div class="btn btn-sm navbar-btn fa fa-lock"></div>-->
         </div>
     </nav>
@@ -34,6 +35,13 @@
     <div id="diagram">
         <div id="paper"></div>
     </div>
+
+    <script type="application/javascript">
+        let selectedType = undefined;
+            function select(elementType) {
+            selectedType = elementType;
+            }
+        </script>
 
     <script type="module">
 
@@ -44,216 +52,235 @@
                 Realization,
                 Generalization,
                 Class,
-                AbstractClass,
-                Interface
+                Interface,
+                ElementType,
             } from "@routes.Assets.versioned("javascripts/gryffinium.uml.js")"
 
-            const socket = new WebSocket('ws://localhost:9000/socket/@uuid');
+        const socket = new WebSocket('ws://localhost:9000/socket/@uuid');
 
-            const messageInput = document.getElementById('input-message');
-            const chat = document.getElementById('list-message');
-            const buttonSend = document.getElementById('button-send');
-
-            let focusedClass = null;
-
-            function sendMessage(command) {
-                socket.send(JSON.stringify(command));
-            }
-
-            function receiveMessage(message) {
-                let row = document.createElement('div');
-                row.className = "row list-group-item bg-light";
-
-                let div = document.createElement('div');
-                div.classList.add('col');
-
-                let sender = document.createElement('em');
-                sender.innerHTML = message.sender;
-
-                let content = document.createElement('div');
-                content.innerHTML = message.message;
-
-                div.appendChild(sender);
-                div.appendChild(content);
-                row.appendChild(div);
-
-                chat.appendChild(row);
-            }
-
-            buttonSend.onclick = function () {
-                let command = {
-                    'message': messageInput.value,
-                    'type': 'ChatMessageCommand'
-                };
-                sendMessage(command)
-                messageInput.value = '';
-            };
-            socket.onopen = function () {
+        const messageInput = document.getElementById('input-message');
+        const chat = document.getElementById('list-message');
+        const buttonSend = document.getElementById('button-send');
 
 
-                socket.onmessage = function (event) {
-                    let message = JSON.parse(event.data);
-                    switch (message.type) {
-                        case 'ChatMessageCommand':
-                            receiveMessage(message);
-                            break;
-                        case 'CreateClassCommand':
-                            focusedClass = new Class(message);
-                            graph.addCell(focusedClass.getCell());
-                            break;
-                        case 'UpdateClassCommand':
-                            focusedClass.getCell().attributes.name = message.name;
-                            focusedClass.getCell().trigger('change');
-                            break;
+        function sendMessage(command) {
+        socket.send(JSON.stringify(command));
+        }
+
+        function receiveChatMessage(message) {
+        let row = document.createElement('div');
+        row.className = "row list-group-item bg-light";
+
+        let div = document.createElement('div');
+        div.classList.add('col');
+
+        let sender = document.createElement('em');
+        sender.innerHTML = message.sender;
+
+        let content = document.createElement('div');
+        content.innerHTML = message.message;
+
+        div.appendChild(sender);
+        div.appendChild(content);
+        row.appendChild(div);
+
+        chat.appendChild(row);
+        }
+
+        buttonSend.onclick = function () {
+        let command = {
+        'message': messageInput.value,
+        'type': 'ChatMessageCommand'
+        };
+        sendMessage(command)
+        messageInput.value = '';
+        };
+        socket.onopen = function () {
 
 
-                    }
-                };
-
-                socket.onclose = function () {
-                    console.log('WebSocket closed');
-                };
-            }
-
-            socket.onclose = function (e) {
-                console.log(e);
-            }
-
-            let graph = new joint.dia.Graph();
-
-            let paper = new joint.dia.Paper({
-                el: document.getElementById('paper'),
-                width: document.documentElement.clientWidth,
-                height: document.documentElement.clientHeight,
-                gridSize: 10,
-                model: graph,
-                drawGrid: true,
-                interactive: {
-                    labelMove: true,
-                }
-            });
-
-
-            paper.on("blank:mousewheel", function (evt, x, y, delta) {
-                evt.preventDefault();
-                const oldScale = paper.scale().sx;
-                const newScale = oldScale + 0.2 * delta * oldScale
-
-                if (newScale > 0.2 && newScale < 5) {
-                    paper.scale(newScale, newScale, x, y);
-                    paper.translate(-x * newScale + evt.offsetX, -y * newScale + evt.offsetY);
-                }
-
-                let command = {
-                    type: 'UpdateClassCommand',
-                    name: focusedClass.element.name,
-                    newName: 'UpdatedClass'
-                }
-                sendMessage(command)
-            });
-
-
-            let dragStartPosition = null;
-
-            paper.on('blank:pointerdown', function (event, x, y) {
-                let scale = paper.scale();
-                dragStartPosition = {x: x * scale.sx, y: y * scale.sy};
-
-                let command = {
-                    x: x * scale.sx,
-                    y: y * scale.sy,
-                    width: 100,
-                    height: 100,
-                    type: 'CreateClassCommand',
-                    name: 'NewClass' + x + y,
-                }
-
-                sendMessage(command);
-
-            });
-
-            paper.on('cell:pointerup blank:pointerup', function (cellView, x, y) {
-                dragStartPosition = null;
-            });
-
-            document.getElementById('diagram').addEventListener('mousemove', function (evt) {
-                if (dragStartPosition) {
-                    paper.translate(
-                            evt.offsetX - dragStartPosition.x,
-                            evt.offsetY - dragStartPosition.y);
-                }
-            });
-
-            let verticesTool = new joint.linkTools.Vertices();
-            let segmentsTool = new joint.linkTools.Segments();
-            let sourceArrowheadTool = new joint.linkTools.SourceArrowhead();
-            let targetArrowheadTool = new joint.linkTools.TargetArrowhead();
-            let boundaryTool = new joint.linkTools.Boundary();
-            let removeButton = new joint.linkTools.Remove();
-
-            let toolsView = new joint.dia.ToolsView({
-                tools: [
-                    verticesTool, segmentsTool,
-                    sourceArrowheadTool, targetArrowheadTool,
-                    boundaryTool, removeButton
-                ]
-            });
-
-            let uml = joint.shapes.uml;
-
-            //let person = new AbstractClass({name: 'Person', x: 300, y: 300});
-
-            let woman = new Class({name: 'Woman',x: 150, y: 300});
-
-            let man = new Class({name: 'Man', x: 500, y: 300});
+        socket.onmessage = function (event) {
+        let message = JSON.parse(event.data);
+        switch (message.type) {
+        case 'ChatMessageCommand':
+        receiveChatMessage(message);
+        break;
+        case 'CreateCommand':
+        let elem = null;
+        switch(message.elementType) {
+        case ElementType.Class.name:
+        elem = new Class(message);
+        break;
+        case ElementType.Interface.name:
+        elem = new Interface(message);
+        break;
+        case ElementType.Enum.name:
+        //elem = new Enum(message);
+        break;
+        case ElementType.AssociationClass.name:
+        // TODO AssociationClass
+        break;
+        case ElementType.Generalization.name:
+        elem = new Generalization(message);
+        break;
+        case ElementType.BinaryAssociation.name:
+        elem = new Association(message);
+        break;
+        case ElementType.Aggregation.name:
+        elem = new Aggregation(message);
+        break;
+        case ElementType.Composition.name:
+        elem = new Composition(message);
+        break;
+        case ElementType.MultiAssociation.name:
+        // TODO MutliAssociation
+        break;
+        case ElementType.InnerClass.name:
+        // TODO InnerClass
+        break;
+        case ElementType.Dependency.name:
+        // TODO Dependency
+        break;
+        }
+        graph.addCell(elem.getCell());
+        break;
+        case 'UpdateCommand':
+        console.log(message);
+        break;
+        case 'Error':
+        console.log(message.message)
+        break;
 
 
-            /*let askdf = new uml.Class({
-                position: {x: 500, y: 300},
-                size: {width: 100, height: 100},
-                name: 'man'
-            })
-            let test = new Interface({name: 'Test'}, {x: 0, y: 300});
+        }
+        };
+
+        socket.onclose = function () {
+        console.log('WebSocket closed');
+        };
+        }
 
 
-            let aggregation = new Aggregation({isDirected: false, source: woman, target: test, label:'aggregation', sourceLabel:'from', sourceMultiplicity:'1..*'})
-            let composition = new Composition({isDirected: true, source: man, target: test})
-            let realization = new Realization({source: woman, target: person})
-            let association = new Association({isDirected: true, source: woman, target: man})
-            let generalization = new Generalization({source: man, target: person}, [{x: 20, y: 30}])
+        let graph = new joint.dia.Graph();
 
-            let tmp = man.getCell();*/
-
-            graph.addCells([
-                woman.getCell(),
-                //person.getCell(),
-                man.getCell(),
-              //  test.getCell(),
-               // aggregation.getCell(),
-              //  composition.getCell(),
-                //realization.getCell(),
-                //association.getCell(),
-               // generalization.getCell()
-            ]);
+        let paper = new joint.dia.Paper({
+        el: document.getElementById('paper'),
+        width: document.documentElement.clientWidth,
+        height: document.documentElement.clientHeight,
+        gridSize: 10,
+        model: graph,
+        drawGrid: true,
+        interactive: {
+        labelMove: true,
+        }
+        });
 
 
-            paper.on('link:mouseenter', function (linkView) {
-                linkView.addTools(toolsView);
-            });
+        paper.on("blank:mousewheel", function (evt, x, y, delta) {
+        evt.preventDefault();
+        const oldScale = paper.scale().sx;
+        const newScale = oldScale + 0.2 * delta * oldScale
 
-            paper.on('blank:mouseover', function () {
-                paper.removeTools();
-            });
+        if (newScale > 0.2 && newScale < 5) {
+        paper.scale(newScale, newScale, x, y);
+        paper.translate(-x * newScale + evt.offsetX, -y * newScale + evt.offsetY);
+        }
 
-            paper.on('element:mouseenter', function (elementView) {
-                elementView.showTools();
 
-            });
+        });
 
-            paper.on('element:mouseleave', function (elementView) {
-                elementView.hideTools();
 
-            });
+        let dragStartPosition = null;
+
+        paper.on('blank:pointerdown', function (event, x, y) {
+        let scale = paper.scale();
+        if(selectedType === undefined) {
+        dragStartPosition = {x: x * scale.sx, y: y * scale.sy};
+        }else{
+        let command = {
+        data: {
+        x: x - 100,
+        y: y - 50,
+        width: 200,
+        height: 100,
+        },
+        type: 'CreateCommand',
+        entityType: selectedType
+        };
+
+        sendMessage(command);
+        }
+        selectedType = undefined;
+        });
+
+        paper.on('cell:pointerup blank:pointerup', function (cellView, x, y) {
+        dragStartPosition = null;
+        });
+
+        paper.on('element:pointerdblclick', function(elementView){
+        let command = {
+            reference:{id:0},
+            data: {
+                name: 'updated',
+            },
+            type: 'UpdateCommand',
+            entityType: 'CLASS',
+        };
+        sendMessage(command);
+        })
+
+        document.getElementById('diagram').addEventListener('mousemove', function (evt) {
+        if (dragStartPosition) {
+        paper.translate(
+        evt.offsetX - dragStartPosition.x,
+        evt.offsetY - dragStartPosition.y);
+        }
+        });
+
+        let verticesTool = new joint.linkTools.Vertices();
+        let segmentsTool = new joint.linkTools.Segments();
+        let sourceArrowheadTool = new joint.linkTools.SourceArrowhead();
+        let targetArrowheadTool = new joint.linkTools.TargetArrowhead();
+        let boundaryTool = new joint.linkTools.Boundary();
+        let removeButton = new joint.linkTools.Remove();
+
+        let toolsView = new joint.dia.ToolsView({
+        tools: [
+        verticesTool, segmentsTool,
+        sourceArrowheadTool, targetArrowheadTool,
+        boundaryTool, removeButton
+        ]
+        });
+
+        let uml = joint.shapes.uml;
+
+
+/*
+
+        let aggregation = new Aggregation({isDirected: false, source: woman, target: test, label:'aggregation', sourceLabel:'from', sourceMultiplicity:'1..*'})
+        let composition = new Composition({isDirected: true, source: man, target: test})
+        let realization = new Realization({source: woman, target: person})
+        let association = new Association({isDirected: true, source: woman, target: man})
+        let generalization = new Generalization({source: man, target: person}, [{x: 20, y: 30}])
+
+        let tmp = man.getCell();*/
+
+        paper.on('link:mouseenter', function (linkView) {
+        linkView.addTools(toolsView);
+        });
+
+        paper.on('blank:mouseover', function () {
+        paper.removeTools();
+        });
+
+        paper.on('element:mouseenter', function (elementView) {
+        elementView.showTools();
+
+        });
+
+        paper.on('element:mouseleave', function (elementView) {
+        elementView.hideTools();
+
+        });
 
     </script>
 }

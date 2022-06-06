@@ -6,8 +6,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import commands.chat.ChatMessageCommand;
 import commands.Command;
-import commands.entities.classes.CreateClassCommand;
-import commands.entities.classes.UpdateClassCommand;
+import commands.uml.CreateCommand;
+import commands.uml.UpdateCommand;
+import graphical.GraphicalElementType;
 import io.ebean.Model;
 import io.ebean.annotation.NotNull;
 import play.libs.Json;
@@ -154,11 +155,14 @@ public class ProjectUser extends Model
                 cmd = Json.fromJson(message, ChatMessageCommand.class);
 
                 break;
-            case "CreateClassCommand":
-                cmd = Json.fromJson(message, CreateClassCommand.class);
+            case "CreateCommand":
+                cmd = new CreateCommand(message.get("data"),
+                        GraphicalElementType.valueOf(message.get("entityType").asText()));
                 break;
-            case "UpdateClassCommand":
-                cmd = Json.fromJson(message, UpdateClassCommand.class);
+            case "UpdateCommand":
+                cmd = new UpdateCommand(message.get("data"),
+                        GraphicalElementType.valueOf(message.get("entityType").asText()),
+                        (ObjectNode)message.get("reference"));
                 break;
 
             default:

@@ -16,6 +16,7 @@ libraryDependencies ++= Seq(
 
 libraryDependencies += "org.mindrot" % "jbcrypt" % "0.4"
 
+libraryDependencies += "com.fasterxml.jackson.dataformat" % "jackson-dataformat-xml" % "2.11.4"
 
 
 libraryDependencies += javaForms

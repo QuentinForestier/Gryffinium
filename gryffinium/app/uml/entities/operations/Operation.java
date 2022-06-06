@@ -6,8 +6,9 @@ import uml.entities.variables.Variable;
 
 import java.util.ArrayList;
 
-public class Operation
+public abstract class Operation
 {
+    private Integer id;
     private String name;
 
     private ArrayList<Parameter> params = new ArrayList<>();
@@ -23,4 +24,44 @@ public class Operation
         this(name, Visibility.PUBLIC);
     }
 
+
+    public Integer getId()
+    {
+        return id;
+    }
+
+    public void setId(Integer id)
+    {
+        this.id = id;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public ArrayList<Parameter> getParams()
+    {
+        return params;
+    }
+
+    public void setParams(ArrayList<Parameter> params)
+    {
+        this.params = params;
+    }
+
+    public Visibility getVisibility()
+    {
+        return visibility;
+    }
+
+    public void setVisibility(Visibility visibility)
+    {
+        this.visibility = visibility;
+    }
 }

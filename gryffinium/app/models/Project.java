@@ -97,9 +97,17 @@ public class Project extends Model
         sender = findProjectUser(sender.getUser().getId());
         if (sender == null || !sender.getCanWrite())
             return;
+        ObjectNode response;
+        try{
+         response = (ObjectNode) command.execute(this);
 
-        ObjectNode response = (ObjectNode) command.execute(this);
         response.put("type", command.getClass().getSimpleName());
+        }catch(Exception e){
+          response = Json.newObject();
+            response.put("type", "Error");
+            response.put("message", e.getMessage());
+            e.printStackTrace();
+        }
 
         for (ProjectUser user : projectUsers)
         {

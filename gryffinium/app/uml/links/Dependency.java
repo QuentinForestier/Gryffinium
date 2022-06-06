@@ -4,6 +4,7 @@ import uml.entities.Entity;
 
 public class Dependency
 {
+    private Integer id;
     private String name;
 
     private Entity from;
@@ -20,5 +21,13 @@ public class Dependency
         this(from, to, "");
     }
 
+    public Integer getId()
+    {
+        return id;
+    }
 
+    public void setId(Integer id)
+    {
+        this.id = id;
+    }
 }

@@ -2,19 +2,19 @@ package uml.entities.variables;
 
 import uml.Visibility;
 
-public class Attribut extends Variable
+public class Attribute extends Variable
 {
     private boolean isStatic;
     private Visibility visibility;
 
-    public Attribut(String name, boolean isConstant, boolean isStatic, Visibility visibility)
+    public Attribute(String name, boolean isConstant, boolean isStatic, Visibility visibility)
     {
         super(name, isConstant);
         this.isStatic = isStatic;
         this.visibility = visibility;
     }
 
-    public Attribut(String name)
+    public Attribute(String name)
     {
         this(name, false, false, Visibility.PRIVATE);
     }

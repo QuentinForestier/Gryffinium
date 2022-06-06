@@ -4,6 +4,8 @@ import uml.types.Type;
 
 public abstract class Variable
 {
+
+    private Integer id;
     private String name;
     private boolean isConstant;
 
@@ -19,4 +21,43 @@ public abstract class Variable
     }
 
 
+    public Integer getId()
+    {
+        return id;
+    }
+
+    public void setId(Integer id)
+    {
+        this.id = id;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public boolean isConstant()
+    {
+        return isConstant;
+    }
+
+    public void setConstant(boolean constant)
+    {
+        isConstant = constant;
+    }
+
+    public Type getType()
+    {
+        return type;
+    }
+
+    public void setType(Type type)
+    {
+        this.type = type;
+    }
 }

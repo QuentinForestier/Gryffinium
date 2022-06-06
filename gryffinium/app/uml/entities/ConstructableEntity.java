@@ -1,5 +1,6 @@
 package uml.entities;
 
+import graphical.entities.GraphicalEntity;
 import uml.entities.operations.Constructor;
 
 import java.util.ArrayList;
@@ -11,5 +12,10 @@ public abstract class ConstructableEntity extends Entity
     public ConstructableEntity(String name)
     {
         super(name);
+    }
+
+    public ConstructableEntity(GraphicalEntity ge)
+    {
+        super(ge);
     }
 }
