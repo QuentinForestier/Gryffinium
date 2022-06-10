@@ -15,14 +15,15 @@ class Cell {
     }
 }
 
+
 class Link extends Cell {
     constructor(element, line = undefined, vertices = []) {
         let link = new joint.shapes.standard.Link();
 
         line.strokeWidth = 1;
 
-        link.source(element.source.getCell());
-        link.target(element.target.getCell());
+        link.source(element.source);
+        link.target(element.target);
         link.attr({
             line
         });
@@ -156,9 +157,10 @@ export class Realization extends Generalization {
     }
 }
 
+
 export class Class extends Cell {
     constructor(element, cell) {
-        if(cell === undefined) {
+        if (cell === undefined) {
             cell = new uml.Class({});
         }
         super(element, cell)
@@ -199,5 +201,57 @@ export class ElementType {
         this.name = name;
     }
 
+}
+
+class Visiblity{
+    static Public = new Visiblity("+");
+    static Private = new Visiblity("-");
+    static Protected = new Visiblity("#");
+    static Package = new Visiblity("~");
+
+    constructor(symbol) {
+        this.symbol = symbol;
+    }
+
+    toString(){
+        return this.symbol;
+    }
+
+    static getVisibility(name){
+        switch(name){
+            case "public":
+                return Visiblity.Public;
+            case "private":
+                return Visiblity.Private;
+            case "protected":
+                return Visiblity.Protected;
+            case "package":
+                return Visiblity.Package;
+        }
+    }
+}
+
+export class Type {
+    constructor(id, name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    toString() {
+        return this.name;
+    }
+}
+
+export class Attribute {
+    constructor(id, name, type, visibility) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.visibility = Visiblity.getVisibility(visibility);
+    }
+
+    toString() {
+        return this.visibility + " " + this.name + " : " + this.type;
+    }
 }
 

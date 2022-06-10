@@ -7,7 +7,10 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 
+const fontFamiliy = 'Arial, Helvetica, sans-serif';
+fontSize = 15
 const umlColor = '#FFF7E1';
+
 
 this.joint = this.joint || {};
 this.joint.shapes = this.joint.shapes || {};
@@ -16,11 +19,11 @@ this.joint.shapes = this.joint.shapes || {};
 
     let Class = basic_mjs.Generic.define('uml.Class', {
         attrs: {
-            rect: { 'width': 200 },
+            rect: {'width': 200},
 
-            '.uml-class-name-rect': { 'stroke': 'black', 'stroke-width': 1, 'fill': umlColor },
-            '.uml-class-attrs-rect': { 'stroke': 'black', 'stroke-width': 1, 'fill': umlColor },
-            '.uml-class-methods-rect': { 'stroke': 'black', 'stroke-width': 1, 'fill': umlColor },
+            '.uml-class-name-rect': {'stroke': 'black', 'stroke-width': 1, 'fill': umlColor},
+            '.uml-class-attrs-rect': {'stroke': 'black', 'stroke-width': 1, 'fill': umlColor},
+            '.uml-class-methods-rect': {'stroke': 'black', 'stroke-width': 1, 'fill': umlColor},
 
             '.uml-class-name-text': {
                 'ref': '.uml-class-name-rect',
@@ -30,71 +33,190 @@ this.joint.shapes = this.joint.shapes || {};
                 'y-alignment': 'middle',
                 'font-weight': 'bold',
                 'fill': 'black',
-                'font-size': 12,
-                'font-family': 'Times New Roman'
+                'font-size': fontSize,
+                'font-family': fontFamiliy
             },
             '.uml-class-attrs-text': {
                 'ref': '.uml-class-attrs-rect', 'ref-y': 5, 'ref-x': 5,
-                'fill': 'black', 'font-size': 12, 'font-family': 'Times New Roman'
+                'fill': 'black', 'font-size': fontSize, 'font-family': fontFamiliy
             },
             '.uml-class-methods-text': {
                 'ref': '.uml-class-methods-rect', 'ref-y': 5, 'ref-x': 5,
-                'fill': 'black', 'font-size': 12, 'font-family': 'Times New Roman'
+                'fill': 'black', 'font-size': fontSize, 'font-family': fontFamiliy
             }
         },
 
         name: [],
         attributes: [],
-        methods: []
+        methods: [],
+        id: undefined,
+        height: undefined,
     }, {
         markup: [
             '<g class="rotatable">',
             '<g class="scalable">',
-            '<rect class="uml-class-name-rect"/><rect class="uml-class-attrs-rect"/><rect class="uml-class-methods-rect"/>',
+            '<rect class="uml-class-name-rect"/>',
+            '<rect class="uml-class-attrs-rect"/><rect class="uml-class-methods-rect"/>',
             '</g>',
-            '<text class="uml-class-name-text"/><text class="uml-class-attrs-text"/><text class="uml-class-methods-text"/>',
+            '<text class="uml-class-name-text"/><text class="uml-class-attrs-text text-truncate"/><text class="uml-class-methods-text"/>',
             '</g>'
         ].join(''),
 
-        initialize: function() {
+        initialize: function () {
 
-            this.on('change:name change:attributes change:methods', function() {
+            this.on('change:name change:attributes change:methods change:size', function () {
                 this.updateRectangles();
                 this.trigger('uml-update');
             }, this);
 
-            this.updateRectangles();
+            this.on('change:autoresize', function () {
+                this.updateRectangles(true);
+                this.trigger('uml-update');
+            }, this);
+
+            this.updateRectangles(true);
 
             basic_mjs.Generic.prototype.initialize.apply(this, arguments);
         },
 
-        getClassName: function() {
+        getClassName: function () {
             return this.get('name');
         },
 
-        updateRectangles: function() {
+        addAttribute: function (attribute) {
+            this.get('attributes').push(attribute);
+            this.trigger('change:attributes');
+        },
 
-            var attrs = this.get('attrs');
+        setAttributes: function (attributes) {
+            this.set('attributes', attributes);
+            this.trigger('change:attributes');
+        },
+        removeAttribute: function (attribute) {
+            this.set('attributes', this.get('attributes').filter(attr => attr.id !== attribute.id));
+            this.trigger('change:attributes');
+        },
+        updateAttribute: function (attribute) {
+            let index = this.get('attributes').map(function (x) {
+                return x.id;
+            }).indexOf(attribute.id);
+            if (index !== -1) {
+                this.get('attributes')[index] = attribute;
+                this.trigger('change:attributes');
+            }
+        },
+        addMethod: function (method) {
+            this.get('methods').push(method);
+            this.trigger('change:methods');
+        },
 
-            var rects = [
-                { type: 'name', text: this.getClassName() },
-                { type: 'attrs', text: this.get('attributes') },
-                { type: 'methods', text: this.get('methods') }
+        setMethods: function (methods) {
+            this.set('methods', methods);
+            this.trigger('change:methods');
+        },
+        removeMethod: function (method) {
+            this.set('methods', this.get('methods').filter(attr => attr.id !== method.id));
+            this.trigger('change:methods');
+        },
+        updateMethod: function (method) {
+            let index = this.get('methods').map(function (x) {
+                return x.id;
+            }).indexOf(method.id);
+            if (index !== -1) {
+                this.get('methods')[index] = method;
+                this.trigger('change:methods');
+            }
+        },
+
+        updateRectangles: function (auto = false) {
+
+            let attrs = this.get('attrs');
+
+            let rects = [
+                {type: 'name', text: this.getClassName()},
+                {type: 'attrs', text: this.get('attributes')},
+                {type: 'methods', text: this.get('methods')}
             ];
 
-            var offsetY = 0;
+            let offsetY = 0;
+            let width = this.get('size').width;
 
-            rects.forEach(function(rect) {
 
-                var lines = Array.isArray(rect.text) ? rect.text : [rect.text];
-                var rectHeight = lines.length * 20 + 20;
+            const span = document.querySelector('span')
+            span.fontSize = fontSize
+            span.fontFamily = fontFamiliy
 
-                attrs['.uml-class-' + rect.type + '-text'].text = lines.join('\n');
+            let maxLineLength = 0;
+            rects.forEach(function (rect) {
+
+                let lines = Array.isArray(rect.text) ? rect.text : [rect.text];
+                let rectHeight = lines.length * fontSize + fontSize;
+
+                let linesToShow = []
+
+                for (let line of lines) {
+                    span.innerText = line.toString();
+                    let lineSize = $(span).width();
+
+                    let lastTry = line.toString() + (lineSize <= width || auto ? '' : '...');
+                    if (!auto) {
+                        while (lineSize > width) {
+                            lastTry = lastTry.substring(0, lastTry.length - 4) + '...';
+                            span.innerText = lastTry
+                            lineSize = $(span).width();
+                        }
+                    }
+                    linesToShow.push(lastTry)
+                    maxLineLength = Math.max(maxLineLength, lineSize)
+                    maxLineLength = Math.round(maxLineLength / 10) * 10
+                }
+                attrs['.uml-class-' + rect.type + '-text'].text = linesToShow.join('\n');
+
                 attrs['.uml-class-' + rect.type + '-rect'].height = rectHeight;
                 attrs['.uml-class-' + rect.type + '-rect'].transform = 'translate(0,' + offsetY + ')';
 
+
                 offsetY += rectHeight;
+
             });
+            if (offsetY < 100) {
+                offsetY = 100;
+            }
+            if (auto) {
+                maxLineLength = Math.max(maxLineLength, 150)
+                this.set('size', {width: maxLineLength, height: offsetY});
+            }
+
+            this.set('height', offsetY);
+
+        },
+
+        getHeight: function () {
+            return this.get('height');
+        },
+
+        setSizeAndPosition(size = undefined, position = undefined) {
+            if (size)
+                this.resize(size.width, size.height);
+
+            if (position)
+                this.position(position.x, position.y);
+
+
+            this.trigger('change:size');
+
+            // TODO return command
+            return  {
+                reference: {id: this.get('id')},
+                data: {
+                    x: this.get('position').x,
+                    y: this.get('position').y,
+                    width: this.get('size').width,
+                    height: this.get('size').height
+                },
+                type: 'UpdateCommand',
+                entityType: 'CLASS',
+            };
         }
 
     });
@@ -102,11 +224,11 @@ this.joint.shapes = this.joint.shapes || {};
 
     let ClassView = ElementView_mjs.ElementView.extend({
 
-        initialize: function() {
+        initialize: function () {
 
             ElementView_mjs.ElementView.prototype.initialize.apply(this, arguments);
 
-            this.listenTo(this.model, 'uml-update', function() {
+            this.listenTo(this.model, 'uml-update', function () {
                 this.update();
                 this.resize();
             });
@@ -115,13 +237,13 @@ this.joint.shapes = this.joint.shapes || {};
 
     let Abstract = Class.define('uml.Abstract', {
         attrs: {
-            '.uml-class-name-rect': { fill: umlColor },
-            '.uml-class-attrs-rect': { fill: umlColor },
-            '.uml-class-methods-rect': { fill: umlColor }
+            '.uml-class-name-rect': {fill: umlColor},
+            '.uml-class-attrs-rect': {fill: umlColor},
+            '.uml-class-methods-rect': {fill: umlColor}
         }
     }, {
 
-        getClassName: function() {
+        getClassName: function () {
             return ['<<Abstract>>', this.get('name')];
         }
 
@@ -130,34 +252,34 @@ this.joint.shapes = this.joint.shapes || {};
 
     let Interface = Class.define('uml.Interface', {
         attrs: {
-            '.uml-class-name-rect': { fill: umlColor },
-            '.uml-class-attrs-rect': { fill: umlColor },
-            '.uml-class-methods-rect': { fill: umlColor }
+            '.uml-class-name-rect': {fill: umlColor},
+            '.uml-class-attrs-rect': {fill: umlColor},
+            '.uml-class-methods-rect': {fill: umlColor}
         }
     }, {
-        getClassName: function() {
+        getClassName: function () {
             return ['<<Interface>>', this.get('name')];
         }
     });
     let InterfaceView = ClassView;
 
     let Generalization = Link_mjs.Link.define('uml.Generalization', {
-        attrs: { '.marker-target': { d: 'M 20 0 L 0 10 L 20 20 z', fill: 'white' }}
+        attrs: {'.marker-target': {d: 'M 20 0 L 0 10 L 20 20 z', fill: 'white'}}
     });
 
     let Implementation = Link_mjs.Link.define('uml.Implementation', {
         attrs: {
-            '.marker-target': { d: 'M 20 0 L 0 10 L 20 20 z', fill: 'white' },
-            '.connection': { 'stroke-dasharray': '3,3' }
+            '.marker-target': {d: 'M 20 0 L 0 10 L 20 20 z', fill: 'white'},
+            '.connection': {'stroke-dasharray': '3,3'}
         }
     });
 
     let Aggregation = Link_mjs.Link.define('uml.Aggregation', {
-        attrs: { '.marker-target': { d: 'M 40 10 L 20 20 L 0 10 L 20 0 z', fill: 'white' }}
+        attrs: {'.marker-target': {d: 'M 40 10 L 20 20 L 0 10 L 20 0 z', fill: 'white'}}
     });
 
     let Composition = Link_mjs.Link.define('uml.Composition', {
-        attrs: { '.marker-target': { d: 'M 40 10 L 20 20 L 0 10 L 20 0 z', fill: 'black' }}
+        attrs: {'.marker-target': {d: 'M 40 10 L 20 20 L 0 10 L 20 0 z', fill: 'black'}}
     });
 
     let Association = Link_mjs.Link.define('uml.Association');
@@ -198,7 +320,7 @@ this.joint.shapes = this.joint.shapes || {};
             '</g>'
         ].join(''),
 
-        initialize: function() {
+        initialize: function () {
 
             this.on({
                 'change:name': this.updateName,
@@ -213,34 +335,34 @@ this.joint.shapes = this.joint.shapes || {};
             basic_mjs.Generic.prototype.initialize.apply(this, arguments);
         },
 
-        updateName: function() {
+        updateName: function () {
 
             this.attr('.uml-state-name/text', this.get('name'));
         },
 
-        updateEvents: function() {
+        updateEvents: function () {
 
             this.attr('.uml-state-events/text', this.get('events').join('\n'));
         },
 
-        updatePath: function() {
+        updatePath: function () {
 
-            var d = 'M 0 20 L ' + this.get('size').width + ' 20';
+            let d = 'M 0 20 L ' + this.get('size').width + ' 20';
 
             // We are using `silent: true` here because updatePath() is meant to be called
             // on resize and there's no need to to update the element twice (`change:size`
             // triggers also an update).
-            this.attr('.uml-state-separator/d', d, { silent: true });
+            this.attr('.uml-state-separator/d', d, {silent: true});
         }
     });
 
-    var StartState = basic_mjs.Circle.define('uml.StartState', {
+    let StartState = basic_mjs.Circle.define('uml.StartState', {
         type: 'uml.StartState',
-        attrs: { circle: { 'fill': '#34495e', 'stroke': '#2c3e50', 'stroke-width': 2, 'rx': 1 }}
+        attrs: {circle: {'fill': '#34495e', 'stroke': '#2c3e50', 'stroke-width': 2, 'rx': 1}}
     });
 
-    var EndState = basic_mjs.Generic.define('uml.EndState', {
-        size: { width: 20, height: 20 },
+    let EndState = basic_mjs.Generic.define('uml.EndState', {
+        size: {width: 20, height: 20},
         attrs: {
             'circle.outer': {
                 transform: 'translate(10, 10)',
@@ -259,10 +381,10 @@ this.joint.shapes = this.joint.shapes || {};
         markup: '<g class="rotatable"><g class="scalable"><circle class="outer"/><circle class="inner"/></g></g>',
     });
 
-    var Transition = Link_mjs.Link.define('uml.Transition', {
+    let Transition = Link_mjs.Link.define('uml.Transition', {
         attrs: {
-            '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z', fill: '#34495e', stroke: '#2c3e50' },
-            '.connection': { stroke: '#2c3e50' }
+            '.marker-target': {d: 'M 10 0 L 0 5 L 10 10 z', fill: '#34495e', stroke: '#2c3e50'},
+            '.connection': {stroke: '#2c3e50'}
         }
     });
 

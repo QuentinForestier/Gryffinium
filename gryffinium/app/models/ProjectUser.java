@@ -190,7 +190,7 @@ public class ProjectUser extends Model
     }
 
     public void disconnect(){
-        if(actor != null)
+       if(actor != null)
         {
             actor.disconnect();
         }
