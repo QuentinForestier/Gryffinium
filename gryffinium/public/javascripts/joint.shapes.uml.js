@@ -142,7 +142,7 @@ this.joint.shapes = this.joint.shapes || {};
             let width = this.get('size').width;
 
 
-            const span = document.querySelector('span')
+            const span = document.getElementById('measure')
             span.fontSize = fontSize
             span.fontFamily = fontFamiliy
 
