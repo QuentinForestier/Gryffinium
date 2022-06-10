@@ -218,12 +218,12 @@
 
         paper.on('element:pointerdblclick', function(elementView){
         let command = {
-            reference:{id:0},
-            data: {
-                name: 'updated',
-            },
-            type: 'UpdateCommand',
-            entityType: 'CLASS',
+        reference:{id:0},
+        data: {
+        name: 'updated',
+        },
+        type: 'UpdateCommand',
+        entityType: 'CLASS',
         };
         sendMessage(command);
         })
@@ -253,8 +253,13 @@
 
         let uml = joint.shapes.uml;
 
+        let person = new Class({name: 'Person', width:200, height:100, x:100, y:100});
+        let man = new Class({name: 'Man', width:200, height:100, x:100, y:300});
 
-/*
+        let generalization = new Generalization({source: man, target: person});
+
+        graph.addCells(person.getCell(), man.getCell(), generalization.getCell())
+        /*
 
         let aggregation = new Aggregation({isDirected: false, source: woman, target: test, label:'aggregation', sourceLabel:'from', sourceMultiplicity:'1..*'})
         let composition = new Composition({isDirected: true, source: man, target: test})
