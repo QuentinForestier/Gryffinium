@@ -57,7 +57,7 @@ public class UpdateCommand implements Command
 
         Integer id = this.reference.get("id").asInt();
         // TODO : Catch exception
-
+        System.out.println(elementType);
         switch (elementType)
         {
             case CLASS:

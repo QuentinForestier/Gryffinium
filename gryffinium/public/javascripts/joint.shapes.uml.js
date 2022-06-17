@@ -24,6 +24,7 @@ this.joint.shapes = this.joint.shapes || {};
             '.uml-class-name-rect': {'stroke': 'black', 'stroke-width': 1, 'fill': umlColor},
             '.uml-class-attrs-rect': {'stroke': 'black', 'stroke-width': 1, 'fill': umlColor},
             '.uml-class-methods-rect': {'stroke': 'black', 'stroke-width': 1, 'fill': umlColor},
+            '.uml-class-values-rect': {'stroke': 'black', 'stroke-width': 1, 'fill': umlColor},
 
             '.uml-class-name-text': {
                 'ref': '.uml-class-name-rect',
@@ -43,6 +44,10 @@ this.joint.shapes = this.joint.shapes || {};
             '.uml-class-methods-text': {
                 'ref': '.uml-class-methods-rect', 'ref-y': 5, 'ref-x': 5,
                 'fill': 'black', 'font-size': fontSize, 'font-family': fontFamiliy
+            },
+            '.uml-class-values-text': {
+                'ref': '.uml-class-values-rect', 'ref-y': 5, 'ref-x': 5,
+                'fill': 'black', 'font-size': fontSize, 'font-family': fontFamiliy
             }
         },
 
@@ -56,9 +61,14 @@ this.joint.shapes = this.joint.shapes || {};
             '<g class="rotatable">',
             '<g class="scalable">',
             '<rect class="uml-class-name-rect"/>',
-            '<rect class="uml-class-attrs-rect"/><rect class="uml-class-methods-rect"/>',
+            '<rect class="uml-class-values-rect"/>',
+            '<rect class="uml-class-attrs-rect"/>',
+            '<rect class="uml-class-methods-rect"/>',
             '</g>',
-            '<text class="uml-class-name-text"/><text class="uml-class-attrs-text text-truncate"/><text class="uml-class-methods-text"/>',
+            '<text class="uml-class-name-text"/>',
+            '<text class="uml-class-values-text"/>',
+            '<text class="uml-class-attrs-text text-truncate"/>',
+            '<text class="uml-class-methods-text"/>',
             '</g>'
         ].join(''),
 
@@ -123,8 +133,19 @@ this.joint.shapes = this.joint.shapes || {};
                 return x.id;
             }).indexOf(method.id);
             if (index !== -1) {
+                let current = this.get('methods')[index];
+
                 this.get('methods')[index] = method;
                 this.trigger('change:methods');
+
+                return {
+                    reference: {parentId: this.get('id'), id: current.id},
+                    data: {
+                        method: method
+                    },
+                    type: 'UpdateCommand',
+                    entityType: this.getType(),
+                };
             }
         },
 
@@ -134,6 +155,7 @@ this.joint.shapes = this.joint.shapes || {};
 
             let rects = [
                 {type: 'name', text: this.getClassName()},
+                {type: 'values', text: this.getEnumValues()},
                 {type: 'attrs', text: this.get('attributes')},
                 {type: 'methods', text: this.get('methods')}
             ];
@@ -148,8 +170,11 @@ this.joint.shapes = this.joint.shapes || {};
 
             let maxLineLength = 0;
             rects.forEach(function (rect) {
+                if (rect.type === 'values' && rect.text === "")
+                    return;
 
                 let lines = Array.isArray(rect.text) ? rect.text : [rect.text];
+
                 let rectHeight = lines.length * fontSize + fontSize;
 
                 let linesToShow = []
@@ -191,6 +216,10 @@ this.joint.shapes = this.joint.shapes || {};
 
         },
 
+        getEnumValues: function () {
+            return "";
+        },
+
         getHeight: function () {
             return this.get('height');
         },
@@ -205,8 +234,7 @@ this.joint.shapes = this.joint.shapes || {};
 
             this.trigger('change:size');
 
-            // TODO return command
-            return  {
+            return {
                 reference: {id: this.get('id')},
                 data: {
                     x: this.get('position').x,
@@ -215,10 +243,13 @@ this.joint.shapes = this.joint.shapes || {};
                     height: this.get('size').height
                 },
                 type: 'UpdateCommand',
-                entityType: 'CLASS',
+                entityType: this.getType(),
             };
-        }
+        },
 
+        getType: function () {
+            return 'CLASS';
+        }
     });
 
 
@@ -245,6 +276,9 @@ this.joint.shapes = this.joint.shapes || {};
 
         getClassName: function () {
             return ['<<Abstract>>', this.get('name')];
+        },
+        getType: function () {
+            return 'ABSTRACT_CLASS';
         }
 
     });
@@ -259,9 +293,32 @@ this.joint.shapes = this.joint.shapes || {};
     }, {
         getClassName: function () {
             return ['<<Interface>>', this.get('name')];
+        },
+        getType: function () {
+            return 'INTERFACE';
         }
     });
     let InterfaceView = ClassView;
+
+    let Enum = Class.define('uml.Enum', {
+        attrs: {
+            '.uml-class-name-rect': {fill: umlColor},
+            '.uml-class-attrs-rect': {fill: umlColor},
+            '.uml-class-methods-rect': {fill: umlColor}
+        }
+    }, {
+        getClassName: function () {
+            return ['<<Enum>>', this.get('name')];
+        },
+        getEnumValues: function () {
+            return ["Val1", "Val2", "Val3"];
+        },
+        getType: function () {
+            return 'ENUM';
+        }
+    })
+
+    let EnumView = ClassView;
 
     let Generalization = Link_mjs.Link.define('uml.Generalization', {
         attrs: {'.marker-target': {d: 'M 20 0 L 0 10 L 20 20 z', fill: 'white'}}
@@ -400,6 +457,8 @@ this.joint.shapes = this.joint.shapes || {};
     exports.Implementation = Implementation;
     exports.Interface = Interface;
     exports.InterfaceView = InterfaceView;
+    exports.Enum = Enum;
+    exports.EnumView = EnumView;
     exports.StartState = StartState;
     exports.State = State;
     exports.Transition = Transition;

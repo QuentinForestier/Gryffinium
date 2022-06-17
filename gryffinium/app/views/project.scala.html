@@ -36,7 +36,6 @@
         <div id="paper"></div>
     </div>
     <span id="measure" style="display: none"></span>
-
     <script type="application/javascript">
             let selectedType = undefined;
 
@@ -129,10 +128,32 @@
                                     });
                                     break;
                                 case ElementType.Interface.name:
-                                    elem = new Interface(message);
+                                    elem = new uml.Interface({
+                                        name: message.name,
+                                        position: {
+                                            x: message.x,
+                                            y: message.y
+                                        },
+                                        size: {
+                                            width: message.width,
+                                            height: message.height
+                                        },
+                                        id: message.id,
+                                    });
                                     break;
                                 case ElementType.Enum.name:
-                                    //elem = new Enum(message);
+                                    elem = new uml.Enum({
+                                        name: message.name,
+                                        position: {
+                                            x: message.x,
+                                            y: message.y
+                                        },
+                                        size: {
+                                            width: message.width,
+                                            height: message.height
+                                        },
+                                        id: message.id,
+                                    });
                                     break;
                                 case ElementType.AssociationClass.name:
                                     // TODO AssociationClass
@@ -277,7 +298,7 @@
                             height: moving.get('size').height
                         },
                         type: 'UpdateCommand',
-                        entityType: 'CLASS',
+                        entityType: moving.getType(),
                     })
                     moving = null;
                 }
@@ -297,13 +318,11 @@
                 position: {x: 100, y: 300}
             });
 
-            let attr = new Attribute(1, "name", "type", "public");
+            let attr = new Attribute(1, "name", "string", "private");
+            let method = new Attribute(2, "getName()", "string", "public");
 
             man.addAttribute(attr);
-            man.addMethod(attr)
-            attr.name = "namedyfsgsdfgsdfg2"
-
-            man.updateAttribute(attr);
+            man.addMethod(method)
 
             let generalization = new Generalization({source: man, target: person});
 
