@@ -14,7 +14,7 @@ const umlColor = '#FFF7E1';
 
 this.joint = this.joint || {};
 this.joint.shapes = this.joint.shapes || {};
-(function (exports, ElementView_mjs, Link_mjs, basic_mjs) {
+(function (exports, ElementView_mjs, LinkView_mjs, Link_mjs, basic_mjs) {
     'use strict';
 
     let Class = basic_mjs.Generic.define('uml.Class', {
@@ -305,41 +305,102 @@ this.joint.shapes = this.joint.shapes || {};
             '.uml-class-name-rect': {fill: umlColor},
             '.uml-class-attrs-rect': {fill: umlColor},
             '.uml-class-methods-rect': {fill: umlColor}
-        }
+        },
+        values: []
     }, {
         getClassName: function () {
             return ['<<Enum>>', this.get('name')];
         },
         getEnumValues: function () {
-            return ["Val1", "Val2", "Val3"];
+            return this.get('values');
         },
         getType: function () {
             return 'ENUM';
-        }
+        },
+
     })
 
     let EnumView = ClassView;
 
-    let Generalization = Link_mjs.Link.define('uml.Generalization', {
-        attrs: {'.marker-target': {d: 'M 20 0 L 0 10 L 20 20 z', fill: 'white'}}
+    let CustomLink = Link_mjs.Link.define('uml.CustomLink', {
+        attrs: {
+            line:{
+                strokeWidth:1,
+                stroke:'#333333',
+                connection:true,
+            },
+            wrapper:{
+                connection:true,
+                strokeWidth:10,
+
+            },
+        }
+    }, {
+        markup: [{
+            tagName: 'path',
+            selector: 'wrapper',
+            attributes: {
+                'fill': 'none',
+                'cursor': 'pointer',
+                'stroke': 'transparent'
+            }
+        }, {
+            tagName: 'path',
+            selector: 'line',
+            attributes: {
+                'fill': 'none',
+                'pointer-events': 'none'
+            }
+        }]
     });
 
-    let Implementation = Link_mjs.Link.define('uml.Implementation', {
+
+
+   let Generalization = CustomLink.define('uml.Generalization', {
+        attrs: {
+            line: {
+                targetMarker: {
+                    'type': 'path',
+                    'd': 'M 20 -10 L 0 0 L 20 10 z',
+                    'fill': 'white'
+                }
+            },
+        }
+    });
+
+
+
+    let Implementation = CustomLink.define('uml.Implementation', {
         attrs: {
             '.marker-target': {d: 'M 20 0 L 0 10 L 20 20 z', fill: 'white'},
             '.connection': {'stroke-dasharray': '3,3'}
         }
     });
 
-    let Aggregation = Link_mjs.Link.define('uml.Aggregation', {
+    let Aggregation = CustomLink.define('uml.Aggregation', {
         attrs: {'.marker-target': {d: 'M 40 10 L 20 20 L 0 10 L 20 0 z', fill: 'white'}}
     });
 
-    let Composition = Link_mjs.Link.define('uml.Composition', {
+    let Composition = CustomLink.define('uml.Composition', {
         attrs: {'.marker-target': {d: 'M 40 10 L 20 20 L 0 10 L 20 0 z', fill: 'black'}}
     });
 
-    let Association = Link_mjs.Link.define('uml.Association');
+    let Association = CustomLink.define('uml.Association', {
+        isDirected:false,
+    },{
+        getType: function(){
+            return 'ASSOCIATION'
+        },
+        setDirected: function(isDirected){
+            this.set('isDirected', isDirected);
+        },
+        swap: function(){
+            let tmp = this.get('source');
+            this.set('source', this.get('target'));
+            this.set('target', tmp);
+
+        }
+    });
 
     // Statechart
 
@@ -453,6 +514,8 @@ this.joint.shapes = this.joint.shapes || {};
     exports.ClassView = ClassView;
     exports.Composition = Composition;
     exports.EndState = EndState;
+    exports.CustomLink = CustomLink;
+    //exports.CustomLinkView = CustomLinkView;
     exports.Generalization = Generalization;
     exports.Implementation = Implementation;
     exports.Interface = Interface;
@@ -463,4 +526,4 @@ this.joint.shapes = this.joint.shapes || {};
     exports.State = State;
     exports.Transition = Transition;
 
-}(this.joint.shapes.uml = this.joint.shapes.uml || {}, joint.dia, joint.dia, joint.shapes.basic));
+}(this.joint.shapes.uml = this.joint.shapes.uml || {}, joint.dia, joint.dia, joint.dia, joint.shapes.basic));
