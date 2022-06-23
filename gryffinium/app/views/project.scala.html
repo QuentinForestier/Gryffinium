@@ -2,452 +2,938 @@
 
 @(uuid: String, name: String)(implicit request: Request)
 
-    @main("Diagram") {
+@main("Diagram") {
 
-        @views.html.components.navbar("login-modal", "register-modal", "project-modal")
+    @views.html.components.navbar("login-modal", "register-modal", "project-modal")
 
-        @views.html.modals.chat("chat-modal", "list-message", "input-message", "button-send")
+    @views.html.modals.chat("chat-modal", "list-message", "input-message", "button-send")
 
-        @views.html.modals.project_list("project-modal")
+    @views.html.modals.project_list("project-modal")
 
-        @views.html.modals.project_creation("project-creation-modal")
+    @views.html.modals.project_creation("project-creation-modal")
 
 
-        <nav class="navbar navbar-default">
+    <nav class="navbar navbar-default">
 
-            <div>
-                <div class="btn btn-sm navbar-btn" onclick="select('CLASS')">Class</div>
-                <div class="btn btn-sm navbar-btn" onclick="select('ENUM')">Enum</div>
-                <div class="btn btn-sm navbar-btn" onclick="select('INTERFACE')">Interface</div>
-                <div class="btn btn-sm navbar-btn" onclick="select('ASSOCIATION_CLASS')">Association Class</div>
-                <div class="btn btn-sm navbar-btn" onclick="select('GENERALIZATION')">
-                    Generalization / Realization</div>
-                <div class="btn btn-sm navbar-btn" onclick="select('BINARY_ASSOCIATION')">Association</div>
-                <div class="btn btn-sm navbar-btn" onclick="select('AGGREGATION')">Aggregation</div>
-                <div class="btn btn-sm navbar-btn" onclick="select('COMPOSITION')">Composition</div>
-                <div class="btn btn-sm navbar-btn" onclick="select('ElementType.MUTLI_ASSOCIATION')">Mutli association</div>
-                <div class="btn btn-sm navbar-btn" onclick="select('ElementType.INNER_CLASS')">Inner class</div>
-                <div class="btn btn-sm navbar-btn" onclick="select('ElementType.DEPENDENCY')">Dependency</div>
-                    <!--<div class="btn btn-sm navbar-btn fa fa-lock"></div>-->
-            </div>
-        </nav>
-
-        <div id="diagram">
-            <div id="paper"></div>
+        <div>
+            <div class="btn btn-sm navbar-btn" id="selectClass">Class</div>
+            <div class="btn btn-sm navbar-btn" id="selectEnum">Enum</div>
+            <div class="btn btn-sm navbar-btn" id="selectInterface">Interface</div>
+            <div class="btn btn-sm navbar-btn" id="selectAssociationClass">Association Class</div>
+            <div class="btn btn-sm navbar-btn" id="selectGeneralization">Generalization</div>
+            <div class="btn btn-sm navbar-btn" id="selectRealization">Realization</div>
+            <div class="btn btn-sm navbar-btn" id="selectAssociation">Association</div>
+            <div class="btn btn-sm navbar-btn" id="selectAggregation">Aggregation</div>
+            <div class="btn btn-sm navbar-btn" id="selectComposition">Composition</div>
+            <div class="btn btn-sm navbar-btn" id="selectMultiAssociation">Mutli association</div>
+            <div class="btn btn-sm navbar-btn" id="selectInnerClass">Inner class</div>
+            <div class="btn btn-sm navbar-btn" id="selectDependency">Dependency</div>
         </div>
-        <span id="measure" style="display: none"></span>
-        <script type="application/javascript">
-                let selectedType = undefined;
+    </nav>
 
-                function select(elementType) {
-                    selectedType = elementType;
+    <div id="diagram">
+        <div id="paper"></div>
+    </div>
+    <div class="offcanvas offcanvas-bottom" tabindex="-1" id="modifier" aria-labelledby="modifier-title" data-bs-backdrop="false" style="background-color: #F2F2F2">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="modifier-title" contenteditable="true">Modifier</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div id="modifierBody" class="offcanvas-body small d-flex flow-row justify-content-evenly">
+                <!--            <div class="p-2">
+                <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Methods</th>
+                                <th scope="col">Return types</th>
+                                <th scope="col">Visbility</th>
+                                <th scope="col">Is abstract</th>
+                                <th scope="col">Is static</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <input class="form-control form-control-sm form-control-plaintext input-sm text-center" value="new attribute">
+                                </td>
+                                <td>
+                                    <input class="form-control form-control-sm form-control-plaintext input-sm text-center" list="existingTypes" id="exampleDataList" placeholder="Enter type">
+                                </td>
+                                <td>
+                                    <select class="form-select input-sm text-center" aria-label="Default select example">
+                                        <option value="public" selected>Public</option>
+                                        <option value="private">Private</option>
+                                        <option value="protected">Protected</option>
+                                        <option value="package">Package</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input class="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="...">
+                                </td>
+                                <td>
+                                    <input class="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="...">
+                                </td>
+                                <td class="text-center">
+                                    <button class='btn btn-secondary btn-circle btn-sm'><span class="fa fa-arrow-up"></span></button>
+                                    <button class='btn btn-secondary btn-circle btn-sm'><span class="fa fa-arrow-down"></span></button>
+                                    <button class='btn btn-danger btn-circle btn-sm'><i class="fa fa-trash-can"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input class="form-control form-control-sm form-control-plaintext input-sm text-center" value="new attribute">
+                                </td>
+                                <td>
+                                    <input class="form-control form-control-sm form-control-plaintext input-sm text-center" list="existingTypes" id="exampleDataList" placeholder="Enter type">
+                                </td>
+                                <td>
+                                    <select class="form-select input-sm text-center" aria-label="Default select example">
+                                        <option value="public" selected>Public</option>
+                                        <option value="private">Private</option>
+                                        <option value="protected">Protected</option>
+                                        <option value="package">Package</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input class="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="...">
+                                </td>
+                                <td>
+                                    <input class="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="...">
+                                </td>
+                                <td class="text-center">
+                                    <button class='btn btn-secondary btn-circle btn-sm'><span class="fa fa-arrow-up"></span></button>
+                                    <button class='btn btn-secondary btn-circle btn-sm'><span class="fa fa-arrow-down"></span></button>
+                                    <button class='btn btn-danger btn-circle btn-sm'><i class="fa fa-trash-can"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input class="form-control form-control-sm form-control-plaintext input-sm text-center" value="new attribute">
+                                </td>
+                                <td>
+                                    <input class="form-control form-control-sm form-control-plaintext input-sm text-center" list="existingTypes" id="exampleDataList" placeholder="Enter type">
+                                </td>
+                                <td>
+                                    <select class="form-select input-sm text-center" aria-label="Default select example">
+                                        <option value="public" selected>Public</option>
+                                        <option value="private">Private</option>
+                                        <option value="protected">Protected</option>
+                                        <option value="package">Package</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input class="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="...">
+                                </td>
+                                <td>
+                                    <input class="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="...">
+                                </td>
+                                <td class="text-center">
+                                    <button class='btn btn-secondary btn-circle btn-sm'><span class="fa fa-arrow-up"></span></button>
+                                    <button class='btn btn-secondary btn-circle btn-sm'><span class="fa fa-arrow-down"></span></button>
+                                    <button class='btn btn-danger btn-circle btn-sm'><i class="fa fa-trash-can"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input class="form-control form-control-sm form-control-plaintext input-sm text-center" value="new attribute">
+                                </td>
+                                <td>
+                                    <input class="form-control form-control-sm form-control-plaintext input-sm text-center" list="existingTypes" id="exampleDataList" placeholder="Enter type">
+                                </td>
+                                <td>
+                                    <select class="form-select input-sm text-center" aria-label="Default select example">
+                                        <option value="public" selected>Public</option>
+                                        <option value="private">Private</option>
+                                        <option value="protected">Protected</option>
+                                        <option value="package">Package</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input class="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="...">
+                                </td>
+                                <td>
+                                    <input class="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="...">
+                                </td>
+                                <td class="text-center">
+                                    <button class='btn btn-secondary btn-circle btn-sm'><span class="fa fa-arrow-up"></span></button>
+                                    <button class='btn btn-secondary btn-circle btn-sm'><span class="fa fa-arrow-down"></span></button>
+                                    <button class='btn btn-danger btn-circle btn-sm'><i class="fa fa-trash-can"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input class="form-control form-control-sm form-control-plaintext input-sm text-center" value="new attribute">
+                                </td>
+                                <td>
+                                    <input class="form-control form-control-sm form-control-plaintext input-sm text-center" list="existingTypes" id="exampleDataList" placeholder="Enter type">
+                                </td>
+                                <td>
+                                    <select class="form-select input-sm text-center" aria-label="Default select example">
+                                        <option value="public" selected>Public</option>
+                                        <option value="private">Private</option>
+                                        <option value="protected">Protected</option>
+                                        <option value="package">Package</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input class="form-check-input " type="checkbox" id="checkboxNoLabel" value="" aria-label="...">
+                                </td>
+                                <td>
+                                    <input class="form-check-input align-middle" type="checkbox" id="checkboxNoLabel" value="" aria-label="...">
+                                </td>
+                                <td class="text-center">
+                                    <button class='btn btn-secondary btn-circle btn-sm'><span class="fa fa-arrow-up"></span></button>
+                                    <button class='btn btn-secondary btn-circle btn-sm'><span class="fa fa-arrow-down"></span></button>
+                                    <button class='btn btn-danger btn-circle btn-sm'><i class="fa fa-trash-can"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="5" class="text-center">
+                                    Add a new attribute
+                                </td>
+                                <td class="text-center">
+                                    <button class="btn btn-primary btn-circle btn-sm"><i class="fa fa-plus"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>-->
+
+        </div>
+    </div>
+    <span id="measure" style="display: none"></span>
+    <script type="module">
+
+            import {
+                Association,
+                Aggregation,
+                Composition,
+                Realization,
+                Generalization,
+                Class,
+                Interface,
+                ElementType,
+                Attribute,
+                Visibility
+            } from "@routes.Assets.versioned("javascripts/gryffinium.uml.js")"
+
+
+            const socket = new WebSocket('ws://localhost:9000/socket/@uuid');
+
+            const messageInput = document.getElementById('input-message');
+            const chat = document.getElementById('list-message');
+            const buttonSend = document.getElementById('button-send');
+
+
+            const elements = new Map();
+
+            document.getElementById("selectClass").addEventListener("click", function () {
+                selectedType = 'CLASS';
+            });
+
+            document.getElementById("selectEnum").addEventListener("click", function () {
+                selectedType = 'ENUM';
+            });
+
+            document.getElementById("selectAssociationClass").addEventListener("click", function () {
+                selectedType = 'ASSOCIATION_CLASS';
+            });
+
+            document.getElementById("selectInterface").addEventListener("click", function () {
+                selectedType = 'INTERFACE';
+            });
+
+            document.getElementById("selectAssociation").addEventListener("click", function () {
+                paper.options.defaultLink = new uml.Association();
+            });
+
+            document.getElementById("selectAggregation").addEventListener("click", function () {
+                paper.options.defaultLink = new uml.Aggregation();
+            });
+
+            document.getElementById("selectComposition").addEventListener("click", function () {
+                paper.options.defaultLink = new uml.Composition();
+            });
+
+            document.getElementById("selectRealization").addEventListener("click", function () {
+                paper.options.defaultLink = new uml.Realization();
+            });
+
+            document.getElementById("selectGeneralization").addEventListener("click", function () {
+                paper.options.defaultLink = new uml.Generalization();
+            });
+
+            document.getElementById("selectMultiAssociation").addEventListener("click", function () {
+                selectedType = 'MULTIPLE_ASSOCIATION';
+            });
+
+            document.getElementById("selectInnerClass").addEventListener("click", function () {
+                selectedType = 'INNER_CLASS';
+            });
+
+            document.getElementById("selectDependency").addEventListener("click", function () {
+                selectedType = 'DEPENDENCY';
+            });
+
+
+            var selectedType = undefined;
+
+            let modifier = document.getElementById("modifier");
+            let modifierBody = document.getElementById("modifierBody");
+            let modifierTitle = document.getElementById("modifier-title");
+
+            let existingTypes = document.createElement("datalist");
+            existingTypes.id = "existingTypes";
+            let String = document.createElement("option");
+            String.value = "String";
+            let Integer = document.createElement("option");
+            Integer.value = "Integer";
+            let Double = document.createElement("option");
+            Double.value = "Double";
+            let Boolean = document.createElement("option");
+            Boolean.value = "Boolean";
+
+
+            existingTypes.appendChild(String);
+            existingTypes.appendChild(Integer);
+            existingTypes.appendChild(Double);
+            existingTypes.appendChild(Boolean);
+
+            let measureText = document.getElementById("measure");
+
+            let counter = 1;
+
+            let selectedElement = undefined;
+
+            let modifierOffCanvas = new bootstrap.Offcanvas(modifier);
+
+            function generateModifierInterface() {
+                if (selectedElement === undefined) {
+                    modifierOffCanvas.hide()
+                    return;
+                }
+                modifierOffCanvas.show()
+
+                modifierBody.innerHTML = "";
+
+
+                switch (selectedElement.getType()) {
+                    case 'ENUM':
+                        // TODO add values interfaces
+                    case 'CLASS':
+                    case 'INTERFACE':
+                        modifierTitle.innerHTML = selectedElement.get('name');
+                        modifierTitle.onblur = function () {
+                            selectedElement.set('name', modifierTitle.innerHTML);
+                            generateModifierInterface(selectedElement);
+                        }
+                        let attributesContainer = document.createElement("div");
+                        attributesContainer.className = "p-2";
+                        modifierBody.append(attributesContainer);
+                        let attributesScroller = document.createElement("div");
+                        attributesScroller.className = "table-wrapper-scroll-y my-custom-scrollbar";
+                        attributesContainer.append(attributesScroller);
+                        let attributesTable = document.createElement("table");
+                        attributesTable.className = "table table-bordered table-striped";
+                        attributesScroller.append(attributesTable);
+
+                        let attributesTableHead = document.createElement("thead");
+                        attributesTable.append(attributesTableHead);
+
+                        let attributesTableHeadRow = document.createElement("tr");
+                        attributesTableHead.append(attributesTableHeadRow);
+
+                        let titles = ["Attributes", "Types", "Visibility", "is constant", "Is static", "Action"];
+
+                        for (let title of titles) {
+                            let attributesTableHeadRowTitle = document.createElement("th");
+                            attributesTableHeadRowTitle.className = "text-center";
+                            attributesTableHeadRowTitle.innerHTML = title;
+                            attributesTableHeadRow.append(attributesTableHeadRowTitle);
+                        }
+
+                        let attributesTableBody = document.createElement("tbody");
+                        attributesTable.append(attributesTableBody);
+
+
+                        attributesTableBody.append(generateAddAttribute(selectedElement, attributesTableBody));
+                        for (let attribute of selectedElement.get('attributes')) {
+                            attributesTableBody.append(generateAttributeInterface(selectedElement, attribute));
+                        }
+
+
+                        break;
                 }
 
-                let measureText = document.getElementById("measure");
-        </script>
 
-        <script type="module">
+            }
 
-                import {
-                    Association,
-                    Aggregation,
-                    Composition,
-                    Realization,
-                    Generalization,
-                    Class,
-                    Interface,
-                    ElementType,
-                    Attribute
-                } from "@routes.Assets.versioned("javascripts/gryffinium.uml.js")"
+            function generateAttributeInterface(element, attribute) {
+                let attributesTableBodyRow = document.createElement("tr");
 
-                const socket = new WebSocket('ws://localhost:9000/socket/@uuid');
+                let attributesTableBodyRowName = document.createElement("td");
+                attributesTableBodyRow.append(attributesTableBodyRowName);
+                let inputName = document.createElement("input");
+                inputName.className = "form-control form-control-sm form-control-plaintext input-sm text-center";
+                inputName.value = attribute.name;
+                inputName.addEventListener("blur", function () {
+                    attribute.name = inputName.value;
+                    element.updateAttribute(attribute);
+                    generateModifierInterface();
+                });
+                attributesTableBodyRowName.append(inputName);
 
-                const messageInput = document.getElementById('input-message');
-                const chat = document.getElementById('list-message');
-                const buttonSend = document.getElementById('button-send');
+                let attributesTableBodyRowType = document.createElement("td");
+                attributesTableBodyRow.append(attributesTableBodyRowType);
+                let inputType = document.createElement("input");
+                inputType.className = "form-control form-control-sm form-control-plaintext input-sm text-center";
+                inputType.value = attribute.type;
+                inputType.setAttribute("list", existingTypes.id);
+                inputType.placeholder = "Enter type";
+                inputType.addEventListener("blur", function () {
+                    attribute.type = inputType.value;
+                    element.updateAttribute(attribute);
+                    generateModifierInterface();
+                });
+                attributesTableBodyRowType.append(inputType);
 
 
-                const elements = new Map();
+                attributesTableBodyRow.append(generateVisibilityInterface(element, attribute));
 
-                function sendMessage(command) {
-                    socket.send(JSON.stringify(command));
+
+                let attributesTableBodyRowIsConstant = document.createElement("td");
+                attributesTableBodyRow.append(attributesTableBodyRowIsConstant);
+                let inputIsConstant = document.createElement("input");
+                inputIsConstant.className = "form-check-input";
+                inputIsConstant.type = "checkbox";
+                inputIsConstant.checked = attribute.isConstant;
+                inputIsConstant.addEventListener("change", function () {
+                    attribute.isConstant = inputIsConstant.checked;
+                    element.updateAttribute(attribute);
+                    generateModifierInterface();
+                });
+
+                attributesTableBodyRowIsConstant.append(inputIsConstant);
+
+                let attributesTableBodyRowIsStatic = document.createElement("td");
+                attributesTableBodyRow.append(attributesTableBodyRowIsStatic);
+                let inputIsStatic = document.createElement("input");
+                inputIsStatic.className = "form-check-input";
+                inputIsStatic.type = "checkbox";
+                inputIsStatic.checked = attribute.isStatic;
+                inputIsStatic.addEventListener("change", function () {
+                    attribute.isStatic = inputIsStatic.checked;
+                    element.updateAttribute(attribute);
+                    generateModifierInterface();
+                });
+                attributesTableBodyRowIsStatic.append(inputIsStatic);
+
+                attributesTableBodyRow.append(generateActionButtonInterface(element, attribute));
+
+                return attributesTableBodyRow;
+            }
+
+            function generateVisibilityInterface(element, attribute) {
+                let attributesTableBodyRowVisibility = document.createElement("td");
+                let inputVisibility = document.createElement("select");
+
+                inputVisibility.addEventListener("change", function () {
+                    attribute.setVisibility(inputVisibility.value);
+                    element.updateAttribute(attribute);
+                    generateModifierInterface();
+                });
+
+                inputVisibility.className = "form-select input-sm text-center";
+                let visbilityOptions = ["public", "private", "protected", "package"];
+                for (let option of visbilityOptions) {
+                    let optionElement = document.createElement("option");
+                    optionElement.value = option;
+                    optionElement.innerHTML = option;
+                    if (Visibility.getVisibility(option) === attribute.visibility) {
+                        optionElement.selected = true;
+                    }
+                    inputVisibility.append(optionElement);
                 }
+                attributesTableBodyRowVisibility.append(inputVisibility);
 
-                function receiveChatMessage(message) {
-                    let row = document.createElement('div');
-                    row.className = "row list-group-item bg-light";
-                    row.className = "row list-group-item bg-light";
+                return attributesTableBodyRowVisibility;
+            }
 
-                    let div = document.createElement('div');
-                    div.classList.add('col');
+            function generateActionButtonInterface(element, attribute) {
+                // TODO : implement onclick method
+                let attributesTableBodyRowAction = document.createElement("td");
 
-                    let sender = document.createElement('em');
-                    sender.innerHTML = message.sender;
+                let buttonUp = document.createElement("button");
+                buttonUp.className = "btn btn-secondary btn-circle btn-sm";
+                buttonUp.innerHTML = "<i class='fa fa-arrow-up'></i>";
+                buttonUp.addEventListener("click", function () {
+                    let attributes = element.get('attributes');
+                    let index = attributes.indexOf(attribute);
+                    if (index > 0) {
+                        let temp = attributes[index - 1];
+                        attributes[index - 1] = element.get('attributes')[index];
+                        attributes[index] = temp;
+                        element.setAttributes(attributes);
+                        generateModifierInterface();
+                    }
+                });
+                attributesTableBodyRowAction.append(buttonUp);
 
-                    let content = document.createElement('div');
-                    content.innerHTML = message.message;
+                let buttonDown = document.createElement("button");
+                buttonDown.className = "btn btn-secondary btn-circle btn-sm";
+                buttonDown.innerHTML = "<i class='fa fa-arrow-down'></i>";
+                buttonDown.addEventListener("click", function () {
+                    let attributes = element.get('attributes');
+                    let index = attributes.indexOf(attribute);
+                    if (index < attributes.length - 1) {
+                        let temp = attributes[index + 1];
+                        attributes[index + 1] = element.get('attributes')[index];
+                        attributes[index] = temp;
+                        element.setAttributes(attributes);
+                        generateModifierInterface();
+                    }
+                });
+                attributesTableBodyRowAction.append(buttonDown);
 
-                    div.appendChild(sender);
-                    div.appendChild(content);
-                    row.appendChild(div);
+                let buttonDelete = document.createElement("button");
+                buttonDelete.className = "btn btn-danger btn-circle btn-sm";
+                buttonDelete.innerHTML = "<i class='fa fa-trash-can'></i>";
+                buttonDelete.addEventListener("click", function () {
+                    let attributes = element.get('attributes');
+                    let index = attributes.indexOf(attribute);
+                    attributes.splice(index, 1);
+                    element.setAttributes(attributes);
+                    generateModifierInterface();
+                });
+                attributesTableBodyRowAction.append(buttonDelete);
 
-                    chat.appendChild(row);
+                return attributesTableBodyRowAction;
+            }
+
+            function generateAddAttribute(element, table) {
+                let appendRow = document.createElement("tr");
+
+                let attributesTableBodyRowName = document.createElement("td");
+                attributesTableBodyRowName.setAttribute("colspan", "5");
+                attributesTableBodyRowName.innerHTML = "Add a new attribute";
+                appendRow.append(attributesTableBodyRowName);
+
+                let attributesTableBodyRowAction = document.createElement("td");
+                appendRow.append(attributesTableBodyRowAction);
+                let buttonAdd = document.createElement("button");
+                buttonAdd.className = "btn btn-primary btn-circle btn-sm";
+                buttonAdd.innerHTML = "<i class='fa fa-plus'></i>";
+
+                buttonAdd.onclick = function () {
+                    let attribute = new Attribute(counter++, "attribute", "String", "private", false, false);
+                    element.addAttribute(attribute);
+                    table.append(generateAttributeInterface(element, attribute));
                 }
+                attributesTableBodyRowAction.append(buttonAdd);
+                return appendRow;
+            }
 
-                buttonSend.onclick = function () {
-                    let command = {
-                        'message': messageInput.value,
-                        'type': 'ChatMessageCommand'
-                    };
-                    sendMessage(command)
-                    messageInput.value = '';
+            function sendMessage(command) {
+                socket.send(JSON.stringify(command));
+            }
+
+            function receiveChatMessage(message) {
+                let row = document.createElement('div');
+                row.className = "row list-group-item bg-light";
+                row.className = "row list-group-item bg-light";
+
+                let div = document.createElement('div');
+                div.classList.add('col');
+
+                let sender = document.createElement('em');
+                sender.innerHTML = message.sender;
+
+                let content = document.createElement('div');
+                content.innerHTML = message.message;
+
+                div.appendChild(sender);
+                div.appendChild(content);
+                row.appendChild(div);
+
+                chat.appendChild(row);
+            }
+
+            buttonSend.onclick = function () {
+                let command = {
+                    'message': messageInput.value,
+                    'type': 'ChatMessageCommand'
                 };
-                socket.onopen = function () {
+                sendMessage(command)
+                messageInput.value = '';
+            };
+            socket.onopen = function () {
+                socket.onmessage = function (event) {
+                    let message = JSON.parse(event.data);
+                    switch (message.type) {
+                        case 'ChatMessageCommand':
+                            receiveChatMessage(message);
+                            break;
+                        case 'CreateCommand':
+                            let elem = null;
+                            switch (message.elementType) {
+                                case ElementType.Class.name:
+                                    elem = new uml.Class({
+                                        name: message.name,
+                                        position: {
+                                            x: message.x,
+                                            y: message.y
+                                        },
+                                        size: {
+                                            width: message.width,
+                                            height: message.height
+                                        },
+                                        id: message.id,
+                                    });
+                                    break;
+                                case ElementType.Interface.name:
+                                    elem = new uml.Interface({
+                                        name: message.name,
+                                        position: {
+                                            x: message.x,
+                                            y: message.y
+                                        },
+                                        size: {
+                                            width: message.width,
+                                            height: message.height
+                                        },
+                                        id: message.id,
+                                    });
+                                    break;
+                                case ElementType.Enum.name:
+                                    elem = new uml.Enum({
+                                        name: message.name,
+                                        position: {
+                                            x: message.x,
+                                            y: message.y
+                                        },
+                                        size: {
+                                            width: message.width,
+                                            height: message.height
+                                        },
+                                        id: message.id,
+                                    });
+                                    break;
+                                case ElementType.AssociationClass.name:
+                                    // TODO AssociationClass
+                                    break;
+                                case ElementType.Generalization.name:
+                                    elem = new Generalization(message);
+                                    break;
+                                case ElementType.BinaryAssociation.name:
+                                    elem = new Association(message);
+                                    break;
+                                case ElementType.Aggregation.name:
+                                    elem = new Aggregation(message);
+                                    break;
+                                case ElementType.Composition.name:
+                                    elem = new Composition(message);
+                                    break;
+                                case ElementType.MultiAssociation.name:
+                                    // TODO MutliAssociation
+                                    break;
+                                case ElementType.InnerClass.name:
+                                    // TODO InnerClass
+                                    break;
+                                case ElementType.Dependency.name:
+                                    // TODO Dependency
+                                    break;
+                            }
+                            elements.set(elem.id, elem);
+                            graph.addCell(elem);
+                            break;
+                        case 'UpdateCommand':
+                            elements.get(message.id).setSizeAndPosition({
+                                width: message.width,
+                                height: message.height
+                            }, {x: message.x, y: message.y});
+                            break;
+                        case 'Error':
+                            console.log(message.message)
+                            break;
 
 
-                    socket.onmessage = function (event) {
-                        let message = JSON.parse(event.data);
-                        switch (message.type) {
-                            case 'ChatMessageCommand':
-                                receiveChatMessage(message);
-                                break;
-                            case 'CreateCommand':
-                                let elem = null;
-                                switch (message.elementType) {
-                                    case ElementType.Class.name:
-                                        elem = new uml.Class({
-                                            name: message.name,
-                                            position: {
-                                                x: message.x,
-                                                y: message.y
-                                            },
-                                            size: {
-                                                width: message.width,
-                                                height: message.height
-                                            },
-                                            id: message.id,
-                                        });
-                                        break;
-                                    case ElementType.Interface.name:
-                                        elem = new uml.Interface({
-                                            name: message.name,
-                                            position: {
-                                                x: message.x,
-                                                y: message.y
-                                            },
-                                            size: {
-                                                width: message.width,
-                                                height: message.height
-                                            },
-                                            id: message.id,
-                                        });
-                                        break;
-                                    case ElementType.Enum.name:
-                                        elem = new uml.Enum({
-                                            name: message.name,
-                                            position: {
-                                                x: message.x,
-                                                y: message.y
-                                            },
-                                            size: {
-                                                width: message.width,
-                                                height: message.height
-                                            },
-                                            id: message.id,
-                                        });
-                                        break;
-                                    case ElementType.AssociationClass.name:
-                                        // TODO AssociationClass
-                                        break;
-                                    case ElementType.Generalization.name:
-                                        elem = new Generalization(message);
-                                        break;
-                                    case ElementType.BinaryAssociation.name:
-                                        elem = new Association(message);
-                                        break;
-                                    case ElementType.Aggregation.name:
-                                        elem = new Aggregation(message);
-                                        break;
-                                    case ElementType.Composition.name:
-                                        elem = new Composition(message);
-                                        break;
-                                    case ElementType.MultiAssociation.name:
-                                        // TODO MutliAssociation
-                                        break;
-                                    case ElementType.InnerClass.name:
-                                        // TODO InnerClass
-                                        break;
-                                    case ElementType.Dependency.name:
-                                        // TODO Dependency
-                                        break;
-                                }
-                                elements.set(elem.id, elem);
-                                graph.addCell(elem);
-                                break;
-                            case 'UpdateCommand':
-                                elements.get(message.id).setSizeAndPosition({
-                                    width: message.width,
-                                    height: message.height
-                                }, {x: message.x, y: message.y});
-                                break;
-                            case 'Error':
-                                console.log(message.message)
-                                break;
+                    }
+                };
+
+                socket.onclose = function () {
+                    console.log('WebSocket closed');
+                };
+            }
+
+            let uml = joint.shapes.uml;
+
+            let graph = new joint.dia.Graph();
+
+            let paper = new joint.dia.Paper({
+                el: document.getElementById('paper'),
+                width: document.documentElement.clientWidth,
+                height: document.documentElement.clientHeight,
+                gridSize: 10,
+                model: graph,
+                drawGrid: true,
+                interactive: {
+                    labelMove: true,
+                },
+                linkPinning: false,
+                defaultConnector: {
+                    name: 'jumpover',
+                    size: 5,
+                },
+                defaultLink: new uml.Association(),
+
+            });
 
 
-                        }
+            paper.on("blank:mousewheel", function (evt, x, y, delta) {
+                evt.preventDefault();
+                const oldScale = paper.scale().sx;
+                const newScale = oldScale + 0.2 * delta * oldScale
+
+                if (newScale > 0.2 && newScale < 5) {
+                    paper.scale(newScale, newScale, x, y);
+                    paper.translate(-x * newScale + evt.offsetX, -y * newScale + evt.offsetY);
+                }
+            });
+
+            let resizingStartPos = null;
+            let dragStartPosition = null;
+            let moving = null;
+
+            paper.on('blank:pointerdown', function (event, x, y) {
+                selectedElement = undefined;
+                generateModifierInterface();
+                let scale = paper.scale();
+                if (selectedType !== undefined) {
+
+                    let command = {
+                        data: {
+                            x: x - 100,
+                            y: y - 50,
+                            width: 200,
+                            height: 100,
+                        },
+                        type: 'CreateCommand',
+                        entityType: selectedType
                     };
 
-                    socket.onclose = function () {
-                        console.log('WebSocket closed');
-                    };
+                    sendMessage(command);
+                } else if (event.button === 1) {
+                    dragStartPosition = {x: x * scale.sx, y: y * scale.sy};
+                }
+                selectedType = undefined;
+            });
+
+
+            paper.on('cell:pointerup blank:pointerup', function (cellView, evt, x, y) {
+
+                dragStartPosition = null;
+
+            });
+
+            paper.on('blank:pointerup', function (event, x, y) {
+                paper.removeTools();
+            });
+
+            paper.on('element:pointerdblclick', function (elementView) {
+                console.log(elementView)
+                elementView.model.trigger('change:autoresize')
+            })
+
+            document.getElementById('diagram').addEventListener('mousemove', function (evt) {
+                if (dragStartPosition) {
+                    paper.translate(
+                            evt.offsetX - dragStartPosition.x,
+                            evt.offsetY - dragStartPosition.y);
                 }
 
 
-                let graph = new joint.dia.Graph();
+                if (resizingStartPos) {
+                    resizingStartPos(evt.offsetX, evt.offsetY);
+                }
+            });
 
-                let paper = new joint.dia.Paper({
-                    el: document.getElementById('paper'),
-                    width: document.documentElement.clientWidth,
-                    height: document.documentElement.clientHeight,
-                    gridSize: 10,
-                    model: graph,
-                    drawGrid: true,
-                    interactive: {
-                        labelMove: true,
-                    },
-                    //linkPinning: false,
-                    defaultConnector: {
-                        name: 'jumpover',
-                        size: 5,
-                    },
+            document.getElementById('diagram').addEventListener('mouseup', function (evt) {
+                evt.preventDefault();
+                if (resizingStartPos) {
+                    sendMessage(resizingStartPos(evt.offsetX, evt.offsetY));
 
-                });
+                    resizingStartPos = null;
+                }
+                if (moving) {
+                    sendMessage({
+                        reference: {id: moving.get('id')},
+                        data: {
+                            x: moving.get('position').x,
+                            y: moving.get('position').y,
+                            width: moving.get('size').width,
+                            height: moving.get('size').height
+                        },
+                        type: 'UpdateCommand',
+                        entityType: moving.getType(),
+                    })
+                    moving = null;
+                }
+            });
 
 
-                paper.on("blank:mousewheel", function (evt, x, y, delta) {
-                    evt.preventDefault();
-                    const oldScale = paper.scale().sx;
-                    const newScale = oldScale + 0.2 * delta * oldScale
-
-                    if (newScale > 0.2 && newScale < 5) {
-                        paper.scale(newScale, newScale, x, y);
-                        paper.translate(-x * newScale + evt.offsetX, -y * newScale + evt.offsetY);
+            let resizeLGrip = new joint.elementTools.Button({
+                markup: [{
+                    tagName: 'rect',
+                    selector: 'button',
+                    attributes: {
+                        width: 10,
+                        height: 10,
+                        fill: '#777777',
+                        cursor: 'w-resize'
                     }
-                });
+                }],
+                x: '0%',
+                y: '50%',
+                offset: {
+                    x: -5,
+                    y: -5
+                },
+                rotate: true,
+                action: function (evt) {
+                    let elem = this.model;
+                    resizingStartPos = function (x, y) {
 
-                let resizingStartPos = null;
-                let dragStartPosition = null;
-                let moving = null;
+                        let coords = paper.snapToGrid(x, y);
+                        let size = elem.attributes.size;
+                        let position = elem.attributes.position;
 
-                paper.on('blank:pointerdown', function (event, x, y) {
-                    let scale = paper.scale();
-                    if (selectedType !== undefined) {
+                        let deltaWidth = position.x - coords.x;
 
-                        let command = {
-                            data: {
-                                x: x - 100,
-                                y: y - 50,
-                                width: 200,
-                                height: 100,
-                            },
-                            type: 'CreateCommand',
-                            entityType: selectedType
-                        };
+                        if (size.width + deltaWidth <= 100)
+                            deltaWidth = 0;
 
-                        sendMessage(command);
-                    } else if (event.button === 1) {
-                        dragStartPosition = {x: x * scale.sx, y: y * scale.sy};
+                        return elem.setSizeAndPosition(
+                                {width: size.width + deltaWidth, height: elem.getHeight()},
+                                {x: position.x - deltaWidth, y: position.y});
                     }
-                    selectedType = undefined;
-                });
+                }
+            });
 
 
-                paper.on('cell:pointerup blank:pointerup', function (cellView, evt, x, y) {
-
-                    dragStartPosition = null;
-
-                });
-
-                paper.on('blank:pointerup', function (event, x, y) {
-                    paper.removeTools();
-                });
-
-                paper.on('element:pointerdblclick', function (elementView) {
-
-                    elementView.model.trigger('change:autoresize')
-                })
-
-                document.getElementById('diagram').addEventListener('mousemove', function (evt) {
-                    if (dragStartPosition) {
-                        paper.translate(
-                                evt.offsetX - dragStartPosition.x,
-                                evt.offsetY - dragStartPosition.y);
+            let resizeRGrip = new joint.elementTools.Button({
+                markup: [{
+                    tagName: 'rect',
+                    selector: 'button',
+                    attributes: {
+                        width: 10,
+                        height: 10,
+                        fill: '#777777',
+                        cursor: 'e-resize'
                     }
+                }],
+                x: '100%',
+                y: '50%',
+                offset: {
+                    x: -5,
+                    y: -5
+                },
+                rotate: true,
+                action: function (evt) {
+                    let elem = this.model;
+                    resizingStartPos = function (x, y) {
+                        let size = elem.attributes.size;
+                        let position = elem.attributes.position;
 
+                        let coords = paper.snapToGrid(x, y);
 
-                    if (resizingStartPos) {
-                        resizingStartPos(evt.offsetX, evt.offsetY);
+                        let deltaWidth = coords.x - (position.x + size.width);
+
+                        if (size.width + deltaWidth <= 100)
+                            deltaWidth = 0;
+
+                        return elem.setSizeAndPosition({width: size.width + deltaWidth, height: elem.getHeight()});
+
                     }
-                });
+                }
+            });
 
-                document.getElementById('diagram').addEventListener('mouseup', function (evt) {
-                    evt.preventDefault();
-                    if (resizingStartPos) {
-                        sendMessage(resizingStartPos(evt.offsetX, evt.offsetY));
+            let linkButton = new joint.elementTools.Connect({
+                x: '100%',
+                y: '0%',
+                offset: {x: -5, y: -5},
+                action: function (evt, _view, tool) {
+                    return tool.dragstart(evt);
+                }
+            })
 
-                        resizingStartPos = null;
-                    }
-                    if (moving) {
-                        sendMessage({
-                            reference: {id: moving.get('id')},
-                            data: {
-                                x: moving.get('position').x,
-                                y: moving.get('position').y,
-                                width: moving.get('size').width,
-                                height: moving.get('size').height
-                            },
-                            type: 'UpdateCommand',
-                            entityType: moving.getType(),
-                        })
-                        moving = null;
-                    }
-                });
+            let elementToolsView = new joint.dia.ToolsView({
+                tools: [
+                    new joint.elementTools.Boundary(),
+                    new joint.elementTools.Remove(),
+                    resizeLGrip,
+                    resizeRGrip,
+                    linkButton,
 
 
-                let uml = joint.shapes.uml;
+                ]
+            });
+
+            let man = new uml.Class({
+                name: 'Man',
+                size: {width: 200, height: 100},
+                position: {x: 100, y: 300}
+            });
+
+            let attr = new Attribute(1, "name", "string", "private", false, true);
+            let attr2 = new Attribute(2, "adfgadfg", "string", "private", false, true);
+            let attr3 = new Attribute(3, "afgaf", "string", "private", false, true);
+            let attr4 = new Attribute(4, "asdg", "string", "private", false, true);
+            let attr5 = new Attribute(5, "asdfgagf", "string", "private", false, true);
+
+            man.addAttribute(attr);
+            man.addAttribute(attr2)
+            man.addAttribute(attr3)
+            man.addAttribute(attr4)
+            man.addAttribute(attr5)
 
 
-                let resizeLGrip = new joint.elementTools.Button({
-                    markup: [{
-                        tagName: 'rect',
-                        selector: 'button',
-                        attributes: {
-                            width: 10,
-                            height: 10,
-                            fill: '#777777',
-                            cursor: 'w-resize'
-                        }
-                    }],
-                    x: '0%',
-                    y: '50%',
-                    offset: {
-                        x: -5,
-                        y: -5
-                    },
-                    rotate: true,
-                    action: function (evt) {
-                        let elem = this.model;
-                        resizingStartPos = function (x, y) {
+            let myTargetArrowhead = new joint.linkTools.TargetArrowhead();
+            let mySourceArrowhead = new joint.linkTools.SourceArrowhead();
 
-                            let coords = paper.snapToGrid(x, y);
-                            let size = elem.attributes.size;
-                            let position = elem.attributes.position;
+            myTargetArrowhead.el.setAttribute('d', 'M -20, 0 a 6,6 0 1,0 12, 0 a 6,6 0 1,0 -12,0')
+            myTargetArrowhead.el.setAttribute('stroke-width', '1')
+            mySourceArrowhead.el.setAttribute('d', 'M 0, 0 a 6,6 0 1,0 12, 0 a 6,6 0 1,0 -12,0')
+            mySourceArrowhead.el.setAttribute('stroke-width', '1')
 
-                            let deltaWidth = position.x - coords.x;
+            let linkToolsView = new joint.dia.ToolsView({
+                tools: [
+                    new joint.linkTools.Vertices(), new joint.linkTools.Segments(),
+                    mySourceArrowhead, myTargetArrowhead,
+                    new joint.linkTools.Boundary(), new joint.linkTools.Remove(),
+                ]
+            });
 
-                            if (size.width + deltaWidth <= 100)
-                                deltaWidth = 0;
+            paper.on('link:pointerdown', function (linkView) {
+                paper.removeTools();
+                linkView.addTools(linkToolsView);
+            });
 
-                            return elem.setSizeAndPosition(
-                                    {width: size.width + deltaWidth, height: elem.getHeight()},
-                                    {x: position.x - deltaWidth, y: position.y});
-                        }
-                    }
-                });
+            paper.on('element:pointerdown', function (elementView) {
+                paper.removeTools();
+                elementView.addTools(elementToolsView);
+                selectedElement = elementView.model;
+                generateModifierInterface();
+
+            });
 
 
-                let resizeRGrip = new joint.elementTools.Button({
-                    markup: [{
-                        tagName: 'rect',
-                        selector: 'button',
-                        attributes: {
-                            width: 10,
-                            height: 10,
-                            fill: '#777777',
-                            cursor: 'e-resize'
-                        }
-                    }],
-                    x: '100%',
-                    y: '50%',
-                    offset: {
-                        x: -5,
-                        y: -5
-                    },
-                    rotate: true,
-                    action: function (evt) {
-                        let elem = this.model;
-                        resizingStartPos = function (x, y) {
-                            let size = elem.attributes.size;
-                            let position = elem.attributes.position;
-
-                            let coords = paper.snapToGrid(x, y);
-
-                            let deltaWidth = coords.x - (position.x + size.width);
-
-                            if (size.width + deltaWidth <= 100)
-                                deltaWidth = 0;
-
-                            return elem.setSizeAndPosition({width: size.width + deltaWidth, height: elem.getHeight()});
-
-                        }
-                    }
-                });
-
-                let linkButton = new joint.elementTools.Connect({
-                    x: '100%',
-                    y: '0%',
-                    offset: {x: -5, y: -5},
-                    action: function (evt, _view, tool) {
-                        this.paper.options.defaultLink = new uml.Generalization();
-                        return tool.dragstart(evt);
-                    }
-                })
-
-                let elementToolsView = new joint.dia.ToolsView({
-                    tools: [
-                        new joint.elementTools.Boundary(),
-                        new joint.elementTools.Remove(),
-                        resizeLGrip,
-                        resizeRGrip,
-                        linkButton,
+            graph.on('change:position', function (cell) {
+                moving = cell;
+            })
 
 
-                    ]
-                });
-
-
-                let myTargetArrowhead = new joint.linkTools.TargetArrowhead();
-                let mySourceArrowhead = new joint.linkTools.SourceArrowhead();
-
-                myTargetArrowhead.el.setAttribute('d', 'M -20, 0 a 6,6 0 1,0 12, 0 a 6,6 0 1,0 -12,0')
-                myTargetArrowhead.el.setAttribute('stroke-width', '1')
-                mySourceArrowhead.el.setAttribute('d', 'M 0, 0 a 6,6 0 1,0 12, 0 a 6,6 0 1,0 -12,0')
-                mySourceArrowhead.el.setAttribute('stroke-width', '1')
-
-                let linkToolsView = new joint.dia.ToolsView({
-                    tools: [
-                        new joint.linkTools.Vertices(), new joint.linkTools.Segments(),
-                        mySourceArrowhead, myTargetArrowhead,
-                        new joint.linkTools.Boundary(), new joint.linkTools.Remove(),
-                    ]
-                });
-
-                paper.on('link:pointerdown', function (linkView) {
-                    paper.removeTools();
-                    linkView.addTools(linkToolsView);
-                });
-
-                paper.on('element:pointerdown', function (elementView) {
-                    paper.removeTools();
-                    elementView.addTools(elementToolsView);
-                });
-
-
-                graph.on('change:position', function (cell) {
-                    moving = cell;
-                })
-
-
-        </script>
-    }
+    </script>
+}

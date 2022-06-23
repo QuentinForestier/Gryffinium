@@ -203,11 +203,11 @@ export class ElementType {
 
 }
 
-class Visiblity{
-    static Public = new Visiblity("+");
-    static Private = new Visiblity("-");
-    static Protected = new Visiblity("#");
-    static Package = new Visiblity("~");
+export class Visibility{
+    static Public = new Visibility("+");
+    static Private = new Visibility("-");
+    static Protected = new Visibility("#");
+    static Package = new Visibility("~");
 
     constructor(symbol) {
         this.symbol = symbol;
@@ -220,13 +220,13 @@ class Visiblity{
     static getVisibility(name){
         switch(name){
             case "public":
-                return Visiblity.Public;
+                return Visibility.Public;
             case "private":
-                return Visiblity.Private;
+                return Visibility.Private;
             case "protected":
-                return Visiblity.Protected;
+                return Visibility.Protected;
             case "package":
-                return Visiblity.Package;
+                return Visibility.Package;
         }
     }
 }
@@ -243,11 +243,17 @@ export class Type {
 }
 
 export class Attribute {
-    constructor(id, name, type, visibility) {
+    constructor(id, name, type, visibility, isConstant, isStatic) {
         this.id = id;
         this.name = name;
         this.type = type;
-        this.visibility = Visiblity.getVisibility(visibility);
+        this.visibility = Visibility.getVisibility(visibility);
+        this.isConstant = isConstant;
+        this.isStatic = isStatic;
+    }
+
+    setVisibility(visibility){
+        this.visibility = Visibility.getVisibility(visibility);
     }
 
     toString() {

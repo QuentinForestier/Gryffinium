@@ -48,3 +48,43 @@ i{
     border-top-color: rgba(0, 0, 0, 0.2);
 }
 
+.table-scrollable {
+    display: block;
+
+}
+
+.table-scrollable tbody{
+    display: block;
+    height: 200px;
+    overflow-y: scroll;
+}
+
+.btn-circle {
+    width: 30px;
+    height: 30px;
+    padding: 4px 0px;
+    border-radius: 15px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.42857;
+    vertical-align: middle;
+}
+
+.my-custom-scrollbar {
+    position: relative;
+    height: 200px;
+    overflow: auto;
+}
+.table-wrapper-scroll-y {
+    display: block;
+}
+
+th, td{
+    text-align: center;
+    max-width: 200px;
+    vertical-align: middle;
+}
+
+.input-sm{
+    max-width: 120px;
+}

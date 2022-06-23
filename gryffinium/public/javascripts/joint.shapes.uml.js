@@ -193,7 +193,7 @@ this.joint.shapes = this.joint.shapes || {};
                     }
                     linesToShow.push(lastTry)
                     maxLineLength = Math.max(maxLineLength, lineSize)
-                    maxLineLength = Math.round(maxLineLength / 10) * 10
+                    maxLineLength = (Math.round(maxLineLength / 10) * 10)
                 }
                 attrs['.uml-class-' + rect.type + '-text'].text = linesToShow.join('\n');
 
@@ -209,7 +209,7 @@ this.joint.shapes = this.joint.shapes || {};
             }
             if (auto) {
                 maxLineLength = Math.max(maxLineLength, 150)
-                this.set('size', {width: maxLineLength, height: offsetY});
+                this.set('size', {width: maxLineLength+5, height: offsetY});
             }
 
             this.set('height', offsetY);
@@ -263,6 +263,7 @@ this.joint.shapes = this.joint.shapes || {};
                 this.update();
                 this.resize();
             });
+
         }
     });
 
@@ -324,14 +325,14 @@ this.joint.shapes = this.joint.shapes || {};
 
     let CustomLink = Link_mjs.Link.define('uml.CustomLink', {
         attrs: {
-            line:{
-                strokeWidth:1,
-                stroke:'#333333',
-                connection:true,
+            line: {
+                strokeWidth: 1,
+                stroke: '#333333',
+                connection: true,
             },
-            wrapper:{
-                connection:true,
-                strokeWidth:10,
+            wrapper: {
+                connection: true,
+                strokeWidth: 10,
 
             },
         }
@@ -355,8 +356,24 @@ this.joint.shapes = this.joint.shapes || {};
     });
 
 
+    let Association = CustomLink.define('uml.Association', {
+        isDirected: false,
+    }, {
+        getType: function () {
+            return 'ASSOCIATION'
+        },
+        setDirected: function (isDirected) {
+            this.set('isDirected', isDirected);
+        },
+        swap: function () {
+            let tmp = this.get('source');
+            this.set('source', this.get('target'));
+            this.set('target', tmp);
 
-   let Generalization = CustomLink.define('uml.Generalization', {
+        }
+    });
+
+    let Generalization = CustomLink.define('uml.Generalization', {
         attrs: {
             line: {
                 targetMarker: {
@@ -369,38 +386,35 @@ this.joint.shapes = this.joint.shapes || {};
     });
 
 
-
-    let Implementation = CustomLink.define('uml.Implementation', {
+    let Realization = Generalization.define('uml.Realization', {
         attrs: {
-            '.marker-target': {d: 'M 20 0 L 0 10 L 20 20 z', fill: 'white'},
-            '.connection': {'stroke-dasharray': '3,3'}
+            line: {
+                strokeDasharray: '5,5',
+            }
         }
     });
 
-    let Aggregation = CustomLink.define('uml.Aggregation', {
-        attrs: {'.marker-target': {d: 'M 40 10 L 20 20 L 0 10 L 20 0 z', fill: 'white'}}
-    });
-
-    let Composition = CustomLink.define('uml.Composition', {
-        attrs: {'.marker-target': {d: 'M 40 10 L 20 20 L 0 10 L 20 0 z', fill: 'black'}}
-    });
-
-    let Association = CustomLink.define('uml.Association', {
-        isDirected:false,
-    },{
-        getType: function(){
-            return 'ASSOCIATION'
-        },
-        setDirected: function(isDirected){
-            this.set('isDirected', isDirected);
-        },
-        swap: function(){
-            let tmp = this.get('source');
-            this.set('source', this.get('target'));
-            this.set('target', tmp);
-
+    let Aggregation = Association.define('uml.Aggregation', {
+        attrs: {
+            line: {
+                targetMarker: {
+                    d: 'M 40 0 L 20 10 L 0 00 L 20 -10 z',
+                    fill: 'white'
+                }
+            }
         }
     });
+
+    let Composition = Aggregation.define('uml.Composition', {
+        attrs: {
+            line: {
+                targetMarker: {
+                    fill: 'black'
+                }
+            }
+        }
+    });
+
 
     // Statechart
 
@@ -517,7 +531,7 @@ this.joint.shapes = this.joint.shapes || {};
     exports.CustomLink = CustomLink;
     //exports.CustomLinkView = CustomLinkView;
     exports.Generalization = Generalization;
-    exports.Implementation = Implementation;
+    exports.Realization = Realization;
     exports.Interface = Interface;
     exports.InterfaceView = InterfaceView;
     exports.Enum = Enum;
