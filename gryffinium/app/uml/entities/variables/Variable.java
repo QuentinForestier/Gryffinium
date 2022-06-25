@@ -1,6 +1,11 @@
 package uml.entities.variables;
 
 import uml.types.Type;
+import uml.types.SimpleType;
+import uml.ClassDiagram;
+
+import graphical.entities.variables.GraphicalVariable;
+
 
 public abstract class Variable
 {
@@ -20,6 +25,10 @@ public abstract class Variable
         this(name, false);
     }
 
+    public Variable(GraphicalVariable gv, ClassDiagram cd)
+    {
+        setGraphical(gv, cd);
+    }
 
     public Integer getId()
     {
@@ -59,5 +68,22 @@ public abstract class Variable
     public void setType(Type type)
     {
         this.type = type;
+    }
+
+    public void setGraphical(GraphicalVariable gv, ClassDiagram cd)
+    {
+        if(gv.getId() != null)
+            this.setId(gv.getId());
+        if(gv.getName() != null)
+            this.name = gv.getName();
+        if(gv.isConstant() != null)
+            this.isConstant = gv.isConstant();
+        if(gv.getType() != null){
+            this.type = cd.getExistingTypes().getTypeByName(gv.getType());
+            if(type == null){
+                this.type = new SimpleType(gv.getType());
+                cd.getExistingTypes().addType(this.type);
+            }
+        }
     }
 }

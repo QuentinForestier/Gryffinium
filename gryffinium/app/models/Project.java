@@ -101,7 +101,7 @@ public class Project extends Model
         try{
          response = (ObjectNode) command.execute(this);
 
-        response.put("type", command.getClass().getSimpleName());
+        response.put("commandType", command.getClass().getSimpleName());
         }catch(Exception e){
           response = Json.newObject();
             response.put("type", "Error");

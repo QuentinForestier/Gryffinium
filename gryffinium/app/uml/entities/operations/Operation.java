@@ -1,8 +1,11 @@
 package uml.entities.operations;
 
+import graphical.entities.operations.GraphicalOperation;
+import uml.ClassDiagram;
 import uml.Visibility;
+import uml.entities.ConstructableEntity;
+import uml.entities.Entity;
 import uml.entities.variables.Parameter;
-import uml.entities.variables.Variable;
 
 import java.util.ArrayList;
 
@@ -15,15 +18,21 @@ public abstract class Operation
 
     private Visibility visibility;
 
-    public Operation(String name, Visibility visibility){
+    public Operation(String name, Visibility visibility)
+    {
         this.name = name;
         this.visibility = visibility;
     }
 
-    public Operation(String name){
+    public Operation(String name)
+    {
         this(name, Visibility.PUBLIC);
     }
 
+    public Operation(GraphicalOperation go, ClassDiagram cd)
+    {
+        setGraphical(go, cd);
+    }
 
     public Integer getId()
     {
@@ -63,5 +72,34 @@ public abstract class Operation
     public void setVisibility(Visibility visibility)
     {
         this.visibility = visibility;
+    }
+
+
+    public void setGraphical(GraphicalOperation go, ClassDiagram cd)
+    {
+        if (go.getId() != null)
+            setId(go.getId());
+        if (go.getName() != null)
+            setName(go.getName());
+        if (go.getParameters() != null && go.getId() != null)
+        {
+            Entity parent = cd.getEntity(go.getParentId());
+            Operation o = parent.getOperationById(go.getId());
+
+            if (o == null)
+            {
+                throw new IllegalArgumentException("Operation not found");
+            }
+
+            /*
+            for(Integer id : go.getParameters())
+            {
+                // TODO: get parameter from cd
+            }*/
+        }
+        if (go.getVisibility() != null)
+            this.setVisibility(Visibility.valueOf(go.getVisibility().toUpperCase()));
+
+
     }
 }

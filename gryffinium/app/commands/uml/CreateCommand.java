@@ -5,11 +5,17 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import commands.Command;
 import graphical.GraphicalElementType;
 import graphical.entities.*;
-import graphical.links.GraphicalBinaryAssociation;
+import graphical.entities.operations.GraphicalMethod;
+import graphical.entities.operations.GraphicalOperation;
+import graphical.links.*;
+import graphical.entities.variables.*;
 import models.Project;
 import play.libs.Json;
 import uml.Visibility;
 import uml.entities.*;
+import uml.entities.operations.Constructor;
+import uml.entities.operations.Method;
+import uml.entities.variables.*;
 import uml.entities.Class;
 import uml.entities.Enum;
 import uml.links.BinaryAssociation;
@@ -39,7 +45,6 @@ public class CreateCommand implements Command
     @Override
     public JsonNode execute(Project project)
     {
-        // TODO : Catch exception
         ObjectNode result = null;
 
         switch (elementType)
@@ -112,16 +117,48 @@ public class CreateCommand implements Command
             case INNER:
                 break;
 
+            case VALUE:
+                GraphicalValue gv = Json.fromJson(data,
+                        GraphicalValue.class);
+
+                Enum eParent =
+                        (Enum) project.getDiagram().getEntity(gv.getParentId());
+                gv.setValue("value" + eParent.getValues().size());
+                eParent.addValue(gv.getValue());
+
+                result = (ObjectNode) Json.toJson(gv);
+                break;
 
             case ATTRIBUTE:
+                GraphicalAttribute ga = Json.fromJson(data,
+                        GraphicalAttribute.class);
+                Attribute a = new Attribute(ga, project.getDiagram());
+                project.getDiagram().getEntity(ga.getParentId()).addAttribute(a);
+                ga.setId(a.getId());
+                result = (ObjectNode) Json.toJson(ga);
                 break;
             case PARAMETER:
                 break;
 
 
             case CONSTRUCTOR:
+                GraphicalOperation go = Json.fromJson(data,
+                        GraphicalOperation.class);
+                ConstructableEntity parent =
+                        (ConstructableEntity) project.getDiagram().getEntity(go.getParentId());
+                go.setName(parent.getName());
+                Constructor ctor = new Constructor(go, project.getDiagram());
+                parent.addConstructor(ctor);
+                go.setId(ctor.getId());
+                result = (ObjectNode) Json.toJson(go);
                 break;
             case METHOD:
+                GraphicalMethod gm = Json.fromJson(data,
+                        GraphicalMethod.class);
+                Method m = new Method(gm, project.getDiagram());
+                project.getDiagram().getEntity(gm.getParentId()).addMethod(m);
+                gm.setId(m.getId());
+                result = (ObjectNode) Json.toJson(gm);
                 break;
         }
 

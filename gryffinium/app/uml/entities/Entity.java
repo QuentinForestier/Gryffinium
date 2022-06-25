@@ -1,19 +1,24 @@
 package uml.entities;
 
 import graphical.entities.GraphicalEntity;
+import graphical.entities.variables.GraphicalAttribute;
 import uml.Visibility;
 import uml.entities.operations.Method;
+import uml.entities.operations.Operation;
 import uml.entities.variables.Attribute;
 import uml.types.Type;
 
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import play.libs.Json;
+
 
 public abstract class Entity extends Type
 {
+
+    protected int idCounter = 1;
 
     private Integer id;
 
@@ -156,5 +161,30 @@ public abstract class Entity extends Type
 
         if(ge.getVisibility() != null)
             this.setVisibility(Visibility.valueOf(ge.getVisibility()));
+    }
+
+    public Attribute getAttributeById(Integer id){
+        return attributs.stream().filter(a -> a.getId().equals(id)).findFirst().orElse(null);
+    }
+
+    public void addAttribute(Attribute attribute)
+    {
+        attribute.setId(idCounter++);
+        attributs.add(attribute);
+    }
+
+    public Operation getOperationById(Integer id)
+    {
+        return getMethodById(id);
+    }
+
+    public Method getMethodById(Integer id){
+        return methods.stream().filter(m -> m.getId().equals(id)).findFirst().orElse(null);
+    }
+
+    public void addMethod(Method method)
+    {
+        method.setId(idCounter++);
+        methods.add(method);
     }
 }

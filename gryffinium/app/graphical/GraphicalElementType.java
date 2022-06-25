@@ -20,6 +20,9 @@ public enum GraphicalElementType
     REALIZATION,
     INNER,
 
+    // Enum Values
+    VALUE,
+
     // Attributes
     ATTRIBUTE,
     PARAMETER,

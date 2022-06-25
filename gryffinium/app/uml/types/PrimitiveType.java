@@ -11,6 +11,7 @@ public class PrimitiveType extends Type
     public static PrimitiveType DOUBLE_TYPE = new PrimitiveType("double");
     public static PrimitiveType CHAR_TYPE = new PrimitiveType("char");
     public static PrimitiveType STRING_TYPE = new PrimitiveType("string");
+    public static PrimitiveType VOID_TYPE = new PrimitiveType("void");
 
     private PrimitiveType(String name){
         super(name);

@@ -37,6 +37,10 @@ public class ClassDiagram
     @XmlElement
     private ArrayList<ClassRelationship> relationships = new ArrayList<>();
 
+    public ExistingTypes getExistingTypes()
+    {
+        return existingTypes;
+    }
 
     public void addEntity(Entity entity)
     {
