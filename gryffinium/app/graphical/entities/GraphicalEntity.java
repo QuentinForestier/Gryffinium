@@ -4,6 +4,7 @@ import graphical.GraphicalElement;
 
 public class GraphicalEntity extends GraphicalElement
 {
+
     private Integer width;
     private Integer height;
     private Integer x;
@@ -12,6 +13,8 @@ public class GraphicalEntity extends GraphicalElement
     private String name;
 
     private String visibility;
+
+
 
     public String getVisibility()
     {

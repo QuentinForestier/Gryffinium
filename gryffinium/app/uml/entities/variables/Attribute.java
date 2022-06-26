@@ -5,8 +5,11 @@ import uml.ClassDiagram;
 
 import graphical.entities.variables.GraphicalAttribute;
 
+import javax.xml.bind.annotation.XmlAttribute;
+
 public class Attribute extends Variable
 {
+
     private boolean isStatic;
     private Visibility visibility;
 
@@ -46,6 +49,7 @@ public class Attribute extends Variable
         }
     }
 
+    @XmlAttribute
     public boolean isStatic()
     {
         return isStatic;
@@ -56,6 +60,7 @@ public class Attribute extends Variable
         isStatic = aStatic;
     }
 
+    @XmlAttribute
     public Visibility getVisibility()
     {
         return visibility;

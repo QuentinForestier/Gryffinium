@@ -3,6 +3,7 @@ package commands.uml;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import commands.Command;
+import graphical.GraphicalElement;
 import graphical.GraphicalElementType;
 import graphical.entities.*;
 import graphical.entities.operations.GraphicalMethod;
@@ -10,7 +11,6 @@ import graphical.entities.operations.GraphicalOperation;
 import graphical.entities.variables.GraphicalAttribute;
 import graphical.entities.variables.GraphicalValue;
 import graphical.links.GraphicalBinaryAssociation;
-import graphical.links.GraphicalMultiAssociation;
 import models.Project;
 import play.libs.Json;
 import uml.entities.*;
@@ -20,28 +20,16 @@ import uml.entities.operations.Constructor;
 import uml.entities.operations.Method;
 import uml.entities.variables.Attribute;
 import uml.links.BinaryAssociation;
-import uml.links.MultiAssociation;
 
-public class UpdateCommand implements Command
+public class RemoveCommand implements Command
 {
     JsonNode data;
-
     GraphicalElementType elementType;
 
-    public UpdateCommand(JsonNode data, GraphicalElementType elementType)
+    public RemoveCommand(JsonNode data, GraphicalElementType elementType)
     {
         this.data = data;
         this.elementType = elementType;
-    }
-
-    public void setData(JsonNode data)
-    {
-        this.data = data;
-    }
-
-    public JsonNode getData()
-    {
-        return data;
     }
 
     @Override
@@ -49,44 +37,44 @@ public class UpdateCommand implements Command
     {
         ObjectNode result = null;
 
+        GraphicalElement ge = null;
         switch (elementType)
         {
             case CLASS:
-                GraphicalClass ge = Json.fromJson(data,
+                ge = Json.fromJson(data,
                         GraphicalClass.class);
-                project.getDiagram().getEntity(ge.getId()).setGraphical(ge);
+                project.getDiagram().removeEntity(project.getDiagram().getEntity(ge.getId()));
                 result = (ObjectNode) Json.toJson(ge);
                 break;
             case INNER_CLASS:
-                GraphicalInnerClass gic = Json.fromJson(data,
+                ge = Json.fromJson(data,
                         GraphicalInnerClass.class);
-                project.getDiagram().getEntity(gic.getId()).setGraphical(gic);
-                result = (ObjectNode) Json.toJson(gic);
+                project.getDiagram().removeEntity(project.getDiagram().getEntity(ge.getId()));
+                result = (ObjectNode) Json.toJson(ge);
                 break;
             case ASSOCIATION_CLASS:
-                GraphicalAssociationClass gac =
-                        Json.fromJson(data,
-                                GraphicalAssociationClass.class);
-                project.getDiagram().getEntity(gac.getId()).setGraphical(gac);
-                result = (ObjectNode) Json.toJson(gac);
+                ge = Json.fromJson(data,
+                        GraphicalAssociationClass.class);
+                project.getDiagram().removeEntity(project.getDiagram().getEntity(ge.getId()));
+                result = (ObjectNode) Json.toJson(ge);
                 break;
             case ENUM:
-                GraphicalEnum gen = Json.fromJson(data,
+                ge = Json.fromJson(data,
                         GraphicalEnum.class);
-                project.getDiagram().getEntity(gen.getId()).setGraphical(gen);
-                result = (ObjectNode) Json.toJson(gen);
+                project.getDiagram().removeEntity(project.getDiagram().getEntity(ge.getId()));
+                result = (ObjectNode) Json.toJson(ge);
                 break;
             case INTERFACE:
-                GraphicalEntity gc = Json.fromJson(data,
+                ge = Json.fromJson(data,
                         GraphicalEntity.class);
-                project.getDiagram().getEntity(gc.getId()).setGraphical(gc);
-                result = (ObjectNode) Json.toJson(gc);
+                project.getDiagram().removeEntity(project.getDiagram().getEntity(ge.getId()));
+                result = (ObjectNode) Json.toJson(ge);
                 break;
             case INNER_INTERFACE:
-                GraphicalInnerInterface gi = Json.fromJson(data,
+                ge = Json.fromJson(data,
                         GraphicalInnerInterface.class);
-                project.getDiagram().getEntity(gi.getId()).setGraphical(gi);
-                result = (ObjectNode) Json.toJson(gi);
+                project.getDiagram().removeEntity(project.getDiagram().getEntity(ge.getId()));
+                result = (ObjectNode) Json.toJson(ge);
                 break;
 
 
@@ -115,17 +103,16 @@ public class UpdateCommand implements Command
                 GraphicalValue gv = Json.fromJson(data,
                         GraphicalValue.class);
 
-                Enum eParent =
-                        (Enum) project.getDiagram().getEntity(gv.getParentId());
-                eParent.updateValue(gv.getOldValue(), gv.getValue());
+                Enum e = (Enum) project.getDiagram().getEntity(gv.getParentId());
+                e.removeValue(gv.getValue());
                 result = (ObjectNode) Json.toJson(gv);
                 break;
 
             case ATTRIBUTE:
                 GraphicalAttribute ga = Json.fromJson(data,
                         GraphicalAttribute.class);
-
-                project.getDiagram().getEntity(ga.getParentId()).getAttribute(ga.getId()).setGraphical(ga, project.getDiagram());
+                Entity parent = project.getDiagram().getEntity(ga.getParentId());
+                parent.removeAttribute(parent.getAttribute(ga.getId()));
                 result = (ObjectNode) Json.toJson(ga);
                 break;
             case PARAMETER:
@@ -135,18 +122,15 @@ public class UpdateCommand implements Command
             case CONSTRUCTOR:
                 GraphicalOperation go = Json.fromJson(data,
                         GraphicalOperation.class);
-
-                ConstructableEntity parent =
-                        (ConstructableEntity) project.getDiagram().getEntity(go.getParentId());
-
-                parent.getConstructorById(go.getId()).setGraphical(go,
-                        project.getDiagram());
+                ConstructableEntity ce = (ConstructableEntity) project.getDiagram().getEntity(go.getParentId());
+                ce.removeConstructor(ce.getConstructorById(go.getId()));
                 result = (ObjectNode) Json.toJson(go);
                 break;
             case METHOD:
                 GraphicalMethod gm = Json.fromJson(data,
                         GraphicalMethod.class);
-                project.getDiagram().getEntity(gm.getParentId()).getMethodById(gm.getId()).setGraphical(gm, project.getDiagram());
+                Entity parent2 = project.getDiagram().getEntity(gm.getParentId());
+                parent2.removeMethod(parent2.getMethodById(gm.getId()));
                 result = (ObjectNode) Json.toJson(gm);
                 break;
         }

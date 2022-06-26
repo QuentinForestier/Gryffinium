@@ -6,6 +6,9 @@ import uml.ClassDiagram;
 
 import graphical.entities.variables.GraphicalVariable;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+
 
 public abstract class Variable
 {
@@ -30,6 +33,7 @@ public abstract class Variable
         setGraphical(gv, cd);
     }
 
+    @XmlAttribute
     public Integer getId()
     {
         return id;
@@ -40,6 +44,7 @@ public abstract class Variable
         this.id = id;
     }
 
+    @XmlAttribute
     public String getName()
     {
         return name;
@@ -50,6 +55,7 @@ public abstract class Variable
         this.name = name;
     }
 
+    @XmlAttribute
     public boolean isConstant()
     {
         return isConstant;
@@ -60,6 +66,7 @@ public abstract class Variable
         isConstant = constant;
     }
 
+    @XmlElement
     public Type getType()
     {
         return type;

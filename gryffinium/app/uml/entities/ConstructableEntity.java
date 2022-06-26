@@ -26,10 +26,17 @@ public abstract class ConstructableEntity extends Entity
         constructors.add(constructor);
     }
 
+    public void removeConstructor(Constructor constructor)
+    {
+        constructors.remove(constructor);
+    }
+
     public Constructor getConstructorById(int id)
     {
         return constructors.stream().filter(c -> c.getId() == id).findFirst().orElse(null);
     }
+
+
 
     @Override
     public Operation getOperationById(Integer id)

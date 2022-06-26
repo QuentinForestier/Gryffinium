@@ -5,6 +5,9 @@ import uml.ClassDiagram;
 import uml.types.SimpleType;
 import uml.types.Type;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+
 public class Method extends Operation
 {
     private boolean isAbstract;
@@ -36,6 +39,7 @@ public class Method extends Operation
         setGraphical(gm, cd);
     }
 
+    @XmlAttribute
     public boolean isAbstract()
     {
         return isAbstract;
@@ -46,6 +50,7 @@ public class Method extends Operation
         isAbstract = anAbstract;
     }
 
+    @XmlAttribute
     public boolean isStatic()
     {
         return isStatic;
@@ -56,6 +61,7 @@ public class Method extends Operation
         isStatic = aStatic;
     }
 
+    @XmlElement
     public Type getReturnType()
     {
         return returnType;

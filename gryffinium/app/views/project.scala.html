@@ -157,8 +157,15 @@
 
                 modifierTitle.innerHTML = selectedElement.get('name');
                 modifierTitle.onblur = function () {
-                    selectedElement.set('name', modifierTitle.innerHTML);
-                    generateModifierInterface(selectedElement);
+                    let command = {
+                        data: {
+                            id: selectedElement.get('id'),
+                            name: this.innerHTML,
+                        },
+                        type: 'UpdateCommand',
+                        entityType: selectedElement.getType()
+                    };
+                    sendMessage(command);
                 }
 
                 switch (selectedElement.getType()) {
@@ -221,38 +228,73 @@
 
                 // Name
                 attributesTableBodyRow.append(generateNameInterface(element, attribute, false, function (input) {
-                    attribute.name = input.value;
-                    element.updateAttribute(attribute);
-                    generateModifierInterface();
+                    let command = {
+                        data: {
+                            parentId: selectedElement.get('id'),
+                            id: attribute.id,
+                            name: input.value,
+                        },
+                        type: 'UpdateCommand',
+                        entityType: 'ATTRIBUTE'
+                    };
+                    sendMessage(command);
                 }));
 
                 // Type
                 attributesTableBodyRow.append(generateTypeInterface(element, attribute, false, function (input) {
-                    attribute.type = input.value;
-                    element.updateAttribute(attribute);
-                    generateModifierInterface();
+                    let command = {
+                        data: {
+                            parentId: selectedElement.get('id'),
+                            id: attribute.id,
+                            type: input.value,
+                        },
+                        type: 'UpdateCommand',
+                        entityType: 'ATTRIBUTE'
+                    };
+                    sendMessage(command);
                 }));
 
 
                 // Visibility
                 attributesTableBodyRow.append(generateVisibilityInterface(element, attribute, function (inputVisibility) {
-                    attribute.setVisibility(inputVisibility.value);
-                    element.updateAttribute(attribute);
-                    generateModifierInterface();
+                    let command = {
+                        data: {
+                            parentId: selectedElement.get('id'),
+                            id: attribute.id,
+                            visibility: inputVisibility.value,
+                        },
+                        type: 'UpdateCommand',
+                        entityType: 'ATTRIBUTE'
+                    };
+                    sendMessage(command);
                 }));
 
                 // Constant
                 attributesTableBodyRow.append(generateIsConstantInterface(element, attribute, function (inputIsConstant) {
-                    attribute.isConstant = inputIsConstant.checked;
-                    element.updateAttribute(attribute);
-                    generateModifierInterface();
+                    let command = {
+                        data: {
+                            parentId: selectedElement.get('id'),
+                            id: attribute.id,
+                            isConstant: inputIsConstant.checked,
+                        },
+                        type: 'UpdateCommand',
+                        entityType: 'ATTRIBUTE'
+                    };
+                    sendMessage(command);
                 }));
 
                 // Static
                 attributesTableBodyRow.append(generateIsStaticInterface(element, attribute, function (inputIsStatic) {
-                    attribute.isStatic = inputIsStatic.checked;
-                    element.updateAttribute(attribute);
-                    generateModifierInterface();
+                    let command = {
+                        data: {
+                            parentId: selectedElement.get('id'),
+                            id: attribute.id,
+                            isStatic: inputIsStatic.checked,
+                        },
+                        type: 'UpdateCommand',
+                        entityType: 'ATTRIBUTE'
+                    };
+                    sendMessage(command);
                 }));
 
                 // Action
@@ -280,11 +322,15 @@
                             }
                         }, // Down
                         function () {
-                            let attributes = element.get('attributes');
-                            let index = attributes.indexOf(attribute);
-                            attributes.splice(index, 1);
-                            element.setAttributes(attributes);
-                            generateModifierInterface();
+                            let command = {
+                                data: {
+                                    parentId: element.get('id'),
+                                    id: attribute.id,
+                                },
+                                type: 'RemoveCommand',
+                                entityType: 'ATTRIBUTE'
+                            };
+                            sendMessage(command);
                         }  // Remove
                 ));
 
@@ -331,7 +377,6 @@
                 for (let constructor of selectedElement.get('constructors')) {
                     body.append(generateConstructorRowInterface(selectedElement, constructor));
                 }
-
                 for (let method of selectedElement.get('methods')) {
                     body.append(generateMethodRowInterface(selectedElement, method));
                 }
@@ -342,37 +387,72 @@
 
                 // Name
                 row.append(generateNameInterface(element, method, false, function (input) {
-                    method.name = input.value;
-                    element.updateMethod(method);
-                    generateModifierInterface();
+                    let command = {
+                        data: {
+                            parentId: selectedElement.get('id'),
+                            id: method.id,
+                            name: input.value,
+                        },
+                        type: 'UpdateCommand',
+                        entityType: 'METHOD'
+                    };
+                    sendMessage(command);
                 }));
 
                 // Return type
                 row.append(generateTypeInterface(element, method, false, function (input) {
-                    method.type = input.value;
-                    element.updateMethod(method);
-                    generateModifierInterface();
+                    let command = {
+                        data: {
+                            parentId: selectedElement.get('id'),
+                            id: method.id,
+                            type: input.value,
+                        },
+                        type: 'UpdateCommand',
+                        entityType: 'METHOD'
+                    };
+                    sendMessage(command);
                 }));
 
                 // Visibility
                 row.append(generateVisibilityInterface(element, method, function (inputVisibility) {
-                    method.setVisibility(inputVisibility.value);
-                    element.updateMethod(method);
-                    generateModifierInterface();
+                    let command = {
+                        data: {
+                            parentId: selectedElement.get('id'),
+                            id: method.id,
+                            visibility: inputVisibility.value,
+                        },
+                        type: 'UpdateCommand',
+                        entityType: 'METHOD'
+                    };
+                    sendMessage(command);
                 }));
 
                 // Constant
-                row.append(generateIsConstantInterface(element, method, function (input) {
-                    method.isAbstract = input.checked;
-                    element.updateMethod(method);
-                    generateModifierInterface();
+                row.append(generateIsAbstractInterface(element, method, function (input) {
+                    let command = {
+                        data: {
+                            parentId: selectedElement.get('id'),
+                            id: method.id,
+                            isAbstract: input.checked,
+                        },
+                        type: 'UpdateCommand',
+                        entityType: 'METHOD'
+                    };
+                    sendMessage(command);
                 }));
 
                 // Static
                 row.append(generateIsStaticInterface(element, method, function (inputIsStatic) {
-                    method.isStatic = inputIsStatic.checked;
-                    element.updateMethod(method);
-                    generateModifierInterface();
+                    let command = {
+                        data: {
+                            parentId: selectedElement.get('id'),
+                            id: method.id,
+                            isStatic: inputIsStatic.checked,
+                        },
+                        type: 'UpdateCommand',
+                        entityType: 'METHOD'
+                    };
+                    sendMessage(command);
                 }));
 
                 // Action
@@ -400,11 +480,15 @@
                             }
                         }, // Down
                         function () {
-                            let methods = element.get('methods');
-                            let index = methods.indexOf(method);
-                            methods.splice(index, 1);
-                            element.setMethods(methods);
-                            generateModifierInterface();
+                            let command = {
+                                data: {
+                                    parentId: element.get('id'),
+                                    id: method.id,
+                                },
+                                type: 'RemoveCommand',
+                                entityType: 'METHOD'
+                            };
+                            sendMessage(command);
                         }  // Remove
                 ));
 
@@ -421,9 +505,16 @@
 
                 // Visibility
                 row.append(generateVisibilityInterface(element, constructor, function (inputVisibility) {
-                    constructor.setVisibility(inputVisibility.value);
-                    element.updateConstructor(constructor);
-                    generateModifierInterface();
+                    let command = {
+                        data: {
+                            parentId: selectedElement.get('id'),
+                            id: constructor.id,
+                            visibility: inputVisibility.value,
+                        },
+                        type: 'UpdateCommand',
+                        entityType: 'CONSTRUCTOR'
+                    };
+                    sendMessage(command);
                 }));
 
                 // Constant
@@ -457,11 +548,15 @@
                             }
                         }, // Down
                         function () {
-                            let constructors = element.get('constructors');
-                            let index = constructors.indexOf(constructor);
-                            constructors.splice(index, 1);
-                            element.setConstructors(constructors);
-                            generateModifierInterface();
+                            let command = {
+                                data: {
+                                    parentId: element.get('id'),
+                                    id: constructor.id,
+                                },
+                                type: 'RemoveCommand',
+                                entityType: 'CONSTRUCTOR'
+                            };
+                            sendMessage(command);
                         }  // Remove
                 ));
 
@@ -510,9 +605,16 @@
 
                 // Name
                 row.append(generateNameInterface(element, value, false, function (input) {
-                    value.name = input.value;
-                    element.updateValue(value);
-                    generateModifierInterface();
+                    let command = {
+                        data: {
+                            parentId: selectedElement.get('id'),
+                            value: input.value,
+                            oldValue: value.name,
+                        },
+                        type: 'UpdateCommand',
+                        entityType: 'VALUE'
+                    };
+                    sendMessage(command);
                 }));
 
 
@@ -541,11 +643,15 @@
                             }
                         }, // Down
                         function () {
-                            let values = element.get('values');
-                            let index = values.indexOf(value);
-                            values.splice(index, 1);
-                            element.setValues(values);
-                            generateModifierInterface();
+                            let command = {
+                                data: {
+                                    parentId: element.get('id'),
+                                    value: value.name,
+                                },
+                                type: 'RemoveCommand',
+                                entityType: 'VALUE'
+                            };
+                            sendMessage(command);
                         }  // Remove
                 ));
 
@@ -573,7 +679,6 @@
                 inputName.value = target.name;
                 inputName.addEventListener("blur", function () {
                     onblur(inputName);
-
                 });
                 attributesTableBodyRowName.append(inputName);
                 return attributesTableBodyRowName;
@@ -642,11 +747,21 @@
                 inputIsStatic.checked = target.isStatic;
                 inputIsStatic.addEventListener("change", function () {
                     onchange(inputIsStatic);
-                    target.isStatic = inputIsStatic.checked;
-                    element.updateAttribute(target);
-                    generateModifierInterface();
                 });
                 attributesTableBodyRowIsStatic.append(inputIsStatic);
+                return attributesTableBodyRowIsStatic;
+            }
+
+            function generateIsAbstractInterface(element, target, onchange) {
+                let attributesTableBodyRowIsStatic = document.createElement("td");
+                let inputIsAbstract = document.createElement("input");
+                inputIsAbstract.className = "form-check-input";
+                inputIsAbstract.type = "checkbox";
+                inputIsAbstract.checked = target.isAbstract;
+                inputIsAbstract.addEventListener("change", function () {
+                    onchange(inputIsAbstract);
+                });
+                attributesTableBodyRowIsStatic.append(inputIsAbstract);
                 return attributesTableBodyRowIsStatic;
             }
 
@@ -716,18 +831,20 @@
                 buttonAddMethod.className = "btn btn-primary btn-circle btn-sm";
                 buttonAddMethod.innerHTML = "<i class='fa fa-plus'></i>";
 
-                let buttonAddConstructor = document.createElement("button");
-                buttonAddConstructor.className = "btn btn-primary btn-circle btn-sm";
-                buttonAddConstructor.innerHTML = "<i class='fa-solid fa-hammer'></i>";
+                if (selectedElement.getType() !== "INTERFACE") {
+                    let buttonAddConstructor = document.createElement("button");
+                    buttonAddConstructor.className = "btn btn-primary btn-circle btn-sm";
+                    buttonAddConstructor.innerHTML = "<i class='fa-solid fa-hammer'></i>";
 
-                buttonAddConstructor.onclick = function () {
-                    onclick('CONSTRUCTOR');
+                    buttonAddConstructor.onclick = function () {
+                        onclick('CONSTRUCTOR');
+                    }
+                    rowAction.append(buttonAddConstructor);
                 }
                 buttonAddMethod.onclick = function () {
                     onclick('METHOD');
                 }
                 rowAction.append(buttonAddMethod);
-                rowAction.append(buttonAddConstructor);
                 return appendRow;
             }
 
@@ -757,12 +874,14 @@
             }
 
             buttonSend.onclick = function () {
-                let command = {
-                    'message': messageInput.value,
-                    'type': 'ChatMessageCommand'
-                };
-                sendMessage(command)
-                messageInput.value = '';
+                if (!messageInput.value.isEmpty()) {
+                    let command = {
+                        'message': messageInput.value,
+                        'type': 'ChatMessageCommand'
+                    };
+                    sendMessage(command)
+                    messageInput.value = '';
+                }
             };
             socket.onopen = function () {
                 socket.onmessage = function (event) {
@@ -875,10 +994,116 @@
                             }
                             break;
                         case 'UpdateCommand':
-                            elements.get(message.id).setSizeAndPosition({
-                                width: message.width,
-                                height: message.height
-                            }, {x: message.x, y: message.y});
+                            switch (message.elementType) {
+                                case ElementType.Class.name:
+                                case ElementType.Interface.name:
+                                case ElementType.Enum.name:
+                                    elements.get(message.id).updateFromMessage(message);
+                                    break;
+                                case ElementType.AssociationClass.name:
+                                    // TODO AssociationClass
+                                    break;
+                                case ElementType.Generalization.name:
+                                    break;
+                                case ElementType.BinaryAssociation.name:
+                                    break;
+                                case ElementType.Aggregation.name:
+                                    break;
+                                case ElementType.Composition.name:
+                                    break;
+                                case ElementType.MultiAssociation.name:
+                                    // TODO MutliAssociation
+                                    break;
+                                case ElementType.InnerClass.name:
+                                    // TODO InnerClass
+                                    break;
+                                case ElementType.Dependency.name:
+                                    // TODO Dependency
+                                    break;
+                                case ElementType.Attribute.name:
+                                    elements.get(message.parentId).updateAttributesFromMessage(message);
+                                    if (selectedElement === elements.get(message.parentId)) {
+                                        generateModifierInterface();
+                                    }
+                                    break;
+                                case ElementType.Method.name:
+                                    elements.get(message.parentId).updateMethodFromMessage(message);
+                                    if (selectedElement === elements.get(message.parentId)) {
+                                        generateModifierInterface();
+                                    }
+                                    break;
+                                case ElementType.Constructor.name:
+                                    elements.get(message.parentId).updateConstructorsFromMessage(message);
+                                    if (selectedElement === elements.get(message.parentId)) {
+                                        generateModifierInterface();
+                                    }
+                                    break;
+                                case ElementType.Value.name:
+                                    elements.get(message.parentId).updateValue(message.oldValue, message.value);
+                                    if (selectedElement === elements.get(message.parentId)) {
+                                        generateModifierInterface();
+                                    }
+                                    break;
+                            }
+                            break;
+                        case 'RemoveCommand':
+                            switch (message.elementType) {
+                                case ElementType.Class.name:
+                                    let elem = elements.get(message.id);
+                                    elem.set('alreadyDeleted', true)
+                                    elem.remove();
+                                    break;
+                                case ElementType.Interface.name:
+                                    console.log(message);
+                                    break;
+                                case ElementType.Enum.name:
+                                    console.log(message);
+                                    break;
+                                case ElementType.AssociationClass.name:
+                                    // TODO AssociationClass
+                                    break;
+                                case ElementType.Generalization.name:
+                                    break;
+                                case ElementType.BinaryAssociation.name:
+                                    break;
+                                case ElementType.Aggregation.name:
+                                    break;
+                                case ElementType.Composition.name:
+                                    break;
+                                case ElementType.MultiAssociation.name:
+                                    // TODO MutliAssociation
+                                    break;
+                                case ElementType.InnerClass.name:
+                                    // TODO InnerClass
+                                    break;
+                                case ElementType.Dependency.name:
+                                    // TODO Dependency
+                                    break;
+                                case ElementType.Attribute.name:
+                                    elements.get(message.parentId).removeAttribute(message.id);
+                                    if (selectedElement === elements.get(message.parentId)) {
+                                        generateModifierInterface();
+                                    }
+                                    break;
+                                case ElementType.Method.name:
+                                    elements.get(message.parentId).removeMethod(message.id);
+                                    if (selectedElement === elements.get(message.parentId)) {
+                                        generateModifierInterface();
+                                    }
+                                    break;
+                                case ElementType.Constructor.name:
+                                    elements.get(message.parentId).removeConstructor(message.id);
+                                    if (selectedElement === elements.get(message.parentId)) {
+                                        generateModifierInterface();
+                                    }
+                                    break;
+                                case ElementType.Value.name:
+                                    elements.get(message.parentId).removeValue(message.value);
+                                    if (selectedElement === elements.get(message.parentId)) {
+                                        generateModifierInterface();
+                                    }
+                                    break;
+                            }
                             break;
                         case 'Error':
                             console.log(message.message)
@@ -916,6 +1141,11 @@
 
             });
 
+            graph.on("remove", function (cell) {
+                let cmd = cell.removeCommand();
+                if (cmd !== null)
+                    sendMessage(cmd);
+            });
 
             paper.on("blank:mousewheel", function (evt, x, y, delta) {
                 evt.preventDefault();
@@ -990,8 +1220,8 @@
                 }
                 if (moving) {
                     sendMessage({
-                        reference: {id: moving.get('id')},
                         data: {
+                            id: moving.get('id'),
                             x: moving.get('position').x,
                             y: moving.get('position').y,
                             width: moving.get('size').width,

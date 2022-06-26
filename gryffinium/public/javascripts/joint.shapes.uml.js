@@ -57,6 +57,7 @@ this.joint.shapes = this.joint.shapes || {};
         constructors: [],
         id: undefined,
         height: undefined,
+        alreadyDeleted: false,
     }, {
         markup: [
             '<g class="rotatable">',
@@ -94,6 +95,27 @@ this.joint.shapes = this.joint.shapes || {};
             return this.get('name');
         },
 
+        updateFromMessage: function(message) {
+            if(message.name) {
+                this.set('name', message.name);
+            }
+            if(message.width && message.height) {
+                this.set('size', {width: message.width, height: message.height});
+            }
+
+            if(message.x && message.y) {
+                this.set('position', {x: message.x, y: message.y});
+            }
+
+            if(message.visibility) {
+                this.set('visibility', message.visibility);
+            }
+
+            if(message.isAbstract){
+                this.set('isAbstract', message.isAbstract);
+            }
+        },
+
         addAttribute: function (attribute) {
             this.get('attributes').push(attribute);
             this.trigger('change:attributes');
@@ -103,16 +125,33 @@ this.joint.shapes = this.joint.shapes || {};
             this.set('attributes', attributes);
             this.trigger('change:attributes');
         },
-        removeAttribute: function (attribute) {
-            this.set('attributes', this.get('attributes').filter(attr => attr.id !== attribute.id));
+        removeAttribute: function (id) {
+            this.set('attributes', this.get('attributes').filter(attr => attr.id !== id));
             this.trigger('change:attributes');
         },
-        updateAttribute: function (attribute) {
+        updateAttributesFromMessage: function (message) {
             let index = this.get('attributes').map(function (x) {
                 return x.id;
-            }).indexOf(attribute.id);
+            }).indexOf(message.id);
             if (index !== -1) {
-                this.get('attributes')[index] = attribute;
+                let current = this.get('attributes')[index];
+
+                if (message.name) {
+                    current.name = message.name;
+                }
+                if (message.visibility) {
+                    current.setVisibility(message.visibility);
+                }
+                if(message.type){
+                    current.type = message.type;
+                }
+                if(message.isConstant !== null){
+                    current.isConstant = message.isConstant;
+                }
+                if(message.isStatic !== null){
+                    current.isStatic = message.isStatic;
+                }
+
                 this.trigger('change:attributes');
             }
         },
@@ -125,28 +164,34 @@ this.joint.shapes = this.joint.shapes || {};
             this.set('methods', methods);
             this.trigger('change:methods');
         },
-        removeMethod: function (method) {
-            this.set('methods', this.get('methods').filter(attr => attr.id !== method.id));
+        removeMethod: function (id) {
+            this.set('methods', this.get('methods').filter(attr => attr.id !== id));
             this.trigger('change:methods');
         },
-        updateMethod: function (method) {
+        updateMethodFromMessage: function (message) {
             let index = this.get('methods').map(function (x) {
                 return x.id;
-            }).indexOf(method.id);
+            }).indexOf(message.id);
             if (index !== -1) {
                 let current = this.get('methods')[index];
 
-                this.get('methods')[index] = method;
-                this.trigger('change:methods');
+                if (message.name) {
+                    current.name = message.name;
+                }
+                if (message.visibility) {
+                    current.setVisibility(message.visibility);
+                }
+                if(message.type){
+                    current.type = message.type;
+                }
+                if(message.isAbstract !== null){
+                    current.isAbstract = message.isAbstract;
+                }
+                if(message.isStatic !== null){
+                    current.isStatic = message.isStatic;
+                }
 
-                return {
-                    reference: {parentId: this.get('id'), id: current.id},
-                    data: {
-                        method: method
-                    },
-                    type: 'UpdateCommand',
-                    entityType: this.getType(),
-                };
+                this.trigger('change:methods');
             }
         },
 
@@ -159,28 +204,25 @@ this.joint.shapes = this.joint.shapes || {};
             this.set('constructors', constructors);
             this.trigger('change:methods');
         },
-        removeConstructor: function (constructor) {
-            this.set('constructors', this.get('constructors').filter(attr => attr.id !== constructor.id));
+        removeConstructor: function (id) {
+            this.set('constructors', this.get('constructors').filter(attr => attr.id !== id));
             this.trigger('change:methods');
         },
-        updateConstructor: function (constructor) {
+        updateConstructorsFromMessage: function (message) {
             let index = this.get('constructors').map(function (x) {
                 return x.id;
-            }).indexOf(constructor.id);
+            }).indexOf(message.id);
             if (index !== -1) {
                 let current = this.get('constructors')[index];
 
-                this.get('constructors')[index] = constructor;
-                this.trigger('change:methods');
+                if (message.name) {
+                    current.name = message.name;
+                }
+                if (message.visibility) {
+                    current.setVisibility(message.visibility);
+                }
 
-                return {
-                    reference: {parentId: this.get('id'), id: current.id},
-                    data: {
-                        method: constructor
-                    },
-                    type: 'UpdateCommand',
-                    entityType: this.getType(),
-                };
+                this.trigger('change:methods');
             }
         },
 
@@ -188,7 +230,6 @@ this.joint.shapes = this.joint.shapes || {};
 
             let attrs = this.get('attrs');
 
-            console.log();
 
             let rects = [
                 {type: 'name', text: this.getClassName()},
@@ -245,8 +286,10 @@ this.joint.shapes = this.joint.shapes || {};
                 offsetY = 100;
             }
             if (auto) {
-                maxLineLength = Math.max(maxLineLength, 150)
+                maxLineLength = Math.max(maxLineLength, 120)
                 this.set('size', {width: maxLineLength+5, height: offsetY});
+            }else{
+                this.set('size', {width:this.get('size').width,height: offsetY});
             }
 
             this.set('height', offsetY);
@@ -272,8 +315,8 @@ this.joint.shapes = this.joint.shapes || {};
             this.trigger('change:size');
 
             return {
-                reference: {id: this.get('id')},
                 data: {
+                    id:this.get('id'),
                     x: this.get('position').x,
                     y: this.get('position').y,
                     width: this.get('size').width,
@@ -282,6 +325,18 @@ this.joint.shapes = this.joint.shapes || {};
                 type: 'UpdateCommand',
                 entityType: this.getType(),
             };
+        },
+
+        removeCommand: function () {
+            if(!this.get('alreadyDeleted')) {
+                this.set('alreadyDeleted', true);
+                return {
+                    data: {id: this.get('id')},
+                    type: 'RemoveCommand',
+                    entityType: this.getType(),
+                };
+            }
+            return null;
         },
 
         getType: function () {
@@ -361,15 +416,13 @@ this.joint.shapes = this.joint.shapes || {};
             this.trigger('change:values');
         },
         removeValue: function (value) {
-            this.set('values', this.get('values').filter(val => val.id !== value.id));
-            this.trigger('change:values');
+            this.set('values', this.get('values').filter(val => val.name !== value));
+            this.trigger('change:attributes');
         },
-        updateValue: function (value) {
-            let index = this.get('values').map(function (x) {
-                return x.id;
-            }).indexOf(value.id);
+        updateValue: function (currentValue, newValue) {
+            let index = this.get('values').map(x => x.name).indexOf(currentValue);
             if (index !== -1) {
-                this.get('values')[index] = value;
+                this.get('values')[index].name = newValue;
                 this.trigger('change:values');
             }
         },

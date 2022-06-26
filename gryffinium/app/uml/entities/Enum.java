@@ -46,6 +46,25 @@ public class Enum extends ConstructableEntity
         values.add(name);
     }
 
+    public void updateValue(String currentName, String newName)
+    {
+        if (!isValueExisting(currentName))
+        {
+            throw new RuntimeException("Enum value does not exist");
+        }
+        int index = values.indexOf(currentName);
+        values.set(index, newName);
+    }
+
+    public void removeValue(String name)
+    {
+        if (!isValueExisting(name))
+        {
+            throw new RuntimeException("Enum value does not exist");
+        }
+        values.remove(name);
+    }
+
 
     public void setGraphical(GraphicalEnum ge)
     {

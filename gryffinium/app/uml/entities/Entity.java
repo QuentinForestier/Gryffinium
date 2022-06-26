@@ -1,7 +1,6 @@
 package uml.entities;
 
 import graphical.entities.GraphicalEntity;
-import graphical.entities.variables.GraphicalAttribute;
 import uml.Visibility;
 import uml.entities.operations.Method;
 import uml.entities.operations.Operation;
@@ -9,10 +8,8 @@ import uml.entities.variables.Attribute;
 import uml.types.Type;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import java.util.ArrayList;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import play.libs.Json;
 
 
 public abstract class Entity extends Type
@@ -32,8 +29,11 @@ public abstract class Entity extends Type
 
     private Visibility visibility;
 
-    private final ArrayList<Attribute> attributs = new ArrayList<>();
 
+    @XmlElement
+    private final ArrayList<Attribute> attributes = new ArrayList<>();
+
+    @XmlElement
     private final ArrayList<Method> methods = new ArrayList<>();
 
     public Entity(String name, Visibility visibility)
@@ -164,14 +164,24 @@ public abstract class Entity extends Type
     }
 
     public Attribute getAttributeById(Integer id){
-        return attributs.stream().filter(a -> a.getId().equals(id)).findFirst().orElse(null);
+        return attributes.stream().filter(a -> a.getId().equals(id)).findFirst().orElse(null);
+    }
+
+    public Attribute getAttribute(Integer id){
+        return attributes.stream().filter(a -> a.getId().equals(id)).findFirst().orElse(null);
     }
 
     public void addAttribute(Attribute attribute)
     {
         attribute.setId(idCounter++);
-        attributs.add(attribute);
+        attributes.add(attribute);
     }
+
+    public void removeAttribute(Attribute attribute)
+    {
+        attributes.remove(attribute);
+    }
+
 
     public Operation getOperationById(Integer id)
     {
@@ -186,5 +196,10 @@ public abstract class Entity extends Type
     {
         method.setId(idCounter++);
         methods.add(method);
+    }
+
+    public void removeMethod(Method method)
+    {
+        methods.remove(method);
     }
 }

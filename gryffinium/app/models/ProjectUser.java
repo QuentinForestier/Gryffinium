@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import commands.chat.ChatMessageCommand;
 import commands.Command;
 import commands.uml.CreateCommand;
+import commands.uml.RemoveCommand;
 import commands.uml.UpdateCommand;
 import graphical.GraphicalElementType;
 import io.ebean.Model;
@@ -161,10 +162,12 @@ public class ProjectUser extends Model
                 break;
             case "UpdateCommand":
                 cmd = new UpdateCommand(message.get("data"),
-                        GraphicalElementType.valueOf(message.get("entityType").asText()),
-                        (ObjectNode)message.get("reference"));
+                        GraphicalElementType.valueOf(message.get("entityType").asText()));
                 break;
-
+            case "RemoveCommand":
+                cmd = new RemoveCommand(message.get("data"),
+                        GraphicalElementType.valueOf(message.get("entityType").asText()));
+                break;
             default:
                 throw new IllegalArgumentException("Unknown message type");
         }

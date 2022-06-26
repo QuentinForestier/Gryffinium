@@ -7,6 +7,8 @@ import uml.entities.ConstructableEntity;
 import uml.entities.Entity;
 import uml.entities.variables.Parameter;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import java.util.ArrayList;
 
 public abstract class Operation
@@ -34,6 +36,7 @@ public abstract class Operation
         setGraphical(go, cd);
     }
 
+    @XmlAttribute
     public Integer getId()
     {
         return id;
@@ -44,6 +47,7 @@ public abstract class Operation
         this.id = id;
     }
 
+    @XmlAttribute
     public String getName()
     {
         return name;
@@ -54,6 +58,7 @@ public abstract class Operation
         this.name = name;
     }
 
+    @XmlElement
     public ArrayList<Parameter> getParams()
     {
         return params;
@@ -64,6 +69,7 @@ public abstract class Operation
         this.params = params;
     }
 
+    @XmlAttribute
     public Visibility getVisibility()
     {
         return visibility;
