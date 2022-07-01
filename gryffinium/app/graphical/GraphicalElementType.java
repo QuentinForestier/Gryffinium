@@ -16,7 +16,7 @@ public enum GraphicalElementType
     AGGREGATION,
     COMPOSITION,
     DEPENDENCY,
-    GENEREALIZATION,
+    GENERALIZATION,
     REALIZATION,
     INNER,
 

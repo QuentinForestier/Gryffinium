@@ -1,5 +1,6 @@
 :root{
     --main-color: rgba(240,120,15,1);
+    --main-color-selected: rgba(240,120,15,0.8);
 }
 
 body{
@@ -12,9 +13,8 @@ body{
 }
 
 .btn-primary:hover{
-    background-color: var(--main-color);
-    border-color: var(--main-color);
-    opacity: 80%;
+    background-color: var(--main-color-selected);
+    border-color: var(--main-color-selected);
 }
 
 .offcanvas-body{
@@ -94,4 +94,15 @@ th, td{
 
 .input-sm{
     max-width: 120px;
+}
+
+.table-active{
+    --bs-table-accent-bg: var(--main-color-selected);
+    border-left-color: var(--main-color-selected);
+    border-right-color: var(--main-color-selected);
+}
+
+#modifier-title{
+    font-size: 1.3rem;
+    font-weight: bold;
 }

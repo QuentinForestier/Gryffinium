@@ -1,13 +1,8 @@
 package graphical.links;
 
-import scala.Int;
-
 public class GraphicalBinaryAssociation extends GraphicalAssociation
 {
     private Boolean isDirected;
-
-    private Integer source;
-    private Integer target;
 
     private String sourceName;
 
@@ -16,7 +11,7 @@ public class GraphicalBinaryAssociation extends GraphicalAssociation
     private String multiplicitySource;
     private String multiplicityTarget;
 
-    public Boolean getDirected()
+    public Boolean isDirected()
     {
         return isDirected;
     }
@@ -24,26 +19,6 @@ public class GraphicalBinaryAssociation extends GraphicalAssociation
     public void setDirected(Boolean directed)
     {
         isDirected = directed;
-    }
-
-    public Integer getSource()
-    {
-        return source;
-    }
-
-    public void setSource(Integer source)
-    {
-        this.source = source;
-    }
-
-    public Integer getTarget()
-    {
-        return target;
-    }
-
-    public void setTarget(Integer target)
-    {
-        this.target = target;
     }
 
     public String getSourceName()

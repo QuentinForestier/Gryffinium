@@ -5,6 +5,7 @@ import uml.entities.operations.Constructor;
 import uml.entities.operations.Operation;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class ConstructableEntity extends Entity
 {
@@ -36,6 +37,10 @@ public abstract class ConstructableEntity extends Entity
         return constructors.stream().filter(c -> c.getId() == id).findFirst().orElse(null);
     }
 
+    public List<Constructor> getConstructors()
+    {
+        return constructors;
+    }
 
 
     @Override

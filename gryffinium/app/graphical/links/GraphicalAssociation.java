@@ -2,7 +2,7 @@ package graphical.links;
 
 import graphical.GraphicalElement;
 
-public class GraphicalAssociation extends GraphicalElement
+public class GraphicalAssociation extends GraphicalLink
 {
     private String name;
 

@@ -28,27 +28,27 @@ public class BinaryAssociation extends Association
     public BinaryAssociation(GraphicalBinaryAssociation gba, ClassDiagram cd)
     {
         super(gba);
-        if (gba.getSource() == null)
+        if (gba.getSourceId() == null)
         {
             throw new IllegalArgumentException("Source argument missing");
         }
-        if (gba.getTarget() == null)
+        if (gba.getTargetId() == null)
         {
             throw new IllegalArgumentException("Target argument missing");
         }
-        if (gba.getDirected() == null)
+        if (gba.isDirected() == null)
         {
             throw new IllegalArgumentException("Directed argument missing");
         }
         this.source = new Role(
                 "",
                 Multiplicity.N,
-                cd.getEntity(gba.getSource()));
+                cd.getEntity(gba.getSourceId()));
 
         this.target = new Role(
                 "",
                 Multiplicity.N,
-                cd.getEntity(gba.getTarget()));
+                cd.getEntity(gba.getTargetId()));
 
         setGraphical(gba, cd);
     }
@@ -56,12 +56,12 @@ public class BinaryAssociation extends Association
     public void setGraphical(GraphicalBinaryAssociation gba, ClassDiagram cd)
     {
         super.setGraphical(gba);
-        if (gba.getDirected() != null)
-            this.isDirected = gba.getDirected();
+        if (gba.isDirected() != null)
+            this.isDirected = gba.isDirected();
 
-        if (gba.getSource() != null)
+        if (gba.getSourceId() != null)
         {
-            Entity source = cd.getEntity(gba.getSource());
+            Entity source = cd.getEntity(gba.getSourceId());
             this.source.setEntity(source);
         }
 
@@ -73,9 +73,9 @@ public class BinaryAssociation extends Association
                     bound[1].charAt(0)));
         }
 
-        if (gba.getTarget() != null)
+        if (gba.getTargetId() != null)
         {
-            Entity target = cd.getEntity(gba.getTarget());
+            Entity target = cd.getEntity(gba.getTargetId());
             this.target.setEntity(target);
         }
 

@@ -8,6 +8,7 @@ export class ElementType {
     static Interface = new ElementType("INTERFACE");
     static AssociationClass = new ElementType("ASSOCIATION_CLASS");
     static Generalization = new ElementType("GENERALIZATION");
+    static Realization = new ElementType("REALIZATION");
     static BinaryAssociation = new ElementType("BINARY_ASSOCIATION");
     static Aggregation = new ElementType("AGGREGATION");
     static Composition = new ElementType("COMPOSITION");
@@ -19,6 +20,7 @@ export class ElementType {
     static Value = new ElementType("VALUE");
 
     static Attribute = new ElementType("ATTRIBUTE");
+    static Parameter = new ElementType("PARAMETER");
 
     static Method = new ElementType("METHOD");
     static Constructor = new ElementType("CONSTRUCTOR");
@@ -29,7 +31,7 @@ export class ElementType {
 
 }
 
-export class Visibility{
+export class Visibility {
     static Public = new Visibility("+");
     static Private = new Visibility("-");
     static Protected = new Visibility("#");
@@ -39,12 +41,12 @@ export class Visibility{
         this.symbol = symbol;
     }
 
-    toString(){
+    toString() {
         return this.symbol;
     }
 
-    static getVisibility(name){
-        switch(name){
+    static getVisibility(name) {
+        switch (name) {
             case "public":
                 return Visibility.Public;
             case "private":
@@ -78,7 +80,7 @@ export class Attribute {
         this.isStatic = isStatic;
     }
 
-    setVisibility(visibility){
+    setVisibility(visibility) {
         this.visibility = Visibility.getVisibility(visibility);
     }
 
@@ -87,23 +89,38 @@ export class Attribute {
     }
 }
 
-export class Constructor{
+export class Constructor {
     constructor(id, name, visibility) {
         this.id = id;
         this.name = name;
         this.visibility = Visibility.getVisibility(visibility);
+        this.parameters = [];
     }
 
-    setVisibility(visibility){
+    setVisibility(visibility) {
         this.visibility = Visibility.getVisibility(visibility);
     }
 
+    addParameter(parameter) {
+        this.parameters.push(parameter);
+    }
+
+
+
     toString() {
-        return this.visibility + " " + this.name;
+        return this.visibility + " " + this.name + this.paramsToString();
+    }
+
+    paramsToString(){
+        let params = "";
+        this.parameters.forEach(p => {
+            params += p.name + " : " + p.type + ", ";
+        });
+        return "(" + params.substring(0, params.length - 2) + ")";
     }
 }
 
-export class Method{
+export class Method {
     constructor(id, name, type, visibility, isAbstract, isStatic) {
         this.id = id;
         this.name = name;
@@ -111,24 +128,60 @@ export class Method{
         this.visibility = Visibility.getVisibility(visibility);
         this.isAbstract = isAbstract;
         this.isStatic = isStatic;
+        this.parameters = [];
     }
 
-    setVisibility(visibility){
+    setVisibility(visibility) {
         this.visibility = Visibility.getVisibility(visibility);
     }
 
     toString() {
-        return this.visibility + " " + this.name + " : " + this.type;
+        return this.visibility + " " + this.name + this.paramsToString() + " : " + this.type;
+    }
+
+    paramsToString(){
+        let params = "";
+        this.parameters.forEach(p => {
+            params += p.name + " : " + p.type + ", ";
+        });
+        return "(" + params.substring(0, params.length - 2) + ")";
+    }
+
+    addParameter(parameter) {
+        this.parameters.push(parameter);
+    }
+
+    updateParametersFromMessage(message) {
+        let parameter = this.parameters.find(p => p.id === message.id);
+        if (message.name !== null) {
+            parameter.name = message.name;
+        }
+        if (message.type !== null) {
+            parameter.type = message.type;
+        }
+    }
+
+    removeParameter(id) {
+        let parameter = this.parameters.find(p => p.id === id);
+        this.parameters.splice(this.parameters.indexOf(parameter), 1);
     }
 }
 
-export class Value{
+export class Value {
     constructor(name) {
         this.name = name;
     }
 
-    toString(){
+    toString() {
         return this.name;
     }
 }
 
+export class Parameter {
+    constructor(id, name, type) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+    }
+
+}

@@ -18,6 +18,9 @@ import java.util.HashMap;
 @XmlRootElement
 public class ClassDiagram
 {
+
+    private static int idCounter = 1;
+
     private HashMap<Integer, Object> elements = new HashMap<>();
 
     @XmlElement
@@ -44,7 +47,7 @@ public class ClassDiagram
 
     public void addEntity(Entity entity)
     {
-        entity.setId(elements.size()+1);
+        entity.setId(idCounter++);
         if (entity.getName().equals("") || entity.getName() == null)
         {
             entity.setName(entity.getClass().getSimpleName() + " " + entity.getId());
@@ -71,7 +74,7 @@ public class ClassDiagram
 
     public void addAssociation(Association association)
     {
-        association.setId(elements.size()+1);
+        association.setId(idCounter++);
         associations.add(association);
     }
 
@@ -87,7 +90,7 @@ public class ClassDiagram
 
     public void addDependency(Dependency dependency)
     {
-        dependency.setId(elements.size()+1);
+        dependency.setId(idCounter++);
         dependencies.add(dependency);
     }
 
@@ -103,7 +106,7 @@ public class ClassDiagram
 
     public void addRelationship(ClassRelationship relationship)
     {
-        relationship.setId(elements.size()+1);
+        relationship.setId(idCounter++);
         relationships.add(relationship);
     }
 

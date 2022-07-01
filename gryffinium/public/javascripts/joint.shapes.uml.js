@@ -95,23 +95,31 @@ this.joint.shapes = this.joint.shapes || {};
             return this.get('name');
         },
 
-        updateFromMessage: function(message) {
-            if(message.name) {
+        getId: function () {
+            return this.get('id');
+        },
+
+        update: function () {
+            this.trigger('change:name');
+        },
+
+        updateFromMessage: function (message) {
+            if (message.name) {
                 this.set('name', message.name);
             }
-            if(message.width && message.height) {
+            if (message.width && message.height) {
                 this.set('size', {width: message.width, height: message.height});
             }
 
-            if(message.x && message.y) {
+            if (message.x && message.y) {
                 this.set('position', {x: message.x, y: message.y});
             }
 
-            if(message.visibility) {
+            if (message.visibility) {
                 this.set('visibility', message.visibility);
             }
 
-            if(message.isAbstract){
+            if (message.isAbstract) {
                 this.set('isAbstract', message.isAbstract);
             }
         },
@@ -142,13 +150,13 @@ this.joint.shapes = this.joint.shapes || {};
                 if (message.visibility) {
                     current.setVisibility(message.visibility);
                 }
-                if(message.type){
+                if (message.type) {
                     current.type = message.type;
                 }
-                if(message.isConstant !== null){
+                if (message.isConstant !== null) {
                     current.isConstant = message.isConstant;
                 }
-                if(message.isStatic !== null){
+                if (message.isStatic !== null) {
                     current.isStatic = message.isStatic;
                 }
 
@@ -181,18 +189,25 @@ this.joint.shapes = this.joint.shapes || {};
                 if (message.visibility) {
                     current.setVisibility(message.visibility);
                 }
-                if(message.type){
+                if (message.type) {
                     current.type = message.type;
                 }
-                if(message.isAbstract !== null){
+                if (message.isAbstract !== null) {
                     current.isAbstract = message.isAbstract;
                 }
-                if(message.isStatic !== null){
+                if (message.isStatic !== null) {
                     current.isStatic = message.isStatic;
                 }
 
                 this.trigger('change:methods');
             }
+        },
+        getOperation: function (id) {
+            let op = this.get('methods').find(attr => attr.id === id);
+            if (!op) {
+                op = this.get('constructors').find(attr => attr.id === id);
+            }
+            return op;
         },
 
         addConstructor: function (constructor) {
@@ -287,9 +302,9 @@ this.joint.shapes = this.joint.shapes || {};
             }
             if (auto) {
                 maxLineLength = Math.max(maxLineLength, 120)
-                this.set('size', {width: maxLineLength+5, height: offsetY});
-            }else{
-                this.set('size', {width:this.get('size').width,height: offsetY});
+                this.set('size', {width: maxLineLength + 5, height: offsetY});
+            } else {
+                this.set('size', {width: this.get('size').width, height: offsetY});
             }
 
             this.set('height', offsetY);
@@ -316,7 +331,7 @@ this.joint.shapes = this.joint.shapes || {};
 
             return {
                 data: {
-                    id:this.get('id'),
+                    id: this.get('id'),
                     x: this.get('position').x,
                     y: this.get('position').y,
                     width: this.get('size').width,
@@ -328,7 +343,7 @@ this.joint.shapes = this.joint.shapes || {};
         },
 
         removeCommand: function () {
-            if(!this.get('alreadyDeleted')) {
+            if (!this.get('alreadyDeleted')) {
                 this.set('alreadyDeleted', true);
                 return {
                     data: {id: this.get('id')},
@@ -446,7 +461,9 @@ this.joint.shapes = this.joint.shapes || {};
                 strokeWidth: 10,
 
             },
-        }
+        },
+        linkId: undefined,
+        alreadyDeleted: false,
     }, {
         markup: [{
             tagName: 'path',
@@ -463,15 +480,76 @@ this.joint.shapes = this.joint.shapes || {};
                 'fill': 'none',
                 'pointer-events': 'none'
             }
-        }]
+        }],
+        initialize: function () {
+            this.on('change', function () {
+                this.trigger('uml-update');
+            }, this);
+
+            Link_mjs.Link.prototype.initialize.apply(this, arguments);
+        },
+        removeCommand: function () {
+            if (!this.get('alreadyDeleted')) {
+                this.set('alreadyDeleted', true);
+                return {
+                    data: {id: this.get('linkId')},
+                    type: 'RemoveCommand',
+                    entityType: this.getType(),
+                };
+            }
+            return null;
+        },
+
+        getId: function () {
+            return this.get('linkId');
+        },
+
+        updateFromMessage: function (message) {
+
+            if (message.id) {
+
+                this.set('linkId', message.id);
+                this.trigger('change')
+            }
+            if (message.sourceId) {
+                this.set('source', {id: message.sourceId});
+                this.trigger('change')
+            }
+            if (message.target) {
+                this.set('target', {id: message.targetId});
+                this.trigger('change')
+            }
+        },
+
+        getType: function () {
+            return 'CUSTOM_LINK';
+        }
     });
 
 
+    let CustomLinkView = ElementView_mjs.LinkView.extend({
+
+        initialize: function () {
+
+            ElementView_mjs.LinkView.prototype.initialize.apply(this, arguments);
+
+            this.listenTo(this.model, 'uml-update', function () {
+                this.update();
+            });
+
+        }
+    });
+
     let Association = CustomLink.define('uml.Association', {
         isDirected: false,
+        name: undefined,
+        sourceName: undefined,
+        targetName: undefined,
+        multiplicitySource: undefined,
+        multiplicityTarget: undefined,
     }, {
         getType: function () {
-            return 'ASSOCIATION'
+            return 'BINARY_ASSOCIATION'
         },
         setDirected: function (isDirected) {
             this.set('isDirected', isDirected);
@@ -481,29 +559,138 @@ this.joint.shapes = this.joint.shapes || {};
             this.set('source', this.get('target'));
             this.set('target', tmp);
 
+        },
+        addLabels: function () {
+            // label name link
+            this.appendLabel({
+                attrs: {
+                    text: {
+                        text: this.get('name') ? this.get('name') : 'name',
+                    }
+                },
+                position: {
+                    distance: 0.5,
+                    offset: {
+                        x: 0,
+                        y: -10
+                    },
+                    args: {
+                        keepGradient: true,
+                        ensureLegibility: true
+                    }
+                }
+            })
+
+            // label name source
+            this.appendLabel({
+                attrs: {
+                    text: {
+                        text: this.get('sourceName') ? this.get('sourceName') : 'source',
+                    }
+                },
+                position: {
+                    distance: 0.05,
+                    offset: {
+                        x: 0,
+                        y: -10
+                    },
+                    args: {
+                        keepGradient: true,
+                        ensureLegibility: true
+                    }
+                }
+            })
+            // label multiplicity source
+            this.appendLabel({
+                attrs: {
+                    text: {
+                        text: this.get('multiplicitySource') ? this.get('multiplicitySource') : '*',
+                    }
+                },
+                position: {
+                    distance: 0.02,
+                    offset: {
+                        x: 0,
+                        y: 10
+                    },
+                    args: {
+                        keepGradient: true,
+                        ensureLegibility: true
+                    }
+                }
+            })
+
+            // label target name
+            this.appendLabel({
+                attrs: {
+                    text: {
+                        text: this.get('targetName') ? this.get('targetName') : 'target',
+                    }
+                },
+                position: {
+                    distance: 0.95,
+                    offset: {
+                        x: 0,
+                        y: -10
+                    },
+                    args: {
+                        keepGradient: true,
+                        ensureLegibility: true
+                    }
+                }
+            })
+            // label multiplicity target
+            this.appendLabel({
+                attrs: {
+                    text: {
+                        text: this.get('multiplicityTarget') ? this.get('multiplicityTarget') : '*',
+                    }
+                },
+                position: {
+                    distance: 0.98,
+                    offset: {
+                        x: 0,
+                        y: 10
+                    },
+                    args: {
+                        keepGradient: true,
+                        ensureLegibility: true
+                    }
+                }
+            })
         }
     });
 
     let Generalization = CustomLink.define('uml.Generalization', {
-        attrs: {
-            line: {
-                targetMarker: {
-                    'type': 'path',
-                    'd': 'M 20 -10 L 0 0 L 20 10 z',
-                    'fill': 'white'
-                }
-            },
-        }
-    });
+            attrs: {
+                line: {
+                    targetMarker: {
+                        'type': 'path',
+                        'd': 'M 20 -10 L 0 0 L 20 10 z',
+                        'fill': 'white'
+                    }
+                },
+            }
+        },
+        {
+            getType: function () {
+                return 'GENERALIZATION'
+            }
+        });
 
 
     let Realization = Generalization.define('uml.Realization', {
-        attrs: {
-            line: {
-                strokeDasharray: '5,5',
+            attrs: {
+                line: {
+                    strokeDasharray: '5,5',
+                }
             }
-        }
-    });
+        },
+        {
+            getType: function () {
+                return 'REALIZATION'
+            }
+        });
 
     let Aggregation = Association.define('uml.Aggregation', {
         attrs: {
@@ -514,17 +701,26 @@ this.joint.shapes = this.joint.shapes || {};
                 }
             }
         }
+    }, {
+        getType: function () {
+            return 'AGGREGATION'
+        }
     });
 
     let Composition = Aggregation.define('uml.Composition', {
-        attrs: {
-            line: {
-                targetMarker: {
-                    fill: 'black'
+            attrs: {
+                line: {
+                    targetMarker: {
+                        fill: 'black'
+                    }
                 }
             }
-        }
-    });
+        },
+        {
+            getType: function () {
+                return 'COMPOSITION'
+            }
+        });
 
 
     exports.Abstract = Abstract;
@@ -535,6 +731,7 @@ this.joint.shapes = this.joint.shapes || {};
     exports.ClassView = ClassView;
     exports.Composition = Composition;
     exports.CustomLink = CustomLink;
+    exports.CustomLinkView = CustomLinkView;
     exports.Generalization = Generalization;
     exports.Realization = Realization;
     exports.Interface = Interface;

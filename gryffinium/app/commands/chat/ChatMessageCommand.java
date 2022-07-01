@@ -1,13 +1,9 @@
 package commands.chat;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import commands.Command;
 import models.Project;
-import models.ProjectUser;
 import play.libs.Json;
-
-import java.util.ArrayList;
 
 public class ChatMessageCommand implements Command
 {
@@ -36,8 +32,8 @@ public class ChatMessageCommand implements Command
     }
 
     @Override
-    public JsonNode execute(Project project)
+    public ArrayNode execute(Project project)
     {
-        return Json.toJson(this);
+        return Json.newArray().add(Json.toJson(this));
     }
 }

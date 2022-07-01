@@ -87,25 +87,33 @@ public abstract class Operation
             setId(go.getId());
         if (go.getName() != null)
             setName(go.getName());
-        if (go.getParameters() != null && go.getId() != null)
-        {
-            Entity parent = cd.getEntity(go.getParentId());
-            Operation o = parent.getOperationById(go.getId());
 
-            if (o == null)
-            {
-                throw new IllegalArgumentException("Operation not found");
-            }
-
-            /*
-            for(Integer id : go.getParameters())
-            {
-                // TODO: get parameter from cd
-            }*/
-        }
         if (go.getVisibility() != null)
             this.setVisibility(Visibility.valueOf(go.getVisibility().toUpperCase()));
 
 
+    }
+
+    public void addParam(Parameter param)
+    {
+        params.add(param);
+    }
+
+    public void removeParam(int id){
+        for(Parameter param : params){
+            if(param.getId() == id){
+                params.remove(param);
+                return;
+            }
+        }
+    }
+
+    public Parameter getParam(int id){
+        for(Parameter param : params){
+            if(param.getId() == id){
+                return param;
+            }
+        }
+        return null;
     }
 }

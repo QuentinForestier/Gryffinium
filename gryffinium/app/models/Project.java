@@ -97,14 +97,17 @@ public class Project extends Model
         sender = findProjectUser(sender.getUser().getId());
         if (sender == null || !sender.getCanWrite())
             return;
-        ObjectNode response;
-        try{
-         response = (ObjectNode) command.execute(this);
+        ObjectNode response = Json.newObject();
+        try
+        {
+            response.set("commands", command.execute(this));
 
-        response.put("commandType", command.getClass().getSimpleName());
-        }catch(Exception e){
-          response = Json.newObject();
-            response.put("type", "Error");
+            response.put("commandType", command.getClass().getSimpleName());
+        }
+        catch (Exception e)
+        {
+
+            response.put("commandType", "Error");
             response.put("message", e.getMessage());
             e.printStackTrace();
         }
@@ -150,16 +153,20 @@ public class Project extends Model
         return projectUsers.stream().filter(ProjectUser::getIsOwner).findFirst().get();
     }
 
-    public void close(){
-        for(ProjectUser user : projectUsers){
+    public void close()
+    {
+        for (ProjectUser user : projectUsers)
+        {
             user.disconnect();
         }
 
         Project.openProjects.remove(this.id);
     }
 
-    public void checkConnectedUsers(){
-        if(this.projectUsers.stream().filter(pu -> pu.getActor() != null).count() == 0){
+    public void checkConnectedUsers()
+    {
+        if (this.projectUsers.stream().filter(pu -> pu.getActor() != null).count() == 0)
+        {
             this.close();
         }
     }

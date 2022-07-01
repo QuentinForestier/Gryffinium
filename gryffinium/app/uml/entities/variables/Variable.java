@@ -13,6 +13,8 @@ import javax.xml.bind.annotation.XmlElement;
 public abstract class Variable
 {
 
+    static int idCounter = 0;
+
     private Integer id;
     private String name;
     private boolean isConstant;
@@ -22,6 +24,7 @@ public abstract class Variable
     public Variable(String name, boolean isConstant){
         this.name = name;
         this.isConstant = isConstant;
+        this.id = idCounter++;
     }
 
     public Variable(String name){
@@ -31,6 +34,7 @@ public abstract class Variable
     public Variable(GraphicalVariable gv, ClassDiagram cd)
     {
         setGraphical(gv, cd);
+        this.id = idCounter++;
     }
 
     @XmlAttribute

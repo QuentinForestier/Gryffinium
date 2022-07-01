@@ -10,11 +10,8 @@ public class GraphicalOperation extends GraphicalElement
 
     private Integer id;
     private String name;
-    private Boolean isConstant;
 
     private String visibility;
-
-    private List<Integer> parameters;
 
 
     public Integer getParentId()
@@ -47,21 +44,6 @@ public class GraphicalOperation extends GraphicalElement
         this.name = name;
     }
 
-    public Boolean isConstant()
-    {
-        return isConstant;
-    }
-
-    public void setConstant(Boolean constant)
-    {
-        isConstant = constant;
-    }
-
-    public Boolean getConstant()
-    {
-        return isConstant;
-    }
-
     public String getVisibility()
     {
         return visibility;
@@ -72,13 +54,4 @@ public class GraphicalOperation extends GraphicalElement
         this.visibility = visibility;
     }
 
-    public List<Integer> getParameters()
-    {
-        return parameters;
-    }
-
-    public void setParameters(List<Integer> parameters)
-    {
-        this.parameters = parameters;
-    }
 }
