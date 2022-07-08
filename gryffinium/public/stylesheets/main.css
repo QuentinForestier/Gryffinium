@@ -102,7 +102,7 @@ th, td{
     border-right-color: var(--main-color-selected);
 }
 
-#modifier-title{
+#modifier-header input{
     font-size: 1.3rem;
     font-weight: bold;
 }

@@ -55,7 +55,7 @@ public class UpdateCommand implements Command
                         GraphicalClass.class);
                 Class c = (Class) project.getDiagram().getEntity(ge.getId());
 
-                if (!c.getName().equals(ge.getName()))
+                if (!c.getName().equals(ge.getName()) && ge.getName() != null)
                 {
                     result.addAll(updateConstructorName(c, ge.getName()));
                 }

@@ -8,7 +8,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 
 const fontFamiliy = 'Arial, Helvetica, sans-serif';
-fontSize = 15
+const fontSize = 15
 const umlColor = '#FFF7E1';
 
 
@@ -58,6 +58,7 @@ this.joint.shapes = this.joint.shapes || {};
         id: undefined,
         height: undefined,
         alreadyDeleted: false,
+        visibility: 'public',
     }, {
         markup: [
             '<g class="rotatable">',
@@ -119,7 +120,7 @@ this.joint.shapes = this.joint.shapes || {};
                 this.set('visibility', message.visibility);
             }
 
-            if (message.isAbstract) {
+            if (message.isAbstract !== null) {
                 this.set('isAbstract', message.isAbstract);
             }
         },
@@ -342,6 +343,10 @@ this.joint.shapes = this.joint.shapes || {};
             };
         },
 
+        getSize: function () {
+            return this.get('size');
+        },
+
         removeCommand: function () {
             if (!this.get('alreadyDeleted')) {
                 this.set('alreadyDeleted', true);
@@ -464,6 +469,8 @@ this.joint.shapes = this.joint.shapes || {};
         },
         linkId: undefined,
         alreadyDeleted: false,
+        labelsChanged: false,
+        verticesChanged: false,
     }, {
         markup: [{
             tagName: 'path',
@@ -479,7 +486,7 @@ this.joint.shapes = this.joint.shapes || {};
             attributes: {
                 'fill': 'none',
                 'pointer-events': 'none'
-            }
+            },
         }],
         initialize: function () {
             this.on('change', function () {
@@ -509,29 +516,58 @@ this.joint.shapes = this.joint.shapes || {};
             if (message.id) {
 
                 this.set('linkId', message.id);
-                this.trigger('change')
             }
+
             if (message.sourceId) {
-                this.set('source', {id: message.sourceId});
-                this.trigger('change')
+                this.set('source', {id:message.sourceId});
             }
-            if (message.target) {
-                this.set('target', {id: message.targetId});
-                this.trigger('change')
+            if (message.targetId) {
+                this.set('target', {id:message.targetId});
+            }
+
+            if (message.name) {
+                this.set('name', message.name);
+                this.attributes.labels = [];
+                this.addLabels();
+            }
+
+            if (message.isDirected !== null) {
+                this.set('isDirected', message.isDirected);
+                this.setTargetArrow();
             }
         },
 
         getType: function () {
             return 'CUSTOM_LINK';
+        },
+
+        setTargetArrow: function () {
+            if (this.get('isDirected')) {
+               this.attributes.attrs.line.targetMarker = {
+                    'type': 'path',
+                    'd': 'M 20 -10 0 0 20 10 0 0 Z'
+                };
+            } else {
+                this.attributes.attrs.line.targetMarker = {
+                    'd': ''
+                };
+
+            }
+            try {
+                this.trigger('change');
+            } catch (e) {
+
+            }
         }
+
     });
 
 
-    let CustomLinkView = ElementView_mjs.LinkView.extend({
+    let CustomLinkView = LinkView_mjs.LinkView.extend({
 
         initialize: function () {
 
-            ElementView_mjs.LinkView.prototype.initialize.apply(this, arguments);
+            LinkView_mjs.LinkView.prototype.initialize.apply(this, arguments);
 
             this.listenTo(this.model, 'uml-update', function () {
                 this.update();
@@ -542,6 +578,8 @@ this.joint.shapes = this.joint.shapes || {};
 
     let Association = CustomLink.define('uml.Association', {
         isDirected: false,
+        roleSource:undefined,
+        roleTarget:undefined,
         name: undefined,
         sourceName: undefined,
         targetName: undefined,
@@ -553,12 +591,6 @@ this.joint.shapes = this.joint.shapes || {};
         },
         setDirected: function (isDirected) {
             this.set('isDirected', isDirected);
-        },
-        swap: function () {
-            let tmp = this.get('source');
-            this.set('source', this.get('target'));
-            this.set('target', tmp);
-
         },
         addLabels: function () {
             // label name link
@@ -661,6 +693,8 @@ this.joint.shapes = this.joint.shapes || {};
         }
     });
 
+    let AssociationView = CustomLinkView;
+
     let Generalization = CustomLink.define('uml.Generalization', {
             attrs: {
                 line: {
@@ -679,6 +713,8 @@ this.joint.shapes = this.joint.shapes || {};
         });
 
 
+    let GeneralizationView = CustomLinkView;
+
     let Realization = Generalization.define('uml.Realization', {
             attrs: {
                 line: {
@@ -691,6 +727,8 @@ this.joint.shapes = this.joint.shapes || {};
                 return 'REALIZATION'
             }
         });
+
+    let RealizationView = CustomLinkView;
 
     let Aggregation = Association.define('uml.Aggregation', {
         attrs: {
@@ -707,6 +745,8 @@ this.joint.shapes = this.joint.shapes || {};
         }
     });
 
+    let AggregationView = CustomLinkView;
+
     let Composition = Aggregation.define('uml.Composition', {
             attrs: {
                 line: {
@@ -722,18 +762,24 @@ this.joint.shapes = this.joint.shapes || {};
             }
         });
 
+    let CompositionView = CustomLinkView;
 
     exports.Abstract = Abstract;
     exports.AbstractView = AbstractView;
     exports.Aggregation = Aggregation;
+    exports.AggregationView = AggregationView;
     exports.Association = Association;
+    exports.AssociationView = AssociationView;
     exports.Class = Class;
     exports.ClassView = ClassView;
     exports.Composition = Composition;
+    exports.CompositionView = CompositionView;
     exports.CustomLink = CustomLink;
     exports.CustomLinkView = CustomLinkView;
     exports.Generalization = Generalization;
+    exports.GeneralizationView = GeneralizationView;
     exports.Realization = Realization;
+    exports.RealizationView = RealizationView;
     exports.Interface = Interface;
     exports.InterfaceView = InterfaceView;
     exports.Enum = Enum;

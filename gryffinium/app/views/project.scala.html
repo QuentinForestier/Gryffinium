@@ -36,9 +36,7 @@
         <div id="paper"></div>
     </div>
     <div class="offcanvas offcanvas-bottom" tabindex="-1" id="modifier" aria-labelledby="modifier-title" data-bs-backdrop="false" style="background-color: #F2F2F2">
-        <div class="offcanvas-header">
-            <input type="text" class="offcanvas-title form-control form-control-sm form-control-plaintext input-sm text-center p-0" id="modifier-title" />
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        <div class="offcanvas-header" id="modifier-header">
         </div>
         <div id="modifierBody" class="offcanvas-body small d-flex row justify-content-evenly row">
 
@@ -54,6 +52,7 @@
                 Value,
                 Constructor,
                 Parameter,
+                Visibility,
             } from "@routes.Assets.versioned("javascripts/gryffinium.uml.js")"
             import {
                 generateModifierInterface,
@@ -127,7 +126,7 @@
 
             let modifier = document.getElementById("modifier");
             let modifierBody = document.getElementById("modifierBody");
-            let modifierTitle = document.getElementById("modifier-title");
+            let modifierHeader = document.getElementById("modifier-header");
 
             let existingTypes = document.createElement("datalist");
             existingTypes.id = "existingTypes";
@@ -284,8 +283,12 @@
                                                 multiplicityTarget: command.multiplicityTarget,
                                             });
                                             elem.addLabels();
-                                            elem.on('change', function (linkView) {
-                                                console.log(linkView);
+                                            elem.on('change', function (link) {
+                                                /*for (let i = 0; i < link.attributes.labels.length; i++) {
+                                                    if (link.attributes.labels[i].position.offset !== link._previousAttributes.labels[i].position.offset) {
+                                                        link.set('labelsChanged', true);
+                                                    }
+                                                }*/
                                             })
                                             break;
                                         case ElementType.Aggregation.name:
@@ -381,7 +384,13 @@
                                         case ElementType.Aggregation.name:
                                         case ElementType.Composition.name:
                                         case ElementType.Dependency.name:
+                                            if (command.visibility !== undefined) {
+                                                command.visibility = Visibility.getVisibility(command.visibility);
+                                            }
                                             elements.get(command.id).updateFromMessage(command);
+                                            if (selectedElement === elements.get(command.id)) {
+                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
+                                            }
                                             break;
                                         case ElementType.MultiAssociation.name:
                                             // TODO MutliAssociation
@@ -392,32 +401,32 @@
                                         case ElementType.Attribute.name:
                                             elements.get(command.parentId).updateAttributesFromMessage(command);
                                             if (selectedElement === elements.get(command.parentId)) {
-                                                generateModifierInterface(modifierOffCanvas, modifierTitle, modifierBody, selectedElement, sendMessage, true);
+                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
                                             }
                                             break;
                                         case ElementType.Method.name:
                                             elements.get(command.parentId).updateMethodFromMessage(command);
                                             if (selectedElement === elements.get(command.parentId)) {
-                                                generateModifierInterface(modifierOffCanvas, modifierTitle, modifierBody, selectedElement, sendMessage, true);
+                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
                                             }
                                             break;
                                         case ElementType.Constructor.name:
                                             elements.get(command.parentId).updateConstructorsFromMessage(command);
                                             if (selectedElement === elements.get(command.parentId)) {
-                                                generateModifierInterface(modifierOffCanvas, modifierTitle, modifierBody, selectedElement, sendMessage, true);
+                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
                                             }
                                             break;
                                         case ElementType.Value.name:
                                             elements.get(command.parentId).updateValue(command.oldValue, command.value);
                                             if (selectedElement === elements.get(command.parentId)) {
-                                                generateModifierInterface(modifierOffCanvas, modifierTitle, modifierBody, selectedElement, sendMessage, true);
+                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
                                             }
                                             break;
                                         case ElementType.Parameter.name:
                                             elements.get(command.parentId).getOperation(command.methodId).updateParametersFromMessage(command);
                                             elements.get(command.parentId).update();
                                             if (selectedElement === elements.get(command.parentId)) {
-                                                generateModifierInterface(modifierOffCanvas, modifierTitle, modifierBody, selectedElement, sendMessage, true);
+                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
                                             }
                                             break
                                     }
@@ -448,32 +457,32 @@
                                         case ElementType.Attribute.name:
                                             elements.get(command.parentId).removeAttribute(command.id);
                                             if (selectedElement === elements.get(command.parentId)) {
-                                                generateModifierInterface(modifierOffCanvas, modifierTitle, modifierBody, selectedElement, sendMessage, true);
+                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
                                             }
                                             break;
                                         case ElementType.Method.name:
                                             elements.get(command.parentId).removeMethod(command.id);
                                             if (selectedElement === elements.get(command.parentId)) {
-                                                generateModifierInterface(modifierOffCanvas, modifierTitle, modifierBody, selectedElement, sendMessage, true);
+                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
                                             }
                                             break;
                                         case ElementType.Constructor.name:
                                             elements.get(command.parentId).removeConstructor(command.id);
                                             if (selectedElement === elements.get(command.parentId)) {
-                                                generateModifierInterface(modifierOffCanvas, modifierTitle, modifierBody, selectedElement, sendMessage, true);
+                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
                                             }
                                             break;
                                         case ElementType.Value.name:
                                             elements.get(command.parentId).removeValue(command.value);
                                             if (selectedElement === elements.get(command.parentId)) {
-                                                generateModifierInterface(modifierOffCanvas, modifierTitle, modifierBody, selectedElement, sendMessage, true);
+                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
                                             }
                                             break;
                                         case ElementType.Parameter.name:
                                             elements.get(command.parentId).getOperation(command.methodId).removeParameter(command.id);
                                             elements.get(command.parentId).update();
                                             if (selectedElement === elements.get(command.parentId)) {
-                                                generateModifierInterface(modifierOffCanvas, modifierTitle, modifierBody, selectedElement, sendMessage, true);
+                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
                                             }
                                             break
                                     }
@@ -514,9 +523,11 @@
             });
 
             graph.on("remove", function (cell) {
-                let cmd = cell.removeCommand();
-                if (cmd !== null)
-                    sendMessage(cmd.data, cmd.entityType, cmd.type);
+                if (!cell.get('alreadyDeleted') && cell.getId()) {
+                    let cmd = cell.removeCommand();
+                    if (cmd !== null)
+                        sendMessage(cmd.data, cmd.entityType, cmd.type);
+                }
             });
 
             paper.on("blank:mousewheel", function (evt, x, y, delta) {
@@ -536,7 +547,7 @@
 
             paper.on('blank:pointerdown', function (event, x, y) {
                 selectedElement = undefined;
-                generateModifierInterface(modifierOffCanvas, modifierTitle, modifierBody, selectedElement, sendMessage);
+                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage);
                 let scale = paper.scale();
                 if (selectedType !== undefined) {
                     sendMessage({
@@ -564,6 +575,12 @@
 
             paper.on('element:pointerdblclick', function (elementView) {
                 elementView.model.trigger('change:autoresize')
+                sendMessage({
+                            id: elementView.model.getId(),
+                            width: elementView.model.getSize().width,
+                            height: elementView.model.getSize().height,
+                        },
+                        elementView.model.getType(), 'UpdateCommand');
             })
 
             paper.on('link:connect', function (linkView) {
@@ -589,8 +606,10 @@
 
             });
 
-            paper.on('link:change', function (linkView) {
-                console.log(linkView);
+            paper.on('link:pointerup', function (linkView) {
+                if (linkView.model.get('labelsChanged')) {
+                    console.log('labelsChanged');
+                }
             })
 
             document.getElementById('diagram').addEventListener('mousemove', function (evt) {
@@ -742,6 +761,14 @@
             paper.on('link:pointerdown', function (linkView) {
                 paper.removeTools();
                 linkView.addTools(linkToolsView);
+
+                if (selectedElement === linkView.model)
+                    return;
+                selectedElement = linkView.model;
+
+                if (selectedElement !== undefined)
+                    generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage);
+
             });
 
             paper.on('element:mouseenter', function (elementView) {
@@ -774,7 +801,8 @@
                     return;
                 selectedElement = elementView.model;
 
-                generateModifierInterface(modifierOffCanvas, modifierTitle, modifierBody, selectedElement, sendMessage);
+                if (selectedElement !== undefined)
+                    generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage);
 
             });
 

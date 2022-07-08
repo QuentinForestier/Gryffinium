@@ -185,3 +185,12 @@ export class Parameter {
     }
 
 }
+
+export class Role{
+    constructor(id, name){
+        this.id = id;
+        this.name = name;
+        this.entityName = "";
+        this.multiplicity = "";
+    }
+}

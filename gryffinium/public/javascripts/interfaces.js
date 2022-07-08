@@ -22,15 +22,8 @@ export function generateModifierInterface(canvas, header, body, element, send, u
 
     canvas.show()
 
+    header.innerHTML = "";
     body.innerHTML = "";
-
-    header.value = element.get('name');
-    header.onblur = function () {
-        send({
-            id: element.get('id'),
-            name: this.value,
-        }, element.getType(), 'UpdateCommand')
-    }
 
 
     switch (element.getType()) {
@@ -42,12 +35,242 @@ export function generateModifierInterface(canvas, header, body, element, send, u
             generateMethodsInterface(body, element, send);
             containerBody = body;
             generateParametersInterface(selectedElement, selectedMethod, send);
+            generateEntityHeader(header, element, send);
             break;
-        case 'ASSOCIATION':
+        case 'BINARY_ASSOCIATION':
+        case 'AGGREGATION':
+        case 'COMPOSITION':
+            generateLinkHeader(header, element, send);
+            generateBinaryAssociationSettingsInterface(body, element, send)
+            generateRoleInterface(body, element, element.get('roleSource'), send);
+            generateRoleInterface(body, element, element.get('targetSource'), send);
+            break;
 
     }
 
 
+}
+
+export function generateRoleInterface(body, element, role, send, update = false) {
+    let container = null;
+    if (update) {
+        container = body;
+        container.innerHTML = "";
+    } else {
+        container = document.createElement("div");
+        container.className = "col-sm-auto";
+        container.id = "container-role-" + role.getId();
+        body.append(container);
+    }
+
+    let table = document.createElement("table");
+    container.append(table);
+    table.className = "table table-bordered";
+
+    let thead = document.createElement("thead");
+    table.append(thead);
+
+    let titles = [role.entityName];
+    thead.append(generateTableHeader(titles));
+
+    let tbody = document.createElement("tbody");
+    table.append(tbody);
+
+    let row = document.createElement("tr");
+    table.append(row);
+    row.append(generateNameInterface(undefined, role, false, function (input) {
+        send({
+            name: input.value,
+            parentId: element.getId(),
+            id: role.id,
+        }, 'ROLE', 'UpdateCommand')
+    }));
+
+    let row2 = document.createElement("tr");
+    table.append(row2);
+
+
+
+}
+
+export function generateBinaryAssociationSettingsInterface(body, element, send, update = false) {
+    let container = null;
+    if (update) {
+        container = body;
+        container.innerHTML = "";
+    } else {
+        container = document.createElement("div");
+        container.className = "col-sm-auto";
+        container.id = "container-settings"
+        body.append(container);
+    }
+
+    let table = document.createElement("table");
+    container.append(table);
+    table.className = "table table-bordered";
+
+    let thead = document.createElement("thead");
+    table.append(thead);
+
+    let titles = ["Settings"];
+    thead.append(generateTableHeader(titles));
+
+    let tbody = document.createElement("tbody");
+    table.append(tbody);
+
+    let row = document.createElement("tr");
+    row.className = "p-5";
+    table.append(row);
+
+    let td = document.createElement("td");
+
+    let checkContainer = document.createElement("div");
+    checkContainer.className = "form-group text-center";
+    row.append(td);
+    td.append(checkContainer);
+
+    let check = document.createElement("input");
+    check.className = "form-check-input align-middle m-0";
+    check.type = "checkbox";
+    check.id = "check-" + element.getId();
+    check.checked = element.get('isDirected');
+
+    checkContainer.append(check);
+
+    check.onchange = function () {
+        send({
+            id: element.getId(),
+            isDirected: check.checked
+        }, element.getType(), 'UpdateCommand');
+    }
+
+    let label = document.createElement("label");
+    label.className = "form-check-label";
+    label.htmlFor = "check-" + element.getId();
+    label.innerHTML = "Is directed";
+
+    checkContainer.append(label);
+
+    let row2 = document.createElement("tr");
+    row2.className = "p-5";
+    table.append(row2);
+
+    let btnContainer = document.createElement("div");
+    btnContainer.className = "form-group col-sm-auto ";
+    let td2 = document.createElement("td");
+    row2.append(td2);
+    td2.append(btnContainer);
+
+
+    let button = generateSwapButton(element, send);
+    button.className = "btn btn-primary form-control";
+    button.style.backgroundColor = "var(--main-color)";
+    btnContainer.append(button);
+}
+
+export function generateSwapButton(element, send) {
+    let button = document.createElement("button");
+    button.className = "btn btn-primary";
+    button.innerHTML = "Change direction";
+    button.onclick = function () {
+        send({
+                id: element.getId(),
+                sourceId: element.get('target').id,
+                targetId: element.get('source').id,
+            },
+            element.getType(),
+            'UpdateCommand');
+    }
+    return button;
+}
+
+export function generateHeaderTitleInterface(element, send) {
+    let title = document.createElement('input');
+    title.className = 'offcanvas-title form-control form-control-sm form-control-plaintext input-sm text-center p-0';
+    title.type = 'text';
+    title.value = element.get('name');
+    title.onblur = function () {
+        send({
+            id: element.getId(),
+            name: this.value,
+        }, element.getType(), 'UpdateCommand')
+    }
+
+    return title
+}
+
+export function generateLinkHeader(header, element, send) {
+    let title = generateHeaderTitleInterface(element, send);
+    header.append(title);
+}
+
+export function generateEntityHeader(header, element, send) {
+    let title = generateHeaderTitleInterface(element, send);
+
+    let container = document.createElement('div');
+    container.className = 'container';
+    container.style.margin = '5px 0'
+
+    let row = document.createElement('div');
+    container.append(row);
+    header.append(container);
+    row.className = 'row';
+
+    title.className = title.className + ' col-sm-2';
+
+    row.append(title);
+
+    let visibility = generateVisibilityInterface(element, undefined, function (input) {
+        if (input.value !== element.visibility) {
+            send({
+                    id: element.getId(),
+                    visibility: input.value,
+                },
+                element.getType(),
+                'UpdateCommand');
+        }
+    }).firstChild;
+
+    visibility.className = visibility.className + ' col-sm-2';
+
+    row.append(visibility);
+
+
+    let abstractContainer = document.createElement('div');
+    abstractContainer.className = 'form-check';
+    let checkbox = generateIsAbstractInterface(element, undefined, function (input) {
+        if (input.checked !== element.isAbstract) {
+            send({
+                    id: element.id,
+                    isAbstract: input.checked,
+                },
+                element.getType(),
+                'UpdateCommand');
+        }
+    }).firstChild
+
+    checkbox.className = checkbox.className + ' form-check-input';
+    checkbox.id = 'checkbox' + element.id;
+
+    let label = document.createElement('label');
+    label.className = 'form-check-label';
+    label.setAttribute('for', 'checkbox' + element.id);
+    label.innerHTML = 'Is abstract';
+    abstractContainer.append(checkbox, label);
+    abstractContainer.style.margin = '0 8rem';
+
+    row.append(abstractContainer);
+
+    generateCloseButton(header);
+}
+
+export function generateCloseButton(header) {
+    //<button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    let closeButton = document.createElement('button');
+    closeButton.className = 'btn-close text-reset';
+    closeButton.setAttribute('data-bs-dismiss', 'offcanvas');
+    closeButton.setAttribute('aria-label', 'Close');
+    header.append(closeButton);
 }
 
 export function generateAttributesInterface(body, element, send, update = false) {
@@ -229,7 +452,7 @@ export function generateMethodsInterface(body, element, send, update = false) {
     let tbody = document.createElement("tbody");
     table.append(tbody);
 
-    tbody.append(generateAddMethod(titles, element.getType() === 'INTERFACE' ? "Add a new method" :"Add a new constructor or method", element, function (entityType) {
+    tbody.append(generateAddMethod(titles, element.getType() === 'INTERFACE' ? "Add a new method" : "Add a new constructor or method", element, function (entityType) {
 
         send({
                 parentId: element.get('id'),
@@ -726,7 +949,7 @@ export function generateVisibilityInterface(element, target, onchange) {
         let optionElement = document.createElement("option");
         optionElement.value = option;
         optionElement.innerHTML = option;
-        if (Visibility.getVisibility(option) === target.visibility) {
+        if (target !== undefined && Visibility.getVisibility(option) === target.visibility || target === undefined && Visibility.getVisibility(option) === element.get('visibility')) {
             optionElement.selected = true;
         }
         inputVisibility.append(optionElement);
@@ -768,7 +991,11 @@ export function generateIsAbstractInterface(element, target, onchange) {
     let inputIsAbstract = document.createElement("input");
     inputIsAbstract.className = "form-check-input";
     inputIsAbstract.type = "checkbox";
-    inputIsAbstract.checked = target.isAbstract;
+    if (target === undefined) {
+        inputIsAbstract.checked = element.get('isAbstract');
+    } else {
+        inputIsAbstract.checked = target.isAbstract;
+    }
     inputIsAbstract.addEventListener("change", function () {
         onchange(inputIsAbstract);
     });

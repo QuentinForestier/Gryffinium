@@ -160,7 +160,7 @@ public abstract class Entity extends Type
             this.setHeight(ge.getHeight());
 
         if(ge.getVisibility() != null)
-            this.setVisibility(Visibility.valueOf(ge.getVisibility()));
+            this.setVisibility(Visibility.valueOf(ge.getVisibility().toUpperCase()));
     }
 
     public Attribute getAttributeById(Integer id){
