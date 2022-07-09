@@ -193,4 +193,8 @@ export class Role{
         this.entityName = "";
         this.multiplicity = "";
     }
+
+    getId(){
+        return this.id;
+    }
 }

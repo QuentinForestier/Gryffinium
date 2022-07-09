@@ -1,10 +1,19 @@
-package graphical.entities;
+package dto.entities;
 
-public class GraphicalInnerClass extends GraphicalClass
+import uml.entities.Class;
+import uml.entities.InnerClass;
+
+public class InnerClassDto extends ClassDto
 {
     private Boolean isStatic;
 
     private Integer outer;
+
+    public InnerClassDto(InnerClass ic)
+    {
+        super(ic);
+        // TODO
+    }
 
     public Boolean isStatic()
     {

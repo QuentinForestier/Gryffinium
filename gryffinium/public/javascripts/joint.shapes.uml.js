@@ -494,6 +494,7 @@ this.joint.shapes = this.joint.shapes || {};
             }, this);
 
             Link_mjs.Link.prototype.initialize.apply(this, arguments);
+            this.setTargetArrow();
         },
         removeCommand: function () {
             if (!this.get('alreadyDeleted')) {
@@ -733,7 +734,7 @@ this.joint.shapes = this.joint.shapes || {};
     let Aggregation = Association.define('uml.Aggregation', {
         attrs: {
             line: {
-                targetMarker: {
+                sourceMarker: {
                     d: 'M 40 0 L 20 10 L 0 00 L 20 -10 z',
                     fill: 'white'
                 }
@@ -750,7 +751,7 @@ this.joint.shapes = this.joint.shapes || {};
     let Composition = Aggregation.define('uml.Composition', {
             attrs: {
                 line: {
-                    targetMarker: {
+                    sourceMarker: {
                         fill: 'black'
                     }
                 }

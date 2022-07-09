@@ -1,6 +1,7 @@
 package uml.entities;
 
-import graphical.entities.GraphicalEntity;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import play.libs.Json;
 import uml.entities.operations.Constructor;
 import uml.entities.operations.Operation;
 
@@ -16,7 +17,7 @@ public abstract class ConstructableEntity extends Entity
         super(name);
     }
 
-    public ConstructableEntity(GraphicalEntity ge)
+    public ConstructableEntity(dto.entities.EntityDto ge)
     {
         super(ge);
     }
@@ -49,5 +50,14 @@ public abstract class ConstructableEntity extends Entity
         Operation result = super.getOperationById(id);
 
         return result == null ? getConstructorById(id) : result;
+    }
+
+    protected ArrayNode getConstructorsCreationCommands(){
+        ArrayNode result = Json.newArray();
+        for (Constructor constructor : constructors)
+        {
+            result.addAll(constructor.getCreationCommand(this));
+        }
+        return result;
     }
 }

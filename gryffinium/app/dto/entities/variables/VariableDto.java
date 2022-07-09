@@ -1,8 +1,10 @@
-package graphical.entities.variables;
+package dto.entities.variables;
 
-import graphical.GraphicalElement;
+import dto.ElementDto;
+import uml.entities.Entity;
+import uml.entities.variables.Variable;
 
-public class GraphicalVariable extends GraphicalElement
+public class VariableDto extends ElementDto
 {
     private Integer parentId;
 
@@ -11,6 +13,15 @@ public class GraphicalVariable extends GraphicalElement
     private Boolean isConstant;
 
     private String type;
+
+    public VariableDto(){}
+    public VariableDto(Variable variable, Entity parent){
+        this.id = variable.getId();
+        this.name = variable.getName();
+        this.isConstant = variable.isConstant();
+        this.type = variable.getType().getName();
+        this.parentId = parent.getId();
+    }
 
     public Integer getParentId()
     {

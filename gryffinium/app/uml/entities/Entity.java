@@ -1,6 +1,9 @@
 package uml.entities;
 
-import graphical.entities.GraphicalEntity;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import commands.Command;
+import dto.entities.EntityDto;
+import play.libs.Json;
 import uml.Visibility;
 import uml.entities.operations.Method;
 import uml.entities.operations.Operation;
@@ -10,6 +13,7 @@ import uml.types.Type;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 
 public abstract class Entity extends Type
@@ -47,27 +51,27 @@ public abstract class Entity extends Type
         this(name, Visibility.PUBLIC);
     }
 
-    public Entity(GraphicalEntity ge)
+    public Entity(dto.entities.EntityDto ge)
     {
         super(ge.getName() == null ? "" : ge.getName());
 
-        if(ge.getVisibility() == null)
+        if (ge.getVisibility() == null)
         {
             this.setVisibility(Visibility.PUBLIC);
         }
-        if(ge.getX() == null)
+        if (ge.getX() == null)
         {
             throw new IllegalArgumentException("X argument missing");
         }
-        if(ge.getY() == null)
+        if (ge.getY() == null)
         {
             throw new IllegalArgumentException("Y argument missing");
         }
-        if(ge.getWidth() == null)
+        if (ge.getWidth() == null)
         {
             throw new IllegalArgumentException("Width argument missing");
         }
-        if(ge.getHeight() == null)
+        if (ge.getHeight() == null)
         {
             throw new IllegalArgumentException("Height argument missing");
         }
@@ -142,33 +146,40 @@ public abstract class Entity extends Type
         this.visibility = visibility;
     }
 
-    public void setGraphical(GraphicalEntity ge)
+    public void setGraphical(dto.entities.EntityDto ge)
     {
-        if(ge.getName() != null)
+        if (ge.getName() != null)
             this.setName(ge.getName());
 
-        if(ge.getX() != null)
+        if (ge.getX() != null)
             this.setX(ge.getX());
 
-        if(ge.getY() != null)
+        if (ge.getY() != null)
             this.setY(ge.getY());
 
-        if(ge.getWidth() != null)
+        if (ge.getWidth() != null)
             this.setWidth(ge.getWidth());
 
-        if(ge.getHeight() != null)
+        if (ge.getHeight() != null)
             this.setHeight(ge.getHeight());
 
-        if(ge.getVisibility() != null)
+        if (ge.getVisibility() != null)
             this.setVisibility(Visibility.valueOf(ge.getVisibility().toUpperCase()));
     }
 
-    public Attribute getAttributeById(Integer id){
+    public Attribute getAttributeById(Integer id)
+    {
         return attributes.stream().filter(a -> a.getId().equals(id)).findFirst().orElse(null);
     }
 
-    public Attribute getAttribute(Integer id){
+    public Attribute getAttribute(Integer id)
+    {
         return attributes.stream().filter(a -> a.getId().equals(id)).findFirst().orElse(null);
+    }
+
+    public ArrayList<Attribute> getAttributes()
+    {
+        return attributes;
     }
 
     public void addAttribute(Attribute attribute)
@@ -188,10 +199,15 @@ public abstract class Entity extends Type
         return getMethodById(id);
     }
 
-    public Method getMethodById(Integer id){
+    public Method getMethodById(Integer id)
+    {
         return methods.stream().filter(m -> m.getId().equals(id)).findFirst().orElse(null);
     }
 
+    public ArrayList<Method> getMethods()
+    {
+        return methods;
+    }
     public void addMethod(Method method)
     {
         method.setId(idCounter++);
@@ -202,4 +218,25 @@ public abstract class Entity extends Type
     {
         methods.remove(method);
     }
+
+    public abstract EntityDto toDto();
+
+    public abstract ArrayNode getCreationCommands();
+
+    public ArrayNode getMethodsCreationCommands(){
+        ArrayNode commands = Json.newArray();
+        for (Method method : methods) {
+            commands.addAll(method.getCreationCommand(this));
+        }
+        return commands;
+    }
+
+    public ArrayNode getAttributesCreationCommands(){
+        ArrayNode commands = Json.newArray();
+        for (Attribute attribute : attributes) {
+            commands.add(attribute.getCreationCommand(this));
+        }
+        return commands;
+    }
+
 }

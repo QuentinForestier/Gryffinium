@@ -1,8 +1,9 @@
-package graphical.entities;
+package dto.entities;
 
-import graphical.GraphicalElement;
+import dto.ElementDto;
+import uml.entities.Entity;
 
-public class GraphicalEntity extends GraphicalElement
+public class EntityDto extends ElementDto
 {
 
     private Integer width;
@@ -14,7 +15,18 @@ public class GraphicalEntity extends GraphicalElement
 
     private String visibility;
 
+    public EntityDto(){}
 
+    public EntityDto(Entity e){
+        super(e.getId());
+        this.setId(e.getId());
+        this.setWidth(e.getWidth());
+        this.setHeight(e.getHeight());
+        this.setX(e.getX());
+        this.setY(e.getY());
+        this.setVisibility(e.getVisibility().toString());
+        this.setName(e.getName());
+    }
 
     public String getVisibility()
     {

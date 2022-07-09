@@ -1,5 +1,7 @@
 package uml.links;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import play.libs.Json;
 import uml.entities.Entity;
 
 public class Dependency
@@ -29,5 +31,10 @@ public class Dependency
     public void setId(Integer id)
     {
         this.id = id;
+    }
+
+    public ArrayNode getCreationCommands(){
+        //TODO  implement
+        return Json.newArray();
     }
 }

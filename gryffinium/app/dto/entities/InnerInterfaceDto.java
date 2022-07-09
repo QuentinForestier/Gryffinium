@@ -1,12 +1,21 @@
-package graphical.entities;
+package dto.entities;
 
-public class GraphicalInnerInterface extends GraphicalEntity
+import uml.entities.Entity;
+import uml.entities.InnerInterface;
+
+public class InnerInterfaceDto extends EntityDto
 {
 
 
     private Boolean isStatic;
 
     private Integer outer;
+
+    public InnerInterfaceDto(InnerInterface e)
+    {
+        super(e);
+        // TODO
+    }
 
     public Boolean getStatic()
     {

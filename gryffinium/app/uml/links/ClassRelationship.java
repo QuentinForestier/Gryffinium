@@ -1,6 +1,7 @@
 package uml.links;
 
-import graphical.links.GraphicalLink;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import play.libs.Json;
 import uml.ClassDiagram;
 
 public class ClassRelationship
@@ -21,16 +22,21 @@ public class ClassRelationship
     {
     }
 
-    ClassRelationship(GraphicalLink gl, ClassDiagram cd)
+    ClassRelationship(dto.links.LinkDto gl, ClassDiagram cd)
     {
         setGraphical(gl, cd);
     }
 
-    public void setGraphical(GraphicalLink gl, ClassDiagram cd)
+    public void setGraphical(dto.links.LinkDto gl, ClassDiagram cd)
     {
         if (gl.getId() != null)
         {
             this.id = gl.getId();
         }
+    }
+
+    public ArrayNode getCreationCommands(){
+        //TODO  implement
+        return Json.newArray();
     }
 }

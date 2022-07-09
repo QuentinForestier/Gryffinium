@@ -85,7 +85,7 @@ i{
     display: block;
 }
 
-th, td{
+.table-scrollable th, td{
     text-align: center;
     max-width: 200px;
     vertical-align: middle;

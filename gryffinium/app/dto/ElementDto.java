@@ -1,9 +1,14 @@
-package graphical;
+package dto;
 
 
-public class GraphicalElement
+public class ElementDto
 {
     private Integer id;
+
+    public ElementDto(){}
+    public ElementDto(int id){
+        this.id = id;
+    }
     public Integer getId()
     {
         return id;
@@ -13,4 +18,5 @@ public class GraphicalElement
     {
         this.id = id;
     }
+
 }

@@ -1,6 +1,14 @@
 package uml.entities;
 
-import graphical.entities.GraphicalEnum;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import commands.Command;
+import dto.ElementTypeDto;
+import dto.entities.EntityDto;
+import dto.entities.EnumDto;
+import dto.entities.variables.ValueDto;
+import play.libs.Json;
+import uml.entities.operations.Constructor;
+import uml.entities.operations.Method;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +33,9 @@ public class Enum extends ConstructableEntity
         values = new ArrayList<>();
     }
 
-    public Enum(GraphicalEnum ge)
+
+
+    public Enum(dto.entities.EnumDto ge)
     {
         super(ge);
         values = new ArrayList<>();
@@ -65,12 +75,28 @@ public class Enum extends ConstructableEntity
         values.remove(name);
     }
 
-
-    public void setGraphical(GraphicalEnum ge)
+    @Override
+    public EntityDto toDto()
     {
-        super.setGraphical(ge);
-        if (ge.getValues() != null)
-            this.setValues(ge.getValues());
+        return new EnumDto(this);
+    }
+
+    @Override
+    public ArrayNode getCreationCommands()
+    {
+        ArrayNode result = Json.newArray();
+        result.add(Command.createResponse(toDto(), ElementTypeDto.ENUM));
+        result.addAll(getConstructorsCreationCommands());
+        result.addAll(getMethodsCreationCommands());
+        result.addAll(getAttributesCreationCommands());
+        for(String value : values)
+        {
+            ValueDto ev = new ValueDto();
+            ev.setValue(value);
+            ev.setParentId(getId());
+            result.add(Command.createResponse(ev, ElementTypeDto.VALUE));
+        }
+        return result;
     }
 
 }

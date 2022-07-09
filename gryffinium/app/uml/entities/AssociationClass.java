@@ -1,9 +1,7 @@
 package uml.entities;
 
-import graphical.entities.GraphicalAssociationClass;
 import uml.ClassDiagram;
 import uml.links.BinaryAssociation;
-import uml.links.Multiplicity;
 import uml.links.Role;
 
 public class AssociationClass extends Class
@@ -21,7 +19,7 @@ public class AssociationClass extends Class
         this.association = association;
     }
 
-    public AssociationClass(GraphicalAssociationClass gac, ClassDiagram cd)
+    public AssociationClass(dto.entities.AssociationClassDto gac, ClassDiagram cd)
     {
         super(gac);
         if (gac.getSource() == null || gac.getTarget() == null)
@@ -36,7 +34,7 @@ public class AssociationClass extends Class
         setGraphical(gac, cd);
     }
 
-    public void setGraphical(GraphicalAssociationClass gac, ClassDiagram cd)
+    public void setGraphical(dto.entities.AssociationClassDto gac, ClassDiagram cd)
     {
         super.setGraphical(gac);
         if (gac.getSource() != null)

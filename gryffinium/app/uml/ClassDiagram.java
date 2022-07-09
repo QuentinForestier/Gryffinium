@@ -1,5 +1,7 @@
 package uml;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import play.libs.Json;
 import uml.entities.Entity;
 import uml.entities.operations.Operation;
 import uml.entities.variables.Variable;
@@ -120,5 +122,25 @@ public class ClassDiagram
         relationships.remove(relationship);
     }
 
+    public ArrayNode getCreationCommands(){
+        ArrayNode commands = Json.newArray();
+        for(Entity e : entities){
+            commands.addAll(e.getCreationCommands());
+        }
+
+        for(Association a : associations){
+            commands.addAll(a.getCreationCommands());
+        }
+
+        for(Dependency d : dependencies){
+            commands.addAll(d.getCreationCommands());
+        }
+
+        for(ClassRelationship r : relationships){
+            commands.addAll(r.getCreationCommands());
+        }
+
+        return commands;
+    }
 
 }

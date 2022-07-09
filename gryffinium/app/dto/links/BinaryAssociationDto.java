@@ -1,7 +1,13 @@
-package graphical.links;
+package dto.links;
 
-public class GraphicalBinaryAssociation extends GraphicalAssociation
+import uml.links.BinaryAssociation;
+
+public class BinaryAssociationDto extends AssociationDto
 {
+
+    private Integer sourceId;
+
+    private Integer targetId;
     private Boolean isDirected;
 
     private String sourceName;
@@ -11,6 +17,17 @@ public class GraphicalBinaryAssociation extends GraphicalAssociation
     private String multiplicitySource;
     private String multiplicityTarget;
 
+public BinaryAssociationDto(){}
+    public BinaryAssociationDto(BinaryAssociation ba){
+        super(ba);
+        this.isDirected = ba.isDirected();
+        this.sourceId = ba.getSource().getEntity().getId();
+        this.sourceName = ba.getSource().getName();
+        this.multiplicitySource = ba.getSource().getMultiplicity().toString();
+        this.targetId = ba.getTarget().getEntity().getId();
+        this.targetName = ba.getTarget().getName();
+        this.multiplicityTarget = ba.getTarget().getMultiplicity().toString();
+    }
     public Boolean isDirected()
     {
         return isDirected;
@@ -59,5 +76,30 @@ public class GraphicalBinaryAssociation extends GraphicalAssociation
     public void setMultiplicityTarget(String multiplicityTarget)
     {
         this.multiplicityTarget = multiplicityTarget;
+    }
+
+    public Integer getSourceId()
+    {
+        return sourceId;
+    }
+
+    public void setSourceId(Integer sourceId)
+    {
+        this.sourceId = sourceId;
+    }
+
+    public Integer getTargetId()
+    {
+        return targetId;
+    }
+
+    public void setTargetId(Integer targetId)
+    {
+        this.targetId = targetId;
+    }
+
+    public Boolean getDirected()
+    {
+        return isDirected;
     }
 }

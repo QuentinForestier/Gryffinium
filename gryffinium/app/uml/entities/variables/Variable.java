@@ -1,10 +1,11 @@
 package uml.entities.variables;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import dto.entities.variables.VariableDto;
+import uml.entities.Entity;
 import uml.types.Type;
 import uml.types.SimpleType;
 import uml.ClassDiagram;
-
-import graphical.entities.variables.GraphicalVariable;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -31,7 +32,7 @@ public abstract class Variable
         this(name, false);
     }
 
-    public Variable(GraphicalVariable gv, ClassDiagram cd)
+    public Variable(dto.entities.variables.VariableDto gv, ClassDiagram cd)
     {
         setGraphical(gv, cd);
         this.id = idCounter++;
@@ -81,7 +82,7 @@ public abstract class Variable
         this.type = type;
     }
 
-    public void setGraphical(GraphicalVariable gv, ClassDiagram cd)
+    public void setGraphical(dto.entities.variables.VariableDto gv, ClassDiagram cd)
     {
         if(gv.getId() != null)
             this.setId(gv.getId());
@@ -97,4 +98,6 @@ public abstract class Variable
             }
         }
     }
+
+
 }

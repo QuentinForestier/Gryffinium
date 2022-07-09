@@ -1,7 +1,15 @@
 package uml.entities;
 
-import graphical.entities.GraphicalClass;
-import graphical.entities.GraphicalEntity;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import commands.Command;
+import dto.ElementTypeDto;
+import dto.entities.ClassDto;
+import dto.entities.EntityDto;
+import play.libs.Json;
+import uml.entities.operations.Constructor;
+import uml.entities.operations.Method;
+import uml.entities.operations.Operation;
+import uml.entities.variables.Attribute;
 
 public class Class extends ConstructableEntity implements Implementor
 {
@@ -18,10 +26,11 @@ public class Class extends ConstructableEntity implements Implementor
         this(name, false);
     }
 
-    public Class(GraphicalClass gc)
+
+    public Class(dto.entities.ClassDto gc)
     {
         super(gc);
-        if(gc.isAbstract() == null)
+        if (gc.isAbstract() == null)
         {
             this.setAbstract(false);
         }
@@ -38,12 +47,29 @@ public class Class extends ConstructableEntity implements Implementor
         isAbstract = anAbstract;
     }
 
-    public void setGraphical(GraphicalClass ge)
+    public void setGraphical(dto.entities.ClassDto ge)
     {
         super.setGraphical(ge);
-        if(ge.isAbstract() != null)
+        if (ge.isAbstract() != null)
             this.setAbstract(ge.isAbstract());
     }
 
+
+    public EntityDto toDto()
+    {
+
+        return new ClassDto(this);
+    }
+
+    @Override
+    public ArrayNode getCreationCommands()
+    {
+        ArrayNode result = Json.newArray();
+        result.add(Command.createResponse(toDto(), ElementTypeDto.CLASS));
+        result.addAll(getConstructorsCreationCommands());
+        result.addAll(getMethodsCreationCommands());
+        result.addAll(getAttributesCreationCommands());
+        return result;
+    }
 }
 

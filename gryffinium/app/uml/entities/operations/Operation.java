@@ -1,9 +1,10 @@
 package uml.entities.operations;
 
-import graphical.entities.operations.GraphicalOperation;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import dto.entities.operations.OperationDto;
+import play.libs.Json;
 import uml.ClassDiagram;
 import uml.Visibility;
-import uml.entities.ConstructableEntity;
 import uml.entities.Entity;
 import uml.entities.variables.Parameter;
 
@@ -31,7 +32,7 @@ public abstract class Operation
         this(name, Visibility.PUBLIC);
     }
 
-    public Operation(GraphicalOperation go, ClassDiagram cd)
+    public Operation(dto.entities.operations.OperationDto go, ClassDiagram cd)
     {
         setGraphical(go, cd);
     }
@@ -81,7 +82,7 @@ public abstract class Operation
     }
 
 
-    public void setGraphical(GraphicalOperation go, ClassDiagram cd)
+    public void setGraphical(dto.entities.operations.OperationDto go, ClassDiagram cd)
     {
         if (go.getId() != null)
             setId(go.getId());
@@ -115,5 +116,16 @@ public abstract class Operation
             }
         }
         return null;
+    }
+
+    public abstract OperationDto toDto(Entity e);
+    public abstract ArrayNode getCreationCommand(Entity e);
+
+    public ArrayNode getParametersCreationCommands(Entity e){
+        ArrayNode result = Json.newArray();
+        for(Parameter param : params){
+            result.add(param.getCreationCommand(e, this));
+        }
+        return result;
     }
 }

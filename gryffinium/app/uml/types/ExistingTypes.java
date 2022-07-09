@@ -1,10 +1,12 @@
 package uml.types;
 
+import javax.xml.bind.annotation.XmlElement;
 import java.util.ArrayList;
 
 public class ExistingTypes
 {
 
+    @XmlElement
     private final ArrayList<Type> existingTypes;
 
     public ExistingTypes()

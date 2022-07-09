@@ -1,6 +1,11 @@
 package uml.links;
 
-import graphical.links.GraphicalBinaryAssociation;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import commands.Command;
+import dto.ElementTypeDto;
+import dto.links.AssociationDto;
+import dto.links.BinaryAssociationDto;
+import play.libs.Json;
 import uml.ClassDiagram;
 import uml.entities.Entity;
 
@@ -25,9 +30,9 @@ public class BinaryAssociation extends Association
         this(source, target, "", false);
     }
 
-    public BinaryAssociation(GraphicalBinaryAssociation gba, ClassDiagram cd)
+    public BinaryAssociation(BinaryAssociationDto gba, ClassDiagram cd)
     {
-        super(gba);
+        super(gba, cd);
         if (gba.getSourceId() == null)
         {
             throw new IllegalArgumentException("Source argument missing");
@@ -53,19 +58,22 @@ public class BinaryAssociation extends Association
         setGraphical(gba, cd);
     }
 
-    public void setGraphical(GraphicalBinaryAssociation gba, ClassDiagram cd)
+
+    @Override
+    public void setGraphical(AssociationDto adto, ClassDiagram cd)
     {
-        super.setGraphical(gba);
+        super.setGraphical(adto, cd);
+        BinaryAssociationDto gba = (BinaryAssociationDto) adto;
         if (gba.isDirected() != null)
             this.isDirected = gba.isDirected();
 
-        if (gba.getSourceId() != null)
+        if (gba.getSourceId() != null && this.source != null)
         {
             Entity source = cd.getEntity(gba.getSourceId());
             this.source.setEntity(source);
         }
 
-        if (gba.getMultiplicitySource() != null)
+        if (gba.getMultiplicitySource() != null && this.source != null)
         {
             // TODO check if bound is valid
             String[] bound = gba.getMultiplicitySource().split("...");
@@ -73,19 +81,19 @@ public class BinaryAssociation extends Association
                     bound[1].charAt(0)));
         }
 
-        if (gba.getTargetId() != null)
+        if (gba.getTargetId() != null && this.target != null)
         {
             Entity target = cd.getEntity(gba.getTargetId());
             this.target.setEntity(target);
         }
 
-        if (gba.getSourceName() != null)
+        if (gba.getSourceName() != null && this.source != null)
             this.source.setName(gba.getSourceName());
 
-        if (gba.getTargetName() != null)
+        if (gba.getTargetName() != null && this.target != null)
             this.target.setName(gba.getTargetName());
 
-        if (gba.getMultiplicityTarget() != null)
+        if (gba.getMultiplicityTarget() != null && this.target != null)
         {
             // TODO check if bound is valid
             String[] bound = gba.getMultiplicityTarget().split("...");
@@ -130,5 +138,20 @@ public class BinaryAssociation extends Association
         Role tmp = source;
         source = target;
         target = tmp;
+    }
+
+    @Override
+    public AssociationDto toDto()
+    {
+        return new BinaryAssociationDto(this);
+    }
+
+    @Override
+    public ArrayNode getCreationCommands()
+    {
+        ArrayNode result = Json.newArray();
+        result.add(Command.createResponse(toDto(),
+                ElementTypeDto.BINARY_ASSOCIATION));
+        return result;
     }
 }

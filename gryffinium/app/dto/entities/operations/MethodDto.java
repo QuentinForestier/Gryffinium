@@ -1,11 +1,26 @@
-package graphical.entities.operations;
+package dto.entities.operations;
 
-public class GraphicalMethod extends GraphicalOperation
+import uml.entities.Entity;
+import uml.entities.operations.Method;
+
+public class MethodDto extends OperationDto
 {
     private Boolean isAbstract;
     private Boolean isStatic;
 
     private String type;
+
+    public MethodDto()
+    {
+    }
+
+    public MethodDto(Method m, Entity parent)
+    {
+        super(m, parent);
+        this.isAbstract = m.isAbstract();
+        this.isStatic = m.isStatic();
+        this.type = m.getReturnType().getName();
+    }
 
     public Boolean isAbstract()
     {

@@ -1,7 +1,13 @@
 package uml.entities.operations;
 
-import graphical.entities.operations.GraphicalMethod;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import commands.Command;
+import dto.ElementTypeDto;
+import dto.entities.operations.MethodDto;
+import dto.entities.operations.OperationDto;
+import play.libs.Json;
 import uml.ClassDiagram;
+import uml.entities.Entity;
 import uml.types.SimpleType;
 import uml.types.Type;
 
@@ -26,7 +32,8 @@ public class Method extends Operation
         this(name, false, false);
     }
 
-    public Method(GraphicalMethod gm, ClassDiagram cd){
+
+    public Method(dto.entities.operations.MethodDto gm, ClassDiagram cd){
         super(gm, cd);
         if(gm.isAbstract() == null)
         {
@@ -72,7 +79,7 @@ public class Method extends Operation
         this.returnType = returnType;
     }
 
-    public void setGraphical(GraphicalMethod gm, ClassDiagram cd)
+    public void setGraphical(dto.entities.operations.MethodDto gm, ClassDiagram cd)
     {
         super.setGraphical(gm, cd);
         if(gm.isAbstract() != null)
@@ -87,5 +94,21 @@ public class Method extends Operation
                 cd.getExistingTypes().addType(this.returnType);
             }
         }
+    }
+
+
+    @Override
+    public OperationDto toDto(Entity e)
+    {
+        return new MethodDto(this, e);
+    };
+
+    @Override
+    public ArrayNode getCreationCommand(Entity e)
+    {
+        ArrayNode result = Json.newArray();
+        result.add(Command.createResponse(toDto(e), ElementTypeDto.METHOD));
+        result.addAll(getParametersCreationCommands(e));
+        return result;
     }
 }

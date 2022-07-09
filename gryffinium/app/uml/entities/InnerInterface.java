@@ -1,6 +1,5 @@
 package uml.entities;
 
-import graphical.entities.GraphicalInnerInterface;
 import uml.ClassDiagram;
 import uml.links.Inner;
 
@@ -20,7 +19,7 @@ public class InnerInterface extends Interface implements InnerEntity
         this(name, false);
     }
 
-    public InnerInterface(GraphicalInnerInterface gi, ClassDiagram cd)
+    public InnerInterface(dto.entities.InnerInterfaceDto gi, ClassDiagram cd)
     {
         super(gi);
         if(gi.getOuter() == null)
@@ -32,7 +31,7 @@ public class InnerInterface extends Interface implements InnerEntity
         setGraphical(gi, cd);
     }
 
-    public void setGraphical(GraphicalInnerInterface gi, ClassDiagram cd)
+    public void setGraphical(dto.entities.InnerInterfaceDto gi, ClassDiagram cd)
     {
         super.setGraphical(gi);
         if(gi.getStatic() != null)

@@ -1,6 +1,6 @@
 package uml.links;
 
-import graphical.links.GraphicalLink;
+import dto.links.LinkDto;
 import uml.ClassDiagram;
 import uml.entities.Class;
 
@@ -16,13 +16,13 @@ public class Generalization extends ClassRelationship
         this.child = child;
     }
 
-    public Generalization(GraphicalLink gl, ClassDiagram cd)
+    public Generalization(dto.links.LinkDto gl, ClassDiagram cd)
     {
         super(gl, cd);
         setGraphical(gl, cd);
     }
 
-    public void setGraphical(GraphicalLink gl, ClassDiagram cd)
+    public void setGraphical(LinkDto gl, ClassDiagram cd)
     {
         if (gl.getSourceId() != null)
         {

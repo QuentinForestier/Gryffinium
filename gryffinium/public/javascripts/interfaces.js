@@ -90,7 +90,6 @@ export function generateRoleInterface(body, element, role, send, update = false)
     table.append(row2);
 
 
-
 }
 
 export function generateBinaryAssociationSettingsInterface(body, element, send, update = false) {
@@ -214,11 +213,13 @@ export function generateEntityHeader(header, element, send) {
     let row = document.createElement('div');
     container.append(row);
     header.append(container);
-    row.className = 'row';
+    row.className = 'row align-middle';
 
-    title.className = title.className + ' col-sm-2';
+    let tmp = document.createElement('div');
+    tmp.className = 'col-sm-auto';
+    tmp.append(title);
 
-    row.append(title);
+    row.append(tmp);
 
     let visibility = generateVisibilityInterface(element, undefined, function (input) {
         if (input.value !== element.visibility) {
@@ -231,13 +232,17 @@ export function generateEntityHeader(header, element, send) {
         }
     }).firstChild;
 
-    visibility.className = visibility.className + ' col-sm-2';
+    tmp = document.createElement('div');
+    tmp.className = 'col-sm-auto';
+    tmp.append(visibility);
 
-    row.append(visibility);
+    row.append(tmp);
 
 
     let abstractContainer = document.createElement('div');
     abstractContainer.className = 'form-check';
+    abstractContainer.style.width = "auto";
+
     let checkbox = generateIsAbstractInterface(element, undefined, function (input) {
         if (input.checked !== element.isAbstract) {
             send({
@@ -249,6 +254,10 @@ export function generateEntityHeader(header, element, send) {
         }
     }).firstChild
 
+    tmp = document.createElement('div');
+    tmp.className = 'col-sm-auto';
+
+
     checkbox.className = checkbox.className + ' form-check-input';
     checkbox.id = 'checkbox' + element.id;
 
@@ -257,9 +266,10 @@ export function generateEntityHeader(header, element, send) {
     label.setAttribute('for', 'checkbox' + element.id);
     label.innerHTML = 'Is abstract';
     abstractContainer.append(checkbox, label);
-    abstractContainer.style.margin = '0 8rem';
 
-    row.append(abstractContainer);
+
+    tmp.append(abstractContainer);
+    row.append(tmp);
 
     generateCloseButton(header);
 }

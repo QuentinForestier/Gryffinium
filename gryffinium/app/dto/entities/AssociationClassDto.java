@@ -1,7 +1,15 @@
-package graphical.entities;
+package dto.entities;
 
-public class GraphicalAssociationClass extends GraphicalClass
+import uml.entities.AssociationClass;
+import uml.entities.Class;
+
+public class AssociationClassDto extends ClassDto
 {
+    public AssociationClassDto(AssociationClass e)
+    {
+        super(e);
+    }
+
     public Integer getSource()
     {
         return source;

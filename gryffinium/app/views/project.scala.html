@@ -197,6 +197,9 @@
             };
 
             socket.onopen = function () {
+
+                sendMessage({}, '', 'SelectCommand');
+
                 socket.onmessage = function (event) {
                     let message = JSON.parse(event.data);
                     if (message.commandType === 'Error') {
@@ -207,6 +210,7 @@
                                 case 'ChatMessageCommand':
                                     receiveChatMessage(command);
                                     break;
+                                case 'SelectCommand':
                                 case 'CreateCommand':
                                     let elem = null;
                                     let parent = null;
@@ -270,7 +274,7 @@
                                                 linkId: command.id,
                                             });
                                             break;
-                                        case ElementType.BinaryAssociation.name:
+        case ElementType.BinaryAssociation.name:
                                             elem = new uml.Association({
                                                 source: {id: command.sourceId},
                                                 target: {id: command.targetId},
@@ -303,6 +307,7 @@
                                                 multiplicitySource: command.multiplicitySource,
                                                 multiplicityTarget: command.multiplicityTarget,
                                             });
+                                            elem.setTargetArrow();
                                             break;
                                         case ElementType.Composition.name:
                                             elem = new uml.Composition({
@@ -766,7 +771,7 @@
                     return;
                 selectedElement = linkView.model;
 
-                if (selectedElement !== undefined)
+                if (selectedElement !== undefined && selectedElement.getId() !== undefined)
                     generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage);
 
             });

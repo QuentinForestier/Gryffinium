@@ -1,6 +1,6 @@
-package graphical.entities.variables;
+package dto.entities.variables;
 
-public class GraphicalValue
+public class ValueDto
 {
     private Integer parentId;
 

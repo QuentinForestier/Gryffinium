@@ -1,9 +1,15 @@
 package uml.entities.variables;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import commands.Command;
+import dto.ElementTypeDto;
+import dto.entities.variables.AttributeDto;
+import dto.entities.variables.VariableDto;
+import play.libs.Json;
 import uml.Visibility;
 import uml.ClassDiagram;
-
-import graphical.entities.variables.GraphicalAttribute;
+import uml.entities.Entity;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
@@ -20,7 +26,7 @@ public class Attribute extends Variable
         this.visibility = visibility;
     }
 
-    public Attribute(GraphicalAttribute ga, ClassDiagram cd)
+    public Attribute(dto.entities.variables.AttributeDto ga, ClassDiagram cd)
     {
         super(ga, cd);
         if(ga.isStatic() == null)
@@ -39,7 +45,9 @@ public class Attribute extends Variable
         this(name, false, false, Visibility.PRIVATE);
     }
 
-    public void setGraphical(GraphicalAttribute ga, ClassDiagram cd)
+
+
+    public void setGraphical(dto.entities.variables.AttributeDto ga, ClassDiagram cd)
     {
         super.setGraphical(ga, cd);
         if(ga.isStatic() != null)
@@ -69,5 +77,15 @@ public class Attribute extends Variable
     public void setVisibility(Visibility visibility)
     {
         this.visibility = visibility;
+    }
+
+    public VariableDto toDto(Entity e)
+    {
+        return new AttributeDto(this, e);
+    }
+
+    public JsonNode getCreationCommand(Entity e)
+    {
+        return Command.createResponse(toDto(e), ElementTypeDto.ATTRIBUTE);
     }
 }

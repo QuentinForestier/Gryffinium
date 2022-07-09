@@ -1,8 +1,8 @@
-package graphical.links;
+package dto.links;
 
-import graphical.GraphicalElement;
+import dto.ElementDto;
 
-public class GraphicalLink extends GraphicalElement
+public class LinkDto extends ElementDto
 {
     private Integer sourceId;
 

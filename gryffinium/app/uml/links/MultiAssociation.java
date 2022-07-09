@@ -1,5 +1,7 @@
 package uml.links;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import dto.links.AssociationDto;
 import uml.entities.Entity;
 
 import java.util.ArrayList;
@@ -19,5 +21,17 @@ public class MultiAssociation extends Association
         for(Entity entity : entites){
             roles.add(new Role(entity.getName(), Multiplicity.N, entity));
         }
+    }
+
+    @Override
+    public AssociationDto toDto()
+    {
+        return null;
+    }
+
+    @Override
+    public ArrayNode getCreationCommands()
+    {
+        return null;
     }
 }

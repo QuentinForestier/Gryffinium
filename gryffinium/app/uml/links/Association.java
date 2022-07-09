@@ -1,9 +1,11 @@
 package uml.links;
 
-import graphical.links.GraphicalAssociation;
-import uml.entities.Entity;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import dto.links.AssociationDto;
+import play.libs.Json;
+import uml.ClassDiagram;
 
-public class Association
+public abstract class Association
 {
     private Integer id;
     private String name;
@@ -13,9 +15,9 @@ public class Association
         this.name = name;
     }
 
-    public Association(GraphicalAssociation graphicalAssociation)
+    public Association(AssociationDto graphicalAssociation, ClassDiagram cd)
     {
-        setGraphical(graphicalAssociation);
+        this.setGraphical(graphicalAssociation, cd);
     }
 
     public Integer getId()
@@ -38,9 +40,12 @@ public class Association
         this.name = name;
     }
 
-    public void setGraphical(GraphicalAssociation ga)
+    public void setGraphical(dto.links.AssociationDto ga, ClassDiagram cd)
     {
         if(ga.getName() != null)
             this.name = ga.getName();
     }
+
+    public abstract AssociationDto toDto();
+    public abstract ArrayNode getCreationCommands();
 }

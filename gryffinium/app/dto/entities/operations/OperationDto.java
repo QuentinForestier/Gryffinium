@@ -1,10 +1,10 @@
-package graphical.entities.operations;
+package dto.entities.operations;
 
-import graphical.GraphicalElement;
+import dto.ElementDto;
+import uml.entities.Entity;
+import uml.entities.operations.Operation;
 
-import java.util.List;
-
-public class GraphicalOperation extends GraphicalElement
+public class OperationDto extends ElementDto
 {
     private Integer parentId;
 
@@ -13,6 +13,14 @@ public class GraphicalOperation extends GraphicalElement
 
     private String visibility;
 
+    public OperationDto(){}
+    public OperationDto(Operation operation, Entity parent)
+    {
+        this.id = operation.getId();
+        this.name = operation.getName();
+        this.visibility = operation.getVisibility().toString();
+        this.parentId = parent.getId();
+    }
 
     public Integer getParentId()
     {

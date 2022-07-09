@@ -8,8 +8,8 @@ import commands.chat.ChatMessageCommand;
 import commands.Command;
 import commands.uml.CreateCommand;
 import commands.uml.RemoveCommand;
+import commands.uml.SelectCommand;
 import commands.uml.UpdateCommand;
-import graphical.GraphicalElementType;
 import io.ebean.Model;
 import io.ebean.annotation.NotNull;
 import play.libs.Json;
@@ -158,15 +158,18 @@ public class ProjectUser extends Model
                 break;
             case "CreateCommand":
                 cmd = new CreateCommand(message.get("data"),
-                        GraphicalElementType.valueOf(message.get("entityType").asText()));
+                        dto.ElementTypeDto.valueOf(message.get("entityType").asText()));
                 break;
             case "UpdateCommand":
                 cmd = new UpdateCommand(message.get("data"),
-                        GraphicalElementType.valueOf(message.get("entityType").asText()));
+                        dto.ElementTypeDto.valueOf(message.get("entityType").asText()));
                 break;
             case "RemoveCommand":
                 cmd = new RemoveCommand(message.get("data"),
-                        GraphicalElementType.valueOf(message.get("entityType").asText()));
+                        dto.ElementTypeDto.valueOf(message.get("entityType").asText()));
+                break;
+            case "SelectCommand":
+                cmd = new SelectCommand();
                 break;
             default:
                 throw new IllegalArgumentException("Unknown message type");

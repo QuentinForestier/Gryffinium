@@ -1,6 +1,6 @@
-package graphical;
+package dto;
 
-public enum GraphicalElementType
+public enum ElementTypeDto
 {
     // Entities
     CLASS,

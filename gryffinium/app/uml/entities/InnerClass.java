@@ -1,13 +1,10 @@
 package uml.entities;
 
-import graphical.entities.GraphicalInnerClass;
 import uml.ClassDiagram;
 import uml.links.Inner;
 
 public class InnerClass extends Class implements InnerEntity
 {
-
-
     private Inner inner;
     private boolean isStatic;
 
@@ -23,7 +20,7 @@ public class InnerClass extends Class implements InnerEntity
         this(name, outer, false);
     }
 
-    public InnerClass(GraphicalInnerClass gic, ClassDiagram cd)
+    public InnerClass(dto.entities.InnerClassDto gic, ClassDiagram cd)
     {
         super(gic);
         if(gic.isStatic() == null)
@@ -61,7 +58,7 @@ public class InnerClass extends Class implements InnerEntity
         isStatic = aStatic;
     }
 
-    public void setGraphical(GraphicalInnerClass gic, ClassDiagram cd)
+    public void setGraphical(dto.entities.InnerClassDto gic, ClassDiagram cd)
     {
         super.setGraphical(gic);
         if (gic.isStatic() != null)
