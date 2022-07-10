@@ -76,9 +76,9 @@ public class BinaryAssociation extends Association
         if (gba.getMultiplicitySource() != null && this.source != null)
         {
             // TODO check if bound is valid
-            String[] bound = gba.getMultiplicitySource().split("...");
+            String[] bound = gba.getMultiplicitySource().split("[.][.]");
             this.source.setMultiplicity(new Multiplicity(bound[0].charAt(0),
-                    bound[1].charAt(0)));
+                bound.length < 2 ? bound[0].charAt(0) : bound[1].charAt(0)));
         }
 
         if (gba.getTargetId() != null && this.target != null)
@@ -96,9 +96,9 @@ public class BinaryAssociation extends Association
         if (gba.getMultiplicityTarget() != null && this.target != null)
         {
             // TODO check if bound is valid
-            String[] bound = gba.getMultiplicityTarget().split("...");
+            String[] bound = gba.getMultiplicityTarget().split("[.][.]");
             this.target.setMultiplicity(new Multiplicity(bound[0].charAt(0),
-                    bound[1].charAt(0)));
+                    bound.length < 2 ? bound[0].charAt(0) : bound[1].charAt(0)));
         }
 
     }

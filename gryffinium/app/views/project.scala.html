@@ -31,7 +31,14 @@
             <div class="btn btn-sm navbar-btn" id="selectDependency">Dependency</div>
         </div>
     </nav>
-
+    <datalist id="multiplicity-list">
+        <option >0</option>
+        <option >1</option>
+        <option >0..1</option>
+        <option >0..*</option>
+        <option >1..*</option>
+        <option >*</option>
+    </datalist>
     <div id="diagram">
         <div id="paper"></div>
     </div>
@@ -53,6 +60,7 @@
                 Constructor,
                 Parameter,
                 Visibility,
+                Role
             } from "@routes.Assets.versioned("javascripts/gryffinium.uml.js")"
             import {
                 generateModifierInterface,
@@ -274,25 +282,24 @@
                                                 linkId: command.id,
                                             });
                                             break;
-        case ElementType.BinaryAssociation.name:
+                                        case ElementType.BinaryAssociation.name:
                                             elem = new uml.Association({
                                                 source: {id: command.sourceId},
                                                 target: {id: command.targetId},
+                                                roleSource: new Role("Source", command.sourceName, command.multiplicitySource),
+                                                roleTarget: new Role("Target", command.targetName, command.multiplicityTarget),
                                                 linkId: command.id,
                                                 isDirected: command.isDirected,
                                                 name: command.name,
-                                                sourceName: command.sourceName,
-                                                targetName: command.targetName,
-                                                multiplicitySource: command.multiplicitySource,
-                                                multiplicityTarget: command.multiplicityTarget,
                                             });
-                                            elem.addLabels();
                                             elem.on('change', function (link) {
-                                                /*for (let i = 0; i < link.attributes.labels.length; i++) {
-                                                    if (link.attributes.labels[i].position.offset !== link._previousAttributes.labels[i].position.offset) {
-                                                        link.set('labelsChanged', true);
+                                                if (link.get('labels') !== undefined) {
+                                                    for (let i = 0; i < link.get('labels').length; i++) {
+                                                        if (link.attributes.labels[i].position.offset !== link._previousAttributes.labels[i].position.offset) {
+                                                            link.set('labelsChanged', true);
+                                                        }
                                                     }
-                                                }*/
+                                                }
                                             })
                                             break;
                                         case ElementType.Aggregation.name:
@@ -302,12 +309,10 @@
                                                 linkId: command.id,
                                                 isDirected: command.isDirected,
                                                 name: command.name,
-                                                sourceName: command.sourceName,
-                                                targetName: command.targetName,
-                                                multiplicitySource: command.multiplicitySource,
-                                                multiplicityTarget: command.multiplicityTarget,
+                                                roleSource: new Role("Source", command.sourceName, command.multiplicitySource),
+                                                roleTarget: new Role("Target", command.targetName, command.multiplicityTarget),
                                             });
-                                            elem.setTargetArrow();
+
                                             break;
                                         case ElementType.Composition.name:
                                             elem = new uml.Composition({
@@ -316,10 +321,8 @@
                                                 linkId: command.id,
                                                 isDirected: command.isDirected,
                                                 name: command.name,
-                                                sourceName: command.sourceName,
-                                                targetName: command.targetName,
-                                                multiplicitySource: command.multiplicitySource,
-                                                multiplicityTarget: command.multiplicityTarget,
+                                                roleSource: new Role("Source", command.sourceName, command.multiplicitySource),
+                                                roleTarget: new Role("Target", command.targetName, command.multiplicityTarget),
                                             });
                                             break;
                                         case ElementType.MultiAssociation.name:
@@ -611,9 +614,11 @@
 
             });
 
+            let tmpcounter = 0;
             paper.on('link:pointerup', function (linkView) {
+
                 if (linkView.model.get('labelsChanged')) {
-                    console.log('labelsChanged');
+
                 }
             })
 
@@ -806,7 +811,7 @@
                     return;
                 selectedElement = elementView.model;
 
-                if (selectedElement !== undefined)
+                if (selectedElement !== undefined && selectedElement.getId() !== undefined)
                     generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage);
 
             });

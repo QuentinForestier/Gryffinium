@@ -85,6 +85,7 @@ export class Attribute {
     }
 
     toString() {
+
         return this.visibility + " " + this.name + " : " + this.type;
     }
 }
@@ -187,14 +188,20 @@ export class Parameter {
 }
 
 export class Role{
-    constructor(id, name){
+    constructor(id, name, multiplicity) {
         this.id = id;
         this.name = name;
-        this.entityName = "";
-        this.multiplicity = "";
+        this.multiplicity = multiplicity;
+
     }
 
     getId(){
         return this.id;
+    }
+
+    set(role){
+        this.id = role.id;
+        this.name = role.name;
+        this.multiplicity = role.multiplicity;
     }
 }

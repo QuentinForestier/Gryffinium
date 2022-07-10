@@ -173,6 +173,7 @@ public class UpdateCommand implements Command
                 project.getDiagram().getEntity(gm.getParentId()).getMethodById(gm.getId()).setGraphical(gm, project.getDiagram());
                 result.add(Command.createResponse(gm, elementType));
                 break;
+
         }
 
         return result;

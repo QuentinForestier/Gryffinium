@@ -26,11 +26,25 @@ public class Generalization extends ClassRelationship
     {
         if (gl.getSourceId() != null)
         {
-            this.child = (Class) cd.getEntity(gl.getSourceId());
+            try
+            {
+                this.child = (Class) cd.getEntity(gl.getSourceId());
+            }
+            catch (Exception e)
+            {
+                throw new IllegalArgumentException(cd.getEntity(gl.getSourceId()).getName() + " is not a class");
+            }
         }
         if (gl.getTargetId() != null)
         {
-            this.parent = (Class) cd.getEntity(gl.getTargetId());
+            try
+            {
+                this.parent = (Class) cd.getEntity(gl.getTargetId());
+            }
+            catch (ClassCastException e)
+            {
+                throw new IllegalArgumentException(cd.getEntity(gl.getTargetId()).getName() + " is not a class");
+            }
         }
     }
 }

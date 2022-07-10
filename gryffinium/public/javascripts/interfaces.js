@@ -43,7 +43,7 @@ export function generateModifierInterface(canvas, header, body, element, send, u
             generateLinkHeader(header, element, send);
             generateBinaryAssociationSettingsInterface(body, element, send)
             generateRoleInterface(body, element, element.get('roleSource'), send);
-            generateRoleInterface(body, element, element.get('targetSource'), send);
+            generateRoleInterface(body, element, element.get('roleTarget'), send);
             break;
 
     }
@@ -70,7 +70,7 @@ export function generateRoleInterface(body, element, role, send, update = false)
     let thead = document.createElement("thead");
     table.append(thead);
 
-    let titles = [role.entityName];
+    let titles = ["Role"]
     thead.append(generateTableHeader(titles));
 
     let tbody = document.createElement("tbody");
@@ -80,16 +80,42 @@ export function generateRoleInterface(body, element, role, send, update = false)
     table.append(row);
     row.append(generateNameInterface(undefined, role, false, function (input) {
         send({
-            name: input.value,
-            parentId: element.getId(),
-            id: role.id,
-        }, 'ROLE', 'UpdateCommand')
+            targetName: role.getId() === "Target" ? input.value : undefined,
+            sourceName: role.getId() === "Source" ? input.value : undefined,
+            id: element.getId(),
+        }, element.getType(), 'UpdateCommand')
     }));
 
     let row2 = document.createElement("tr");
     table.append(row2);
+    let td = document.createElement("td");
+    row2.append(td);
+    td.append(generateMutliplictyInterface(role, function(input){
+        send({
+            multiplicityTarget: role.getId() === "Target" ? input.value : undefined,
+            multiplicitySource: role.getId() === "Source" ? input.value : undefined,
+            id: element.getId(),
+        }, element.getType(), 'UpdateCommand')
+    }));
 
+}
 
+export function generateMutliplictyInterface(target, onblur){
+    let input = document.createElement("input");
+    input.className = "form-control form-control-sm form-control-plaintext input-sm text-center";
+    input.value = target.multiplicity;
+    input.addEventListener('keypress', function (e) {
+      if(e.code === "Enter"){
+          input.blur();
+      }
+    })
+    input.setAttribute("list", document.getElementById("multiplicity-list").id);
+    input.placeholder = "Enter multiplicity";
+    input.addEventListener("blur", function () {
+        onblur(input);
+    });
+
+    return input;
 }
 
 export function generateBinaryAssociationSettingsInterface(body, element, send, update = false) {
@@ -187,6 +213,11 @@ export function generateHeaderTitleInterface(element, send) {
     let title = document.createElement('input');
     title.className = 'offcanvas-title form-control form-control-sm form-control-plaintext input-sm text-center p-0';
     title.type = 'text';
+    title.addEventListener('keypress', function (e) {
+        if(e.code === "Enter"){
+            title.blur();
+        }
+    })
     title.value = element.get('name');
     title.onblur = function () {
         send({
@@ -919,6 +950,11 @@ export function generateNameInterface(element, target, disabled, onblur) {
     let attributesTableBodyRowName = document.createElement("td");
     let inputName = document.createElement("input");
     inputName.disabled = disabled;
+    inputName.addEventListener('keypress', function (e) {
+        if(e.code === "Enter"){
+            inputName.blur();
+        }
+    })
     inputName.className = "form-control form-control-sm form-control-plaintext input-sm text-center p-0";
     inputName.value = target.name;
     inputName.addEventListener("blur", function () {
@@ -931,6 +967,11 @@ export function generateNameInterface(element, target, disabled, onblur) {
 export function generateTypeInterface(element, target, disabled, onblur) {
     let attributesTableBodyRowType = document.createElement("td");
     let inputType = document.createElement("input");
+    inputType.addEventListener('keypress', function (e) {
+        if(e.code === "Enter"){
+            inputType.blur();
+        }
+    })
     inputType.disabled = disabled;
     inputType.className = "form-control form-control-sm form-control-plaintext input-sm text-center";
     inputType.value = target.type;
