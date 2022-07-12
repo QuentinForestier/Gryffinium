@@ -103,8 +103,6 @@ public class CreateCommand implements Command
                         project.getDiagram());
                 project.getDiagram().addAssociation(ba);
                 badto.setId(ba.getId());
-                badto.setMultiplicitySource(ba.getSource().getMultiplicity().toString());
-                badto.setMultiplicityTarget(ba.getTarget().getMultiplicity().toString());
 
                 result.add(Command.createResponse(badto, elementType));
                 break;
@@ -115,8 +113,7 @@ public class CreateCommand implements Command
                         project.getDiagram());
                 project.getDiagram().addAssociation(ag);
                 agdto.setId(ag.getId());
-                agdto.setMultiplicitySource(ag.getSource().getMultiplicity().toString());
-                agdto.setMultiplicityTarget(ag.getTarget().getMultiplicity().toString());
+
 
                 result.add(Command.createResponse(agdto, elementType));
                 break;
@@ -127,8 +124,6 @@ public class CreateCommand implements Command
                         project.getDiagram());
                 project.getDiagram().addAssociation(co);
                 cdto.setId(co.getId());
-                cdto.setMultiplicitySource(co.getSource().getMultiplicity().toString());
-                cdto.setMultiplicityTarget(co.getTarget().getMultiplicity().toString());
 
                 result.add(Command.createResponse(cdto, elementType));
                 break;

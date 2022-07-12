@@ -10,6 +10,7 @@ import dto.entities.variables.AttributeDto;
 import dto.entities.variables.ParameterDto;
 import dto.entities.variables.ValueDto;
 import dto.links.BinaryAssociationDto;
+import dto.links.RoleDto;
 import models.Project;
 import play.libs.Json;
 import uml.entities.*;
@@ -173,7 +174,12 @@ public class UpdateCommand implements Command
                 project.getDiagram().getEntity(gm.getParentId()).getMethodById(gm.getId()).setGraphical(gm, project.getDiagram());
                 result.add(Command.createResponse(gm, elementType));
                 break;
-
+            case ROLE:
+                RoleDto gr = Json.fromJson(data,
+                        RoleDto.class);
+                project.getDiagram().getAssociation(gr.getAssociationId()).getRoleByEntityId(gr.getElementId()).setGraphical(gr, project.getDiagram());
+                result.add(Command.createResponse(gr, elementType));
+                break;
         }
 
         return result;

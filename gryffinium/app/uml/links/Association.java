@@ -42,10 +42,13 @@ public abstract class Association
 
     public void setGraphical(dto.links.AssociationDto ga, ClassDiagram cd)
     {
-        if(ga.getName() != null)
+        if (ga.getName() != null)
             this.name = ga.getName();
     }
 
+    public abstract Role getRoleByEntityId(Integer entityId);
+
     public abstract AssociationDto toDto();
+
     public abstract ArrayNode getCreationCommands();
 }

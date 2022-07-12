@@ -20,6 +20,8 @@ public enum ElementTypeDto
     REALIZATION,
     INNER,
 
+    ROLE,
+
     // Enum Values
     VALUE,
 

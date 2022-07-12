@@ -24,6 +24,12 @@ public class MultiAssociation extends Association
     }
 
     @Override
+    public Role getRoleByEntityId(Integer entityId)
+    {
+        return null;
+    }
+
+    @Override
     public AssociationDto toDto()
     {
         return null;

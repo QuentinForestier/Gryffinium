@@ -42,8 +42,8 @@ export function generateModifierInterface(canvas, header, body, element, send, u
         case 'COMPOSITION':
             generateLinkHeader(header, element, send);
             generateBinaryAssociationSettingsInterface(body, element, send)
-            generateRoleInterface(body, element, element.get('roleSource'), send);
-            generateRoleInterface(body, element, element.get('roleTarget'), send);
+            generateRoleInterface(body, element, element.get('roles')[0], send);
+            generateRoleInterface(body, element, element.get('roles')[1], send);
             break;
 
     }
@@ -59,7 +59,6 @@ export function generateRoleInterface(body, element, role, send, update = false)
     } else {
         container = document.createElement("div");
         container.className = "col-sm-auto";
-        container.id = "container-role-" + role.getId();
         body.append(container);
     }
 
@@ -80,34 +79,34 @@ export function generateRoleInterface(body, element, role, send, update = false)
     table.append(row);
     row.append(generateNameInterface(undefined, role, false, function (input) {
         send({
-            targetName: role.getId() === "Target" ? input.value : undefined,
-            sourceName: role.getId() === "Source" ? input.value : undefined,
-            id: element.getId(),
-        }, element.getType(), 'UpdateCommand')
+            name: input.value,
+            elementId: role.elementId,
+            associationId: element.getId(),
+        }, 'ROLE', 'UpdateCommand')
     }));
 
     let row2 = document.createElement("tr");
     table.append(row2);
     let td = document.createElement("td");
     row2.append(td);
-    td.append(generateMutliplictyInterface(role, function(input){
+    td.append(generateMutliplictyInterface(role, function (input) {
         send({
-            multiplicityTarget: role.getId() === "Target" ? input.value : undefined,
-            multiplicitySource: role.getId() === "Source" ? input.value : undefined,
-            id: element.getId(),
-        }, element.getType(), 'UpdateCommand')
+            multiplicity: input.value,
+            elementId: role.elementId,
+            associationId: element.getId(),
+        }, 'ROLE', 'UpdateCommand')
     }));
 
 }
 
-export function generateMutliplictyInterface(target, onblur){
+export function generateMutliplictyInterface(target, onblur) {
     let input = document.createElement("input");
     input.className = "form-control form-control-sm form-control-plaintext input-sm text-center";
     input.value = target.multiplicity;
     input.addEventListener('keypress', function (e) {
-      if(e.code === "Enter"){
-          input.blur();
-      }
+        if (e.code === "Enter") {
+            input.blur();
+        }
     })
     input.setAttribute("list", document.getElementById("multiplicity-list").id);
     input.placeholder = "Enter multiplicity";
@@ -214,7 +213,7 @@ export function generateHeaderTitleInterface(element, send) {
     title.className = 'offcanvas-title form-control form-control-sm form-control-plaintext input-sm text-center p-0';
     title.type = 'text';
     title.addEventListener('keypress', function (e) {
-        if(e.code === "Enter"){
+        if (e.code === "Enter") {
             title.blur();
         }
     })
@@ -950,8 +949,9 @@ export function generateNameInterface(element, target, disabled, onblur) {
     let attributesTableBodyRowName = document.createElement("td");
     let inputName = document.createElement("input");
     inputName.disabled = disabled;
+    inputName.placeholder = "Enter name";
     inputName.addEventListener('keypress', function (e) {
-        if(e.code === "Enter"){
+        if (e.code === "Enter") {
             inputName.blur();
         }
     })
@@ -968,7 +968,7 @@ export function generateTypeInterface(element, target, disabled, onblur) {
     let attributesTableBodyRowType = document.createElement("td");
     let inputType = document.createElement("input");
     inputType.addEventListener('keypress', function (e) {
-        if(e.code === "Enter"){
+        if (e.code === "Enter") {
             inputType.blur();
         }
     })

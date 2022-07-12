@@ -2,6 +2,7 @@ package models;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import commands.uml.SelectCommand;
 import io.ebean.Model;
 import io.ebean.annotation.NotNull;
 import play.libs.Json;
@@ -112,10 +113,18 @@ public class Project extends Model
             e.printStackTrace();
         }
 
-        for (ProjectUser user : projectUsers)
+        if (command instanceof SelectCommand)
         {
-            if (user.getActor() != null)
-                user.send(response);
+            sender.send(response);
+        }
+        else
+        {
+
+            for (ProjectUser user : projectUsers)
+            {
+                if (user.getActor() != null)
+                    user.send(response);
+            }
         }
     }
 

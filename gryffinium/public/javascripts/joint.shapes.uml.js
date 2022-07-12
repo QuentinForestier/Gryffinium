@@ -470,7 +470,7 @@ this.joint.shapes = this.joint.shapes || {};
             },
             linkId: undefined,
             alreadyDeleted: false,
-            labelsChanged: false,
+            labelsChanged: [],
             verticesChanged: false,
         }, {
             markup: [{
@@ -528,13 +528,11 @@ this.joint.shapes = this.joint.shapes || {};
                 }
 
 
-
             },
 
             getType: function () {
                 return 'CUSTOM_LINK';
             },
-
 
 
         });
@@ -555,19 +553,15 @@ this.joint.shapes = this.joint.shapes || {};
 
         let Association = CustomLink.define('uml.Association', {
             isDirected: false,
-            roleSource: undefined,
-            roleTarget: undefined,
+            roles: [],
             name: undefined,
-            labelName: undefined,
-            labelSourceName: undefined,
-            labelTargetName: undefined,
-            labelMultiplicitySource: undefined,
-            labelMultiplicityTarget: undefined,
+            labelDistance:0.5,
+            labelOffset: {x:0,y:-10},
         }, {
             initialize: function () {
-              CustomLink.prototype.initialize.apply(this, arguments);
-              this.addLabels();
-              this.setTargetArrow();
+                CustomLink.prototype.initialize.apply(this, arguments);
+                this.addLabels();
+                this.setTargetArrow();
             },
             setTargetArrow: function () {
                 if (this.get('isDirected')) {
@@ -595,7 +589,7 @@ this.joint.shapes = this.joint.shapes || {};
             },
             addLabels: function () {
                 this.set('labels', undefined);
-                if (this.get('roleSource')) {
+                if (this.get('roles').length > 0) {
 
                     // label name link
                     this.appendLabel({
@@ -603,16 +597,13 @@ this.joint.shapes = this.joint.shapes || {};
                             text: {
                                 text: this.get('name') ? this.get('name') : 'name',
                             },
-                            rect:{
+                            rect: {
                                 fillOpacity: 0.1,
                             }
                         },
                         position: {
-                            distance: 0.5,
-                            offset: {
-                                x: 0,
-                                y: -10
-                            },
+                            distance: this.get('labelDistance'),
+                            offset: this.get('labelOffset'),
                             args: {
                                 keepGradient: true,
                                 ensureLegibility: true
@@ -624,9 +615,9 @@ this.joint.shapes = this.joint.shapes || {};
                     this.appendLabel({
                         attrs: {
                             text: {
-                                text: this.get('roleSource').name,
+                                text: this.get('roles')[0].name,
                             },
-                            rect:{
+                            rect: {
                                 fillOpacity: 0.1,
                             }
                         },
@@ -648,9 +639,9 @@ this.joint.shapes = this.joint.shapes || {};
                     this.appendLabel({
                         attrs: {
                             text: {
-                                text: this.get('roleSource').multiplicity,
+                                text: this.get('roles')[0].multiplicity,
                             },
-                            rect:{
+                            rect: {
                                 fillOpacity: 0.1,
                             }
                         },
@@ -666,16 +657,14 @@ this.joint.shapes = this.joint.shapes || {};
                             }
                         }
                     })
-                }
 
-                if (this.get('roleTarget')) {
                     // label target name
                     this.appendLabel({
                         attrs: {
                             text: {
-                                text: this.get('roleTarget').name,
+                                text: this.get('roles')[1].name,
                             },
-                            rect:{
+                            rect: {
                                 fillOpacity: 0.1,
                             }
                         },
@@ -696,9 +685,9 @@ this.joint.shapes = this.joint.shapes || {};
                     this.appendLabel({
                         attrs: {
                             text: {
-                                text: this.get('roleTarget').multiplicity,
+                                text: this.get('roles')[1].multiplicity,
                             },
-                            rect:{
+                            rect: {
                                 fillOpacity: 0.1,
                             }
                         },
@@ -716,48 +705,54 @@ this.joint.shapes = this.joint.shapes || {};
                     })
                 }
             },
-            setRoleSource: function (role) {
+            setLabelName: function (lbl) {
+                this.label(0, {
+                    attrs:{
+                        text: { text : lbl.name ? lbl.name : this.get('name')}
+                    },
+                    position: {
+                        distance: lbl.distance ? lbl.distance : this.label(0).position.distance,
+                        offset: lbl.offset ? lbl.offset : this.label(0).position.offset,
+                    }
+                })
+            },
+            setRoleByEntityId: function (elementId, role) {
+                let r = this.get('roles').find(r => r.elementId === elementId);
 
-                this.get('roleSource').set({...this.get('roleSource'), ...role});
-                this.label(1, {
+                let index = this.get('roles').indexOf(r) + 1;
+                r.set(role);
+                this.label(index * 2 - 1, {
                     attrs: {
                         text: {
-                            text: this.get('roleSource').name,
+                            text: r.name,
                         }
+                    },
+                    position:{
+                        distance:r.distanceName,
+                        offset: r.offsetName,
                     }
                 })
-                this.label(2, {
+
+                this.label(index * 2, {
                     attrs: {
                         text: {
-                            text: this.get('roleSource').multiplicity,
+                            text: r.multiplicity,
                         }
-                    }
-                })
-            },
-            setRoleTarget: function (role) {
-                this.get('roleTarget').set({...this.get('roleTarget'), ...role});
-                this.label(3, {
-                    attrs: {
-                        text: {
-                            text: this.get('roleTarget').name,
-                        }
-                    }
-                })
-                this.label(4, {
-                    attrs: {
-                        text: {
-                            text: this.get('roleTarget').multiplicity,
-                        }
+                    },
+                    position:{
+                        distance:r.distanceMultiplicity,
+                        offset: r.offsetMultiplicity,
                     }
                 })
             },
+
+
             updateFromMessage: function (message) {
                 CustomLink.prototype.updateFromMessage.call(this, message);
 
                 if (message.name) {
                     this.set('name', message.name);
-                    if (this.label(0) !== undefined)
-                        this.label(0, {attrs: {text: {text: message.name}}});
+                    this.setLabelName({name: message.name});
                 }
 
                 if (message.isDirected !== null) {
@@ -765,19 +760,12 @@ this.joint.shapes = this.joint.shapes || {};
                     this.setTargetArrow();
                 }
 
-                if (message.sourceName) {
-                    this.setRoleSource({name: message.sourceName});
+                if(message.distance !== null){
+                    this.setLabelName({distance: message.distance});
                 }
 
-                if (message.targetName) {
-                    this.setRoleTarget({name: message.targetName});
-                }
-
-                if (message.multiplicitySource) {
-                    this.setRoleSource({multiplicity: message.multiplicitySource});
-                }
-                if (message.multiplicityTarget) {
-                    this.setRoleTarget({multiplicity: message.multiplicityTarget});
+                if(message.offset !== null){
+                    this.setLabelName({offset: message.offset});
                 }
             }
 

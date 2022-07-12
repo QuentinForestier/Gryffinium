@@ -17,6 +17,8 @@ export class ElementType {
     static InnerClass = new ElementType("INNER_CLASS");
     static Dependency = new ElementType("DEPENDENCY");
 
+    static Role = new ElementType("ROLE");
+
     static Value = new ElementType("VALUE");
 
     static Attribute = new ElementType("ATTRIBUTE");
@@ -107,12 +109,11 @@ export class Constructor {
     }
 
 
-
     toString() {
         return this.visibility + " " + this.name + this.paramsToString();
     }
 
-    paramsToString(){
+    paramsToString() {
         let params = "";
         this.parameters.forEach(p => {
             params += p.name + " : " + p.type + ", ";
@@ -140,7 +141,7 @@ export class Method {
         return this.visibility + " " + this.name + this.paramsToString() + " : " + this.type;
     }
 
-    paramsToString(){
+    paramsToString() {
         let params = "";
         this.parameters.forEach(p => {
             params += p.name + " : " + p.type + ", ";
@@ -187,21 +188,38 @@ export class Parameter {
 
 }
 
-export class Role{
-    constructor(id, name, multiplicity) {
-        this.id = id;
+export class Role {
+    constructor(id, name, multiplicity, distanceName, offsetName, distanceMultiplicity, offsetMultiplicity) {
+        this.elementId = id;
         this.name = name;
         this.multiplicity = multiplicity;
-
+        this.distanceName = distanceName;
+        this.offsetName = offsetName;
+        this.distanceMultiplicity = distanceMultiplicity;
+        this.offsetMultiplicity = offsetMultiplicity;
     }
 
-    getId(){
-        return this.id;
-    }
-
-    set(role){
-        this.id = role.id;
-        this.name = role.name;
-        this.multiplicity = role.multiplicity;
+    set(role) {
+        if (role.elementId !== null && role.elementId !== undefined) {
+            this.elementId = role.elementId;
+        }
+        if (role.name !== null && role.name !== undefined) {
+            this.name = role.name;
+        }
+        if (role.multiplicity !== null && role.multiplicity !== undefined) {
+            this.multiplicity = role.multiplicity;
+        }
+        if (role.distanceName !== null && role.distanceName !== undefined) {
+            this.distanceName = role.distanceName;
+        }
+        if (role.offsetName !== null && role.offsetName !== undefined) {
+            this.offsetName = role.offsetName;
+        }
+        if (role.distanceMultiplicity !== null && role.distanceMultiplicity !== undefined) {
+            this.distanceMultiplicity = role.distanceMultiplicity;
+        }
+        if (role.offsetMultiplicity !== null && role.offsetMultiplicity !== undefined) {
+            this.offsetMultiplicity = role.offsetMultiplicity;
+        }
     }
 }

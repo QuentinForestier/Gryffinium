@@ -1,5 +1,6 @@
 package uml.links;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import commands.Command;
 import dto.ElementTypeDto;
@@ -9,9 +10,15 @@ import play.libs.Json;
 import uml.ClassDiagram;
 import uml.entities.Entity;
 
+import java.awt.*;
+import java.util.ArrayList;
+
 public class BinaryAssociation extends Association
 {
     private boolean isDirected;
+
+    private double distance;
+    private JsonNode offset;
 
     private Role source;
     private Role target;
@@ -60,6 +67,18 @@ public class BinaryAssociation extends Association
 
 
     @Override
+    public Role getRoleByEntityId(Integer entityId)
+    {
+        if (this.source.getEntity().getId().equals(entityId))
+            return this.source;
+        else if (this.target.getEntity().getId().equals(entityId))
+            return this.target;
+        else
+            return null;
+    }
+
+
+    @Override
     public void setGraphical(AssociationDto adto, ClassDiagram cd)
     {
         super.setGraphical(adto, cd);
@@ -73,13 +92,6 @@ public class BinaryAssociation extends Association
             this.source.setEntity(source);
         }
 
-        if (gba.getMultiplicitySource() != null && this.source != null)
-        {
-            // TODO check if bound is valid
-            String[] bound = gba.getMultiplicitySource().split("[.][.]");
-            this.source.setMultiplicity(new Multiplicity(bound[0].charAt(0),
-                bound.length < 2 ? bound[0].charAt(0) : bound[1].charAt(0)));
-        }
 
         if (gba.getTargetId() != null && this.target != null)
         {
@@ -87,20 +99,31 @@ public class BinaryAssociation extends Association
             this.target.setEntity(target);
         }
 
-        if (gba.getSourceName() != null && this.source != null)
-            this.source.setName(gba.getSourceName());
+        if(gba.getDistance() != null)
+            this.distance = gba.getDistance();
 
-        if (gba.getTargetName() != null && this.target != null)
-            this.target.setName(gba.getTargetName());
+        if(gba.getOffset() != null)
+            this.offset = gba.getOffset();
+    }
 
-        if (gba.getMultiplicityTarget() != null && this.target != null)
-        {
-            // TODO check if bound is valid
-            String[] bound = gba.getMultiplicityTarget().split("[.][.]");
-            this.target.setMultiplicity(new Multiplicity(bound[0].charAt(0),
-                    bound.length < 2 ? bound[0].charAt(0) : bound[1].charAt(0)));
-        }
+    public double getDistance()
+    {
+        return distance;
+    }
 
+    public void setDistance(double distance)
+    {
+        this.distance = distance;
+    }
+
+    public JsonNode getOffset()
+    {
+        return offset;
+    }
+
+    public void setOffset(JsonNode offset)
+    {
+        this.offset = offset;
     }
 
     public boolean isDirected()
@@ -152,6 +175,8 @@ public class BinaryAssociation extends Association
         ArrayNode result = Json.newArray();
         result.add(Command.createResponse(toDto(),
                 ElementTypeDto.BINARY_ASSOCIATION));
+        result.add(source.getCreationCommands(this));
+        result.add(target.getCreationCommands(this));
         return result;
     }
 }
