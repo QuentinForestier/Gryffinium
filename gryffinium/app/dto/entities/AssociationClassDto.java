@@ -10,26 +10,26 @@ public class AssociationClassDto extends ClassDto
         super(e);
     }
 
-    public Integer getSource()
+    public String getSource()
     {
         return source;
     }
 
-    public void setSource(Integer source)
+    public void setSource(String source)
     {
         this.source = source;
     }
 
-    public Integer getTarget()
+    public String getTarget()
     {
         return target;
     }
 
-    public void setTarget(Integer target)
+    public void setTarget(String target)
     {
         this.target = target;
     }
 
-    private Integer source;
-    private Integer target;
+    private String source;
+    private String target;
 }

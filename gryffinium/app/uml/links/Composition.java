@@ -8,6 +8,9 @@ import play.libs.Json;
 import uml.ClassDiagram;
 import uml.entities.Entity;
 
+import javax.xml.bind.annotation.XmlType;
+
+@XmlType(name="Composition")
 public class Composition extends Aggregation
 {
     public Composition(Entity from, Entity to, String name, boolean isDirected)

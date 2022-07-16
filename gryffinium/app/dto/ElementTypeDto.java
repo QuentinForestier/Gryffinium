@@ -1,5 +1,7 @@
 package dto;
 
+import com.sun.javadoc.Type;
+
 public enum ElementTypeDto
 {
     // Entities
@@ -31,7 +33,6 @@ public enum ElementTypeDto
 
     // Operations
     CONSTRUCTOR,
-    METHOD;
-
+    METHOD,
 
 }

@@ -7,7 +7,7 @@ public class InnerClassDto extends ClassDto
 {
     private Boolean isStatic;
 
-    private Integer outer;
+    private String outer;
 
     public InnerClassDto(InnerClass ic)
     {
@@ -25,12 +25,12 @@ public class InnerClassDto extends ClassDto
         isStatic = aStatic;
     }
 
-    public Integer getOuter()
+    public String getOuter()
     {
         return outer;
     }
 
-    public void setOuter(Integer outer)
+    public void setOuter(String outer)
     {
         this.outer = outer;
     }

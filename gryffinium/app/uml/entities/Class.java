@@ -6,14 +6,21 @@ import dto.ElementTypeDto;
 import dto.entities.ClassDto;
 import dto.entities.EntityDto;
 import play.libs.Json;
-import uml.entities.operations.Constructor;
-import uml.entities.operations.Method;
-import uml.entities.operations.Operation;
-import uml.entities.variables.Attribute;
+import uml.ClassDiagram;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlType;
+
+@XmlSeeAlso({AssociationClass.class, InnerClass.class})
+@XmlType(name="Class")
 public class Class extends ConstructableEntity implements Implementor
 {
     private boolean isAbstract;
+
+    public Class(){
+        super();
+    }
 
     public Class(String name, boolean isAbstract)
     {
@@ -27,16 +34,17 @@ public class Class extends ConstructableEntity implements Implementor
     }
 
 
-    public Class(dto.entities.ClassDto gc)
+    public Class(ClassDto gc, ClassDiagram cd)
     {
-        super(gc);
+        super(gc, cd);
         if (gc.isAbstract() == null)
         {
             this.setAbstract(false);
         }
-        setGraphical(gc);
+        fromDto(gc, cd);
     }
 
+    @XmlAttribute
     public boolean isAbstract()
     {
         return isAbstract;
@@ -47,9 +55,9 @@ public class Class extends ConstructableEntity implements Implementor
         isAbstract = anAbstract;
     }
 
-    public void setGraphical(dto.entities.ClassDto ge)
+    public void fromDto(ClassDto ge, ClassDiagram cd)
     {
-        super.setGraphical(ge);
+        super.fromDto(ge, cd);
         if (ge.isAbstract() != null)
             this.setAbstract(ge.isAbstract());
     }

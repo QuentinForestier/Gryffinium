@@ -1,43 +1,20 @@
 package uml.links;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import dto.links.AssociationDto;
-import uml.entities.Entity;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.xml.bind.annotation.XmlType;
 
-public class MultiAssociation extends Association
+@XmlType(name = "MultiAssociation")
+public class MultiAssociation
 {
-    private final ArrayList<Role> roles = new ArrayList<>();
+    private String id;
 
-    public MultiAssociation(String name, List<Entity> entites)
+    public String getId()
     {
-        super(name);
-        if(entites.size() < 3 ){
-            throw new RuntimeException("MutliAssociation should have at least 3 entities linked");
-        }
-
-        for(Entity entity : entites){
-            roles.add(new Role(entity.getName(), Multiplicity.N, entity));
-        }
+        return id;
     }
 
-    @Override
-    public Role getRoleByEntityId(Integer entityId)
+    public void setId(String id)
     {
-        return null;
-    }
-
-    @Override
-    public AssociationDto toDto()
-    {
-        return null;
-    }
-
-    @Override
-    public ArrayNode getCreationCommands()
-    {
-        return null;
+        this.id = id;
     }
 }

@@ -10,6 +10,9 @@ import dto.entities.variables.AttributeDto;
 import dto.entities.variables.ParameterDto;
 import dto.entities.variables.ValueDto;
 import dto.links.BinaryAssociationDto;
+import dto.links.DependencyDto;
+import dto.links.GeneralizationDto;
+import dto.links.RealizationDto;
 import models.Project;
 import play.libs.Json;
 import uml.entities.*;
@@ -84,10 +87,22 @@ public class RemoveCommand implements Command
             case MUTLI_ASSOCIATION:
                 break;
             case DEPENDENCY:
+                DependencyDto gd = Json.fromJson(data,
+                        DependencyDto.class);
+                project.getDiagram().removeDependency(project.getDiagram().getDependency(gd.getId()));
+                result.add(Command.createResponse(gd, elementType));
                 break;
             case GENERALIZATION:
+                GeneralizationDto gdto = Json.fromJson(data,
+                        GeneralizationDto.class);
+                project.getDiagram().removeRelationship(project.getDiagram().getRelationship(gdto.getId()));
+                result.add(Command.createResponse(gdto, elementType));
                 break;
             case REALIZATION:
+                RealizationDto rdto = Json.fromJson(data,
+                        RealizationDto.class);
+                project.getDiagram().removeRelationship(project.getDiagram().getRelationship(rdto.getId()));
+                result.add(Command.createResponse(rdto, elementType));
                 break;
             case INNER:
                 break;

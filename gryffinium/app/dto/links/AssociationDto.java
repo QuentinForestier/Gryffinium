@@ -1,29 +1,30 @@
 package dto.links;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import dto.ElementDto;
 import uml.links.Association;
 
-public class AssociationDto extends ElementDto
+public class AssociationDto extends LabeledLinkDto
 {
-    private String name;
+
+    private String targetRoleId;
+
     public AssociationDto()
     {
     }
     public AssociationDto(Association association)
     {
-        super(association.getId());
-        this.name = association.getName();
+        super(association);
+        this.targetRoleId = association.getTarget().getId();
     }
 
-    public String getName()
+    public String getTargetRoleId()
     {
-        return name;
+        return targetRoleId;
     }
 
-    public void setName(String name)
+    public void setTargetRoleId(String targetRoleId)
     {
-        this.name = name;
+        this.targetRoleId = targetRoleId;
     }
-
-
 }

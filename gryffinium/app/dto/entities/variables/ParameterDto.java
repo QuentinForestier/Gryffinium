@@ -7,7 +7,7 @@ import uml.entities.variables.Parameter;
 
 public class ParameterDto extends VariableDto
 {
-    private Integer methodId;
+    private String methodId;
 
     public ParameterDto(){}
     public ParameterDto(Parameter parameter, Entity parent, Operation o)
@@ -16,12 +16,12 @@ public class ParameterDto extends VariableDto
         this.methodId = o.getId();
     }
 
-    public Integer getMethodId()
+    public String getMethodId()
     {
         return methodId;
     }
 
-    public void setMethodId(Integer methodId)
+    public void setMethodId(String methodId)
     {
         this.methodId = methodId;
     }

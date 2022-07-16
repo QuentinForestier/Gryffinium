@@ -1,8 +1,14 @@
 package uml.entities;
 
+import dto.entities.InnerInterfaceDto;
 import uml.ClassDiagram;
 import uml.links.Inner;
 
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
+
+@XmlType(name="InnerInterface")
 public class InnerInterface extends Interface implements InnerEntity
 {
 
@@ -21,7 +27,7 @@ public class InnerInterface extends Interface implements InnerEntity
 
     public InnerInterface(dto.entities.InnerInterfaceDto gi, ClassDiagram cd)
     {
-        super(gi);
+        super(gi, cd);
         if(gi.getOuter() == null)
         {
             throw new IllegalArgumentException("Outer argument missing");
@@ -31,9 +37,9 @@ public class InnerInterface extends Interface implements InnerEntity
         setGraphical(gi, cd);
     }
 
-    public void setGraphical(dto.entities.InnerInterfaceDto gi, ClassDiagram cd)
+    public void setGraphical(InnerInterfaceDto gi, ClassDiagram cd)
     {
-        super.setGraphical(gi);
+        super.fromDto(gi, cd);
         if(gi.getStatic() != null)
             this.setStatic(gi.getStatic());
 
@@ -41,6 +47,7 @@ public class InnerInterface extends Interface implements InnerEntity
             this.getInner().setOuter(cd.getEntity(gi.getOuter()));
     }
 
+    @XmlAnyElement
     public Inner getInner()
     {
         return inner;
@@ -51,6 +58,7 @@ public class InnerInterface extends Interface implements InnerEntity
         this.inner = inner;
     }
 
+    @XmlAttribute
     public boolean isStatic()
     {
         return isStatic;

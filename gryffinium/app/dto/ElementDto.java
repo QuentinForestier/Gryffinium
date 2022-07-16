@@ -1,20 +1,20 @@
 package dto;
 
 
-public class ElementDto
+public abstract class ElementDto
 {
-    private Integer id;
+    private String id;
 
     public ElementDto(){}
-    public ElementDto(int id){
+    public ElementDto(String id){
         this.id = id;
     }
-    public Integer getId()
+    public String getId()
     {
         return id;
     }
 
-    public void setId(Integer id)
+    public void setId(String id)
     {
         this.id = id;
     }

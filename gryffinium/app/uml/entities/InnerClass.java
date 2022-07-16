@@ -1,8 +1,14 @@
 package uml.entities;
 
+import dto.entities.InnerClassDto;
 import uml.ClassDiagram;
 import uml.links.Inner;
 
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
+
+@XmlType(name="InnerClass")
 public class InnerClass extends Class implements InnerEntity
 {
     private Inner inner;
@@ -20,9 +26,9 @@ public class InnerClass extends Class implements InnerEntity
         this(name, outer, false);
     }
 
-    public InnerClass(dto.entities.InnerClassDto gic, ClassDiagram cd)
+    public InnerClass(InnerClassDto gic, ClassDiagram cd)
     {
-        super(gic);
+        super(gic, cd);
         if(gic.isStatic() == null)
         {
             throw new IllegalArgumentException("Static argument missing");
@@ -34,10 +40,11 @@ public class InnerClass extends Class implements InnerEntity
 
         this.inner = new Inner(cd.getEntity(gic.getOuter()), this);
 
-        setGraphical(gic, cd);
+        fromDto(gic, cd);
     }
 
 
+    @XmlAnyElement
     public Inner getInner()
     {
         return inner;
@@ -48,6 +55,7 @@ public class InnerClass extends Class implements InnerEntity
         this.inner = inner;
     }
 
+    @XmlAttribute
     public boolean isStatic()
     {
         return isStatic;
@@ -58,9 +66,9 @@ public class InnerClass extends Class implements InnerEntity
         isStatic = aStatic;
     }
 
-    public void setGraphical(dto.entities.InnerClassDto gic, ClassDiagram cd)
+    public void fromDto(InnerClassDto gic, ClassDiagram cd)
     {
-        super.setGraphical(gic);
+        super.fromDto(gic, cd);
         if (gic.isStatic() != null)
             this.setStatic(gic.isStatic());
 

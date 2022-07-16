@@ -6,9 +6,9 @@ import uml.entities.operations.Operation;
 
 public class OperationDto extends ElementDto
 {
-    private Integer parentId;
+    private String parentId;
 
-    private Integer id;
+    private String id;
     private String name;
 
     private String visibility;
@@ -22,22 +22,22 @@ public class OperationDto extends ElementDto
         this.parentId = parent.getId();
     }
 
-    public Integer getParentId()
+    public String getParentId()
     {
         return parentId;
     }
 
-    public void setParentId(Integer parentId)
+    public void setParentId(String parentId)
     {
         this.parentId = parentId;
     }
 
-    public Integer getId()
+    public String getId()
     {
         return id;
     }
 
-    public void setId(Integer id)
+    public void setId(String id)
     {
         this.id = id;
     }

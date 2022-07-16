@@ -42,8 +42,8 @@ export function generateModifierInterface(canvas, header, body, element, send, u
         case 'COMPOSITION':
             generateLinkHeader(header, element, send);
             generateBinaryAssociationSettingsInterface(body, element, send)
-            generateRoleInterface(body, element, element.get('roles')[0], send);
-            generateRoleInterface(body, element, element.get('roles')[1], send);
+            generateRoleInterface(body, element, element.getSourceRole(), send);
+            generateRoleInterface(body, element, element.getTargetRole(), send);
             break;
 
     }
@@ -80,7 +80,7 @@ export function generateRoleInterface(body, element, role, send, update = false)
     row.append(generateNameInterface(undefined, role, false, function (input) {
         send({
             name: input.value,
-            elementId: role.elementId,
+            id: role.id,
             associationId: element.getId(),
         }, 'ROLE', 'UpdateCommand')
     }));
@@ -92,7 +92,7 @@ export function generateRoleInterface(body, element, role, send, update = false)
     td.append(generateMutliplictyInterface(role, function (input) {
         send({
             multiplicity: input.value,
-            elementId: role.elementId,
+            id: role.id,
             associationId: element.getId(),
         }, 'ROLE', 'UpdateCommand')
     }));
@@ -201,6 +201,7 @@ export function generateSwapButton(element, send) {
                 id: element.getId(),
                 sourceId: element.get('target').id,
                 targetId: element.get('source').id,
+                vertices: element.get('vertices').reverse()
             },
             element.getType(),
             'UpdateCommand');

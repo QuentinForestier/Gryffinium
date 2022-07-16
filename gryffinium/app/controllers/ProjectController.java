@@ -24,6 +24,9 @@ import utils.Utils;
 import javax.inject.Inject;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.StringWriter;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -125,6 +128,8 @@ public class ProjectController extends Controller
         }
         projectRepository.delete(project);
 
+        // TODO delete xml file
+
         project.close();
 
         return ok(Utils.createResponse("Project deleted successfully", true));
@@ -168,25 +173,6 @@ public class ProjectController extends Controller
         {
             return notFound("Project not found");
         }
-        try
-        {
-            JAXBContext jaxbContext = JAXBContext.newInstance(ClassDiagram.class);
-
-            Marshaller marshaller = jaxbContext.createMarshaller();
-
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-            StringWriter sw = new StringWriter();
-
-            marshaller.marshal(project.getDiagram(), sw);
-
-            System.out.println(sw.toString());
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
 
         return ok(views.html.project.render(project.getId().toString(),
                 project.getName(), request));
@@ -199,7 +185,8 @@ public class ProjectController extends Controller
         return WebSocket.Json.acceptOrResult(request -> createActorFlow(request, uuid));
     }
 
-    private CompletionStage<F.Either<Result, Flow<JsonNode, JsonNode, ?>>> createActorFlow(Http.RequestHeader request, String uuid)
+    private CompletionStage<F.Either<Result, Flow<JsonNode, JsonNode, ?>>> createActorFlow
+            (Http.RequestHeader request, String uuid)
     {
         Project p = Project.openProjects.get(UUID.fromString(uuid));
         ProjectUser user =
@@ -228,20 +215,23 @@ public class ProjectController extends Controller
         if (project == null || project.getProjectUsers().stream().anyMatch(pu -> pu.getUser().getId().equals(
                 request.session().get("userId").get()) && !pu.getIsOwner()))
         {
-            return forbidden(Utils.createResponse("You are not allowed to add" +
+            return forbidden(Utils.createResponse("You are not allowed to" +
+                    " add" +
                     " collaborators to " +
                     "this project", false));
         }
 
         if (project.projectUsers.stream().anyMatch(pu -> pu.getUser().getEmail().equals(email)))
         {
-            return badRequest(Utils.createResponse("User is already a member " +
+            return badRequest(Utils.createResponse("User is already a " +
+                    "member " +
                     "of the project", false));
         }
         User user = userRepository.findByEmail(email);
         if (user == null)
         {
-            return badRequest(Utils.createResponse("User not found", false));
+            return badRequest(Utils.createResponse("User not found",
+                    false));
         }
         ProjectUser projectUser = new ProjectUser(user, project, false,
                 false);
@@ -265,7 +255,8 @@ public class ProjectController extends Controller
                 .equals(request.session().get("userId").get()))
         {
             return forbidden(Utils.createResponse(
-                    "You are not allowed to update collaborators rights from " +
+                    "You are not allowed to update collaborators rights " +
+                            "from " +
                             "this " +
                             "project", false));
         }
@@ -278,14 +269,16 @@ public class ProjectController extends Controller
 
         if (id.equals(request.session().get("userId").get()))
         {
-            return badRequest(Utils.createResponse("You can't change your own" +
+            return badRequest(Utils.createResponse("You can't change your" +
+                    " own" +
                     " rights", false));
         }
 
         ProjectUser pu = project.findProjectUser(UUID.fromString(id));
         if (pu == null)
         {
-            return badRequest(Utils.createResponse("User not found", false));
+            return badRequest(Utils.createResponse("User not found",
+                    false));
         }
 
 
@@ -308,7 +301,8 @@ public class ProjectController extends Controller
                 .equals(request.session().get("userId").get()))
         {
             return forbidden(Utils.createResponse(
-                    "You are not allowed to remove collaborators from this " +
+                    "You are not allowed to remove collaborators from " +
+                            "this " +
                             "project", false));
         }
 
@@ -323,7 +317,8 @@ public class ProjectController extends Controller
         // TODO cant remove owner
         if (id.equals(request.session().get("userId").get()))
         {
-            return badRequest(Utils.createResponse("You can't remove yourself" +
+            return badRequest(Utils.createResponse("You can't remove " +
+                    "yourself" +
                     " from a project", false));
         }
 
@@ -345,6 +340,7 @@ public class ProjectController extends Controller
             if (findAndOpen && p != null)
             {
                 Project.openProjects.put(p.getId(), p);
+                p.loadDiagram();
             }
         }
 

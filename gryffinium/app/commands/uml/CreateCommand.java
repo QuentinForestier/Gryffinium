@@ -50,104 +50,95 @@ public class CreateCommand implements Command
         switch (elementType)
         {
             case CLASS:
-                ClassDto ge = Json.fromJson(data,
-                        ClassDto.class);
-                Class c = new Class(ge);
+                Class c = new Class(Json.fromJson(data, ClassDto.class), project.getDiagram());
                 project.getDiagram().addEntity(c);
-                result.add(Command.createResponse(c, elementType));
+                result.add(Command.createResponse(c.toDto(), elementType));
                 break;
             case INNER_CLASS:
-                InnerClassDto gic = Json.fromJson(data,
-                        InnerClassDto.class);
-                InnerClass ic = new InnerClass(gic, project.getDiagram());
+                InnerClass ic = new InnerClass(
+                        Json.fromJson(data, InnerClassDto.class),
+                        project.getDiagram());
+
                 project.getDiagram().addEntity(ic);
-                result.add(Command.createResponse(ic, elementType));
+                result.add(Command.createResponse(ic.toDto(), elementType));
                 break;
             case ASSOCIATION_CLASS:
-                AssociationClassDto gac =
-                        Json.fromJson(data,
-                                AssociationClassDto.class);
-                AssociationClass ac = new AssociationClass(gac,
+                AssociationClass ac = new AssociationClass(
+                        Json.fromJson(data, AssociationClassDto.class),
                         project.getDiagram());
+
                 project.getDiagram().addEntity(ac);
-                result.add(Command.createResponse(ac, elementType));
+                result.add(Command.createResponse(ac.toDto(), elementType));
                 break;
             case ENUM:
-                EnumDto gen = Json.fromJson(data,
-                        EnumDto.class);
-                Enum e = new Enum(gen);
+                Enum e = new Enum(Json.fromJson(data, EnumDto.class), project.getDiagram());
                 project.getDiagram().addEntity(e);
-                result.add(Command.createResponse(e, elementType));
+                result.add(Command.createResponse(e.toDto(), elementType));
                 break;
             case INTERFACE:
-                EntityDto gc = Json.fromJson(data,
-                        EntityDto.class);
-                Interface i = new Interface(gc);
+                Interface i = new Interface(Json.fromJson(data,
+                        EntityDto.class), project.getDiagram());
                 project.getDiagram().addEntity(i);
-                result.add(Command.createResponse(i, elementType));
+                result.add(Command.createResponse(i.toDto(), elementType));
                 break;
             case INNER_INTERFACE:
-                InnerInterfaceDto gi = Json.fromJson(data,
-                        InnerInterfaceDto.class);
-                InnerInterface ii = new InnerInterface(gi,
+                InnerInterface ii = new InnerInterface(
+                        Json.fromJson(data, InnerInterfaceDto.class),
                         project.getDiagram());
                 project.getDiagram().addEntity(ii);
-                result.add(Command.createResponse(ii, elementType));
+                result.add(Command.createResponse(ii.toDto(), elementType));
                 break;
 
 
             case BINARY_ASSOCIATION:
-                BinaryAssociationDto badto = Json.fromJson(data,
-                        BinaryAssociationDto.class);
-                BinaryAssociation ba = new BinaryAssociation(badto,
+                BinaryAssociation ba = new BinaryAssociation(
+                        Json.fromJson(data, BinaryAssociationDto.class),
                         project.getDiagram());
-                project.getDiagram().addAssociation(ba);
-                badto.setId(ba.getId());
 
-                result.add(Command.createResponse(badto, elementType));
+                project.getDiagram().addAssociation(ba);
+                result.add(Command.createResponse(ba.toDto(), elementType));
                 break;
             case AGGREGATION:
-                BinaryAssociationDto agdto = Json.fromJson(data,
-                        BinaryAssociationDto.class);
-                Aggregation ag = new Aggregation(agdto,
+                Aggregation ag = new Aggregation(
+                        Json.fromJson(data, BinaryAssociationDto.class),
                         project.getDiagram());
+
                 project.getDiagram().addAssociation(ag);
-                agdto.setId(ag.getId());
-
-
-                result.add(Command.createResponse(agdto, elementType));
+                result.add(Command.createResponse(ag.toDto(), elementType));
                 break;
             case COMPOSITION:
-                BinaryAssociationDto cdto = Json.fromJson(data,
-                        BinaryAssociationDto.class);
-                Composition co = new Composition(cdto,
+                Composition co = new Composition(
+                        Json.fromJson(data, BinaryAssociationDto.class),
                         project.getDiagram());
                 project.getDiagram().addAssociation(co);
-                cdto.setId(co.getId());
 
-                result.add(Command.createResponse(cdto, elementType));
+                result.add(Command.createResponse(co.toDto(), elementType));
                 break;
             case MUTLI_ASSOCIATION:
                 break;
             case DEPENDENCY:
+                Dependency d = new Dependency(
+                        Json.fromJson(data, DependencyDto.class),
+                        project.getDiagram());
+
+                project.getDiagram().addDependency(d);
+                result.add(Command.createResponse(d.toDto(), elementType));
                 break;
             case GENERALIZATION:
-                LinkDto gl = Json.fromJson(data, LinkDto.class);
-                Generalization g = new Generalization(gl, project.getDiagram());
+                Generalization g = new Generalization(
+                        Json.fromJson(data, GeneralizationDto.class),
+                        project.getDiagram());
 
-                gl.setId(g.getId());
                 project.getDiagram().addRelationship(g);
-
-                result.add(Command.createResponse(gl, elementType));
+                result.add(Command.createResponse(g.toDto(), elementType));
                 break;
             case REALIZATION:
-                LinkDto glr = Json.fromJson(data, LinkDto.class);
-                Realization r = new Realization(glr, project.getDiagram());
+                Realization r = new Realization(
+                        Json.fromJson(data, RealizationDto.class),
+                        project.getDiagram());
 
-                glr.setId(r.getId());
                 project.getDiagram().addRelationship(r);
-
-                result.add(Command.createResponse(glr, elementType));
+                result.add(Command.createResponse(r.toDto(), elementType));
                 break;
             case INNER:
                 break;
@@ -158,6 +149,7 @@ public class CreateCommand implements Command
 
                 Enum eParent =
                         (Enum) project.getDiagram().getEntity(gv.getParentId());
+                // TODO : check name uniqueness
                 gv.setValue("value" + eParent.getValues().size());
                 eParent.addValue(gv.getValue());
 
@@ -168,46 +160,49 @@ public class CreateCommand implements Command
                 AttributeDto ga = Json.fromJson(data,
                         AttributeDto.class);
                 Attribute a = new Attribute(ga, project.getDiagram());
-                project.getDiagram().getEntity(ga.getParentId()).addAttribute(a);
-                ga.setId(a.getId());
-                result.add(Command.createResponse(ga, elementType));
+                Entity attrParent =
+                        project.getDiagram().getEntity(ga.getParentId());
+                attrParent.addAttribute(a);
+
+                result.add(Command.createResponse(a.toDto(attrParent),
+                        elementType));
                 break;
             case PARAMETER:
                 ParameterDto gp = Json.fromJson(data,
                         ParameterDto.class);
                 Parameter p = new Parameter(gp, project.getDiagram());
-                Entity entity =
+                Entity paramParent =
                         project.getDiagram().getEntity(gp.getParentId());
-                Operation op = entity.getMethodById(gp.getMethodId());
-                if (op == null)
-                {
-                    ConstructableEntity ce = (ConstructableEntity) entity;
-                    op = ce.getConstructorById(gp.getMethodId());
-                }
+                Operation op = paramParent.getOperationById(gp.getMethodId());
+
                 op.addParam(p);
-                gp.setId(p.getId());
-                result.add(Command.createResponse(gp, elementType));
+                result.add(Command.createResponse(p.toDto(paramParent, op),
+                        elementType));
                 break;
 
 
             case CONSTRUCTOR:
                 OperationDto go = Json.fromJson(data,
                         OperationDto.class);
-                ConstructableEntity parent =
+                ConstructableEntity ctorParent =
                         (ConstructableEntity) project.getDiagram().getEntity(go.getParentId());
-                go.setName(parent.getName());
+
                 Constructor ctor = new Constructor(go, project.getDiagram());
-                parent.addConstructor(ctor);
-                go.setId(ctor.getId());
-                result.add(Command.createResponse(go, elementType));
+                ctorParent.addConstructor(ctor);
+
+                result.add(Command.createResponse(ctor.toDto(ctorParent),
+                        elementType));
                 break;
             case METHOD:
                 MethodDto gm = Json.fromJson(data,
                         MethodDto.class);
                 Method m = new Method(gm, project.getDiagram());
-                project.getDiagram().getEntity(gm.getParentId()).addMethod(m);
-                gm.setId(m.getId());
-                result.add(Command.createResponse(gm, elementType));
+
+                Entity methParent =
+                        project.getDiagram().getEntity(gm.getParentId());
+                methParent.addMethod(m);
+                result.add(Command.createResponse(m.toDto(methParent),
+                        elementType));
                 break;
         }
         return result;

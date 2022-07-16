@@ -1,10 +1,8 @@
-package dto.links;
+package dto.links.components;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import uml.links.Association;
-import uml.links.Role;
-
-import java.awt.*;
+import uml.links.components.Role;
 
 public class RoleDto
 {
@@ -15,8 +13,8 @@ public class RoleDto
     private Double distanceMultiplicity;
     private JsonNode offsetMultiplicity;
 
-    private Integer elementId;
-    private Integer associationId;
+    private String id;
+    private String associationId;
 
     public RoleDto(){}
 
@@ -27,7 +25,7 @@ public class RoleDto
         this.offsetName = role.getOffsetName();
         this.distanceMultiplicity = role.getDistanceMultiplicity();
         this.offsetMultiplicity = role.getOffsetMultiplicity();
-        this.elementId = role.getEntity().getId();
+        this.id = role.getId();
         this.associationId = association.getId();
     }
 
@@ -91,22 +89,22 @@ public class RoleDto
         this.offsetMultiplicity = offsetMultiplicity;
     }
 
-    public Integer getElementId()
+    public String getId()
     {
-        return elementId;
+        return id;
     }
 
-    public void setElementId(Integer elementId)
+    public void setId(String id)
     {
-        this.elementId = elementId;
+        this.id = id;
     }
 
-    public Integer getAssociationId()
+    public String getAssociationId()
     {
         return associationId;
     }
 
-    public void setAssociationId(Integer associationId)
+    public void setAssociationId(String associationId)
     {
         this.associationId = associationId;
     }

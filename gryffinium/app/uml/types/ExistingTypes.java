@@ -1,7 +1,14 @@
 package uml.types;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import commands.Command;
+import dto.ElementTypeDto;
+import play.libs.Json;
+
 import javax.xml.bind.annotation.XmlElement;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ExistingTypes
 {
@@ -11,7 +18,17 @@ public class ExistingTypes
 
     public ExistingTypes()
     {
-        existingTypes = new ArrayList<>();
+        existingTypes = new ArrayList(Arrays.asList(
+                PrimitiveType.BOOLEAN_TYPE,
+                PrimitiveType.BYTE_TYPE,
+                PrimitiveType.SHORT_TYPE,
+                PrimitiveType.INT_TYPE,
+                PrimitiveType.LONG_TYPE,
+                PrimitiveType.FLOAT_TYPE,
+                PrimitiveType.DOUBLE_TYPE,
+                PrimitiveType.CHAR_TYPE,
+                PrimitiveType.STRING_TYPE,
+                PrimitiveType.VOID_TYPE));
     }
 
 
@@ -37,6 +54,7 @@ public class ExistingTypes
 
     public Type getTypeByName(String name)
     {
-        return existingTypes.stream().filter(t -> t.getName().equals(name)).findFirst().orElse(null);
+        return existingTypes.stream().filter(t -> t.getName().equals(name)).findFirst().orElse(new SimpleType(name));
     }
+
 }

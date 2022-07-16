@@ -21,26 +21,21 @@ import java.util.HashMap;
 public class ClassDiagram
 {
 
-    private static int idCounter = 1;
+    private final HashMap<String, Object> elements = new HashMap<>();
 
-    private HashMap<Integer, Object> elements = new HashMap<>();
-
-    @XmlElement
-    private ExistingTypes existingTypes = new ExistingTypes();
-
-    private ArrayList<SimpleType> simpleTypes = new ArrayList<>();
+    private final ExistingTypes existingTypes = new ExistingTypes();
 
     @XmlElement(name = "entity")
-    private ArrayList<Entity> entities = new ArrayList<>();
+    private final ArrayList<Entity> entities = new ArrayList<>();
+
+    @XmlElement(name = "association")
+    private final ArrayList<Association> associations = new ArrayList<>();
 
     @XmlElement
-    private ArrayList<Association> associations = new ArrayList<>();
+    private final ArrayList<Dependency> dependencies = new ArrayList<>();
 
-    @XmlElement
-    private ArrayList<Dependency> dependencies = new ArrayList<>();
-
-    @XmlElement
-    private ArrayList<ClassRelationship> relationships = new ArrayList<>();
+    @XmlElement(name = "relationship")
+    private final ArrayList<ClassRelationship> relationships = new ArrayList<>();
 
     public ExistingTypes getExistingTypes()
     {
@@ -49,17 +44,17 @@ public class ClassDiagram
 
     public void addEntity(Entity entity)
     {
-        entity.setId(idCounter++);
-        if (entity.getName().equals("") || entity.getName() == null)
+        int id = 1;
+        while (entity.getName().equals("") || entity.getName() == null || existingTypes.isTypeExisting(entity))
         {
-            entity.setName(entity.getClass().getSimpleName() + " " + entity.getId());
+            entity.setName(entity.getClass().getSimpleName() + id++, this);
         }
         entities.add(entity);
         existingTypes.addType(entity);
         elements.put(entity.getId(), entity);
     }
 
-    public Entity getEntity(Integer id)
+    public Entity getEntity(String id)
     {
         Entity e = (Entity) elements.get(id);
         if (e == null)
@@ -76,11 +71,10 @@ public class ClassDiagram
 
     public void addAssociation(Association association)
     {
-        association.setId(idCounter++);
         associations.add(association);
     }
 
-    public Association getAssociation(Integer id)
+    public Association getAssociation(String id)
     {
         return associations.stream().filter(a -> a.getId().equals(id)).findFirst().orElseThrow(() -> new IllegalArgumentException("Association not found"));
     }
@@ -92,11 +86,10 @@ public class ClassDiagram
 
     public void addDependency(Dependency dependency)
     {
-        dependency.setId(idCounter++);
         dependencies.add(dependency);
     }
 
-    public Dependency getDependency(Integer id)
+    public Dependency getDependency(String id)
     {
         return dependencies.stream().filter(d -> d.getId().equals(id)).findFirst().orElseThrow(() -> new IllegalArgumentException("Dependency not found"));
     }
@@ -108,11 +101,10 @@ public class ClassDiagram
 
     public void addRelationship(ClassRelationship relationship)
     {
-        relationship.setId(idCounter++);
         relationships.add(relationship);
     }
 
-    public ClassRelationship getRelationship(Integer id)
+    public ClassRelationship getRelationship(String id)
     {
         return relationships.stream().filter(r -> r.getId().equals(id)).findFirst().orElseThrow(() -> new IllegalArgumentException("Relationship not found"));
     }
@@ -122,25 +114,44 @@ public class ClassDiagram
         relationships.remove(relationship);
     }
 
-    public ArrayNode getCreationCommands(){
+    public ArrayNode getCreationCommands()
+    {
         ArrayNode commands = Json.newArray();
-        for(Entity e : entities){
+        for (Entity e : entities)
+        {
             commands.addAll(e.getCreationCommands());
         }
 
-        for(Association a : associations){
+        for (Association a : associations)
+        {
             commands.addAll(a.getCreationCommands());
         }
 
-        for(Dependency d : dependencies){
-            commands.addAll(d.getCreationCommands());
+        for (Dependency d : dependencies)
+        {
+            commands.add(d.getCreationCommands());
         }
 
-        for(ClassRelationship r : relationships){
-            commands.addAll(r.getCreationCommands());
+        for (ClassRelationship r : relationships)
+        {
+            commands.add(r.getCreationCommands());
         }
 
         return commands;
     }
 
+    public void load()
+    {
+        for (Entity e : entities)
+        {
+            existingTypes.addType(e);
+            elements.put(e.getId(), e);
+        }
+
+        for (Entity e : entities)
+        {
+            e.load(this);
+        }
+
+    }
 }

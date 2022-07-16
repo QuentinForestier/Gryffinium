@@ -1,18 +1,15 @@
 package dto.links;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import play.libs.Json;
 import uml.links.BinaryAssociation;
 
 public class BinaryAssociationDto extends AssociationDto
 {
 
-    private Integer sourceId;
+    private String sourceRoleId;
 
-    private Integer targetId;
     private Boolean isDirected;
-
-    private Double distance;
-    private JsonNode offset;
 
     public BinaryAssociationDto()
     {
@@ -22,12 +19,11 @@ public class BinaryAssociationDto extends AssociationDto
     {
         super(ba);
         this.isDirected = ba.isDirected();
-        this.sourceId = ba.getSource().getEntity().getId();
-        this.targetId = ba.getTarget().getEntity().getId();
-        this.distance = ba.getDistance();
-        this.offset = ba.getOffset();
-
+        this.setSourceId(ba.getSource().getEntity().getId());
+        this.setTargetId(ba.getTarget().getEntity().getId());
+        this.sourceRoleId = ba.getSource().getId();
     }
+
 
     public Boolean isDirected()
     {
@@ -39,48 +35,20 @@ public class BinaryAssociationDto extends AssociationDto
         isDirected = directed;
     }
 
-    public Integer getSourceId()
-    {
-        return sourceId;
-    }
-
-    public void setSourceId(Integer sourceId)
-    {
-        this.sourceId = sourceId;
-    }
-
-    public Integer getTargetId()
-    {
-        return targetId;
-    }
-
-    public void setTargetId(Integer targetId)
-    {
-        this.targetId = targetId;
-    }
 
     public Boolean getDirected()
     {
         return isDirected;
     }
 
-    public Double getDistance()
+    public String getSourceRoleId()
     {
-        return distance;
+        return sourceRoleId;
     }
 
-    public void setDistance(Double distance)
+    public void setSourceRoleId(String sourceRoleId)
     {
-        this.distance = distance;
+        this.sourceRoleId = sourceRoleId;
     }
 
-    public JsonNode getOffset()
-    {
-        return offset;
-    }
-
-    public void setOffset(JsonNode offset)
-    {
-        this.offset = offset;
-    }
 }

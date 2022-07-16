@@ -11,6 +11,12 @@ import commands.Command;
 import uml.ClassDiagram;
 
 import javax.persistence.*;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.StringWriter;
 import java.util.*;
 
 @Entity
@@ -169,14 +175,74 @@ public class Project extends Model
             user.disconnect();
         }
 
-        Project.openProjects.remove(this.id);
+// TODO check problem with closing project
+        //Project.openProjects.remove(this.id);
+        this.saveDiagram();
     }
 
     public void checkConnectedUsers()
     {
-        if (this.projectUsers.stream().filter(pu -> pu.getActor() != null).count() == 0)
+        if (this.projectUsers.stream().noneMatch(pu -> pu.getActor() != null))
         {
-            this.close();
+            // TODO close project after x seconds
+
+            //this.close();
+        }
+    }
+
+    public void saveDiagram()
+    {
+        try
+        {
+            JAXBContext jaxbContext =
+                    JAXBContext.newInstance(ClassDiagram.class);
+
+            Marshaller marshaller = jaxbContext.createMarshaller();
+
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+            StringWriter sw = new StringWriter();
+
+            marshaller.marshal(getDiagram(), sw);
+
+            String path = "./diagrams/";
+
+            File directory = new File(path);
+            if (!directory.exists())
+            {
+                directory.mkdir();
+            }
+
+            FileWriter fw = new FileWriter(path + getId() + ".xml");
+            fw.write(sw.toString());
+            fw.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadDiagram()
+    {
+        try
+        {
+            JAXBContext jaxbContext =
+                    JAXBContext.newInstance(ClassDiagram.class);
+
+            File f = new File("./diagrams/" + getId() + ".xml");
+            if (f.exists())
+            {
+
+                Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+                this.setDiagram((ClassDiagram) unmarshaller.unmarshal(f));
+
+                getDiagram().load();
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
         }
     }
 }

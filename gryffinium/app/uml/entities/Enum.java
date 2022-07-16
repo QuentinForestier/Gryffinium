@@ -7,25 +7,23 @@ import dto.entities.EntityDto;
 import dto.entities.EnumDto;
 import dto.entities.variables.ValueDto;
 import play.libs.Json;
-import uml.entities.operations.Constructor;
-import uml.entities.operations.Method;
+import uml.ClassDiagram;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
 
+@XmlType(name = "Enum")
 public class Enum extends ConstructableEntity
 {
-    public List<String> getValues()
-    {
-        return values;
-    }
-
-    public void setValues(List<String> values)
-    {
-        this.values = values;
-    }
 
     private List<String> values;
+
+    public Enum()
+    {
+        super();
+    }
 
     public Enum(String name)
     {
@@ -35,11 +33,22 @@ public class Enum extends ConstructableEntity
 
 
 
-    public Enum(dto.entities.EnumDto ge)
+    public Enum(dto.entities.EnumDto ge, ClassDiagram cd)
     {
-        super(ge);
+        super(ge, cd);
         values = new ArrayList<>();
-        setGraphical(ge);
+        fromDto(ge, cd);
+    }
+
+    @XmlElement(name="value")
+    public List<String> getValues()
+    {
+        return values;
+    }
+
+    public void setValues(List<String> values)
+    {
+        this.values = values;
     }
 
     private boolean isValueExisting(String name)

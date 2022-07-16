@@ -9,7 +9,7 @@ public class InnerInterfaceDto extends EntityDto
 
     private Boolean isStatic;
 
-    private Integer outer;
+    private String outer;
 
     public InnerInterfaceDto(InnerInterface e)
     {
@@ -27,12 +27,12 @@ public class InnerInterfaceDto extends EntityDto
         isStatic = aStatic;
     }
 
-    public Integer getOuter()
+    public String getOuter()
     {
         return outer;
     }
 
-    public void setOuter(Integer outer)
+    public void setOuter(String outer)
     {
         this.outer = outer;
     }

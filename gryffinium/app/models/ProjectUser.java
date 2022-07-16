@@ -96,7 +96,10 @@ public class ProjectUser extends Model
     {
 
         if(actor == null){
+            //Todo remove comment
+    //       project.removeUser(this);
             project.checkConnectedUsers();
+            this.disconnect();
         }
         this.actor = actor;
     }

@@ -1,12 +1,10 @@
 package uml.entities.variables;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import commands.Command;
 import dto.ElementTypeDto;
 import dto.entities.variables.AttributeDto;
 import dto.entities.variables.VariableDto;
-import play.libs.Json;
 import uml.Visibility;
 import uml.ClassDiagram;
 import uml.entities.Entity;
@@ -18,6 +16,10 @@ public class Attribute extends Variable
 
     private boolean isStatic;
     private Visibility visibility;
+
+    public Attribute(){
+        super();
+    }
 
     public Attribute(String name, boolean isConstant, boolean isStatic, Visibility visibility)
     {
@@ -37,7 +39,7 @@ public class Attribute extends Variable
         {
             throw new IllegalArgumentException("visibility attribute is null");
         }
-        setGraphical(ga, cd);
+        fromDto(ga, cd);
     }
 
     public Attribute(String name)
@@ -47,9 +49,9 @@ public class Attribute extends Variable
 
 
 
-    public void setGraphical(dto.entities.variables.AttributeDto ga, ClassDiagram cd)
+    public void fromDto(AttributeDto ga, ClassDiagram cd)
     {
-        super.setGraphical(ga, cd);
+        super.fromDto(ga, cd);
         if(ga.isStatic() != null)
             this.setStatic(ga.isStatic());
         if(ga.getVisibility() != null){
@@ -81,11 +83,25 @@ public class Attribute extends Variable
 
     public VariableDto toDto(Entity e)
     {
+        if(getParent() == null && e != null)
+        {
+            setParent(e);
+        }
         return new AttributeDto(this, e);
     }
 
     public JsonNode getCreationCommand(Entity e)
     {
         return Command.createResponse(toDto(e), ElementTypeDto.ATTRIBUTE);
+    }
+
+    @Override
+    public JsonNode getUpdateNameCommand()
+    {
+        AttributeDto dto = new AttributeDto();
+        dto.setId(this.getId());
+        dto.setType(getType().getName());
+        dto.setParentId(this.getParent().getId());
+        return Command.createResponse(dto, ElementTypeDto.ATTRIBUTE);
     }
 }

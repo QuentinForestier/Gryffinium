@@ -190,7 +190,7 @@ export class Parameter {
 
 export class Role {
     constructor(id, name, multiplicity, distanceName, offsetName, distanceMultiplicity, offsetMultiplicity) {
-        this.elementId = id;
+        this.id = id;
         this.name = name;
         this.multiplicity = multiplicity;
         this.distanceName = distanceName;
@@ -200,8 +200,8 @@ export class Role {
     }
 
     set(role) {
-        if (role.elementId !== null && role.elementId !== undefined) {
-            this.elementId = role.elementId;
+        if (role.id !== null && role.id !== undefined) {
+            this.id = role.id;
         }
         if (role.name !== null && role.name !== undefined) {
             this.name = role.name;

@@ -2,17 +2,17 @@ package dto.entities.variables;
 
 public class ValueDto
 {
-    private Integer parentId;
+    private String parentId;
 
     private String oldValue;
     private String value;
 
-    public Integer getParentId()
+    public String getParentId()
     {
         return parentId;
     }
 
-    public void setParentId(Integer parentId)
+    public void setParentId(String parentId)
     {
         this.parentId = parentId;
     }

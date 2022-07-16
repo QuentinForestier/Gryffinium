@@ -1,52 +1,96 @@
 package uml.links;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import dto.links.AssociationDto;
-import play.libs.Json;
 import uml.ClassDiagram;
+import uml.links.components.Label;
+import uml.links.components.Role;
 
-public abstract class Association
+import javax.xml.bind.annotation.*;
+
+@XmlSeeAlso({BinaryAssociation.class, MultiAssociation.class})
+public abstract class Association extends LabeledLink
 {
-    private Integer id;
-    private String name;
+
+    private Role target;
+
+    public Association()
+    {
+        super();
+    }
 
     public Association(String name)
     {
-        this.name = name;
+        super();
+
     }
 
     public Association(AssociationDto graphicalAssociation, ClassDiagram cd)
     {
-        this.setGraphical(graphicalAssociation, cd);
+        super();
+        this.fromDto(graphicalAssociation, cd);
     }
 
-    public Integer getId()
+
+    @XmlElement
+    public Role getTarget()
     {
-        return id;
+        return target;
     }
 
-    public void setId(Integer id)
+    public void setTarget(Role target)
     {
-        this.id = id;
+        this.target = target;
     }
 
+    @XmlTransient
+    public Double getDistance()
+    {
+        return this.getLabel().getDistance();
+    }
+
+    public void setDistance(Double distance)
+    {
+        this.getLabel().setDistance(distance);
+    }
+
+    @XmlTransient
+    public JsonNode getOffset()
+    {
+        return this.getLabel().getOffset();
+    }
+
+    public void setOffset(JsonNode offset)
+    {
+        this.getLabel().setOffset(offset);
+    }
+
+    @XmlTransient
     public String getName()
     {
-        return name;
+        return getLabel().getName();
     }
 
     public void setName(String name)
     {
-        this.name = name;
+        this.getLabel().setName(name);
     }
 
-    public void setGraphical(dto.links.AssociationDto ga, ClassDiagram cd)
+    public void fromDto(AssociationDto ga, ClassDiagram cd)
     {
+        super.fromDto(ga, cd);
         if (ga.getName() != null)
-            this.name = ga.getName();
+            this.getLabel().setName(ga.getName());
+
+        if (ga.getDistance() != null)
+            this.getLabel().setDistance(ga.getDistance());
+
+        if (ga.getOffset() != null)
+            this.getLabel().setOffset(ga.getOffset());
     }
 
-    public abstract Role getRoleByEntityId(Integer entityId);
+    public abstract Role getRole(String id);
 
     public abstract AssociationDto toDto();
 

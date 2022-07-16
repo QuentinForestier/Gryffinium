@@ -10,7 +10,10 @@ import dto.entities.variables.AttributeDto;
 import dto.entities.variables.ParameterDto;
 import dto.entities.variables.ValueDto;
 import dto.links.BinaryAssociationDto;
-import dto.links.RoleDto;
+import dto.links.DependencyDto;
+import dto.links.GeneralizationDto;
+import dto.links.RealizationDto;
+import dto.links.components.RoleDto;
 import models.Project;
 import play.libs.Json;
 import uml.entities.*;
@@ -60,21 +63,29 @@ public class UpdateCommand implements Command
                 {
                     result.addAll(updateConstructorName(c, ge.getName()));
                 }
-                c.setGraphical(ge);
+                c.fromDto(ge, project.getDiagram());
 
+                if (ge.getName() != null)
+                {
+                    c.getSubscribers().forEach(subscriber ->
+                            result.add(subscriber.getUpdateNameCommand()));
+                }
                 result.add(Command.createResponse(ge, elementType));
+
                 break;
             case INNER_CLASS:
                 InnerClassDto gic = Json.fromJson(data,
                         InnerClassDto.class);
-                project.getDiagram().getEntity(gic.getId()).setGraphical(gic);
+                project.getDiagram().getEntity(gic.getId()).fromDto(gic,
+                        project.getDiagram());
                 result.add(Command.createResponse(gic, elementType));
                 break;
             case ASSOCIATION_CLASS:
                 AssociationClassDto gac =
                         Json.fromJson(data,
                                 AssociationClassDto.class);
-                project.getDiagram().getEntity(gac.getId()).setGraphical(gac);
+                project.getDiagram().getEntity(gac.getId()).fromDto(gac,
+                        project.getDiagram());
                 result.add(Command.createResponse(gac, elementType));
                 break;
             case ENUM:
@@ -86,19 +97,32 @@ public class UpdateCommand implements Command
                 {
                     result.addAll(updateConstructorName(e, gen.getName()));
                 }
-                e.setGraphical(gen);
+                if (gen.getName() != null)
+                {
+                    e.getSubscribers().forEach(subscriber ->
+                            result.add(subscriber.getUpdateNameCommand()));
+                }
+                e.fromDto(gen, project.getDiagram());
                 result.add(Command.createResponse(gen, elementType));
                 break;
             case INTERFACE:
                 EntityDto gc = Json.fromJson(data,
                         EntityDto.class);
-                project.getDiagram().getEntity(gc.getId()).setGraphical(gc);
+                Interface i =
+                        (Interface) project.getDiagram().getEntity(gc.getId());
+                i.fromDto(gc, project.getDiagram());
+                if (gc.getName() != null)
+                {
+                    i.getSubscribers().forEach(subscriber ->
+                            result.add(subscriber.getUpdateNameCommand()));
+                }
                 result.add(Command.createResponse(gc, elementType));
                 break;
             case INNER_INTERFACE:
                 InnerInterfaceDto gi = Json.fromJson(data,
                         InnerInterfaceDto.class);
-                project.getDiagram().getEntity(gi.getId()).setGraphical(gi);
+                project.getDiagram().getEntity(gi.getId()).fromDto(gi,
+                        project.getDiagram());
                 result.add(Command.createResponse(gi, elementType));
                 break;
 
@@ -108,18 +132,34 @@ public class UpdateCommand implements Command
             case COMPOSITION:
                 BinaryAssociationDto gba = Json.fromJson(data,
                         BinaryAssociationDto.class);
-
-                project.getDiagram().getAssociation(gba.getId()).setGraphical(gba, project.getDiagram());
+                project.getDiagram().getAssociation(gba.getId()).fromDto(gba,
+                        project.getDiagram());
                 result.add(Command.createResponse(gba, elementType));
                 break;
             case MUTLI_ASSOCIATION:
                 break;
             case DEPENDENCY:
+                DependencyDto gd = Json.fromJson(data,
+                        DependencyDto.class);
+                project.getDiagram().getDependency(gd.getId()).fromDto(gd,
+                        project.getDiagram());
+                result.add(Command.createResponse(gd, elementType));
                 break;
             case GENERALIZATION:
+                GeneralizationDto gdto = Json.fromJson(data,
+                        GeneralizationDto.class);
+                project.getDiagram().getRelationship(gdto.getId()).fromDto(gdto,
+                        project.getDiagram());
+                result.add(Command.createResponse(gdto, elementType));
                 break;
             case REALIZATION:
+                RealizationDto rdto = Json.fromJson(data,
+                        RealizationDto.class);
+                project.getDiagram().getRelationship(rdto.getId()).fromDto(rdto,
+                        project.getDiagram());
+                result.add(Command.createResponse(rdto, elementType));
                 break;
+
             case INNER:
                 break;
 
@@ -137,7 +177,7 @@ public class UpdateCommand implements Command
                 AttributeDto ga = Json.fromJson(data,
                         AttributeDto.class);
 
-                project.getDiagram().getEntity(ga.getParentId()).getAttribute(ga.getId()).setGraphical(ga, project.getDiagram());
+                project.getDiagram().getEntity(ga.getParentId()).getAttribute(ga.getId()).fromDto(ga, project.getDiagram());
                 result.add(Command.createResponse(ga, elementType));
                 break;
             case PARAMETER:
@@ -152,7 +192,7 @@ public class UpdateCommand implements Command
                     op = ce.getConstructorById(gp.getMethodId());
                 }
                 Parameter p = op.getParam(gp.getId());
-                p.setGraphical(gp, project.getDiagram());
+                p.fromDto(gp, project.getDiagram());
                 result.add(Command.createResponse(gp, elementType));
                 break;
 
@@ -164,20 +204,20 @@ public class UpdateCommand implements Command
                 ConstructableEntity parent =
                         (ConstructableEntity) project.getDiagram().getEntity(go.getParentId());
 
-                parent.getConstructorById(go.getId()).setGraphical(go,
+                parent.getConstructorById(go.getId()).fromDto(go,
                         project.getDiagram());
                 result.add(Command.createResponse(go, elementType));
                 break;
             case METHOD:
                 MethodDto gm = Json.fromJson(data,
                         MethodDto.class);
-                project.getDiagram().getEntity(gm.getParentId()).getMethodById(gm.getId()).setGraphical(gm, project.getDiagram());
+                project.getDiagram().getEntity(gm.getParentId()).getMethodById(gm.getId()).fromDto(gm, project.getDiagram());
                 result.add(Command.createResponse(gm, elementType));
                 break;
             case ROLE:
                 RoleDto gr = Json.fromJson(data,
                         RoleDto.class);
-                project.getDiagram().getAssociation(gr.getAssociationId()).getRoleByEntityId(gr.getElementId()).setGraphical(gr, project.getDiagram());
+                project.getDiagram().getAssociation(gr.getAssociationId()).getRole(gr.getId()).fromDto(gr, project.getDiagram());
                 result.add(Command.createResponse(gr, elementType));
                 break;
         }

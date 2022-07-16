@@ -16,19 +16,68 @@
 
         <nav class="navbar navbar-default">
 
-            <div>
-                <div class="btn btn-sm navbar-btn" id="selectClass">Class</div>
-                <div class="btn btn-sm navbar-btn" id="selectEnum">Enum</div>
-                <div class="btn btn-sm navbar-btn" id="selectInterface">Interface</div>
-                <div class="btn btn-sm navbar-btn" id="selectAssociationClass">Association Class</div>
-                <div class="btn btn-sm navbar-btn" id="selectGeneralization">Generalization</div>
-                <div class="btn btn-sm navbar-btn" id="selectRealization">Realization</div>
-                <div class="btn btn-sm navbar-btn" id="selectAssociation">Association</div>
-                <div class="btn btn-sm navbar-btn" id="selectAggregation">Aggregation</div>
-                <div class="btn btn-sm navbar-btn" id="selectComposition">Composition</div>
-                <div class="btn btn-sm navbar-btn" id="selectMultiAssociation">Mutli association</div>
-                <div class="btn btn-sm navbar-btn" id="selectInnerClass">Inner class</div>
-                <div class="btn btn-sm navbar-btn" id="selectDependency">Dependency</div>
+            <div class="card-header tab-card-header">
+                <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link" id="selectClass" role="tab" aria-selected="false"
+                        data-toggle="tooltip" data-placement="top" title="Class">Class</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="selectEnum" role="tab" aria-selected="false"
+                        data-toggle="tooltip" data-placement="top" title="Enum">Enum</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="selectInterface" role="tab" aria-selected="false"
+                        data-toggle="tooltip" data-placement="top" title="Interface">Interface</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-header tab-card-header">
+                <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link" id="selectAssociationClass" role="tab" aria-selected="false"
+                        data-toggle="tooltip" data-placement="top" title="Association Class">Association Class</a>
+                    </li>
+                    <div class="vr"></div>
+                    <li class="nav-item">
+                        <a class="nav-link" id="selectGeneralization" role="tab" aria-selected="false"
+                        data-toggle="tooltip" data-placement="top" title="Generalization">Generalization</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="selectRealization" role="tab" aria-selected="false"
+                        data-toggle="tooltip" data-placement="top" title="Realization">Realization</a>
+                    </li>
+
+                    <div class="vr"></div>
+                    <li class="nav-item">
+                        <a class="nav-link active show" id="selectAssociation" role="tab" aria-selected="false"
+                        data-toggle="tooltip" data-placement="top" title="Association">Association</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="selectAggregation" role="tab" aria-selected="false"
+                        data-toggle="tooltip" data-placement="top" title="Aggregation">Aggregation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="selectComposition" role="tab" aria-selected="false"
+                        data-toggle="tooltip" data-placement="top" title="Composition">Composition</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="selectMultiAssociation" role="tab" aria-selected="false"
+                        data-toggle="tooltip" data-placement="top" title="Multi association">Mutli association</a>
+                    </li>
+
+                    <div class="vr"></div>
+                    <div class="vr"></div>
+
+                    <li class="nav-item">
+                        <a class="nav-link" id="selectInnerClass" role="tab" aria-selected="false"
+                        data-toggle="tooltip" data-placement="top" title="Inner class">Inner Class</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="selectDependency" role="tab" aria-selected="false"
+                        data-toggle="tooltip" data-placement="top" title="Dependency">Dependency</a>
+                    </li>
+                </ul>
             </div>
         </nav>
         <datalist id="multiplicity-list">
@@ -39,7 +88,7 @@
             <option >1..*</option>
             <option >*</option>
         </datalist>
-        <div id="diagram">
+        <div id="diagram" draggable="false">
             <div id="paper"></div>
         </div>
         <div class="offcanvas offcanvas-bottom" tabindex="-1" id="modifier" aria-labelledby="modifier-title" data-bs-backdrop="false" style="background-color: #F2F2F2">
@@ -78,55 +127,103 @@
                 const chat = document.getElementById('list-message');
                 const buttonSend = document.getElementById('button-send');
 
+                let activeElementType = undefined;
+                let activeLinkType = document.getElementById("selectAssociation");
 
                 const elements = new Map();
 
-                document.getElementById("selectClass").addEventListener("click", function () {
-                    selectedType = 'CLASS';
-                });
+                function setSelectedElement(sender, type) {
+                    if (type !== undefined) {
+                        selectedType = type;
+                        if (activeElementType !== undefined) {
+                            activeElementType.classList.remove("active");
+                            activeElementType.classList.remove("show");
+                            activeElementType.setAttribute("aria-selected", "false");
+                        }
+                        activeElementType = sender;
 
+                        activeElementType.classList.add("active");
+                        activeElementType.classList.add("show");
+                        activeElementType.setAttribute("aria-selected", "true");
+                    } else {
+                        if (activeElementType !== undefined) {
+                            activeElementType.classList.remove("active");
+                            activeElementType.classList.remove("show");
+                            activeElementType.setAttribute("aria-selected", "false");
+                        }
+                        activeElementType = undefined;
+                        selectedType = undefined;
+                    }
+                }
+
+                function setSelectedLink(sender, type) {
+                    if (type !== undefined) {
+                        paper.options.defaultLink = type;
+                        if (activeLinkType !== undefined) {
+                            activeLinkType.classList.remove("active");
+                            activeLinkType.classList.remove("show");
+                            activeLinkType.setAttribute("aria-selected", "false");
+                        }
+                        activeLinkType = sender;
+
+                        activeLinkType.classList.add("active");
+                        activeLinkType.classList.add("show");
+                        activeLinkType.setAttribute("aria-selected", "true");
+                    } else {
+                        if (activeLinkType !== undefined) {
+                            activeLinkType.classList.remove("active");
+                            activeLinkType.classList.remove("show");
+                            activeLinkType.setAttribute("aria-selected", "false");
+                        }
+                        activeLinkType = undefined;
+                    }
+                }
+
+                document.getElementById("selectClass").addEventListener("click", function () {
+                    setSelectedElement(this, 'CLASS');
+                });
                 document.getElementById("selectEnum").addEventListener("click", function () {
-                    selectedType = 'ENUM';
+                    setSelectedElement(this, 'ENUM');
+                });
+                document.getElementById("selectInterface").addEventListener("click", function () {
+                    setSelectedElement(this, 'INTERFACE');
                 });
 
                 document.getElementById("selectAssociationClass").addEventListener("click", function () {
-                    selectedType = 'ASSOCIATION_CLASS';
+                    // TODO : set selected type
                 });
 
-                document.getElementById("selectInterface").addEventListener("click", function () {
-                    selectedType = 'INTERFACE';
-                });
 
                 document.getElementById("selectAssociation").addEventListener("click", function () {
-                    paper.options.defaultLink = new uml.Association();
+                    setSelectedLink(this, new uml.BinaryAssociation());
                 });
 
                 document.getElementById("selectAggregation").addEventListener("click", function () {
-                    paper.options.defaultLink = new uml.Aggregation();
+                    setSelectedLink(this, new uml.Aggregation());
                 });
 
                 document.getElementById("selectComposition").addEventListener("click", function () {
-                    paper.options.defaultLink = new uml.Composition();
+                    setSelectedLink(this, new uml.Composition());
                 });
 
                 document.getElementById("selectRealization").addEventListener("click", function () {
-                    paper.options.defaultLink = new uml.Realization();
+                    setSelectedLink(this, new uml.Realization());
                 });
 
                 document.getElementById("selectGeneralization").addEventListener("click", function () {
-                    paper.options.defaultLink = new uml.Generalization();
+                    setSelectedLink(this, new uml.Generalization());
                 });
 
                 document.getElementById("selectMultiAssociation").addEventListener("click", function () {
-                    selectedType = 'MULTIPLE_ASSOCIATION';
+                    // TODO : set selected type
                 });
 
                 document.getElementById("selectInnerClass").addEventListener("click", function () {
-                    selectedType = 'INNER_CLASS';
+                    // TODO : set selected type
                 });
 
                 document.getElementById("selectDependency").addEventListener("click", function () {
-                    selectedType = 'DEPENDENCY';
+                    setSelectedLink(this, new uml.Dependency());
                 });
 
 
@@ -159,6 +256,8 @@
                 let counter = 1;
 
                 let selectedElement = undefined;
+
+                let movingVertices = undefined;
 
                 let modifierOffCanvas = new bootstrap.Offcanvas(modifier);
 
@@ -199,7 +298,7 @@
                             'message': messageInput.value,
                             'type': 'ChatMessageCommand'
                         };
-                        socket.send(JSON.stringify(command));
+                        socket.send(command);
                         messageInput.value = '';
                     }
                 };
@@ -236,6 +335,7 @@
                                                     },
                                                     id: command.id,
                                                 });
+                                                elem.setSizeAndPosition({width: command.width, height: command.height});
                                                 break;
                                             case ElementType.Interface.name:
                                                 elem = new uml.Interface({
@@ -250,6 +350,7 @@
                                                     },
                                                     id: command.id,
                                                 });
+                                                elem.setSizeAndPosition({width: command.width, height: command.height});
                                                 break;
                                             case ElementType.Enum.name:
                                                 elem = new uml.Enum({
@@ -264,6 +365,7 @@
                                                     },
                                                     id: command.id,
                                                 });
+                                                elem.setSizeAndPosition({width: command.width, height: command.height});
                                                 break;
                                             case ElementType.AssociationClass.name:
                                                 // TODO AssociationClass
@@ -273,6 +375,10 @@
                                                     source: {id: command.sourceId},
                                                     target: {id: command.targetId},
                                                     linkId: command.id,
+                                                    vertices: command.vertices,
+                                                });
+                                                elem.on('change:vertices', function (link) {
+                                                    movingVertices = link;
                                                 });
                                                 break;
                                             case ElementType.Realization.name:
@@ -280,22 +386,20 @@
                                                     source: {id: command.sourceId},
                                                     target: {id: command.targetId},
                                                     linkId: command.id,
+                                                    vertices: command.vertices,
+                                                });
+                                                elem.on('change:vertices', function (link) {
+                                                    movingVertices = link;
                                                 });
                                                 break;
                                             case ElementType.BinaryAssociation.name:
-                                                elem = new uml.Association({
+                                                elem = new uml.BinaryAssociation({
                                                     source: {id: command.sourceId},
                                                     target: {id: command.targetId},
-                                                    roles: [
-                                                        new Role(command.sourceId, "", "*", 0.05, {
-                                                            x: 0,
-                                                            y: -10
-                                                        }, 0.05, {x: 0, y: 10}),
-                                                        new Role(command.targetId, "", "*", 0.95, {
-                                                            x: 0,
-                                                            y: -10
-                                                        }, 0.95, {x: 0, y: 10})
-                                                    ],
+                                                    sourceRole: new Role(command.sourceRoleId, "", "*", 0.05,
+                                                            {x: 0, y: -10}, 0.05, {x: 0, y: 10}),
+                                                    targetRole: new Role(command.targetRoleId, "", "*", 0.95,
+                                                            {x: 0, y: -10}, 0.95, {x: 0, y: 10}),
                                                     labelDistance: command.distance === null ? 0.5 : command.distance,
                                                     labelOffset: command.offset === null ? {
                                                         x: 0,
@@ -304,91 +408,56 @@
                                                     linkId: command.id,
                                                     isDirected: command.isDirected,
                                                     name: command.name,
+                                                    vertices: command.vertices,
                                                 });
-                                                elem.on('change', function (link) {
-                                                    if (link.get('labels') !== undefined) {
-                                                        for (let i = 0; i < link.get('labels').length; i++) {
-                                                            if (hasLabelMoved(link.attributes.labels[i], link._previousAttributes.labels[i])
-                                                                    && !this.get('labelsChanged').includes(i)) {
-                                                                console.log(i);
-                                                                link.get('labelsChanged').push(i);
-                                                                return
-                                                            }
-                                                        }
-                                                    }
-                                                })
+
+                                                elem.on('change:vertices', function (link) {
+                                                    movingVertices = link;
+                                                });
                                                 break;
                                             case ElementType.Aggregation.name:
                                                 elem = new uml.Aggregation({
                                                     source: {id: command.sourceId},
                                                     target: {id: command.targetId},
-                                                    linkId: command.id,
-                                                    isDirected: command.isDirected,
-                                                    name: command.name,
-                                                    roles: [
-                                                        new Role(command.sourceId, "", "", 0.05, {
-                                                            x: 0,
-                                                            y: -10
-                                                        }, 0.05, {x: 0, y: 10}),
-                                                        new Role(command.targetId, "", "", 0.95, {
-                                                            x: 0,
-                                                            y: -10
-                                                        }, 0.95, {x: 0, y: 10})
-                                                    ],
+                                                    sourceRole: new Role(command.sourceRoleId, "", "*", 0.05,
+                                                            {x: 0, y: -10}, 0.05, {x: 0, y: 10}),
+                                                    targetRole: new Role(command.targetRoleId, "", "*", 0.95,
+                                                            {x: 0, y: -10}, 0.95, {x: 0, y: 10}),
                                                     labelDistance: command.distance === null ? 0.5 : command.distance,
                                                     labelOffset: command.offset === null ? {
                                                         x: 0,
                                                         y: -10
                                                     } : command.offset,
+                                                    linkId: command.id,
+                                                    isDirected: command.isDirected,
+                                                    name: command.name,
+                                                    vertices: command.vertices,
                                                 });
-                                                elem.on('change', function (link) {
-                                                    if (link.get('labels') !== undefined) {
-                                                        for (let i = 0; i < link.get('labels').length; i++) {
-                                                            if (hasLabelMoved(link.attributes.labels[i], link._previousAttributes.labels[i])
-                                                                    && !this.get('labelsChanged').includes(i)) {
-                                                                console.log(i);
-                                                                link.get('labelsChanged').push(i);
-                                                                return
-                                                            }
-                                                        }
-                                                    }
-                                                })
+                                                elem.on('change:vertices', function (link) {
+                                                    movingVertices = link;
+                                                });
                                                 break;
                                             case ElementType.Composition.name:
                                                 elem = new uml.Composition({
                                                     source: {id: command.sourceId},
                                                     target: {id: command.targetId},
-                                                    linkId: command.id,
-                                                    isDirected: command.isDirected,
-                                                    name: command.name,
-                                                    roles: [
-                                                        new Role(command.sourceId, "", "", 0.05, {
-                                                            x: 0,
-                                                            y: -10
-                                                        }, 0.05, {x: 0, y: 10}),
-                                                        new Role(command.targetId, "", "", 0.95, {
-                                                            x: 0,
-                                                            y: -10
-                                                        }, 0.95, {x: 0, y: 10})
-                                                    ],
+                                                    sourceRole: new Role(command.sourceRoleId, "", "*", 0.05,
+                                                            {x: 0, y: -10}, 0.05, {x: 0, y: 10}),
+                                                    targetRole: new Role(command.targetRoleId, "", "*", 0.95,
+                                                            {x: 0, y: -10}, 0.95, {x: 0, y: 10}),
                                                     labelDistance: command.distance === null ? 0.5 : command.distance,
                                                     labelOffset: command.offset === null ? {
                                                         x: 0,
                                                         y: -10
                                                     } : command.offset,
+                                                    linkId: command.id,
+                                                    isDirected: command.isDirected,
+                                                    name: command.name,
+                                                    vertices: command.vertices,
                                                 });
-                                                elem.on('change', function (link) {
-                                                    if (link.get('labels') !== undefined) {
-                                                        for (let i = 0; i < link.get('labels').length; i++) {
-                                                            if (hasLabelMoved(link.attributes.labels[i], link._previousAttributes.labels[i])
-                                                                    && !this.get('labelsChanged').includes(i)) {
-                                                                console.log(i);
-                                                                link.get('labelsChanged').push(i);
-                                                                return
-                                                            }
-                                                        }
-                                                    }
-                                                })
+                                                elem.on('change:vertices', function (link) {
+                                                    movingVertices = link;
+                                                });
                                                 break;
                                             case ElementType.MultiAssociation.name:
                                                 // TODO MutliAssociation
@@ -397,7 +466,21 @@
                                                 // TODO InnerClass
                                                 break;
                                             case ElementType.Dependency.name:
-                                                // TODO Dependency
+                                                elem = new uml.Dependency({
+                                                    source: {id: command.sourceId},
+                                                    target: {id: command.targetId},
+                                                    labelDistance: command.distance === null ? 0.5 : command.distance,
+                                                    labelOffset: command.offset === null ? {
+                                                        x: 0,
+                                                        y: -10
+                                                    } : command.offset,
+                                                    linkId: command.id,
+                                                    name: command.name,
+                                                    vertices: command.vertices,
+                                                });
+                                                elem.on('change:vertices', function (link) {
+                                                    movingVertices = link;
+                                                });
                                                 break;
                                             case ElementType.Attribute.name:
                                                 let attribute = new Attribute(command.id, command.name, command.type, command.visibility.toLowerCase(), command.isConstant, command.isStatic);
@@ -440,9 +523,9 @@
                                                 }
                                                 break;
                                             case ElementType.Role.name:
-                                                let role = new Role(command.elementId, command.name, command.multiplicity, command.distanceName, command.offsetName, command.distanceMultiplicity, command.offsetMultiplicity);
+                                                let role = new Role(command.id, command.name, command.multiplicity, command.distanceName, command.offsetName, command.distanceMultiplicity, command.offsetMultiplicity);
                                                 parent = elements.get(command.associationId);
-                                                parent.setRoleByEntityId(command.elementId, role);
+                                                parent.updateRole(command.id, role);
 
                                                 if (parent === selectedElement) {
                                                     generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
@@ -453,6 +536,7 @@
                                             elements.set(elem.getId(), elem);
                                             graph.addCell(elem);
 
+
                                         }
                                         break;
                                     case 'UpdateCommand':
@@ -462,6 +546,7 @@
                                             case ElementType.Enum.name:
                                             case ElementType.AssociationClass.name:
                                             case ElementType.Generalization.name:
+                                            case ElementType.Realization.name:
                                             case ElementType.BinaryAssociation.name:
                                             case ElementType.Aggregation.name:
                                             case ElementType.Composition.name:
@@ -512,14 +597,13 @@
                                                 }
                                                 break
                                             case ElementType.Role.name:
-                                                elements.get(command.associationId).setRoleByEntityId(command.elementId, command);
+                                                elements.get(command.associationId).updateRole(command.id, command);
 
 
                                                 if (selectedElement === elements.get(command.associationId)) {
                                                     generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
                                                 }
                                                 break;
-                                                y
                                         }
                                         break;
                                     case 'RemoveCommand':
@@ -571,7 +655,6 @@
                                                 break;
                                             case ElementType.Parameter.name:
                                                 elements.get(command.parentId).getOperation(command.methodId).removeParameter(command.id);
-                                                elements.get(command.parentId).update();
                                                 if (selectedElement === elements.get(command.parentId)) {
                                                     generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
                                                 }
@@ -590,12 +673,6 @@
                     };
                 }
 
-                function hasLabelMoved(currentState, previousState) {
-                    return currentState.position.distance !== previousState.position.distance ||
-                            currentState.position.offset.x !== previousState.position.offset.x ||
-                            currentState.position.offset.y !== previousState.position.offset.y ||
-                            (currentState.position.offset !== previousState.position.offset && currentState.position.offset.x === undefined);
-                }
 
                 let uml = joint.shapes.uml;
 
@@ -611,12 +688,19 @@
                     interactive: {
                         labelMove: true,
                     },
-                    linkPinning: false,
                     defaultConnector: {
                         name: 'jumpover',
                         size: 5,
                     },
-                    defaultLink: new uml.Association(),
+                    defaultLink: new uml.BinaryAssociation(),
+                    defaultAnchor: {
+                        name: 'perpendicular',
+                        args: {
+                            perpendicular: true,
+                            fixed: true,
+                        }
+                    },
+
 
                 });
 
@@ -659,7 +743,7 @@
                     } else if (event.button === 1) {
                         dragStartPosition = {x: x * scale.sx, y: y * scale.sy};
                     }
-                    selectedType = undefined;
+                    setSelectedElement(activeElementType, undefined);
                 });
 
 
@@ -690,8 +774,6 @@
                             targetId: target.id,
                             isDirected: false,
                             name: linkView.model.getType(),
-                            sourceName: source.get('name'),
-                            targetName: target.get('name'),
                         }, linkView.model.getType(), 'CreateCommand');
                         linkView.model.remove();
                     } else {
@@ -707,31 +789,35 @@
                 let tmpcounter = 0;
                 paper.on('link:pointerup', function (linkView) {
 
-                    if (linkView.model.get('labelsChanged') !== []) {
-                        let indexes = linkView.model.get('labelsChanged');
-                        linkView.model.set('labelsChanged', []);
-                        for (let index of indexes) {
-                            if (index !== 0) {
-                                let roleIndex = Math.ceil(index / 2) - 1;
-                                let label = linkView.model.get('labels')[index];
-                                let role = linkView.model.get('roles')[roleIndex];
-                                sendMessage({
-                                    elementId: role.elementId,
-                                    distanceMultiplicity: index % 2 ? undefined : label.position.distance,
-                                    offsetMultiplicity: index % 2 ? undefined : label.position.offset,
-                                    distanceName: index % 2 ? label.position.distance : undefined,
-                                    offsetName: index % 2 ? label.position.offset : undefined,
-                                    associationId: linkView.model.getId(),
-                                }, 'ROLE', 'UpdateCommand');
-                            } else {
-                                let label = linkView.model.get('labels')[0];
-                                sendMessage({
-                                    id: linkView.model.getId(),
-                                    distance: label.position.distance,
-                                    offset: label.position.offset,
-                                }, linkView.model.getType(), 'UpdateCommand');
+                    try {
+                        if (linkView.model.getLabelsChanged() !== []) {
+                            let indexes = linkView.model.get('labelsChanged');
+                            linkView.model.set('labelsChanged', []);
+                            for (let index of indexes) {
+                                if (index !== 0) {
+                                    let roleIndex = Math.ceil(index / 2) - 1;
+                                    let label = linkView.model.get('labels')[index];
+                                    let role = roleIndex === 0 ? linkView.model.getTargetRole() : linkView.model.getSourceRole();
+                                    sendMessage({
+                                        id: role.id,
+                                        distanceMultiplicity: index % 2 ? undefined : label.position.distance,
+                                        offsetMultiplicity: index % 2 ? undefined : label.position.offset,
+                                        distanceName: index % 2 ? label.position.distance : undefined,
+                                        offsetName: index % 2 ? label.position.offset : undefined,
+                                        associationId: linkView.model.getId(),
+                                    }, 'ROLE', 'UpdateCommand');
+                                } else {
+                                    let label = linkView.model.get('labels')[0];
+                                    sendMessage({
+                                        id: linkView.model.getId(),
+                                        distance: label.position.distance,
+                                        offset: label.position.offset,
+                                    }, linkView.model.getType(), 'UpdateCommand');
+                                }
                             }
                         }
+                    } catch (e) {
+                        // Nothing to catch, just ignore it
                     }
                 })
 
@@ -766,6 +852,17 @@
                                 moving.getType(),
                                 'UpdateCommand');
                         moving = null;
+                    }
+
+                    if (movingVertices) {
+                        let view = paper.findViewByModel(movingVertices);
+                        sendMessage({
+                            id: movingVertices.getId(),
+                            sourceAnchor: view.sourceAnchor,
+                            targetAnchor: view.targetAnchor,
+                            vertices: movingVertices.get('vertices'),
+                        }, movingVertices.getType(), 'UpdateCommand');
+                        movingVertices = undefined;
                     }
                 });
 
@@ -875,7 +972,7 @@
 
                 let linkToolsView = new joint.dia.ToolsView({
                     tools: [
-                        new joint.linkTools.Vertices(), new joint.linkTools.Segments(),
+                        new joint.linkTools.Vertices(),
                         mySourceArrowhead, myTargetArrowhead,
                         new joint.linkTools.Boundary(), new joint.linkTools.Remove(),
                     ]

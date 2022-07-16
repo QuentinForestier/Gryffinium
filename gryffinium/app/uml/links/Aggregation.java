@@ -8,6 +8,11 @@ import play.libs.Json;
 import uml.ClassDiagram;
 import uml.entities.Entity;
 
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlType;
+
+@XmlSeeAlso({Composition.class})
+@XmlType(name="Aggregation")
 public class Aggregation extends BinaryAssociation
 {
     public Aggregation(Entity from, Entity to, String name, boolean isDirected)

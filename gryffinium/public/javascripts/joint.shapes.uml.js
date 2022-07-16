@@ -109,9 +109,19 @@ this.joint.shapes = this.joint.shapes || {};
                 if (message.name) {
                     this.set('name', message.name);
                 }
+
+
                 if (message.width && message.height) {
                     this.set('size', {width: message.width, height: message.height});
+                    this.trigger('change:size');
+                } else if (message.width) {
+                    this.set('size', {width: message.width, height: this.get('size').height});
+                    this.trigger('change:size');
+                } else if (message.height) {
+                    this.set('size', {width: this.get('size').width, height: message.height});
+                    this.trigger('change:size');
                 }
+
 
                 if (message.x && message.y) {
                     this.set('position', {x: message.x, y: message.y});
@@ -291,7 +301,6 @@ this.joint.shapes = this.joint.shapes || {};
                         maxLineLength = (Math.round(maxLineLength / 10) * 10)
                     }
                     attrs['.uml-class-' + rect.type + '-text'].text = linesToShow.join('\n');
-                    attrs['.uml-class-' + rect.type + '-text'].onclick = console.log('test');
                     attrs['.uml-class-' + rect.type + '-rect'].height = rectHeight;
                     attrs['.uml-class-' + rect.type + '-rect'].transform = 'translate(0,' + offsetY + ')';
 
@@ -470,7 +479,7 @@ this.joint.shapes = this.joint.shapes || {};
             },
             linkId: undefined,
             alreadyDeleted: false,
-            labelsChanged: [],
+
             verticesChanged: false,
         }, {
             markup: [{
@@ -497,6 +506,7 @@ this.joint.shapes = this.joint.shapes || {};
                 Link_mjs.Link.prototype.initialize.apply(this, arguments);
 
             },
+
             removeCommand: function () {
                 if (!this.get('alreadyDeleted')) {
                     this.set('alreadyDeleted', true);
@@ -513,6 +523,13 @@ this.joint.shapes = this.joint.shapes || {};
                 return this.get('linkId');
             },
 
+            isAlreadyDeleted: function () {
+                return this.get('alreadyDeleted');
+            },
+
+            hasVerticesChanged: function () {
+                return this.get('verticesChanged');
+            },
             updateFromMessage: function (message) {
 
                 if (message.id) {
@@ -527,6 +544,10 @@ this.joint.shapes = this.joint.shapes || {};
                     this.set('target', {id: message.targetId});
                 }
 
+                if (message.vertices) {
+
+                    this.set('vertices', message.vertices);
+                }
 
             },
 
@@ -551,16 +572,215 @@ this.joint.shapes = this.joint.shapes || {};
             }
         });
 
-        let Association = CustomLink.define('uml.Association', {
-            isDirected: false,
-            roles: [],
-            name: undefined,
-            labelDistance:0.5,
-            labelOffset: {x:0,y:-10},
+        let LabeledLink = CustomLink.define('uml.LabeledLink', {
+            labelDistance: 0.5,
+            labelOffset: {x: 0, y: -10},
+            name: 'name',
+            labelsChanged: [],
         }, {
             initialize: function () {
                 CustomLink.prototype.initialize.apply(this, arguments);
-                this.addLabels();
+
+                this.on('change', function (link) {
+                    if (link.get('labels') !== undefined && link.get('labels').length > 0) {
+                        for (let i = 0; i < link.get('labels').length; i++) {
+                            try {
+                                if (link._previousAttributes.labels !== undefined
+                                    && link._previousAttributes.labels[i] !== undefined
+                                    && (link.attributes.labels[i].position.distance !== link._previousAttributes.labels[i].position.distance ||
+                                        link.attributes.labels[i].position.offset.x !== link._previousAttributes.labels[i].position.offset.x ||
+                                        link.attributes.labels[i].position.offset.y !== link._previousAttributes.labels[i].position.offset.y ||
+                                        (link.attributes.labels[i].position.offset !== link._previousAttributes.labels[i].position.offset && link.attributes.labels[i].position.offset.x === undefined))
+                                    && !this.get('labelsChanged').includes(i)) {
+                                    link.get('labelsChanged').push(i);
+                                    return
+                                }
+                            } catch (e) {
+
+                            }
+                        }
+                    }
+                })
+
+                // label name link
+                this.appendLabel({
+                    attrs: {
+                        text: {
+                            text: this.get('name'),
+                        },
+                        rect: {
+                            fillOpacity: 0.1,
+                        }
+                    },
+                    position: {
+                        distance: this.get('labelDistance'),
+                        offset: this.get('labelOffset'),
+                        args: {
+                            keepGradient: true,
+                            ensureLegibility: true
+                        }
+                    }
+                })
+            },
+            getType: function () {
+                return 'LABELED_LINK';
+            },
+
+            getName: function () {
+                return this.get('name');
+            },
+
+            getLabelsChanged: function () {
+                return this.get('labelsChanged');
+            },
+            setLabel: function (id, {text, distance, offset}) {
+                this.label(id, {
+                    attrs: {
+                        text: {
+                            text: text,
+                        }
+                    },
+                    position: {
+                        distance: distance,
+                        offset: offset,
+                    }
+                })
+            },
+            updateFromMessage: function (message) {
+                CustomLink.prototype.updateFromMessage.apply(this, arguments);
+
+                if (message.distance) {
+                    this.set('labelDistance', message.distance);
+                }
+
+                if (message.offset) {
+                    this.set('labelOffset', message.offset);
+                }
+
+                if (message.name) {
+                    this.set('name', message.name);
+                }
+
+                this.setLabel(0, {
+                    text: this.get('name'),
+                    distance: this.get('labelDistance'),
+                    offset: this.get('labelOffset')
+                });
+            }
+        });
+
+        let LabeledLinkView = CustomLinkView;
+
+        let Dependency = LabeledLink.define('uml.Dependency', {
+            attrs: {
+                line: {
+                    targetMarker: {
+                        'fill': 'white',
+                        'type': 'path',
+                        'd': 'M 20 -10 0 0 20 10 0 0 Z'
+                    },
+                    strokeDasharray: '5,5',
+                }
+            }
+        }, {
+            getType: function () {
+                return 'DEPENDENCY';
+            }
+        });
+
+        let DependencyView = LabeledLinkView;
+
+        let Association = LabeledLink.define('uml.Association', {
+            targetRole: undefined,
+        }, {
+            initialize: function () {
+                LabeledLink.prototype.initialize.apply(this, arguments);
+
+                // label target name
+                this.appendLabel({
+                    attrs: {
+                        text: {
+                            text: this.get('targetRole') ? this.get('targetRole').name : 'target',
+                        },
+                        rect: {
+                            fillOpacity: 0.1,
+                        }
+                    },
+                    position: {
+                        distance: 0.95,
+                        offset: {
+                            x: 0,
+                            y: -10
+                        },
+                        args: {
+                            keepGradient: true,
+                            ensureLegibility: true
+                        }
+                    }
+                })
+
+                // label multiplicity target
+                this.appendLabel({
+                    attrs: {
+                        text: {
+                            text: this.get('targetRole') ? this.get('targetRole').multiplicity : '*',
+                        },
+                        rect: {
+                            fillOpacity: 0.1,
+                        }
+                    },
+                    position: {
+                        distance: 0.98,
+                        offset: {
+                            x: 0,
+                            y: 10
+                        },
+                        args: {
+                            keepGradient: true,
+                            ensureLegibility: true
+                        }
+                    }
+                })
+            },
+            getTargetRole: function () {
+                return this.get('targetRole');
+            },
+            getType: function () {
+                return 'ASSOCIATION';
+            },
+
+            updateRole: function (id, role) {
+                if (this.get('targetRole') && this.get('targetRole').id === id) {
+                    this.get('targetRole').set(role);
+                    this.setLabel(1, {
+                        text: this.get('targetRole').name,
+                        distance: this.get('targetRole').distanceName,
+                        offset: this.get('targetRole').offsetName
+                    });
+                    this.setLabel(2, {
+                        text: this.get('targetRole').multiplicity,
+                        distance: this.get('targetRole').distanceMultiplicity,
+                        offset: this.get('targetRole').offsetMultiplicity
+                    });
+                }
+            },
+            updateFromMessage: function (message) {
+                LabeledLink.prototype.updateFromMessage.apply(this, arguments);
+
+                if (message.targetId) {
+                    this.target({id: message.targetId});
+                }
+            }
+        });
+
+        let AssociationView = LabeledLinkView;
+
+        let BinaryAssociation = Association.define('uml.BinaryAssociation', {
+            isDirected: false,
+            sourceRole: undefined,
+        }, {
+            initialize: function () {
+                Association.prototype.initialize.apply(this, arguments);
                 this.setTargetArrow();
             },
             setTargetArrow: function () {
@@ -573,7 +793,6 @@ this.joint.shapes = this.joint.shapes || {};
                     this.attributes.attrs.line.targetMarker = {
                         'd': ''
                     };
-
                 }
                 try {
                     this.trigger('change');
@@ -584,194 +803,47 @@ this.joint.shapes = this.joint.shapes || {};
             getType: function () {
                 return 'BINARY_ASSOCIATION'
             },
+            getSourceRole: function () {
+                return this.get('sourceRole');
+            },
+            getDirected: function () {
+                return this.get('isDirected');
+            },
             setDirected: function (isDirected) {
                 this.set('isDirected', isDirected);
             },
-            addLabels: function () {
-                this.set('labels', undefined);
-                if (this.get('roles').length > 0) {
-
-                    // label name link
-                    this.appendLabel({
-                        attrs: {
-                            text: {
-                                text: this.get('name') ? this.get('name') : 'name',
-                            },
-                            rect: {
-                                fillOpacity: 0.1,
-                            }
-                        },
-                        position: {
-                            distance: this.get('labelDistance'),
-                            offset: this.get('labelOffset'),
-                            args: {
-                                keepGradient: true,
-                                ensureLegibility: true
-                            }
-                        }
-                    })
-
-                    // label name source
-                    this.appendLabel({
-                        attrs: {
-                            text: {
-                                text: this.get('roles')[0].name,
-                            },
-                            rect: {
-                                fillOpacity: 0.1,
-                            }
-                        },
-                        position: {
-                            distance: 0.05,
-                            offset: {
-                                x: 0,
-                                y: -10
-                            },
-                            args: {
-                                keepGradient: true,
-                                ensureLegibility: true
-                            }
-                        }
-                    })
-
-
-                    // label multiplicity source
-                    this.appendLabel({
-                        attrs: {
-                            text: {
-                                text: this.get('roles')[0].multiplicity,
-                            },
-                            rect: {
-                                fillOpacity: 0.1,
-                            }
-                        },
-                        position: {
-                            distance: 0.02,
-                            offset: {
-                                x: 0,
-                                y: 10
-                            },
-                            args: {
-                                keepGradient: true,
-                                ensureLegibility: true
-                            }
-                        }
-                    })
-
-                    // label target name
-                    this.appendLabel({
-                        attrs: {
-                            text: {
-                                text: this.get('roles')[1].name,
-                            },
-                            rect: {
-                                fillOpacity: 0.1,
-                            }
-                        },
-                        position: {
-                            distance: 0.95,
-                            offset: {
-                                x: 0,
-                                y: -10
-                            },
-                            args: {
-                                keepGradient: true,
-                                ensureLegibility: true
-                            }
-                        }
-                    })
-
-                    // label multiplicity target
-                    this.appendLabel({
-                        attrs: {
-                            text: {
-                                text: this.get('roles')[1].multiplicity,
-                            },
-                            rect: {
-                                fillOpacity: 0.1,
-                            }
-                        },
-                        position: {
-                            distance: 0.98,
-                            offset: {
-                                x: 0,
-                                y: 10
-                            },
-                            args: {
-                                keepGradient: true,
-                                ensureLegibility: true
-                            }
-                        }
-                    })
+            updateRole: function (id, role) {
+                Association.prototype.updateRole.call(this, id, role);
+                if (this.get('sourceRole') && this.get('sourceRole').id === id) {
+                    this.get('sourceRole').set(role);
+                    this.setLabel(3, {
+                        text: this.get('sourceRole').name,
+                        distance: this.get('sourceRole').distanceName,
+                        offset: this.get('sourceRole').offsetName
+                    });
+                    this.setLabel(4, {
+                        text: this.get('sourceRole').multiplicity,
+                        distance: this.get('sourceRole').distanceMultiplicity,
+                        offset: this.get('sourceRole').offsetMultiplicity
+                    });
                 }
             },
-            setLabelName: function (lbl) {
-                this.label(0, {
-                    attrs:{
-                        text: { text : lbl.name ? lbl.name : this.get('name')}
-                    },
-                    position: {
-                        distance: lbl.distance ? lbl.distance : this.label(0).position.distance,
-                        offset: lbl.offset ? lbl.offset : this.label(0).position.offset,
-                    }
-                })
-            },
-            setRoleByEntityId: function (elementId, role) {
-                let r = this.get('roles').find(r => r.elementId === elementId);
-
-                let index = this.get('roles').indexOf(r) + 1;
-                r.set(role);
-                this.label(index * 2 - 1, {
-                    attrs: {
-                        text: {
-                            text: r.name,
-                        }
-                    },
-                    position:{
-                        distance:r.distanceName,
-                        offset: r.offsetName,
-                    }
-                })
-
-                this.label(index * 2, {
-                    attrs: {
-                        text: {
-                            text: r.multiplicity,
-                        }
-                    },
-                    position:{
-                        distance:r.distanceMultiplicity,
-                        offset: r.offsetMultiplicity,
-                    }
-                })
-            },
-
-
             updateFromMessage: function (message) {
-                CustomLink.prototype.updateFromMessage.call(this, message);
-
-                if (message.name) {
-                    this.set('name', message.name);
-                    this.setLabelName({name: message.name});
-                }
+                Association.prototype.updateFromMessage.call(this, message);
 
                 if (message.isDirected !== null) {
                     this.set('isDirected', message.isDirected);
                     this.setTargetArrow();
                 }
 
-                if(message.distance !== null){
-                    this.setLabelName({distance: message.distance});
-                }
-
-                if(message.offset !== null){
-                    this.setLabelName({offset: message.offset});
+                if (message.sourceId) {
+                    this.source({id: message.sourceId});
                 }
             }
 
         });
 
-        let AssociationView = CustomLinkView;
+        let BinaryAssociationView = AssociationView;
 
         let Generalization = CustomLink.define('uml.Generalization', {
                 attrs: {
@@ -793,9 +865,14 @@ this.joint.shapes = this.joint.shapes || {};
 
         let GeneralizationView = CustomLinkView;
 
-        let Realization = Generalization.define('uml.Realization', {
+        let Realization = CustomLink.define('uml.Realization', {
                 attrs: {
                     line: {
+                        targetMarker: {
+                            'type': 'path',
+                            'd': 'M 20 -10 L 0 0 L 20 10 z',
+                            'fill': 'white'
+                        },
                         strokeDasharray: '5,5',
                     }
                 }
@@ -808,7 +885,7 @@ this.joint.shapes = this.joint.shapes || {};
 
         let RealizationView = CustomLinkView;
 
-        let Aggregation = Association.define('uml.Aggregation', {
+        let Aggregation = BinaryAssociation.define('uml.Aggregation', {
             attrs: {
                 line: {
                     sourceMarker: {
@@ -818,15 +895,12 @@ this.joint.shapes = this.joint.shapes || {};
                 }
             }
         }, {
-            initialize: function () {
-                Association.prototype.initialize.apply(this, arguments);
-            },
             getType: function () {
                 return 'AGGREGATION'
             }
         });
 
-        let AggregationView = CustomLinkView;
+        let AggregationView = BinaryAssociationView;
 
         let Composition = Aggregation.define('uml.Composition', {
                 attrs: {
@@ -843,20 +917,20 @@ this.joint.shapes = this.joint.shapes || {};
                 }
             });
 
-        let CompositionView = CustomLinkView;
+        let CompositionView = AggregationView;
 
         exports.Abstract = Abstract;
         exports.AbstractView = AbstractView;
         exports.Aggregation = Aggregation;
         exports.AggregationView = AggregationView;
-        exports.Association = Association;
-        exports.AssociationView = AssociationView;
+        exports.BinaryAssociation = BinaryAssociation;
+        exports.BinaryAssociationView = BinaryAssociationView;
         exports.Class = Class;
         exports.ClassView = ClassView;
         exports.Composition = Composition;
         exports.CompositionView = CompositionView;
-        exports.CustomLink = CustomLink;
-        exports.CustomLinkView = CustomLinkView;
+        exports.Depencency = Dependency;
+        exports.DependencyView = DependencyView;
         exports.Generalization = Generalization;
         exports.GeneralizationView = GeneralizationView;
         exports.Realization = Realization;

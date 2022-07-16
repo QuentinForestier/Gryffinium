@@ -2,8 +2,11 @@ package uml.entities;
 
 import uml.ClassDiagram;
 import uml.links.BinaryAssociation;
-import uml.links.Role;
+import uml.links.components.Role;
 
+import javax.xml.bind.annotation.XmlType;
+
+@XmlType(name="AssociationClass")
 public class AssociationClass extends Class
 {
     private BinaryAssociation association;
@@ -21,7 +24,7 @@ public class AssociationClass extends Class
 
     public AssociationClass(dto.entities.AssociationClassDto gac, ClassDiagram cd)
     {
-        super(gac);
+        super(gac, cd);
         if (gac.getSource() == null || gac.getTarget() == null)
         {
             throw new IllegalArgumentException(
@@ -36,7 +39,7 @@ public class AssociationClass extends Class
 
     public void setGraphical(dto.entities.AssociationClassDto gac, ClassDiagram cd)
     {
-        super.setGraphical(gac);
+        super.fromDto(gac, cd);
         if (gac.getSource() != null)
         {
             Entity source = cd.getEntity(gac.getSource());

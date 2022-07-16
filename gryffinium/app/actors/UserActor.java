@@ -10,8 +10,8 @@ import models.ProjectUser;
 public class UserActor extends AbstractActor
 {
 
-    private ActorRef out;
-    private ProjectUser user;
+    private final ActorRef out;
+    private final ProjectUser user;
 
     public static Props props(ActorRef out, ProjectUser user)
     {

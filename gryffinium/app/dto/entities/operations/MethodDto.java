@@ -19,7 +19,7 @@ public class MethodDto extends OperationDto
         super(m, parent);
         this.isAbstract = m.isAbstract();
         this.isStatic = m.isStatic();
-        this.type = m.getReturnType().getName();
+        this.type = m.getType().getName();
     }
 
     public Boolean isAbstract()

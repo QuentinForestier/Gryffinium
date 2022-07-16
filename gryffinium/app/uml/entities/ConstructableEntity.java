@@ -1,30 +1,40 @@
 package uml.entities;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import dto.entities.EntityDto;
 import play.libs.Json;
+import uml.ClassDiagram;
 import uml.entities.operations.Constructor;
 import uml.entities.operations.Operation;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import java.util.ArrayList;
 import java.util.List;
 
+@XmlSeeAlso({Enum.class, Class.class})
 public abstract class ConstructableEntity extends Entity
 {
+    @XmlElement(name = "constructor")
     private final ArrayList<Constructor> constructors = new ArrayList<>();
+
+    public ConstructableEntity(){
+        super();
+    }
 
     public ConstructableEntity(String name)
     {
         super(name);
     }
 
-    public ConstructableEntity(dto.entities.EntityDto ge)
+    public ConstructableEntity(EntityDto ge, ClassDiagram cd)
     {
-        super(ge);
+        super(ge, cd);
     }
 
     public void addConstructor(Constructor constructor)
     {
-        constructor.setId(idCounter++);
+        constructor.setName(getName());
         constructors.add(constructor);
     }
 
@@ -33,10 +43,12 @@ public abstract class ConstructableEntity extends Entity
         constructors.remove(constructor);
     }
 
-    public Constructor getConstructorById(int id)
+
+    public Constructor getConstructorById(String id)
     {
-        return constructors.stream().filter(c -> c.getId() == id).findFirst().orElse(null);
+        return constructors.stream().filter(c -> c.getId().equals(id)).findFirst().orElse(null);
     }
+
 
     public List<Constructor> getConstructors()
     {
@@ -45,7 +57,7 @@ public abstract class ConstructableEntity extends Entity
 
 
     @Override
-    public Operation getOperationById(Integer id)
+    public Operation getOperationById(String id)
     {
         Operation result = super.getOperationById(id);
 

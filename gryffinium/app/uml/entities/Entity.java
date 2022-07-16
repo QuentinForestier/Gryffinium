@@ -1,9 +1,10 @@
 package uml.entities;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import commands.Command;
 import dto.entities.EntityDto;
 import play.libs.Json;
+import tyrex.services.UUID;
+import uml.ClassDiagram;
 import uml.Visibility;
 import uml.entities.operations.Method;
 import uml.entities.operations.Operation;
@@ -12,16 +13,15 @@ import uml.types.Type;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import java.util.ArrayList;
-import java.util.LinkedList;
 
-
+@XmlSeeAlso({ConstructableEntity.class, Interface.class})
 public abstract class Entity extends Type
 {
 
-    protected int idCounter = 1;
-
-    private Integer id;
+    private String id;
 
     private int x;
 
@@ -34,15 +34,19 @@ public abstract class Entity extends Type
     private Visibility visibility;
 
 
-    @XmlElement
     private final ArrayList<Attribute> attributes = new ArrayList<>();
 
-    @XmlElement
+
     private final ArrayList<Method> methods = new ArrayList<>();
+
+    public Entity(){
+        this("");
+    }
 
     public Entity(String name, Visibility visibility)
     {
         super(name);
+        this.id = UUID.create();
         this.visibility = visibility;
     }
 
@@ -51,9 +55,11 @@ public abstract class Entity extends Type
         this(name, Visibility.PUBLIC);
     }
 
-    public Entity(dto.entities.EntityDto ge)
+    public Entity(EntityDto ge, ClassDiagram cd)
     {
         super(ge.getName() == null ? "" : ge.getName());
+
+        this.id = UUID.create();
 
         if (ge.getVisibility() == null)
         {
@@ -76,17 +82,18 @@ public abstract class Entity extends Type
             throw new IllegalArgumentException("Height argument missing");
         }
 
-        setGraphical(ge);
+        fromDto(ge, cd);
     }
 
 
+    @XmlID
     @XmlAttribute
-    public Integer getId()
+    public String getId()
     {
         return id;
     }
 
-    public void setId(Integer id)
+    public void setId(String id)
     {
         this.id = id;
     }
@@ -146,10 +153,10 @@ public abstract class Entity extends Type
         this.visibility = visibility;
     }
 
-    public void setGraphical(dto.entities.EntityDto ge)
+    public void fromDto(EntityDto ge, ClassDiagram cd)
     {
         if (ge.getName() != null)
-            this.setName(ge.getName());
+            this.setName(ge.getName(), cd);
 
         if (ge.getX() != null)
             this.setX(ge.getX());
@@ -167,16 +174,13 @@ public abstract class Entity extends Type
             this.setVisibility(Visibility.valueOf(ge.getVisibility().toUpperCase()));
     }
 
-    public Attribute getAttributeById(Integer id)
+
+    public Attribute getAttribute(String id)
     {
         return attributes.stream().filter(a -> a.getId().equals(id)).findFirst().orElse(null);
     }
 
-    public Attribute getAttribute(Integer id)
-    {
-        return attributes.stream().filter(a -> a.getId().equals(id)).findFirst().orElse(null);
-    }
-
+    @XmlElement(name="attribute")
     public ArrayList<Attribute> getAttributes()
     {
         return attributes;
@@ -184,7 +188,6 @@ public abstract class Entity extends Type
 
     public void addAttribute(Attribute attribute)
     {
-        attribute.setId(idCounter++);
         attributes.add(attribute);
     }
 
@@ -194,23 +197,24 @@ public abstract class Entity extends Type
     }
 
 
-    public Operation getOperationById(Integer id)
+    public Operation getOperationById(String id)
     {
         return getMethodById(id);
     }
 
-    public Method getMethodById(Integer id)
+    public Method getMethodById(String id)
     {
         return methods.stream().filter(m -> m.getId().equals(id)).findFirst().orElse(null);
     }
 
+    @XmlElement(name = "method")
     public ArrayList<Method> getMethods()
     {
         return methods;
     }
+
     public void addMethod(Method method)
     {
-        method.setId(idCounter++);
         methods.add(method);
     }
 
@@ -238,5 +242,15 @@ public abstract class Entity extends Type
         }
         return commands;
     }
+
+    public void load(ClassDiagram cd){
+        for (Method method : methods) {
+            method.load(cd);
+        }
+        for (Attribute attribute : attributes) {
+            attribute.load(cd);
+        }
+    }
+
 
 }
