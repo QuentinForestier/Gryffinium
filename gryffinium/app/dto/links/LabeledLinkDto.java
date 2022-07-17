@@ -5,8 +5,8 @@ import uml.links.LabeledLink;
 
 public class LabeledLinkDto extends LinkDto
 {
-    private Double distance;
-    private JsonNode offset;
+    private String distance;
+    private String offset;
     private String name;
 
     public LabeledLinkDto(){
@@ -20,22 +20,22 @@ public class LabeledLinkDto extends LinkDto
         this.name = link.getLabel().getName();
     }
 
-    public Double getDistance()
+    public String getDistance()
     {
         return distance;
     }
 
-    public void setDistance(Double distance)
+    public void setDistance(String distance)
     {
         this.distance = distance;
     }
 
-    public JsonNode getOffset()
+    public String getOffset()
     {
         return offset;
     }
 
-    public void setOffset(JsonNode offset)
+    public void setOffset(String offset)
     {
         this.offset = offset;
     }

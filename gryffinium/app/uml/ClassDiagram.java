@@ -10,6 +10,7 @@ import uml.links.ClassRelationship;
 import uml.links.Dependency;
 import uml.types.ExistingTypes;
 import uml.types.SimpleType;
+import uml.types.Type;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlList;
@@ -47,7 +48,14 @@ public class ClassDiagram
         int id = 1;
         while (entity.getName().equals("") || entity.getName() == null || existingTypes.isTypeExisting(entity))
         {
-            entity.setName(entity.getClass().getSimpleName() + id++, this);
+            Type tmp = getExistingTypes().getTypeByName(entity.getName());
+            if (tmp != null && getExistingTypes().isTypeExisting(tmp) && tmp instanceof SimpleType)
+            {
+                getExistingTypes().removeType(tmp);
+                entity.getSubscribers().addAll(tmp.getSubscribers());
+                continue;
+            }
+            entity.setName(entity.getClass().getSimpleName() + id++);
         }
         entities.add(entity);
         existingTypes.addType(entity);

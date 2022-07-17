@@ -71,7 +71,7 @@ this.joint.shapes = this.joint.shapes || {};
                 '</g>',
                 '<text class="uml-class-name-text"/>',
                 '<text class="uml-class-values-text"/>',
-                '<text class="uml-class-attrs-text text-truncate"/>',
+                '<text class="uml-class-attrs-text"/>',
                 '<text class="uml-class-methods-text"/>',
                 '</g>'
             ].join(''),
@@ -546,7 +546,7 @@ this.joint.shapes = this.joint.shapes || {};
 
                 if (message.vertices) {
 
-                    this.set('vertices', message.vertices);
+                    this.set('vertices', JSON.parse(message.vertices));
                 }
 
             },
@@ -613,7 +613,7 @@ this.joint.shapes = this.joint.shapes || {};
                         }
                     },
                     position: {
-                        distance: this.get('labelDistance'),
+                        distance: parseFloat(this.get('labelDistance')),
                         offset: this.get('labelOffset'),
                         args: {
                             keepGradient: true,
@@ -641,7 +641,7 @@ this.joint.shapes = this.joint.shapes || {};
                         }
                     },
                     position: {
-                        distance: distance,
+                        distance: parseFloat(distance),
                         offset: offset,
                     }
                 })
@@ -650,11 +650,11 @@ this.joint.shapes = this.joint.shapes || {};
                 CustomLink.prototype.updateFromMessage.apply(this, arguments);
 
                 if (message.distance) {
-                    this.set('labelDistance', message.distance);
+                    this.set('labelDistance', parseFloat(message.distance));
                 }
 
                 if (message.offset) {
-                    this.set('labelOffset', message.offset);
+                    this.set('labelOffset', JSON.parse(message.offset));
                 }
 
                 if (message.name) {
@@ -846,42 +846,39 @@ this.joint.shapes = this.joint.shapes || {};
         let BinaryAssociationView = AssociationView;
 
         let Generalization = CustomLink.define('uml.Generalization', {
-                attrs: {
-                    line: {
-                        targetMarker: {
-                            'type': 'path',
-                            'd': 'M 20 -10 L 0 0 L 20 10 z',
-                            'fill': 'white'
-                        }
-                    },
-                }
-            },
-            {
-                getType: function () {
-                    return 'GENERALIZATION'
-                }
-            });
-
+            attrs: {
+                line: {
+                    targetMarker: {
+                        'type': 'path',
+                        'd': 'M 20 -10 L 0 0 L 20 10 z',
+                        'fill': 'white'
+                    }
+                },
+            }
+        }, {
+            getType: function () {
+                return 'GENERALIZATION'
+            }
+        });
 
         let GeneralizationView = CustomLinkView;
 
         let Realization = CustomLink.define('uml.Realization', {
-                attrs: {
-                    line: {
-                        targetMarker: {
-                            'type': 'path',
-                            'd': 'M 20 -10 L 0 0 L 20 10 z',
-                            'fill': 'white'
-                        },
-                        strokeDasharray: '5,5',
-                    }
+            attrs: {
+                line: {
+                    targetMarker: {
+                        'type': 'path',
+                        'd': 'M 20 -10 L 0 0 L 20 10 z',
+                        'fill': 'white'
+                    },
+                    strokeDasharray: '5,5',
                 }
-            },
-            {
-                getType: function () {
-                    return 'REALIZATION'
-                }
-            });
+            }
+        }, {
+            getType: function () {
+                return 'REALIZATION'
+            }
+        });
 
         let RealizationView = CustomLinkView;
 
@@ -903,21 +900,38 @@ this.joint.shapes = this.joint.shapes || {};
         let AggregationView = BinaryAssociationView;
 
         let Composition = Aggregation.define('uml.Composition', {
-                attrs: {
-                    line: {
-                        sourceMarker: {
-                            fill: 'black'
-                        }
+            attrs: {
+                line: {
+                    sourceMarker: {
+                        fill: 'black'
                     }
                 }
-            },
-            {
-                getType: function () {
-                    return 'COMPOSITION'
-                }
-            });
+            }
+        }, {
+            getType: function () {
+                return 'COMPOSITION'
+            }
+        });
 
         let CompositionView = AggregationView;
+
+        let Inner = CustomLink.define('uml.Inner', {
+            attrs: {
+                line: {
+                    sourceMarker: {
+                        'type': 'path',
+                        'd': 'M 0, 0 a 13,13 0 1,0 26,0 a 13,13 0 1,0 -26,0 L 0, 0 M 13, 13 L 13, -13 M 0, 0 L 26, 0',
+                        'fill': umlColor
+                    }
+                },
+            }
+        }, {
+            getType: function () {
+                return 'INNER'
+            }
+        })
+
+        let InnerView = CustomLinkView;
 
         exports.Abstract = Abstract;
         exports.AbstractView = AbstractView;
@@ -935,6 +949,8 @@ this.joint.shapes = this.joint.shapes || {};
         exports.GeneralizationView = GeneralizationView;
         exports.Realization = Realization;
         exports.RealizationView = RealizationView;
+        exports.Inner = Inner;
+        exports.InnerView = InnerView;
         exports.Interface = Interface;
         exports.InterfaceView = InterfaceView;
         exports.Enum = Enum;

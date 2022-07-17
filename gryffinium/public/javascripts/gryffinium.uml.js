@@ -193,10 +193,19 @@ export class Role {
         this.id = id;
         this.name = name;
         this.multiplicity = multiplicity;
-        this.distanceName = distanceName;
-        this.offsetName = offsetName;
+        this.distanceName = parseFloat(distanceName);
+        try {
+            this.offsetName = JSON.parse(offsetName);
+        } catch (e) {
+            this.offsetName = offsetName;
+        }
         this.distanceMultiplicity = distanceMultiplicity;
-        this.offsetMultiplicity = offsetMultiplicity;
+        try {
+            this.offsetMultiplicity = JSON.parse(offsetMultiplicity);
+
+        } catch (e) {
+            this.offsetMultiplicity = offsetMultiplicity;
+        }
     }
 
     set(role) {
@@ -210,16 +219,25 @@ export class Role {
             this.multiplicity = role.multiplicity;
         }
         if (role.distanceName !== null && role.distanceName !== undefined) {
-            this.distanceName = role.distanceName;
+            this.distanceName = parseFloat(role.distanceName);
         }
         if (role.offsetName !== null && role.offsetName !== undefined) {
-            this.offsetName = role.offsetName;
+            try {
+                this.offsetName = JSON.parse(role.offsetName);
+            } catch (e) {
+                this.offsetName = role.offsetName;
+            }
         }
         if (role.distanceMultiplicity !== null && role.distanceMultiplicity !== undefined) {
             this.distanceMultiplicity = role.distanceMultiplicity;
         }
         if (role.offsetMultiplicity !== null && role.offsetMultiplicity !== undefined) {
-            this.offsetMultiplicity = role.offsetMultiplicity;
+            try {
+                this.offsetMultiplicity = JSON.parse(role.offsetMultiplicity);
+
+            } catch (e) {
+                this.offsetMultiplicity = role.offsetMultiplicity;
+            }
         }
     }
 }

@@ -2,6 +2,7 @@ package uml.links;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.sun.xml.bind.AnyTypeAdapter;
 import commands.Command;
 import dto.ElementTypeDto;
 import dto.links.LinkDto;
@@ -12,7 +13,9 @@ import uml.entities.Interface;
 
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlType(name = "Realization")
 public class Realization extends ClassRelationship
@@ -20,13 +23,19 @@ public class Realization extends ClassRelationship
     private Implementor implementor;
     private Interface interfce;
 
+    public Realization()
+    {
+super();
+    }
+
     public Realization(dto.links.LinkDto gl, ClassDiagram cd)
     {
         super();
         fromDto(gl, cd);
     }
 
-    @XmlAnyElement
+    @XmlIDREF
+    @XmlJavaTypeAdapter(AnyTypeAdapter.class)
     public Implementor getImplementor()
     {
         return implementor;
@@ -37,7 +46,7 @@ public class Realization extends ClassRelationship
         this.implementor = implementor;
     }
 
-    @XmlElement(name = "interface")
+    @XmlIDREF
     public Interface getInterface()
     {
         return interfce;

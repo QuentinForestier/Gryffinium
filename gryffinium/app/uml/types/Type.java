@@ -25,18 +25,9 @@ public abstract class Type
         return name;
     }
 
-    public void setName(String name, ClassDiagram cd)
+    public void setName(String name)
     {
-        Type tmp = cd.getExistingTypes().getTypeByName(name);
-        if (tmp != null && cd.getExistingTypes().isTypeExisting(tmp) && tmp instanceof SimpleType)
-        {
-            cd.getExistingTypes().removeType(tmp);
-            this.subscribers.addAll(tmp.getSubscribers());
-        }
-        else
-        {
             this.name = name;
-        }
     }
 
     public void subscribe(Subscribers subscriber)

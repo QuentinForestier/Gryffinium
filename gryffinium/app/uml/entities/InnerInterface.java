@@ -6,6 +6,7 @@ import uml.links.Inner;
 
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType(name="InnerInterface")
@@ -27,7 +28,7 @@ public class InnerInterface extends Interface implements InnerEntity
 
     public InnerInterface(dto.entities.InnerInterfaceDto gi, ClassDiagram cd)
     {
-        super(gi, cd);
+        super(gi);
         if(gi.getOuter() == null)
         {
             throw new IllegalArgumentException("Outer argument missing");
@@ -39,7 +40,7 @@ public class InnerInterface extends Interface implements InnerEntity
 
     public void setGraphical(InnerInterfaceDto gi, ClassDiagram cd)
     {
-        super.fromDto(gi, cd);
+        super.fromDto(gi);
         if(gi.getStatic() != null)
             this.setStatic(gi.getStatic());
 
@@ -47,7 +48,7 @@ public class InnerInterface extends Interface implements InnerEntity
             this.getInner().setOuter(cd.getEntity(gi.getOuter()));
     }
 
-    @XmlAnyElement
+    @XmlIDREF
     public Inner getInner()
     {
         return inner;

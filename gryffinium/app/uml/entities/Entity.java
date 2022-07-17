@@ -55,7 +55,7 @@ public abstract class Entity extends Type
         this(name, Visibility.PUBLIC);
     }
 
-    public Entity(EntityDto ge, ClassDiagram cd)
+    public Entity(EntityDto ge)
     {
         super(ge.getName() == null ? "" : ge.getName());
 
@@ -82,7 +82,7 @@ public abstract class Entity extends Type
             throw new IllegalArgumentException("Height argument missing");
         }
 
-        fromDto(ge, cd);
+        fromDto(ge);
     }
 
 
@@ -153,10 +153,10 @@ public abstract class Entity extends Type
         this.visibility = visibility;
     }
 
-    public void fromDto(EntityDto ge, ClassDiagram cd)
+    public void fromDto(EntityDto ge)
     {
         if (ge.getName() != null)
-            this.setName(ge.getName(), cd);
+            this.setName(ge.getName());
 
         if (ge.getX() != null)
             this.setX(ge.getX());

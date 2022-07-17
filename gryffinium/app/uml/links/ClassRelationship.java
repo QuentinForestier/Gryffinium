@@ -11,7 +11,7 @@ public abstract class ClassRelationship extends Link
 
     ClassRelationship()
     {
-
+        super();
     }
 
 

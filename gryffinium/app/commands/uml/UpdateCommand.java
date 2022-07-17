@@ -63,7 +63,7 @@ public class UpdateCommand implements Command
                 {
                     result.addAll(updateConstructorName(c, ge.getName()));
                 }
-                c.fromDto(ge, project.getDiagram());
+                c.fromDto(ge);
 
                 if (ge.getName() != null)
                 {
@@ -76,16 +76,14 @@ public class UpdateCommand implements Command
             case INNER_CLASS:
                 InnerClassDto gic = Json.fromJson(data,
                         InnerClassDto.class);
-                project.getDiagram().getEntity(gic.getId()).fromDto(gic,
-                        project.getDiagram());
+                project.getDiagram().getEntity(gic.getId()).fromDto(gic);
                 result.add(Command.createResponse(gic, elementType));
                 break;
             case ASSOCIATION_CLASS:
                 AssociationClassDto gac =
                         Json.fromJson(data,
                                 AssociationClassDto.class);
-                project.getDiagram().getEntity(gac.getId()).fromDto(gac,
-                        project.getDiagram());
+                project.getDiagram().getEntity(gac.getId()).fromDto(gac);
                 result.add(Command.createResponse(gac, elementType));
                 break;
             case ENUM:
@@ -102,7 +100,7 @@ public class UpdateCommand implements Command
                     e.getSubscribers().forEach(subscriber ->
                             result.add(subscriber.getUpdateNameCommand()));
                 }
-                e.fromDto(gen, project.getDiagram());
+                e.fromDto(gen);
                 result.add(Command.createResponse(gen, elementType));
                 break;
             case INTERFACE:
@@ -110,7 +108,7 @@ public class UpdateCommand implements Command
                         EntityDto.class);
                 Interface i =
                         (Interface) project.getDiagram().getEntity(gc.getId());
-                i.fromDto(gc, project.getDiagram());
+                i.fromDto(gc);
                 if (gc.getName() != null)
                 {
                     i.getSubscribers().forEach(subscriber ->
@@ -121,8 +119,7 @@ public class UpdateCommand implements Command
             case INNER_INTERFACE:
                 InnerInterfaceDto gi = Json.fromJson(data,
                         InnerInterfaceDto.class);
-                project.getDiagram().getEntity(gi.getId()).fromDto(gi,
-                        project.getDiagram());
+                project.getDiagram().getEntity(gi.getId()).fromDto(gi);
                 result.add(Command.createResponse(gi, elementType));
                 break;
 

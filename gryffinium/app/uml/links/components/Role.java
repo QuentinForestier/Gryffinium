@@ -89,57 +89,58 @@ public class Role
     }
 
     @XmlTransient
-    public Double getDistanceName()
+    public String getDistanceName()
     {
         return getNameLabel().getDistance();
     }
 
-    public void setDistanceName(double distanceName)
+    public void setDistanceName(String distanceName)
     {
         this.getNameLabel().setDistance(distanceName);
     }
 
     @XmlElement
-    public JsonNode getOffsetName()
+    public String getOffsetName()
     {
         return getNameLabel().getOffset();
     }
 
-    public void setOffsetName(JsonNode offsetName)
+    public void setOffsetName(String offsetName)
     {
         this.getNameLabel().setOffset(offsetName);
     }
 
     @XmlAttribute
-    public Double getDistanceMultiplicity()
+    public String getDistanceMultiplicity()
     {
         return getMultiplicityLabel().getDistance();
     }
 
-    public void setDistanceMultiplicity(double distanceMultiplicity)
+    public void setDistanceMultiplicity(String distanceMultiplicity)
     {
         this.getMultiplicityLabel().setDistance(distanceMultiplicity);
     }
 
     @XmlElement
-    public JsonNode getOffsetMultiplicity()
+    public String getOffsetMultiplicity()
     {
         return getMultiplicityLabel().getOffset();
     }
 
-    public void setOffsetMultiplicity(JsonNode offsetMultiplicity)
+    public void setOffsetMultiplicity(String offsetMultiplicity)
     {
         this.getMultiplicityLabel().setOffset(offsetMultiplicity);
     }
 
     public Role()
     {
+        setMultiplicity(Multiplicity.N);
     }
 
     public Role(String name, Multiplicity multiplicity, Entity entity)
     {
-        this.entity = entity;
-        this.multiplicity = multiplicity;
+        setEntity(entity);
+        setMultiplicity(multiplicity);
         this.getNameLabel().setName(name);
         this.id = UUID.create();
     }

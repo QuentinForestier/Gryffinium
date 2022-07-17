@@ -8,10 +8,10 @@ public class RoleDto
 {
     private String name;
     private String multiplicity;
-    private Double distanceName;
-    private JsonNode offsetName;
-    private Double distanceMultiplicity;
-    private JsonNode offsetMultiplicity;
+    private String distanceName;
+    private String offsetName;
+    private String distanceMultiplicity;
+    private String offsetMultiplicity;
 
     private String id;
     private String associationId;
@@ -49,42 +49,42 @@ public class RoleDto
         this.multiplicity = multiplicity;
     }
 
-    public Double getDistanceName()
+    public String getDistanceName()
     {
         return distanceName;
     }
 
-    public void setDistanceName(Double distanceName)
+    public void setDistanceName(String distanceName)
     {
         this.distanceName = distanceName;
     }
 
-    public JsonNode getOffsetName()
+    public String getOffsetName()
     {
         return offsetName;
     }
 
-    public void setOffsetName(JsonNode offsetName)
+    public void setOffsetName(String offsetName)
     {
         this.offsetName = offsetName;
     }
 
-    public Double getDistanceMultiplicity()
+    public String getDistanceMultiplicity()
     {
         return distanceMultiplicity;
     }
 
-    public void setDistanceMultiplicity(Double distanceMultiplicity)
+    public void setDistanceMultiplicity(String distanceMultiplicity)
     {
         this.distanceMultiplicity = distanceMultiplicity;
     }
 
-    public JsonNode getOffsetMultiplicity()
+    public String getOffsetMultiplicity()
     {
         return offsetMultiplicity;
     }
 
-    public void setOffsetMultiplicity(JsonNode offsetMultiplicity)
+    public void setOffsetMultiplicity(String offsetMultiplicity)
     {
         this.offsetMultiplicity = offsetMultiplicity;
     }

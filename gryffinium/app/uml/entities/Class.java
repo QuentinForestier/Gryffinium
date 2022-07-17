@@ -9,6 +9,7 @@ import play.libs.Json;
 import uml.ClassDiagram;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
@@ -34,14 +35,14 @@ public class Class extends ConstructableEntity implements Implementor
     }
 
 
-    public Class(ClassDto gc, ClassDiagram cd)
+    public Class(ClassDto gc)
     {
-        super(gc, cd);
+        super(gc);
         if (gc.isAbstract() == null)
         {
             this.setAbstract(false);
         }
-        fromDto(gc, cd);
+        fromDto(gc);
     }
 
     @XmlAttribute
@@ -55,9 +56,9 @@ public class Class extends ConstructableEntity implements Implementor
         isAbstract = anAbstract;
     }
 
-    public void fromDto(ClassDto ge, ClassDiagram cd)
+    public void fromDto(ClassDto ge)
     {
-        super.fromDto(ge, cd);
+        super.fromDto(ge);
         if (ge.isAbstract() != null)
             this.setAbstract(ge.isAbstract());
     }

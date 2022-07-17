@@ -15,6 +15,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name="Aggregation")
 public class Aggregation extends BinaryAssociation
 {
+    public Aggregation(){
+        super();
+    }
     public Aggregation(Entity from, Entity to, String name, boolean isDirected)
     {
         super(from, to, name, isDirected);

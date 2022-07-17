@@ -2,6 +2,7 @@ package dto.links;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import dto.ElementDto;
+import play.libs.Json;
 import uml.links.ClassRelationship;
 import uml.links.Link;
 
@@ -11,7 +12,7 @@ public abstract class LinkDto extends ElementDto
 
     private String targetId;
 
-    private JsonNode vertices;
+    private String vertices;
 
     public String getSourceId()
     {
@@ -33,12 +34,12 @@ public abstract class LinkDto extends ElementDto
         this.targetId = targetId;
     }
 
-    public JsonNode getVertices()
+    public String getVertices()
     {
         return vertices;
     }
 
-    public void setVertices(JsonNode vertices)
+    public void setVertices(String vertices)
     {
         this.vertices = vertices;
     }

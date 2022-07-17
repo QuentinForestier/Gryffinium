@@ -95,10 +95,9 @@ public class ProjectUser extends Model
     public void setActor(UserActor actor)
     {
 
-        if(actor == null){
-            //Todo remove comment
-    //       project.removeUser(this);
-            project.checkConnectedUsers();
+        if (actor == null)
+        {
+            project.removeUser(this);
             this.disconnect();
         }
         this.actor = actor;
@@ -198,8 +197,9 @@ public class ProjectUser extends Model
         return json;
     }
 
-    public void disconnect(){
-       if(actor != null)
+    public void disconnect()
+    {
+        if (actor != null)
         {
             actor.disconnect();
         }

@@ -14,6 +14,7 @@ import uml.links.components.Label;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType(name="Dependency")
@@ -22,6 +23,10 @@ public class Dependency extends LabeledLink
 
     private Entity from;
     private Entity to;
+
+    public Dependency(){
+        super();
+    }
 
     public Dependency(Entity from, Entity to, String name)
     {
@@ -41,6 +46,7 @@ public class Dependency extends LabeledLink
         fromDto(dto, diagram);
     }
 
+    @XmlIDREF
     public Entity getFrom()
     {
         return from;
@@ -51,6 +57,7 @@ public class Dependency extends LabeledLink
         this.from = from;
     }
 
+    @XmlIDREF
     public Entity getTo()
     {
         return to;

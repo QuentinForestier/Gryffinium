@@ -6,6 +6,7 @@ import uml.links.Inner;
 
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType(name="InnerClass")
@@ -28,7 +29,7 @@ public class InnerClass extends Class implements InnerEntity
 
     public InnerClass(InnerClassDto gic, ClassDiagram cd)
     {
-        super(gic, cd);
+        super(gic);
         if(gic.isStatic() == null)
         {
             throw new IllegalArgumentException("Static argument missing");
@@ -44,7 +45,7 @@ public class InnerClass extends Class implements InnerEntity
     }
 
 
-    @XmlAnyElement
+    @XmlIDREF
     public Inner getInner()
     {
         return inner;
@@ -68,7 +69,7 @@ public class InnerClass extends Class implements InnerEntity
 
     public void fromDto(InnerClassDto gic, ClassDiagram cd)
     {
-        super.fromDto(gic, cd);
+        super.fromDto(gic);
         if (gic.isStatic() != null)
             this.setStatic(gic.isStatic());
 

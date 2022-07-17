@@ -24,7 +24,7 @@ public class AssociationClass extends Class
 
     public AssociationClass(dto.entities.AssociationClassDto gac, ClassDiagram cd)
     {
-        super(gac, cd);
+        super(gac);
         if (gac.getSource() == null || gac.getTarget() == null)
         {
             throw new IllegalArgumentException(
@@ -39,7 +39,7 @@ public class AssociationClass extends Class
 
     public void setGraphical(dto.entities.AssociationClassDto gac, ClassDiagram cd)
     {
-        super.fromDto(gac, cd);
+        super.fromDto(gac);
         if (gac.getSource() != null)
         {
             Entity source = cd.getEntity(gac.getSource());

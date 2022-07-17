@@ -36,6 +36,7 @@ public class Project extends Model
 
     public static final Map<UUID, Project> openProjects = new HashMap<>();
 
+    private Timer autoSaveTimer = new Timer();
 
     public Project(String name)
     {
@@ -175,18 +176,19 @@ public class Project extends Model
             user.disconnect();
         }
 
-// TODO check problem with closing project
-        //Project.openProjects.remove(this.id);
+        autoSaveTimer.cancel();
+
+        Project.openProjects.remove(this.id);
         this.saveDiagram();
     }
 
     public void checkConnectedUsers()
     {
+        System.out.println("Checking connected users");
         if (this.projectUsers.stream().noneMatch(pu -> pu.getActor() != null))
         {
-            // TODO close project after x seconds
-
-            //this.close();
+            this.close();
+            System.out.println("Closing project");
         }
     }
 
@@ -239,6 +241,15 @@ public class Project extends Model
 
                 getDiagram().load();
             }
+            autoSaveTimer.scheduleAtFixedRate(new TimerTask()
+            {
+                @Override
+                public void run()
+                {
+                    saveDiagram();
+                    checkConnectedUsers();
+                }
+            }, 10 * 1000, 10 * 1000);
         }
         catch (Exception e)
         {

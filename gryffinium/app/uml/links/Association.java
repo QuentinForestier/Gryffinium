@@ -45,23 +45,23 @@ public abstract class Association extends LabeledLink
     }
 
     @XmlTransient
-    public Double getDistance()
+    public String getDistance()
     {
         return this.getLabel().getDistance();
     }
 
-    public void setDistance(Double distance)
+    public void setDistance(String distance)
     {
         this.getLabel().setDistance(distance);
     }
 
     @XmlTransient
-    public JsonNode getOffset()
+    public String getOffset()
     {
         return this.getLabel().getOffset();
     }
 
-    public void setOffset(JsonNode offset)
+    public void setOffset(String offset)
     {
         this.getLabel().setOffset(offset);
     }

@@ -50,7 +50,7 @@ public class CreateCommand implements Command
         switch (elementType)
         {
             case CLASS:
-                Class c = new Class(Json.fromJson(data, ClassDto.class), project.getDiagram());
+                Class c = new Class(Json.fromJson(data, ClassDto.class));
                 project.getDiagram().addEntity(c);
                 result.add(Command.createResponse(c.toDto(), elementType));
                 break;
@@ -71,13 +71,13 @@ public class CreateCommand implements Command
                 result.add(Command.createResponse(ac.toDto(), elementType));
                 break;
             case ENUM:
-                Enum e = new Enum(Json.fromJson(data, EnumDto.class), project.getDiagram());
+                Enum e = new Enum(Json.fromJson(data, EnumDto.class));
                 project.getDiagram().addEntity(e);
                 result.add(Command.createResponse(e.toDto(), elementType));
                 break;
             case INTERFACE:
                 Interface i = new Interface(Json.fromJson(data,
-                        EntityDto.class), project.getDiagram());
+                        EntityDto.class));
                 project.getDiagram().addEntity(i);
                 result.add(Command.createResponse(i.toDto(), elementType));
                 break;

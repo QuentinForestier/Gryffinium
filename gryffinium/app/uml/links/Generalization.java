@@ -9,14 +9,19 @@ import uml.ClassDiagram;
 import uml.entities.Class;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlType(name="Generalization")
+@XmlType(name = "Generalization")
 public class Generalization extends ClassRelationship
 {
     private Class parent;
     private Class child;
 
+    public Generalization()
+    {
+        super();
+    }
 
     public Generalization(Class parent, Class child)
     {
@@ -69,7 +74,7 @@ public class Generalization extends ClassRelationship
         return Command.createResponse(toDto(), ElementTypeDto.GENERALIZATION);
     }
 
-    @XmlElement
+    @XmlIDREF
     public Class getParent()
     {
         return parent;
@@ -80,7 +85,7 @@ public class Generalization extends ClassRelationship
         this.parent = parent;
     }
 
-    @XmlElement
+    @XmlIDREF
     public Class getChild()
     {
         return child;

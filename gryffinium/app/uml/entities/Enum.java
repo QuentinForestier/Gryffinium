@@ -33,11 +33,11 @@ public class Enum extends ConstructableEntity
 
 
 
-    public Enum(dto.entities.EnumDto ge, ClassDiagram cd)
+    public Enum(EnumDto ge)
     {
-        super(ge, cd);
+        super(ge);
         values = new ArrayList<>();
-        fromDto(ge, cd);
+        fromDto(ge);
     }
 
     @XmlElement(name="value")

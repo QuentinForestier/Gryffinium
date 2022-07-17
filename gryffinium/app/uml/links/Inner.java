@@ -1,6 +1,7 @@
 package uml.links;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.xml.bind.AnyTypeAdapter;
 import commands.Command;
 import dto.ElementTypeDto;
 import dto.links.InnerDto;
@@ -12,12 +13,17 @@ import uml.entities.InnerEntity;
 import uml.entities.Interface;
 
 import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlType(name = "Inner")
 public class Inner extends Link
 {
     private Entity outer;
     private InnerEntity inner;
+
+    public Inner(){
+    super();
+    }
 
     public Inner(Entity outer, InnerEntity inner)
     {
@@ -26,7 +32,7 @@ public class Inner extends Link
     }
 
 
-    @XmlElement
+    @XmlIDREF
     public Entity getOuter()
     {
         return outer;
@@ -37,7 +43,8 @@ public class Inner extends Link
         this.outer = outer;
     }
 
-    @XmlAnyElement
+    @XmlIDREF
+    @XmlJavaTypeAdapter(AnyTypeAdapter.class)
     public InnerEntity getInner()
     {
         return inner;

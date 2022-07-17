@@ -1,7 +1,9 @@
 package uml.links;
 
+import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.fasterxml.jackson.databind.JsonNode;
 import dto.links.LinkDto;
+import play.libs.Json;
 import tyrex.services.UUID;
 import uml.ClassDiagram;
 
@@ -9,12 +11,14 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlSeeAlso;
+import java.awt.*;
+import java.util.LinkedList;
 
 @XmlSeeAlso({LabeledLink.class, ClassRelationship.class, Inner.class})
 public abstract class Link
 {
     private String id;
-    private JsonNode vertices;
+    private String vertices;
 
     public Link()
     {
@@ -33,13 +37,13 @@ public abstract class Link
         this.id = id;
     }
 
-    @XmlElement
-    public JsonNode getVertices()
+    @JsonRawValue
+    public String getVertices()
     {
         return vertices;
     }
 
-    public void setVertices(JsonNode vertices)
+    public void setVertices(String vertices)
     {
         this.vertices = vertices;
     }

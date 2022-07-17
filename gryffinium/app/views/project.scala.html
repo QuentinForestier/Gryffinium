@@ -3,1034 +3,1110 @@
 @import java.net.InetAddress
 @(uuid: String, name: String)(implicit request: Request)
 
-    @main("Diagram") {
+@main("Diagram") {
 
-        @views.html.components.navbar("login-modal", "register-modal", "project-modal")
+    @views.html.components.navbar("login-modal", "register-modal", "project-modal")
 
-        @views.html.modals.chat("chat-modal", "list-message", "input-message", "button-send")
+    @views.html.modals.chat("chat-modal", "list-message", "input-message", "button-send")
 
-        @views.html.modals.project_list("project-modal")
+    @views.html.modals.project_list("project-modal")
 
-        @views.html.modals.project_creation("project-creation-modal")
+    @views.html.modals.project_creation("project-creation-modal")
 
 
-        <nav class="navbar navbar-default">
-
-            <div class="card-header tab-card-header">
-                <ul class="nav nav-tabs card-header-tabs" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link" id="selectClass" role="tab" aria-selected="false"
-                        data-toggle="tooltip" data-placement="top" title="Class">Class</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="selectEnum" role="tab" aria-selected="false"
-                        data-toggle="tooltip" data-placement="top" title="Enum">Enum</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="selectInterface" role="tab" aria-selected="false"
-                        data-toggle="tooltip" data-placement="top" title="Interface">Interface</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="card-header tab-card-header">
-                <ul class="nav nav-tabs card-header-tabs" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link" id="selectAssociationClass" role="tab" aria-selected="false"
-                        data-toggle="tooltip" data-placement="top" title="Association Class">Association Class</a>
-                    </li>
-                    <div class="vr"></div>
-                    <li class="nav-item">
-                        <a class="nav-link" id="selectGeneralization" role="tab" aria-selected="false"
-                        data-toggle="tooltip" data-placement="top" title="Generalization">Generalization</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="selectRealization" role="tab" aria-selected="false"
-                        data-toggle="tooltip" data-placement="top" title="Realization">Realization</a>
-                    </li>
-
-                    <div class="vr"></div>
-                    <li class="nav-item">
-                        <a class="nav-link active show" id="selectAssociation" role="tab" aria-selected="false"
-                        data-toggle="tooltip" data-placement="top" title="Association">Association</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="selectAggregation" role="tab" aria-selected="false"
-                        data-toggle="tooltip" data-placement="top" title="Aggregation">Aggregation</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="selectComposition" role="tab" aria-selected="false"
-                        data-toggle="tooltip" data-placement="top" title="Composition">Composition</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="selectMultiAssociation" role="tab" aria-selected="false"
-                        data-toggle="tooltip" data-placement="top" title="Multi association">Mutli association</a>
-                    </li>
-
-                    <div class="vr"></div>
-                    <div class="vr"></div>
-
-                    <li class="nav-item">
-                        <a class="nav-link" id="selectInnerClass" role="tab" aria-selected="false"
-                        data-toggle="tooltip" data-placement="top" title="Inner class">Inner Class</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="selectDependency" role="tab" aria-selected="false"
-                        data-toggle="tooltip" data-placement="top" title="Dependency">Dependency</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-        <datalist id="multiplicity-list">
-            <option >0</option>
-            <option >1</option>
-            <option >0..1</option>
-            <option >0..*</option>
-            <option >1..*</option>
-            <option >*</option>
-        </datalist>
-        <div id="diagram" draggable="false">
-            <div id="paper"></div>
+    <nav class="navbar navbar-default">
+        <div class="card-header tab-card-header">
+            <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link" id="savepng" role="tab" aria-selected="false"
+                    data-toggle="tooltip" data-placement="top" >Export to png</button>
+                </li>
+                <div class="vr"></div>
+            </ul>
         </div>
-        <div class="offcanvas offcanvas-bottom" tabindex="-1" id="modifier" aria-labelledby="modifier-title" data-bs-backdrop="false" style="background-color: #F2F2F2">
-            <div class="offcanvas-header" id="modifier-header">
-            </div>
-            <div id="modifierBody" class="offcanvas-body small d-flex row justify-content-evenly row">
-
-            </div>
+        <div class="card-header tab-card-header">
+            <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link" id="selectClass" role="tab" aria-selected="false"
+                    data-toggle="tooltip" data-placement="top" title="Class">Class</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="selectEnum" role="tab" aria-selected="false"
+                    data-toggle="tooltip" data-placement="top" title="Enum">Enum</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="selectInterface" role="tab" aria-selected="false"
+                    data-toggle="tooltip" data-placement="top" title="Interface">Interface</a>
+                </li>
+            </ul>
         </div>
-        <span id="measure" style="display: none"></span>
-        <script type="module">
+        <div class="card-header tab-card-header">
+            <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link" id="selectAssociationClass" role="tab" aria-selected="false"
+                    data-toggle="tooltip" data-placement="top" title="Association Class">Association Class</a>
+                </li>
+                <div class="vr"></div>
+                <li class="nav-item">
+                    <a class="nav-link" id="selectGeneralization" role="tab" aria-selected="false"
+                    data-toggle="tooltip" data-placement="top" title="Generalization">Generalization</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="selectRealization" role="tab" aria-selected="false"
+                    data-toggle="tooltip" data-placement="top" title="Realization">Realization</a>
+                </li>
 
-                import {
-                    ElementType,
-                    Attribute,
-                    Method,
-                    Value,
-                    Constructor,
-                    Parameter,
-                    Visibility,
-                    Role
-                } from "@routes.Assets.versioned("javascripts/gryffinium.uml.js")"
-                import {
-                    generateModifierInterface,
-                    generateAttributesInterface,
-                    generateMethodsInterface,
-                    generateValuesInterface,
-                    generateParametersInterface,
-                } from "@routes.Assets.versioned("javascripts/interfaces.js")"
+                <div class="vr"></div>
+                <li class="nav-item">
+                    <a class="nav-link active show" id="selectAssociation" role="tab" aria-selected="false"
+                    data-toggle="tooltip" data-placement="top" title="Association">Association</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="selectAggregation" role="tab" aria-selected="false"
+                    data-toggle="tooltip" data-placement="top" title="Aggregation">Aggregation</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="selectComposition" role="tab" aria-selected="false"
+                    data-toggle="tooltip" data-placement="top" title="Composition">Composition</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="selectMultiAssociation" role="tab" aria-selected="false"
+                    data-toggle="tooltip" data-placement="top" title="Multi association">Mutli association</a>
+                </li>
+
+                <div class="vr"></div>
+                <div class="vr"></div>
+
+                <li class="nav-item">
+                    <a class="nav-link" id="selectInnerClass" role="tab" aria-selected="false"
+                    data-toggle="tooltip" data-placement="top" title="Inner class">Inner Class</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="selectDependency" role="tab" aria-selected="false"
+                    data-toggle="tooltip" data-placement="top" title="Dependency">Dependency</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <datalist id="multiplicity-list">
+        <option >0</option>
+        <option >1</option>
+        <option >0..1</option>
+        <option >0..*</option>
+        <option >1..*</option>
+        <option >*</option>
+    </datalist>
+    <div id="diagram" draggable="false">
+        <div id="paper"></div>
+    </div>
+    <div class="offcanvas offcanvas-bottom" tabindex="-1" id="modifier" aria-labelledby="modifier-title" data-bs-backdrop="false" style="background-color: #F2F2F2">
+        <div class="offcanvas-header" id="modifier-header">
+        </div>
+        <div id="modifierBody" class="offcanvas-body small d-flex row justify-content-evenly row">
+
+        </div>
+    </div>
+    <span id="measure" style="display: none"></span>
+    <canvas id="canvas" style="display: none"></canvas>
+    </div>
+    <script type="module">
+
+            import {
+                ElementType,
+                Attribute,
+                Method,
+                Value,
+                Constructor,
+                Parameter,
+                Visibility,
+                Role
+            } from "@routes.Assets.versioned("javascripts/gryffinium.uml.js")"
+            import {
+                generateModifierInterface,
+                generateAttributesInterface,
+                generateMethodsInterface,
+                generateValuesInterface,
+                generateParametersInterface,
+            } from "@routes.Assets.versioned("javascripts/interfaces.js")"
 
 
-                // TODO : get hostname
-                const socket = new WebSocket('ws://' + document.location.hostname + ':9000@routes.ProjectController.socket(uuid)');
+            // TODO : get hostname
+            const socket = new WebSocket('ws://' + document.location.hostname + ':9000@routes.ProjectController.socket(uuid)');
 
-                const messageInput = document.getElementById('input-message');
-                const chat = document.getElementById('list-message');
-                const buttonSend = document.getElementById('button-send');
+            const messageInput = document.getElementById('input-message');
+            const chat = document.getElementById('list-message');
+            const buttonSend = document.getElementById('button-send');
 
-                let activeElementType = undefined;
-                let activeLinkType = document.getElementById("selectAssociation");
+            let activeElementType = undefined;
+            let activeLinkType = document.getElementById("selectAssociation");
 
-                const elements = new Map();
+            const elements = new Map();
 
-                function setSelectedElement(sender, type) {
-                    if (type !== undefined) {
-                        selectedType = type;
-                        if (activeElementType !== undefined) {
-                            activeElementType.classList.remove("active");
-                            activeElementType.classList.remove("show");
-                            activeElementType.setAttribute("aria-selected", "false");
-                        }
-                        activeElementType = sender;
+            document.getElementById("savepng").addEventListener("click", function () {
+                saveToPng();
+            })
 
-                        activeElementType.classList.add("active");
-                        activeElementType.classList.add("show");
-                        activeElementType.setAttribute("aria-selected", "true");
-                    } else {
-                        if (activeElementType !== undefined) {
-                            activeElementType.classList.remove("active");
-                            activeElementType.classList.remove("show");
-                            activeElementType.setAttribute("aria-selected", "false");
-                        }
-                        activeElementType = undefined;
-                        selectedType = undefined;
+            function setSelectedElement(sender, type) {
+                if (type !== undefined) {
+                    selectedType = type;
+                    if (activeElementType !== undefined) {
+                        activeElementType.classList.remove("active");
+                        activeElementType.classList.remove("show");
+                        activeElementType.setAttribute("aria-selected", "false");
                     }
-                }
+                    activeElementType = sender;
 
-                function setSelectedLink(sender, type) {
-                    if (type !== undefined) {
-                        paper.options.defaultLink = type;
-                        if (activeLinkType !== undefined) {
-                            activeLinkType.classList.remove("active");
-                            activeLinkType.classList.remove("show");
-                            activeLinkType.setAttribute("aria-selected", "false");
-                        }
-                        activeLinkType = sender;
-
-                        activeLinkType.classList.add("active");
-                        activeLinkType.classList.add("show");
-                        activeLinkType.setAttribute("aria-selected", "true");
-                    } else {
-                        if (activeLinkType !== undefined) {
-                            activeLinkType.classList.remove("active");
-                            activeLinkType.classList.remove("show");
-                            activeLinkType.setAttribute("aria-selected", "false");
-                        }
-                        activeLinkType = undefined;
+                    activeElementType.classList.add("active");
+                    activeElementType.classList.add("show");
+                    activeElementType.setAttribute("aria-selected", "true");
+                } else {
+                    if (activeElementType !== undefined) {
+                        activeElementType.classList.remove("active");
+                        activeElementType.classList.remove("show");
+                        activeElementType.setAttribute("aria-selected", "false");
                     }
+                    activeElementType = undefined;
+                    selectedType = undefined;
                 }
+            }
 
-                document.getElementById("selectClass").addEventListener("click", function () {
-                    setSelectedElement(this, 'CLASS');
-                });
-                document.getElementById("selectEnum").addEventListener("click", function () {
-                    setSelectedElement(this, 'ENUM');
-                });
-                document.getElementById("selectInterface").addEventListener("click", function () {
-                    setSelectedElement(this, 'INTERFACE');
-                });
+            function setSelectedLink(sender, type) {
+                if (type !== undefined) {
+                    paper.options.defaultLink = type;
+                    if (activeLinkType !== undefined) {
+                        activeLinkType.classList.remove("active");
+                        activeLinkType.classList.remove("show");
+                        activeLinkType.setAttribute("aria-selected", "false");
+                    }
+                    activeLinkType = sender;
 
-                document.getElementById("selectAssociationClass").addEventListener("click", function () {
-                    // TODO : set selected type
-                });
-
-
-                document.getElementById("selectAssociation").addEventListener("click", function () {
-                    setSelectedLink(this, new uml.BinaryAssociation());
-                });
-
-                document.getElementById("selectAggregation").addEventListener("click", function () {
-                    setSelectedLink(this, new uml.Aggregation());
-                });
-
-                document.getElementById("selectComposition").addEventListener("click", function () {
-                    setSelectedLink(this, new uml.Composition());
-                });
-
-                document.getElementById("selectRealization").addEventListener("click", function () {
-                    setSelectedLink(this, new uml.Realization());
-                });
-
-                document.getElementById("selectGeneralization").addEventListener("click", function () {
-                    setSelectedLink(this, new uml.Generalization());
-                });
-
-                document.getElementById("selectMultiAssociation").addEventListener("click", function () {
-                    // TODO : set selected type
-                });
-
-                document.getElementById("selectInnerClass").addEventListener("click", function () {
-                    // TODO : set selected type
-                });
-
-                document.getElementById("selectDependency").addEventListener("click", function () {
-                    setSelectedLink(this, new uml.Dependency());
-                });
-
-
-                let selectedType = undefined;
-
-                let modifier = document.getElementById("modifier");
-                let modifierBody = document.getElementById("modifierBody");
-                let modifierHeader = document.getElementById("modifier-header");
-
-                let existingTypes = document.createElement("datalist");
-                existingTypes.id = "existingTypes";
-                document.body.appendChild(existingTypes);
-                let String = document.createElement("option");
-                String.value = "String";
-                let Integer = document.createElement("option");
-                Integer.value = "Integer";
-                let Double = document.createElement("option");
-                Double.value = "Double";
-                let Boolean = document.createElement("option");
-                Boolean.value = "Boolean";
-
-
-                existingTypes.appendChild(String);
-                existingTypes.appendChild(Integer);
-                existingTypes.appendChild(Double);
-                existingTypes.appendChild(Boolean);
-
-                let measureText = document.getElementById("measure");
-
-                let counter = 1;
-
-                let selectedElement = undefined;
-
-                let movingVertices = undefined;
-
-                let modifierOffCanvas = new bootstrap.Offcanvas(modifier);
-
-
-                function sendMessage(data, entityType, type) {
-                    socket.send(
-                            JSON.stringify({
-                                data: data,
-                                type: type,
-                                entityType: entityType
-                            }));
+                    activeLinkType.classList.add("active");
+                    activeLinkType.classList.add("show");
+                    activeLinkType.setAttribute("aria-selected", "true");
+                } else {
+                    if (activeLinkType !== undefined) {
+                        activeLinkType.classList.remove("active");
+                        activeLinkType.classList.remove("show");
+                        activeLinkType.setAttribute("aria-selected", "false");
+                    }
+                    activeLinkType = undefined;
                 }
+            }
 
-                function receiveChatMessage(message) {
-                    let row = document.createElement('div');
-                    row.className = "row list-group-item bg-light";
-                    row.className = "row list-group-item bg-light";
+            document.getElementById("selectClass").addEventListener("click", function () {
+                setSelectedElement(this, 'CLASS');
+            });
+            document.getElementById("selectEnum").addEventListener("click", function () {
+                setSelectedElement(this, 'ENUM');
+            });
+            document.getElementById("selectInterface").addEventListener("click", function () {
+                setSelectedElement(this, 'INTERFACE');
+            });
 
-                    let div = document.createElement('div');
-                    div.classList.add('col');
+            document.getElementById("selectAssociationClass").addEventListener("click", function () {
+                // TODO : set selected type
+            });
 
-                    let sender = document.createElement('em');
-                    sender.innerHTML = message.sender;
 
-                    let content = document.createElement('div');
-                    content.innerHTML = message.message;
+            document.getElementById("selectAssociation").addEventListener("click", function () {
+                setSelectedLink(this, new uml.BinaryAssociation());
+            });
 
-                    div.appendChild(sender);
-                    div.appendChild(content);
-                    row.appendChild(div);
+            document.getElementById("selectAggregation").addEventListener("click", function () {
+                setSelectedLink(this, new uml.Aggregation());
+            });
 
-                    chat.appendChild(row);
+            document.getElementById("selectComposition").addEventListener("click", function () {
+                setSelectedLink(this, new uml.Composition());
+            });
+
+            document.getElementById("selectRealization").addEventListener("click", function () {
+                setSelectedLink(this, new uml.Realization());
+            });
+
+            document.getElementById("selectGeneralization").addEventListener("click", function () {
+                setSelectedLink(this, new uml.Generalization());
+            });
+
+            document.getElementById("selectMultiAssociation").addEventListener("click", function () {
+                // TODO : set selected type
+            });
+
+            document.getElementById("selectInnerClass").addEventListener("click", function () {
+                setSelectedLink(this, new uml.Inner());
+            });
+
+            document.getElementById("selectDependency").addEventListener("click", function () {
+                setSelectedLink(this, new uml.Dependency());
+            });
+
+
+            let selectedType = undefined;
+
+            let modifier = document.getElementById("modifier");
+            let modifierBody = document.getElementById("modifierBody");
+            let modifierHeader = document.getElementById("modifier-header");
+
+            let existingTypes = document.createElement("datalist");
+            existingTypes.id = "existingTypes";
+            document.body.appendChild(existingTypes);
+            let String = document.createElement("option");
+            String.value = "String";
+            let Integer = document.createElement("option");
+            Integer.value = "Integer";
+            let Double = document.createElement("option");
+            Double.value = "Double";
+            let Boolean = document.createElement("option");
+            Boolean.value = "Boolean";
+
+
+            existingTypes.appendChild(String);
+            existingTypes.appendChild(Integer);
+            existingTypes.appendChild(Double);
+            existingTypes.appendChild(Boolean);
+
+            let measureText = document.getElementById("measure");
+
+            let counter = 1;
+
+            let selectedElement = undefined;
+
+            let movingVertices = undefined;
+
+            let modifierOffCanvas = new bootstrap.Offcanvas(modifier);
+
+
+            function sendMessage(data, entityType, type) {
+                socket.send(
+                        JSON.stringify({
+                            data: data,
+                            type: type,
+                            entityType: entityType
+                        }));
+            }
+
+            function receiveChatMessage(message) {
+                let row = document.createElement('div');
+                row.className = "row list-group-item bg-light";
+                row.className = "row list-group-item bg-light";
+
+                let div = document.createElement('div');
+                div.classList.add('col');
+
+                let sender = document.createElement('em');
+                sender.innerHTML = message.sender;
+
+                let content = document.createElement('div');
+                content.innerHTML = message.message;
+
+                div.appendChild(sender);
+                div.appendChild(content);
+                row.appendChild(div);
+
+                chat.appendChild(row);
+            }
+
+            buttonSend.onclick = function () {
+                if (!messageInput.value.isEmpty()) {
+                    let command = {
+                        'message': messageInput.value,
+                        'type': 'ChatMessageCommand'
+                    };
+                    socket.send(command);
+                    messageInput.value = '';
                 }
+            };
 
-                buttonSend.onclick = function () {
-                    if (!messageInput.value.isEmpty()) {
-                        let command = {
-                            'message': messageInput.value,
-                            'type': 'ChatMessageCommand'
-                        };
-                        socket.send(command);
-                        messageInput.value = '';
+            socket.onopen = function () {
+
+                sendMessage({}, '', 'SelectCommand');
+
+                socket.onmessage = function (event) {
+                    let message = JSON.parse(event.data);
+                    if (message.commandType === 'Error') {
+                        console.log(message.message)
+                    } else {
+                        for (let command of message.commands) {
+                            switch (message.commandType) {
+                                case 'ChatMessageCommand':
+                                    receiveChatMessage(command);
+                                    break;
+                                case 'SelectCommand':
+                                case 'CreateCommand':
+                                    let elem = null;
+                                    let parent = null;
+                                    switch (command.elementType) {
+                                        case ElementType.Class.name:
+                                            elem = new uml.Class({
+                                                name: command.name,
+                                                position: {
+                                                    x: command.x,
+                                                    y: command.y
+                                                },
+                                                size: {
+                                                    width: command.width,
+                                                    height: command.height
+                                                },
+                                                id: command.id,
+                                            });
+                                            elem.setSizeAndPosition({width: command.width, height: command.height});
+                                            break;
+                                        case ElementType.Interface.name:
+                                            elem = new uml.Interface({
+                                                name: command.name,
+                                                position: {
+                                                    x: command.x,
+                                                    y: command.y
+                                                },
+                                                size: {
+                                                    width: command.width,
+                                                    height: command.height
+                                                },
+                                                id: command.id,
+                                            });
+                                            elem.setSizeAndPosition({width: command.width, height: command.height});
+                                            break;
+                                        case ElementType.Enum.name:
+                                            elem = new uml.Enum({
+                                                name: command.name,
+                                                position: {
+                                                    x: command.x,
+                                                    y: command.y
+                                                },
+                                                size: {
+                                                    width: command.width,
+                                                    height: command.height
+                                                },
+                                                id: command.id,
+                                            });
+                                            elem.setSizeAndPosition({width: command.width, height: command.height});
+                                            break;
+                                        case ElementType.AssociationClass.name:
+                                            // TODO AssociationClass
+                                            break;
+                                        case ElementType.Generalization.name:
+                                            elem = new uml.Generalization({
+                                                source: {id: command.sourceId},
+                                                target: {id: command.targetId},
+                                                linkId: command.id,
+                                                vertices: JSON.parse(command.vertices),
+                                            });
+                                            elem.on('change:vertices', function (link) {
+                                                movingVertices = link;
+                                            });
+                                            break;
+                                        case ElementType.Realization.name:
+                                            elem = new uml.Realization({
+                                                source: {id: command.sourceId},
+                                                target: {id: command.targetId},
+                                                linkId: command.id,
+                                                vertices: JSON.parse(command.vertices),
+                                            });
+                                            elem.on('change:vertices', function (link) {
+                                                movingVertices = link;
+                                            });
+                                            break;
+                                        case ElementType.BinaryAssociation.name:
+                                            elem = new uml.BinaryAssociation({
+                                                source: {id: command.sourceId},
+                                                target: {id: command.targetId},
+                                                sourceRole: new Role(command.sourceRoleId, "", "*", 0.05,
+                                                        {x: 0, y: -10}, 0.05, {x: 0, y: 10}),
+                                                targetRole: new Role(command.targetRoleId, "", "*", 0.95,
+                                                        {x: 0, y: -10}, 0.95, {x: 0, y: 10}),
+                                                labelDistance: command.distance === null ? 0.5 : command.distance,
+                                                labelOffset: command.offset === null ? {
+                                                    x: 0,
+                                                    y: -10
+                                                } : JSON.parse(command.offset),
+                                                linkId: command.id,
+                                                isDirected: command.isDirected,
+                                                name: command.name,
+                                                vertices: JSON.parse(command.vertices),
+                                            });
+
+                                            elem.on('change:vertices', function (link) {
+                                                movingVertices = link;
+                                            });
+                                            break;
+                                        case ElementType.Aggregation.name:
+                                            elem = new uml.Aggregation({
+                                                source: {id: command.sourceId},
+                                                target: {id: command.targetId},
+                                                sourceRole: new Role(command.sourceRoleId, "", "*", 0.05,
+                                                        {x: 0, y: -10}, 0.05, {x: 0, y: 10}),
+                                                targetRole: new Role(command.targetRoleId, "", "*", 0.95,
+                                                        {x: 0, y: -10}, 0.95, {x: 0, y: 10}),
+                                                labelDistance: command.distance === null ? 0.5 : command.distance,
+                                                labelOffset: command.offset === null ? {
+                                                    x: 0,
+                                                    y: -10
+                                                } : JSON.parse(command.offset),
+                                                linkId: command.id,
+                                                isDirected: command.isDirected,
+                                                name: command.name,
+                                                vertices: JSON.parse(command.vertices),
+                                            });
+                                            elem.on('change:vertices', function (link) {
+                                                movingVertices = link;
+                                            });
+                                            break;
+                                        case ElementType.Composition.name:
+                                            elem = new uml.Composition({
+                                                source: {id: command.sourceId},
+                                                target: {id: command.targetId},
+                                                sourceRole: new Role(command.sourceRoleId, "", "*", 0.05,
+                                                        {x: 0, y: -10}, 0.05, {x: 0, y: 10}),
+                                                targetRole: new Role(command.targetRoleId, "", "*", 0.95,
+                                                        {x: 0, y: -10}, 0.95, {x: 0, y: 10}),
+                                                labelDistance: command.distance === null ? 0.5 : command.distance,
+                                                labelOffset: command.offset === null ? {
+                                                    x: 0,
+                                                    y: -10
+                                                } : JSON.parse(command.offset),
+                                                linkId: command.id,
+                                                isDirected: command.isDirected,
+                                                name: command.name,
+                                                vertices: JSON.parse(command.vertices),
+                                            });
+                                            elem.on('change:vertices', function (link) {
+                                                movingVertices = link;
+                                            });
+                                            break;
+                                        case ElementType.MultiAssociation.name:
+                                            // TODO MutliAssociation
+                                            break;
+                                        case ElementType.InnerClass.name:
+                                            // TODO InnerClass
+                                            break;
+                                        case ElementType.Dependency.name:
+                                            elem = new uml.Dependency({
+                                                source: {id: command.sourceId},
+                                                target: {id: command.targetId},
+                                                labelDistance: command.distance === null ? 0.5 : command.distance,
+                                                labelOffset: command.offset === null ? {
+                                                    x: 0,
+                                                    y: -10
+                                                } : JSON.parse(command.offset),
+                                                linkId: command.id,
+                                                name: command.name,
+                                                vertices: JSON.parse(command.vertices),
+                                            });
+                                            elem.on('change:vertices', function (link) {
+                                                movingVertices = link;
+                                            });
+                                            break;
+                                        case ElementType.Attribute.name:
+                                            let attribute = new Attribute(command.id, command.name, command.type, command.visibility.toLowerCase(), command.isConstant, command.isStatic);
+                                            parent = elements.get(command.parentId);
+                                            parent.addAttribute(attribute);
+                                            if (parent === selectedElement) {
+                                                generateAttributesInterface(document.getElementById("container-attributes"), selectedElement, sendMessage, true)
+                                            }
+                                            break;
+                                        case ElementType.Method.name:
+                                            let m = new Method(command.id, command.name, command.type, command.visibility.toLowerCase(), command.isAbstract, command.isStatic);
+                                            parent = elements.get(command.parentId);
+                                            parent.addMethod(m);
+                                            if (parent === selectedElement) {
+                                                generateMethodsInterface(document.getElementById("container-methods"), selectedElement, sendMessage, true)
+                                            }
+                                            break;
+                                        case ElementType.Constructor.name:
+                                            let constructor = new Constructor(command.id, command.name, command.visibility.toLowerCase());
+                                            parent = elements.get(command.parentId);
+                                            parent.addConstructor(constructor);
+                                            if (parent === selectedElement) {
+                                                generateMethodsInterface(document.getElementById("container-methods"), selectedElement, sendMessage, true)
+                                            }
+                                            break;
+                                        case ElementType.Value.name:
+                                            let value = new Value(command.value);
+                                            parent = elements.get(command.parentId);
+                                            parent.addValue(value);
+                                            if (parent === selectedElement) {
+                                                generateValuesInterface(document.getElementById("container-values"), selectedElement, sendMessage, true)
+                                            }
+                                            break;
+                                        case ElementType.Parameter.name:
+                                            let parameter = new Parameter(command.id, command.name, command.type);
+                                            elements.get(command.parentId).getOperation(command.methodId).addParameter(parameter);
+                                            elements.get(command.parentId).update();
+                                            if (elements.get(command.parentId) === selectedElement) {
+                                                generateParametersInterface(selectedElement, elements.get(command.parentId).getOperation(command.methodId), sendMessage)
+                                            }
+                                            break;
+                                        case ElementType.Role.name:
+                                            let role = new Role(command.id, command.name, command.multiplicity, command.distanceName, command.offsetName, command.distanceMultiplicity, command.offsetMultiplicity);
+                                            parent = elements.get(command.associationId);
+                                            parent.updateRole(command.id, role);
+
+                                            if (parent === selectedElement) {
+                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
+                                            }
+                                            break;
+                                    }
+                                    if (elem != null) {
+                                        elements.set(elem.getId(), elem);
+                                        graph.addCell(elem);
+
+
+                                    }
+                                    break;
+                                case 'UpdateCommand':
+                                    switch (command.elementType) {
+                                        case ElementType.Class.name:
+                                        case ElementType.Interface.name:
+                                        case ElementType.Enum.name:
+                                        case ElementType.AssociationClass.name:
+                                        case ElementType.Generalization.name:
+                                        case ElementType.Realization.name:
+                                        case ElementType.BinaryAssociation.name:
+                                        case ElementType.Aggregation.name:
+                                        case ElementType.Composition.name:
+                                        case ElementType.Dependency.name:
+                                            if (command.visibility !== undefined) {
+                                                command.visibility = Visibility.getVisibility(command.visibility);
+                                            }
+                                            elements.get(command.id).updateFromMessage(command);
+                                            if (selectedElement === elements.get(command.id)) {
+                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
+                                            }
+                                            break;
+                                        case ElementType.MultiAssociation.name:
+                                            // TODO MutliAssociation
+                                            break;
+                                        case ElementType.InnerClass.name:
+                                            // TODO InnerClass
+                                            break;
+                                        case ElementType.Attribute.name:
+                                            elements.get(command.parentId).updateAttributesFromMessage(command);
+                                            if (selectedElement === elements.get(command.parentId)) {
+                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
+                                            }
+                                            break;
+                                        case ElementType.Method.name:
+                                            elements.get(command.parentId).updateMethodFromMessage(command);
+                                            if (selectedElement === elements.get(command.parentId)) {
+                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
+                                            }
+                                            break;
+                                        case ElementType.Constructor.name:
+                                            elements.get(command.parentId).updateConstructorsFromMessage(command);
+                                            if (selectedElement === elements.get(command.parentId)) {
+                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
+                                            }
+                                            break;
+                                        case ElementType.Value.name:
+                                            elements.get(command.parentId).updateValue(command.oldValue, command.value);
+                                            if (selectedElement === elements.get(command.parentId)) {
+                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
+                                            }
+                                            break;
+                                        case ElementType.Parameter.name:
+                                            elements.get(command.parentId).getOperation(command.methodId).updateParametersFromMessage(command);
+                                            elements.get(command.parentId).update();
+                                            if (selectedElement === elements.get(command.parentId)) {
+                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
+                                            }
+                                            break
+                                        case ElementType.Role.name:
+                                            elements.get(command.associationId).updateRole(command.id, command);
+
+
+                                            if (selectedElement === elements.get(command.associationId)) {
+                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
+                                            }
+                                            break;
+                                    }
+                                    break;
+                                case 'RemoveCommand':
+                                    switch (command.elementType) {
+                                        case ElementType.Class.name:
+                                        case ElementType.Interface.name:
+                                        case ElementType.Enum.name:
+                                        case ElementType.Generalization.name:
+                                        case ElementType.BinaryAssociation.name:
+                                        case ElementType.Aggregation.name:
+                                        case ElementType.Composition.name:
+                                        case ElementType.Dependency.name:
+                                            let elem = elements.get(command.id);
+                                            elem.set('alreadyDeleted', true)
+                                            elem.remove();
+                                            break;
+                                        case ElementType.AssociationClass.name:
+                                            // TODO AssociationClass
+                                            break;
+                                        case ElementType.MultiAssociation.name:
+                                            // TODO MutliAssociation
+                                            break;
+                                        case ElementType.InnerClass.name:
+                                            // TODO InnerClass
+                                            break;
+                                        case ElementType.Attribute.name:
+                                            elements.get(command.parentId).removeAttribute(command.id);
+                                            if (selectedElement === elements.get(command.parentId)) {
+                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
+                                            }
+                                            break;
+                                        case ElementType.Method.name:
+                                            elements.get(command.parentId).removeMethod(command.id);
+                                            if (selectedElement === elements.get(command.parentId)) {
+                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
+                                            }
+                                            break;
+                                        case ElementType.Constructor.name:
+                                            elements.get(command.parentId).removeConstructor(command.id);
+                                            if (selectedElement === elements.get(command.parentId)) {
+                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
+                                            }
+                                            break;
+                                        case ElementType.Value.name:
+                                            elements.get(command.parentId).removeValue(command.value);
+                                            if (selectedElement === elements.get(command.parentId)) {
+                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
+                                            }
+                                            break;
+                                        case ElementType.Parameter.name:
+                                            elements.get(command.parentId).getOperation(command.methodId).removeParameter(command.id);
+                                            if (selectedElement === elements.get(command.parentId)) {
+                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
+                                            }
+                                            break
+                                    }
+                                    break;
+
+
+                            }
+                        }
                     }
                 };
 
-                socket.onopen = function () {
-
-                    sendMessage({}, '', 'SelectCommand');
-
-                    socket.onmessage = function (event) {
-                        let message = JSON.parse(event.data);
-                        if (message.commandType === 'Error') {
-                            console.log(message.message)
-                        } else {
-                            for (let command of message.commands) {
-                                switch (message.commandType) {
-                                    case 'ChatMessageCommand':
-                                        receiveChatMessage(command);
-                                        break;
-                                    case 'SelectCommand':
-                                    case 'CreateCommand':
-                                        let elem = null;
-                                        let parent = null;
-                                        switch (command.elementType) {
-                                            case ElementType.Class.name:
-                                                elem = new uml.Class({
-                                                    name: command.name,
-                                                    position: {
-                                                        x: command.x,
-                                                        y: command.y
-                                                    },
-                                                    size: {
-                                                        width: command.width,
-                                                        height: command.height
-                                                    },
-                                                    id: command.id,
-                                                });
-                                                elem.setSizeAndPosition({width: command.width, height: command.height});
-                                                break;
-                                            case ElementType.Interface.name:
-                                                elem = new uml.Interface({
-                                                    name: command.name,
-                                                    position: {
-                                                        x: command.x,
-                                                        y: command.y
-                                                    },
-                                                    size: {
-                                                        width: command.width,
-                                                        height: command.height
-                                                    },
-                                                    id: command.id,
-                                                });
-                                                elem.setSizeAndPosition({width: command.width, height: command.height});
-                                                break;
-                                            case ElementType.Enum.name:
-                                                elem = new uml.Enum({
-                                                    name: command.name,
-                                                    position: {
-                                                        x: command.x,
-                                                        y: command.y
-                                                    },
-                                                    size: {
-                                                        width: command.width,
-                                                        height: command.height
-                                                    },
-                                                    id: command.id,
-                                                });
-                                                elem.setSizeAndPosition({width: command.width, height: command.height});
-                                                break;
-                                            case ElementType.AssociationClass.name:
-                                                // TODO AssociationClass
-                                                break;
-                                            case ElementType.Generalization.name:
-                                                elem = new uml.Generalization({
-                                                    source: {id: command.sourceId},
-                                                    target: {id: command.targetId},
-                                                    linkId: command.id,
-                                                    vertices: command.vertices,
-                                                });
-                                                elem.on('change:vertices', function (link) {
-                                                    movingVertices = link;
-                                                });
-                                                break;
-                                            case ElementType.Realization.name:
-                                                elem = new uml.Realization({
-                                                    source: {id: command.sourceId},
-                                                    target: {id: command.targetId},
-                                                    linkId: command.id,
-                                                    vertices: command.vertices,
-                                                });
-                                                elem.on('change:vertices', function (link) {
-                                                    movingVertices = link;
-                                                });
-                                                break;
-                                            case ElementType.BinaryAssociation.name:
-                                                elem = new uml.BinaryAssociation({
-                                                    source: {id: command.sourceId},
-                                                    target: {id: command.targetId},
-                                                    sourceRole: new Role(command.sourceRoleId, "", "*", 0.05,
-                                                            {x: 0, y: -10}, 0.05, {x: 0, y: 10}),
-                                                    targetRole: new Role(command.targetRoleId, "", "*", 0.95,
-                                                            {x: 0, y: -10}, 0.95, {x: 0, y: 10}),
-                                                    labelDistance: command.distance === null ? 0.5 : command.distance,
-                                                    labelOffset: command.offset === null ? {
-                                                        x: 0,
-                                                        y: -10
-                                                    } : command.offset,
-                                                    linkId: command.id,
-                                                    isDirected: command.isDirected,
-                                                    name: command.name,
-                                                    vertices: command.vertices,
-                                                });
-
-                                                elem.on('change:vertices', function (link) {
-                                                    movingVertices = link;
-                                                });
-                                                break;
-                                            case ElementType.Aggregation.name:
-                                                elem = new uml.Aggregation({
-                                                    source: {id: command.sourceId},
-                                                    target: {id: command.targetId},
-                                                    sourceRole: new Role(command.sourceRoleId, "", "*", 0.05,
-                                                            {x: 0, y: -10}, 0.05, {x: 0, y: 10}),
-                                                    targetRole: new Role(command.targetRoleId, "", "*", 0.95,
-                                                            {x: 0, y: -10}, 0.95, {x: 0, y: 10}),
-                                                    labelDistance: command.distance === null ? 0.5 : command.distance,
-                                                    labelOffset: command.offset === null ? {
-                                                        x: 0,
-                                                        y: -10
-                                                    } : command.offset,
-                                                    linkId: command.id,
-                                                    isDirected: command.isDirected,
-                                                    name: command.name,
-                                                    vertices: command.vertices,
-                                                });
-                                                elem.on('change:vertices', function (link) {
-                                                    movingVertices = link;
-                                                });
-                                                break;
-                                            case ElementType.Composition.name:
-                                                elem = new uml.Composition({
-                                                    source: {id: command.sourceId},
-                                                    target: {id: command.targetId},
-                                                    sourceRole: new Role(command.sourceRoleId, "", "*", 0.05,
-                                                            {x: 0, y: -10}, 0.05, {x: 0, y: 10}),
-                                                    targetRole: new Role(command.targetRoleId, "", "*", 0.95,
-                                                            {x: 0, y: -10}, 0.95, {x: 0, y: 10}),
-                                                    labelDistance: command.distance === null ? 0.5 : command.distance,
-                                                    labelOffset: command.offset === null ? {
-                                                        x: 0,
-                                                        y: -10
-                                                    } : command.offset,
-                                                    linkId: command.id,
-                                                    isDirected: command.isDirected,
-                                                    name: command.name,
-                                                    vertices: command.vertices,
-                                                });
-                                                elem.on('change:vertices', function (link) {
-                                                    movingVertices = link;
-                                                });
-                                                break;
-                                            case ElementType.MultiAssociation.name:
-                                                // TODO MutliAssociation
-                                                break;
-                                            case ElementType.InnerClass.name:
-                                                // TODO InnerClass
-                                                break;
-                                            case ElementType.Dependency.name:
-                                                elem = new uml.Dependency({
-                                                    source: {id: command.sourceId},
-                                                    target: {id: command.targetId},
-                                                    labelDistance: command.distance === null ? 0.5 : command.distance,
-                                                    labelOffset: command.offset === null ? {
-                                                        x: 0,
-                                                        y: -10
-                                                    } : command.offset,
-                                                    linkId: command.id,
-                                                    name: command.name,
-                                                    vertices: command.vertices,
-                                                });
-                                                elem.on('change:vertices', function (link) {
-                                                    movingVertices = link;
-                                                });
-                                                break;
-                                            case ElementType.Attribute.name:
-                                                let attribute = new Attribute(command.id, command.name, command.type, command.visibility.toLowerCase(), command.isConstant, command.isStatic);
-                                                parent = elements.get(command.parentId);
-                                                parent.addAttribute(attribute);
-                                                if (parent === selectedElement) {
-                                                    generateAttributesInterface(document.getElementById("container-attributes"), selectedElement, sendMessage, true)
-                                                }
-                                                break;
-                                            case ElementType.Method.name:
-                                                let m = new Method(command.id, command.name, command.type, command.visibility.toLowerCase(), command.isAbstract, command.isStatic);
-                                                parent = elements.get(command.parentId);
-                                                parent.addMethod(m);
-                                                if (parent === selectedElement) {
-                                                    generateMethodsInterface(document.getElementById("container-methods"), selectedElement, sendMessage, true)
-                                                }
-                                                break;
-                                            case ElementType.Constructor.name:
-                                                let constructor = new Constructor(command.id, command.name, command.visibility.toLowerCase());
-                                                parent = elements.get(command.parentId);
-                                                parent.addConstructor(constructor);
-                                                if (parent === selectedElement) {
-                                                    generateMethodsInterface(document.getElementById("container-methods"), selectedElement, sendMessage, true)
-                                                }
-                                                break;
-                                            case ElementType.Value.name:
-                                                let value = new Value(command.value);
-                                                parent = elements.get(command.parentId);
-                                                parent.addValue(value);
-                                                if (parent === selectedElement) {
-                                                    generateValuesInterface(document.getElementById("container-values"), selectedElement, sendMessage, true)
-                                                }
-                                                break;
-                                            case ElementType.Parameter.name:
-                                                let parameter = new Parameter(command.id, command.name, command.type);
-                                                elements.get(command.parentId).getOperation(command.methodId).addParameter(parameter);
-                                                elements.get(command.parentId).update();
-                                                if (elements.get(command.parentId) === selectedElement) {
-                                                    generateParametersInterface(selectedElement, elements.get(command.parentId).getOperation(command.methodId), sendMessage)
-                                                }
-                                                break;
-                                            case ElementType.Role.name:
-                                                let role = new Role(command.id, command.name, command.multiplicity, command.distanceName, command.offsetName, command.distanceMultiplicity, command.offsetMultiplicity);
-                                                parent = elements.get(command.associationId);
-                                                parent.updateRole(command.id, role);
-
-                                                if (parent === selectedElement) {
-                                                    generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
-                                                }
-                                                break;
-                                        }
-                                        if (elem != null) {
-                                            elements.set(elem.getId(), elem);
-                                            graph.addCell(elem);
+                socket.onclose = function () {
+                    console.log('WebSocket closed');
+                };
+            }
 
 
-                                        }
-                                        break;
-                                    case 'UpdateCommand':
-                                        switch (command.elementType) {
-                                            case ElementType.Class.name:
-                                            case ElementType.Interface.name:
-                                            case ElementType.Enum.name:
-                                            case ElementType.AssociationClass.name:
-                                            case ElementType.Generalization.name:
-                                            case ElementType.Realization.name:
-                                            case ElementType.BinaryAssociation.name:
-                                            case ElementType.Aggregation.name:
-                                            case ElementType.Composition.name:
-                                            case ElementType.Dependency.name:
-                                                if (command.visibility !== undefined) {
-                                                    command.visibility = Visibility.getVisibility(command.visibility);
-                                                }
-                                                elements.get(command.id).updateFromMessage(command);
-                                                if (selectedElement === elements.get(command.id)) {
-                                                    generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
-                                                }
-                                                break;
-                                            case ElementType.MultiAssociation.name:
-                                                // TODO MutliAssociation
-                                                break;
-                                            case ElementType.InnerClass.name:
-                                                // TODO InnerClass
-                                                break;
-                                            case ElementType.Attribute.name:
-                                                elements.get(command.parentId).updateAttributesFromMessage(command);
-                                                if (selectedElement === elements.get(command.parentId)) {
-                                                    generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
-                                                }
-                                                break;
-                                            case ElementType.Method.name:
-                                                elements.get(command.parentId).updateMethodFromMessage(command);
-                                                if (selectedElement === elements.get(command.parentId)) {
-                                                    generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
-                                                }
-                                                break;
-                                            case ElementType.Constructor.name:
-                                                elements.get(command.parentId).updateConstructorsFromMessage(command);
-                                                if (selectedElement === elements.get(command.parentId)) {
-                                                    generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
-                                                }
-                                                break;
-                                            case ElementType.Value.name:
-                                                elements.get(command.parentId).updateValue(command.oldValue, command.value);
-                                                if (selectedElement === elements.get(command.parentId)) {
-                                                    generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
-                                                }
-                                                break;
-                                            case ElementType.Parameter.name:
-                                                elements.get(command.parentId).getOperation(command.methodId).updateParametersFromMessage(command);
-                                                elements.get(command.parentId).update();
-                                                if (selectedElement === elements.get(command.parentId)) {
-                                                    generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
-                                                }
-                                                break
-                                            case ElementType.Role.name:
-                                                elements.get(command.associationId).updateRole(command.id, command);
+            let uml = joint.shapes.uml;
+
+            let graph = new joint.dia.Graph();
+
+            let paper = new joint.dia.Paper({
+                el: document.getElementById('paper'),
+                width: document.documentElement.clientWidth,
+                height: document.documentElement.clientHeight,
+                gridSize: 10,
+                model: graph,
+                drawGrid: true,
+                interactive: {
+                    labelMove: true,
+                },
+                defaultConnector: {
+                    name: 'jumpover',
+                    size: 5,
+                },
+                defaultLink: new uml.BinaryAssociation(),
+                defaultAnchor: {
+                    name: 'perpendicular',
+                    args: {
+                        perpendicular: true,
+                        fixed: true,
+                    }
+                },
 
 
-                                                if (selectedElement === elements.get(command.associationId)) {
-                                                    generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
-                                                }
-                                                break;
-                                        }
-                                        break;
-                                    case 'RemoveCommand':
-                                        switch (command.elementType) {
-                                            case ElementType.Class.name:
-                                            case ElementType.Interface.name:
-                                            case ElementType.Enum.name:
-                                            case ElementType.Generalization.name:
-                                            case ElementType.BinaryAssociation.name:
-                                            case ElementType.Aggregation.name:
-                                            case ElementType.Composition.name:
-                                            case ElementType.Dependency.name:
-                                                let elem = elements.get(command.id);
-                                                elem.set('alreadyDeleted', true)
-                                                elem.remove();
-                                                break;
-                                            case ElementType.AssociationClass.name:
-                                                // TODO AssociationClass
-                                                break;
-                                            case ElementType.MultiAssociation.name:
-                                                // TODO MutliAssociation
-                                                break;
-                                            case ElementType.InnerClass.name:
-                                                // TODO InnerClass
-                                                break;
-                                            case ElementType.Attribute.name:
-                                                elements.get(command.parentId).removeAttribute(command.id);
-                                                if (selectedElement === elements.get(command.parentId)) {
-                                                    generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
-                                                }
-                                                break;
-                                            case ElementType.Method.name:
-                                                elements.get(command.parentId).removeMethod(command.id);
-                                                if (selectedElement === elements.get(command.parentId)) {
-                                                    generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
-                                                }
-                                                break;
-                                            case ElementType.Constructor.name:
-                                                elements.get(command.parentId).removeConstructor(command.id);
-                                                if (selectedElement === elements.get(command.parentId)) {
-                                                    generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
-                                                }
-                                                break;
-                                            case ElementType.Value.name:
-                                                elements.get(command.parentId).removeValue(command.value);
-                                                if (selectedElement === elements.get(command.parentId)) {
-                                                    generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
-                                                }
-                                                break;
-                                            case ElementType.Parameter.name:
-                                                elements.get(command.parentId).getOperation(command.methodId).removeParameter(command.id);
-                                                if (selectedElement === elements.get(command.parentId)) {
-                                                    generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
-                                                }
-                                                break
-                                        }
-                                        break;
+            });
+
+            graph.on("remove", function (cell) {
+                if (!cell.get('alreadyDeleted') && cell.getId()) {
+                    let cmd = cell.removeCommand();
+                    if (cmd !== null)
+                        sendMessage(cmd.data, cmd.entityType, cmd.type);
+                }
+            });
+
+            paper.on("blank:mousewheel", function (evt, x, y, delta) {
+                evt.preventDefault();
+                const oldScale = paper.scale().sx;
+                const newScale = oldScale + 0.2 * delta * oldScale
+
+                if (newScale > 0.2 && newScale < 5) {
+                    paper.scale(newScale, newScale, x, y);
+                    paper.translate(-x * newScale + evt.offsetX, -y * newScale + evt.offsetY);
+                }
+            });
+
+            let resizingStartPos = null;
+            let dragStartPosition = null;
+            let moving = null;
+
+            paper.on('blank:pointerdown', function (event, x, y) {
+                selectedElement = undefined;
+                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage);
+                let scale = paper.scale();
+                if (selectedType !== undefined) {
+                    sendMessage({
+                                x: x - 100,
+                                y: y - 50,
+                                width: 200,
+                                height: 100,
+                            },
+                            selectedType,
+                            'CreateCommand');
+                } else if (event.button === 1) {
+                    dragStartPosition = {x: x * scale.sx, y: y * scale.sy};
+                }
+                setSelectedElement(activeElementType, undefined);
+            });
 
 
-                                }
-                            }
-                        }
-                    };
+            paper.on('cell:pointerup blank:pointerup', function (cellView, evt, x, y) {
+                dragStartPosition = null;
+            });
 
-                    socket.onclose = function () {
-                        console.log('WebSocket closed');
-                    };
+            paper.on('blank:pointerup', function (event, x, y) {
+                paper.removeTools();
+            });
+
+            paper.on('element:pointerdblclick', function (elementView) {
+                elementView.model.trigger('change:autoresize')
+                sendMessage({
+                            id: elementView.model.getId(),
+                            width: elementView.model.getSize().width,
+                            height: elementView.model.getSize().height,
+                        },
+                        elementView.model.getType(), 'UpdateCommand');
+            })
+
+            paper.on('link:disconnect', function (linkView) {
+                console.log('test')
+            })
+
+            paper.on('link:connect', function (linkView) {
+                let source = elements.get(linkView.model.get('source').id);
+                let target = elements.get(linkView.model.get('target').id);
+                if (linkView.model.get('linkId') === undefined) {
+                    sendMessage({
+                        sourceId: source.id,
+                        targetId: target.id,
+                        isDirected: false,
+                        name: linkView.model.getType(),
+                    }, linkView.model.getType(), 'CreateCommand');
+                    linkView.model.remove();
+                } else {
+                    sendMessage({
+                        sourceId: source.id,
+                        targetId: target.id,
+                        id: linkView.model.get('linkId'),
+                    }, linkView.model.getType(), 'UpdateCommand');
                 }
 
+            });
 
-                let uml = joint.shapes.uml;
+            let tmpcounter = 0;
+            paper.on('link:pointerup', function (linkView) {
 
-                let graph = new joint.dia.Graph();
-
-                let paper = new joint.dia.Paper({
-                    el: document.getElementById('paper'),
-                    width: document.documentElement.clientWidth,
-                    height: document.documentElement.clientHeight,
-                    gridSize: 10,
-                    model: graph,
-                    drawGrid: true,
-                    interactive: {
-                        labelMove: true,
-                    },
-                    defaultConnector: {
-                        name: 'jumpover',
-                        size: 5,
-                    },
-                    defaultLink: new uml.BinaryAssociation(),
-                    defaultAnchor: {
-                        name: 'perpendicular',
-                        args: {
-                            perpendicular: true,
-                            fixed: true,
-                        }
-                    },
-
-
-                });
-
-                graph.on("remove", function (cell) {
-                    if (!cell.get('alreadyDeleted') && cell.getId()) {
-                        let cmd = cell.removeCommand();
-                        if (cmd !== null)
-                            sendMessage(cmd.data, cmd.entityType, cmd.type);
-                    }
-                });
-
-                paper.on("blank:mousewheel", function (evt, x, y, delta) {
-                    evt.preventDefault();
-                    const oldScale = paper.scale().sx;
-                    const newScale = oldScale + 0.2 * delta * oldScale
-
-                    if (newScale > 0.2 && newScale < 5) {
-                        paper.scale(newScale, newScale, x, y);
-                        paper.translate(-x * newScale + evt.offsetX, -y * newScale + evt.offsetY);
-                    }
-                });
-
-                let resizingStartPos = null;
-                let dragStartPosition = null;
-                let moving = null;
-
-                paper.on('blank:pointerdown', function (event, x, y) {
-                    selectedElement = undefined;
-                    generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage);
-                    let scale = paper.scale();
-                    if (selectedType !== undefined) {
-                        sendMessage({
-                                    x: x - 100,
-                                    y: y - 50,
-                                    width: 200,
-                                    height: 100,
-                                },
-                                selectedType,
-                                'CreateCommand');
-                    } else if (event.button === 1) {
-                        dragStartPosition = {x: x * scale.sx, y: y * scale.sy};
-                    }
-                    setSelectedElement(activeElementType, undefined);
-                });
-
-
-                paper.on('cell:pointerup blank:pointerup', function (cellView, evt, x, y) {
-                    dragStartPosition = null;
-                });
-
-                paper.on('blank:pointerup', function (event, x, y) {
-                    paper.removeTools();
-                });
-
-                paper.on('element:pointerdblclick', function (elementView) {
-                    elementView.model.trigger('change:autoresize')
-                    sendMessage({
-                                id: elementView.model.getId(),
-                                width: elementView.model.getSize().width,
-                                height: elementView.model.getSize().height,
-                            },
-                            elementView.model.getType(), 'UpdateCommand');
-                })
-
-                paper.on('link:connect', function (linkView) {
-                    let source = elements.get(linkView.model.get('source').id);
-                    let target = elements.get(linkView.model.get('target').id);
-                    if (linkView.model.get('linkId') === undefined) {
-                        sendMessage({
-                            sourceId: source.id,
-                            targetId: target.id,
-                            isDirected: false,
-                            name: linkView.model.getType(),
-                        }, linkView.model.getType(), 'CreateCommand');
-                        linkView.model.remove();
-                    } else {
-                        sendMessage({
-                            sourceId: source.id,
-                            targetId: target.id,
-                            id: linkView.model.get('linkId'),
-                        }, linkView.model.getType(), 'UpdateCommand');
-                    }
-
-                });
-
-                let tmpcounter = 0;
-                paper.on('link:pointerup', function (linkView) {
-
-                    try {
-                        if (linkView.model.getLabelsChanged() !== []) {
-                            let indexes = linkView.model.get('labelsChanged');
-                            linkView.model.set('labelsChanged', []);
-                            for (let index of indexes) {
-                                if (index !== 0) {
-                                    let roleIndex = Math.ceil(index / 2) - 1;
-                                    let label = linkView.model.get('labels')[index];
-                                    let role = roleIndex === 0 ? linkView.model.getTargetRole() : linkView.model.getSourceRole();
-                                    sendMessage({
-                                        id: role.id,
-                                        distanceMultiplicity: index % 2 ? undefined : label.position.distance,
-                                        offsetMultiplicity: index % 2 ? undefined : label.position.offset,
-                                        distanceName: index % 2 ? label.position.distance : undefined,
-                                        offsetName: index % 2 ? label.position.offset : undefined,
-                                        associationId: linkView.model.getId(),
-                                    }, 'ROLE', 'UpdateCommand');
-                                } else {
-                                    let label = linkView.model.get('labels')[0];
-                                    sendMessage({
-                                        id: linkView.model.getId(),
-                                        distance: label.position.distance,
-                                        offset: label.position.offset,
-                                    }, linkView.model.getType(), 'UpdateCommand');
-                                }
+                try {
+                    if (linkView.model.getLabelsChanged() !== []) {
+                        let indexes = linkView.model.get('labelsChanged');
+                        linkView.model.set('labelsChanged', []);
+                        for (let index of indexes) {
+                            if (index !== 0) {
+                                let roleIndex = Math.ceil(index / 2) - 1;
+                                let label = linkView.model.get('labels')[index];
+                                let role = roleIndex === 0 ? linkView.model.getTargetRole() : linkView.model.getSourceRole();
+                                sendMessage({
+                                    id: role.id,
+                                    distanceMultiplicity: index % 2 ? undefined : label.position.distance,
+                                    offsetMultiplicity: index % 2 ? undefined : JSON.stringify(label.position.offset),
+                                    distanceName: index % 2 ? label.position.distance : undefined,
+                                    offsetName: index % 2 ? JSON.stringify(label.position.offset) : undefined,
+                                    associationId: linkView.model.getId(),
+                                }, 'ROLE', 'UpdateCommand');
+                            } else {
+                                let label = linkView.model.get('labels')[0];
+                                sendMessage({
+                                    id: linkView.model.getId(),
+                                    distance: label.position.distance,
+                                    offset: JSON.stringify(label.position.offset),
+                                }, linkView.model.getType(), 'UpdateCommand');
                             }
                         }
-                    } catch (e) {
-                        // Nothing to catch, just ignore it
                     }
-                })
+                } catch (e) {
+                    // Nothing to catch, just ignore it
+                }
+            })
 
-                document.getElementById('diagram').addEventListener('mousemove', function (evt) {
-                    if (dragStartPosition) {
-                        paper.translate(
-                                evt.offsetX - dragStartPosition.x,
-                                evt.offsetY - dragStartPosition.y);
+            document.getElementById('diagram').addEventListener('mousemove', function (evt) {
+                if (dragStartPosition) {
+                    let newPosX = evt.offsetX - dragStartPosition.x;
+                    let newPosY = evt.offsetY - dragStartPosition.y;
+                    if (newPosX > 0) {
+                        newPosX = 0;
                     }
-
-                    if (resizingStartPos) {
-                        resizingStartPos(evt.offsetX, evt.offsetY);
+                    if (newPosY > 0) {
+                        newPosY = 0;
                     }
-                });
+                    paper.translate(newPosX, newPosY);
+                }
 
-                document.getElementById('diagram').addEventListener('mouseup', function (evt) {
-                    evt.preventDefault();
-                    if (resizingStartPos) {
-                        let cmd = resizingStartPos(evt.offsetX, evt.offsetY);
-                        sendMessage(cmd.data, cmd.entityType, cmd.type);
+                if (resizingStartPos) {
+                    resizingStartPos(evt.offsetX, evt.offsetY);
+                }
+            });
 
-                        resizingStartPos = null;
+            document.getElementById('diagram').addEventListener('mouseup', function (evt) {
+                evt.preventDefault();
+                if (resizingStartPos) {
+                    let cmd = resizingStartPos(evt.offsetX, evt.offsetY);
+                    sendMessage(cmd.data, cmd.entityType, cmd.type);
+
+                    resizingStartPos = null;
+                }
+                if (moving) {
+                    sendMessage({
+                                id: moving.get('id'),
+                                x: moving.get('position').x,
+                                y: moving.get('position').y,
+                                width: moving.get('size').width,
+                                height: moving.get('size').height
+                            },
+                            moving.getType(),
+                            'UpdateCommand');
+                    let cellBBox = paper.findViewByModel(moving).getBBox();
+                    console.log('top left : {x : ' + cellBBox.x + ', y : ' + cellBBox.y + '}');
+                    console.log(`bottom right : {x : ${(cellBBox.x + cellBBox.width)}, y : ${(cellBBox.y + cellBBox.height)}}`);
+                    let paperBBox = paper.getContentArea();
+                    console.log('top left : {x : ' + paperBBox.x + ', y : ' + paperBBox.y + '}');
+                    console.log(`paper br : {x : ${(paperBBox.x + paperBBox.width)}, y : ${(paperBBox.y + paperBBox.height)}}`);
+                    console.log(paperBBox.width + ' ' + paperBBox.height);
+                    moving = null;
+                }
+
+                if (movingVertices) {
+                    let view = paper.findViewByModel(movingVertices);
+                    sendMessage({
+                        id: movingVertices.getId(),
+                        sourceAnchor: view.sourceAnchor,
+                        targetAnchor: view.targetAnchor,
+                        vertices: JSON.stringify(movingVertices.get('vertices')),
+                    }, movingVertices.getType(), 'UpdateCommand');
+                    movingVertices = undefined;
+                }
+            });
+
+
+            let resizeLGrip = new joint.elementTools.Button({
+                markup: [{
+                    tagName: 'rect',
+                    selector: 'button',
+                    attributes: {
+                        width: 10,
+                        height: 10,
+                        fill: '#777777',
+                        cursor: 'w-resize'
                     }
-                    if (moving) {
-                        sendMessage({
-                                    id: moving.get('id'),
-                                    x: moving.get('position').x,
-                                    y: moving.get('position').y,
-                                    width: moving.get('size').width,
-                                    height: moving.get('size').height
-                                },
-                                moving.getType(),
-                                'UpdateCommand');
-                        moving = null;
+                }],
+                x: '0%',
+                y: '50%',
+                offset: {
+                    x: -5,
+                    y: -5
+                },
+                rotate: true,
+                action: function (evt) {
+                    let elem = this.model;
+                    resizingStartPos = function (x, y) {
+
+                        let coords = paper.snapToGrid(x, y);
+                        let size = elem.attributes.size;
+                        let position = elem.attributes.position;
+
+                        let deltaWidth = position.x - coords.x;
+
+                        if (size.width + deltaWidth <= 100)
+                            deltaWidth = 0;
+
+                        return elem.setSizeAndPosition(
+                                {width: size.width + deltaWidth, height: elem.getHeight()},
+                                {x: position.x - deltaWidth, y: position.y});
                     }
-
-                    if (movingVertices) {
-                        let view = paper.findViewByModel(movingVertices);
-                        sendMessage({
-                            id: movingVertices.getId(),
-                            sourceAnchor: view.sourceAnchor,
-                            targetAnchor: view.targetAnchor,
-                            vertices: movingVertices.get('vertices'),
-                        }, movingVertices.getType(), 'UpdateCommand');
-                        movingVertices = undefined;
+                }
+            });
+            let resizeRGrip = new joint.elementTools.Button({
+                markup: [{
+                    tagName: 'rect',
+                    selector: 'button',
+                    attributes: {
+                        width: 10,
+                        height: 10,
+                        fill: '#777777',
+                        cursor: 'e-resize'
                     }
-                });
+                }],
+                x: '100%',
+                y: '50%',
+                offset: {
+                    x: -5,
+                    y: -5
+                },
+                rotate: true,
+                action: function (evt) {
+                    let elem = this.model;
+                    resizingStartPos = function (x, y) {
+                        let size = elem.attributes.size;
+                        let position = elem.attributes.position;
 
+                        let coords = paper.snapToGrid(x, y);
 
-                let resizeLGrip = new joint.elementTools.Button({
-                    markup: [{
-                        tagName: 'rect',
-                        selector: 'button',
-                        attributes: {
-                            width: 10,
-                            height: 10,
-                            fill: '#777777',
-                            cursor: 'w-resize'
-                        }
-                    }],
-                    x: '0%',
-                    y: '50%',
-                    offset: {
-                        x: -5,
-                        y: -5
-                    },
-                    rotate: true,
-                    action: function (evt) {
-                        let elem = this.model;
-                        resizingStartPos = function (x, y) {
+                        let deltaWidth = coords.x - (position.x + size.width);
 
-                            let coords = paper.snapToGrid(x, y);
-                            let size = elem.attributes.size;
-                            let position = elem.attributes.position;
+                        if (size.width + deltaWidth <= 100)
+                            deltaWidth = 0;
 
-                            let deltaWidth = position.x - coords.x;
+                        return elem.setSizeAndPosition({width: size.width + deltaWidth, height: elem.getHeight()});
 
-                            if (size.width + deltaWidth <= 100)
-                                deltaWidth = 0;
-
-                            return elem.setSizeAndPosition(
-                                    {width: size.width + deltaWidth, height: elem.getHeight()},
-                                    {x: position.x - deltaWidth, y: position.y});
-                        }
                     }
-                });
-                let resizeRGrip = new joint.elementTools.Button({
-                    markup: [{
-                        tagName: 'rect',
-                        selector: 'button',
-                        attributes: {
-                            width: 10,
-                            height: 10,
-                            fill: '#777777',
-                            cursor: 'e-resize'
-                        }
-                    }],
-                    x: '100%',
-                    y: '50%',
-                    offset: {
-                        x: -5,
-                        y: -5
-                    },
-                    rotate: true,
-                    action: function (evt) {
-                        let elem = this.model;
-                        resizingStartPos = function (x, y) {
-                            let size = elem.attributes.size;
-                            let position = elem.attributes.position;
+                }
+            });
 
-                            let coords = paper.snapToGrid(x, y);
+            let linkButton = new joint.elementTools.Connect({
+                x: '100%',
+                y: '0%',
+                offset: {x: -5, y: -5},
+                action: function (evt, _view, tool) {
+                    return tool.dragstart(evt);
+                }
+            })
 
-                            let deltaWidth = coords.x - (position.x + size.width);
-
-                            if (size.width + deltaWidth <= 100)
-                                deltaWidth = 0;
-
-                            return elem.setSizeAndPosition({width: size.width + deltaWidth, height: elem.getHeight()});
-
-                        }
-                    }
-                });
-
-                let linkButton = new joint.elementTools.Connect({
-                    x: '100%',
-                    y: '0%',
-                    offset: {x: -5, y: -5},
-                    action: function (evt, _view, tool) {
-                        return tool.dragstart(evt);
-                    }
-                })
-
-                let elementToolsView = new joint.dia.ToolsView({
-                    tools: [
-                        new joint.elementTools.Boundary(),
-                        new joint.elementTools.Remove(),
-                        resizeLGrip,
-                        resizeRGrip,
-                        linkButton,
+            let elementToolsView = new joint.dia.ToolsView({
+                tools: [
+                    new joint.elementTools.Boundary(),
+                    new joint.elementTools.Remove(),
+                    resizeLGrip,
+                    resizeRGrip,
+                    linkButton,
 
 
-                    ]
-                });
+                ]
+            });
 
-                let myTargetArrowhead = new joint.linkTools.TargetArrowhead();
-                let mySourceArrowhead = new joint.linkTools.SourceArrowhead();
+            let myTargetArrowhead = new joint.linkTools.TargetArrowhead();
+            let mySourceArrowhead = new joint.linkTools.SourceArrowhead();
 
-                myTargetArrowhead.el.setAttribute('d', 'M -20, 0 a 6,6 0 1,0 12, 0 a 6,6 0 1,0 -12,0')
-                myTargetArrowhead.el.setAttribute('stroke-width', '1')
-                mySourceArrowhead.el.setAttribute('d', 'M 0, 0 a 6,6 0 1,0 12, 0 a 6,6 0 1,0 -12,0')
-                mySourceArrowhead.el.setAttribute('stroke-width', '1')
+            myTargetArrowhead.el.setAttribute('d', 'M -20, 0 a 6,6 0 1,0 12, 0 a 6,6 0 1,0 -12,0')
+            myTargetArrowhead.el.setAttribute('stroke-width', '1')
+            mySourceArrowhead.el.setAttribute('d', 'M 0, 0 a 6,6 0 1,0 12, 0 a 6,6 0 1,0 -12,0')
+            mySourceArrowhead.el.setAttribute('stroke-width', '1')
 
-                let linkToolsView = new joint.dia.ToolsView({
-                    tools: [
-                        new joint.linkTools.Vertices(),
-                        mySourceArrowhead, myTargetArrowhead,
-                        new joint.linkTools.Boundary(), new joint.linkTools.Remove(),
-                    ]
-                });
+            let linkToolsView = new joint.dia.ToolsView({
+                tools: [
+                    new joint.linkTools.Vertices(),
+                    mySourceArrowhead, myTargetArrowhead,
+                    new joint.linkTools.Boundary(), new joint.linkTools.Remove(),
+                ]
+            });
 
-                paper.on('link:pointerdown', function (linkView) {
+            paper.on('link:pointerdown', function (linkView) {
+                paper.removeTools();
+                linkView.addTools(linkToolsView);
+
+                if (selectedElement === linkView.model)
+                    return;
+                selectedElement = linkView.model;
+
+                if (selectedElement !== undefined && selectedElement.getId() !== undefined)
+                    generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage);
+
+            });
+
+            paper.on('element:mouseenter', function (elementView) {
+                paper.removeTools();
+                elementView.addTools(elementToolsView);
+            });
+
+            paper.on('element:mouseleave', function (elementView) {
+                if (elementView.model !== selectedElement) {
                     paper.removeTools();
-                    linkView.addTools(linkToolsView);
+                }
+            });
 
-                    if (selectedElement === linkView.model)
-                        return;
-                    selectedElement = linkView.model;
-
-                    if (selectedElement !== undefined && selectedElement.getId() !== undefined)
-                        generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage);
-
-                });
-
-                paper.on('element:mouseenter', function (elementView) {
-                    paper.removeTools();
-                    elementView.addTools(elementToolsView);
-                });
-
-                paper.on('element:mouseleave', function (elementView) {
-                    if (elementView.model !== selectedElement) {
-                        paper.removeTools();
+            paper.on('element:pointerdown', function (elementView) {
+                paper.removeTools();
+                elementView.addTools(elementToolsView);
+                for (let text of document.getElementsByClassName("uml-class-name-text")) {
+                    for (let tspan of text.childNodes) {
+                        /*let object = document.createElement('foreignObject');
+                        text.append(object);
+                        let input = document.createElement('input');
+                        object.append(input);
+                        tspan.contentEditable = true;*/
+                        tspan.onclick = function (e) {
+                            console.log(e);
+                        };
                     }
-                });
+                }
+                if (selectedElement === elementView.model)
+                    return;
+                selectedElement = elementView.model;
 
-                paper.on('element:pointerdown', function (elementView) {
-                    paper.removeTools();
-                    elementView.addTools(elementToolsView);
-                    for (let text of document.getElementsByClassName("uml-class-name-text")) {
-                        for (let tspan of text.childNodes) {
-                            /*let object = document.createElement('foreignObject');
-                            text.append(object);
-                            let input = document.createElement('input');
-                            object.append(input);
-                            tspan.contentEditable = true;*/
-                            tspan.onclick = function (e) {
-                                console.log(e);
-                            };
-                        }
-                    }
-                    if (selectedElement === elementView.model)
-                        return;
-                    selectedElement = elementView.model;
+                if (selectedElement !== undefined && selectedElement.getId() !== undefined)
+                    generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage);
 
-                    if (selectedElement !== undefined && selectedElement.getId() !== undefined)
-                        generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage);
-
-                });
+            });
 
 
-                graph.on('change:position', function (cell) {
-                    moving = cell;
-                })
+            graph.on('change:position', function (cell) {
+                if (cell.get('position').x < 0)
+                    cell.set('position', {x: 0, y: cell.get('position').y});
+                if (cell.get('position').y < 0)
+                    cell.set('position', {x: cell.get('position').x, y: 0});
+                moving = cell;
+
+            })
 
 
-        </script>
-    }
+            function download(href, name) {
+                let link = document.createElement('a');
+                link.download = name;
+                link.href = href;
+                link.click();
+            }
+
+
+            function saveToPng() {
+                paper.removeTools();
+                let currentScale = paper.scale();
+                let currentTranslate = paper.translate();
+                paper.scale(1);
+                paper.translate(0,0)
+                let {x, y, width, height} = paper.getContentArea();
+                let elem = document.getElementsByTagName('svg')[0];
+                elem.setAttribute('width', width + x + 20);
+                elem.setAttribute('height', height + y + 20);
+                let svgString = new XMLSerializer().serializeToString(elem);
+                let canvas = document.getElementById('canvas');
+                let ctx = canvas.getContext('2d');
+                let DOMURL = self.URL || self.webkitURL || self;
+                let img = new Image();
+                let svg = new Blob([svgString], {type: 'image/svg+xml;charset=utf-8'});
+                let url = DOMURL.createObjectURL(svg);
+                img.onload = function () {
+                    canvas.width = width + 40;
+                    canvas.height = height + 40;
+                    ctx.drawImage(img, -x + 20, -y + 20, width - 40, height - 40);
+
+                    download(canvas.toDataURL(), 'diagram.png');
+                    DOMURL.revokeObjectURL(url);
+                    elem.setAttribute('width', '100%');
+                    elem.setAttribute('height', '100%');
+                    paper.scale(currentScale.sx, currentScale.sy);
+                    paper.translate(currentTranslate.tx, currentTranslate.ty);
+                };
+                img.src = url;
+            }
+
+    </script>
+}

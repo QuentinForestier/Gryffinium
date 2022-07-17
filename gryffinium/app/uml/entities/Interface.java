@@ -24,9 +24,10 @@ public class Interface extends Entity implements Implementor
         super(name);
     }
 
-    public Interface(EntityDto ge, ClassDiagram cd)
+    public Interface(EntityDto ge)
     {
-        super(ge, cd);
+        super(ge);
+        fromDto(ge);
     }
 
     @Override

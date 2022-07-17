@@ -13,6 +13,10 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name="Composition")
 public class Composition extends Aggregation
 {
+    public Composition(){
+        super();
+    }
+
     public Composition(Entity from, Entity to, String name, boolean isDirected)
     {
         super(from, to, name, isDirected);
