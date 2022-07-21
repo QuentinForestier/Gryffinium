@@ -17,7 +17,7 @@
             name="filter" id="filter"/>
             <span class="input-group-append">
                 <button type="button" class="btn btn-primary" id="addProject"
-                onclick="openNewProject()">
+                onclick="openNewProject()" data-toggle="tooltip" data-placement="top" title="Create a new project">
                     <i class="fa fa-plus"></i>
                 </button>
             </span>
@@ -109,14 +109,19 @@
             editButton.classList.add('btn-default');
             editButton.classList.add('btn-xs');
             editButton.classList.add('pull-right');
+            editButton.setAttribute('data-toggle', 'tooltip');
+            editButton.setAttribute('data-placement', 'top');
+
             editButton.onclick = function () {
                 editProject(project);
             };
 
             if (isOwner(project)) {
                 editButton.innerHTML = '<i class="fa fa-edit"></i>';
+                editButton.setAttribute('title', 'Update project informations');
             } else {
                 editButton.innerHTML = '<i class="fa fa-eye"></i>';
+                editButton.setAttribute('title', 'Check project informations');
             }
             listItem.appendChild(name);
             listItem.appendChild(editButton);

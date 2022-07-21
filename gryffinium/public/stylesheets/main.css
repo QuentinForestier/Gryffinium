@@ -3,6 +3,84 @@
     --main-color-selected: rgba(240, 120, 15, 0.8);
 }
 
+.gryffinium-icon {
+    display: block;
+    width: 3rem;
+    height: 2rem;
+    background-size: cover;
+    background-position: center;
+}
+
+.gryffinium-icon:hover,
+.gryffinium-icon:focus {
+    filter: invert(47%) sepia(29%) saturate(2686%) hue-rotate(1deg) brightness(104%) contrast(88%);
+}
+
+.gryffinium-icon-active,
+.gryffinium-icon-active {
+    filter: invert(47%) sepia(29%) saturate(2686%) hue-rotate(1deg) brightness(104%) contrast(88%);
+}
+
+.gryffinium-class {
+    background-image: url("../images/class.svg");
+}
+
+.gryffinium-enum {
+    background-image: url("../images/enum.svg");
+}
+
+.gryffinium-interface {
+    background-image: url("../images/interface.svg");
+}
+
+.gryffinium-association {
+    background-image: url("../images/association.svg");
+}
+
+.gryffinium-multi-association {
+    background-image: url("../images/multi_association.svg");
+}
+
+.gryffinium-aggregation {
+    background-image: url("../images/aggregation.svg");
+}
+
+.gryffinium-composition {
+    background-image: url("../images/composition.svg");
+}
+
+.gryffinium-association-class {
+    background-image: url("../images/association_class.svg");
+}
+
+.gryffinium-realization {
+    background-image: url("../images/realization.svg");
+}
+
+.gryffinium-generalization {
+    background-image: url("../images/generalization.svg");
+}
+
+.gryffinium-dependency {
+    background-image: url("../images/dependency.svg");
+}
+
+.gryffinium-inner {
+    background-image: url("../images/inner.svg");
+}
+
+.nav-link {
+    height: 2.5rem;
+    color: black;
+}
+
+.nav-link:hover,
+.nav-link:focus {
+    color: var(--main-color);
+
+}
+
+
 body {
     overflow: hidden;
 }
@@ -12,7 +90,8 @@ body {
     border-color: var(--main-color);
 }
 
-.btn-primary:hover {
+.btn-primary:hover,
+.btn-primary:focus {
     background-color: var(--main-color-selected);
     border-color: var(--main-color-selected);
 }
@@ -121,7 +200,7 @@ i {
 
 .tab-card-header > .nav-tabs > li {
     margin-right: 2px;
-    height:80%;
+    height: 80%;
 }
 
 .tab-card-header > .nav-tabs > li > a {
@@ -138,7 +217,8 @@ i {
     color: var(--main-color);
 }
 
-.tab-card-header > .nav-tabs > li > a:hover {
+.tab-card-header > .nav-tabs > li > a:hover,
+.tab-card-header > .nav-tabs > li > a:focus {
     color: var(--main-color);
 }
 

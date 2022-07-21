@@ -13,6 +13,7 @@ public enum ElementTypeDto
     INNER_INTERFACE,
 
     // Links
+    UNARY_ASSOCIATION,
     BINARY_ASSOCIATION,
     MUTLI_ASSOCIATION,
     AGGREGATION,
@@ -34,5 +35,7 @@ public enum ElementTypeDto
     // Operations
     CONSTRUCTOR,
     METHOD,
+
+
 
 }

@@ -201,7 +201,7 @@ export function generateSwapButton(element, send) {
                 id: element.getId(),
                 sourceId: element.get('target').id,
                 targetId: element.get('source').id,
-                vertices: element.get('vertices').reverse()
+                vertices: element.get('vertices') ? element.get('vertices').reverse() : undefined,
             },
             element.getType(),
             'UpdateCommand');
@@ -1065,7 +1065,7 @@ export function generateActionButtonInterface(element, target, up, down, remove)
     buttonUp.addEventListener("click", function () {
         up();
     });
-    tdAction.append(buttonUp);
+    //tdAction.append(buttonUp);
 
     let buttonDown = document.createElement("button");
     buttonDown.className = "btn btn-secondary btn-circle btn-sm";
@@ -1073,7 +1073,7 @@ export function generateActionButtonInterface(element, target, up, down, remove)
     buttonDown.addEventListener("click", function () {
         down();
     });
-    tdAction.append(buttonDown);
+    //tdAction.append(buttonDown);
 
     let buttonDelete = document.createElement("button");
     buttonDelete.className = "btn btn-danger btn-circle btn-sm";

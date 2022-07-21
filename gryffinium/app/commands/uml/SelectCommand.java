@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import commands.Command;
 import dto.entities.*;
 import models.Project;
+import models.ProjectUser;
 import play.libs.Json;
 
 public class SelectCommand implements Command
@@ -17,6 +18,12 @@ public class SelectCommand implements Command
         result.addAll(project.getDiagram().getCreationCommands());
 
         return result;
+    }
+
+    @Override
+    public Boolean canExecute(ProjectUser user)
+    {
+        return true;
     }
 
 }

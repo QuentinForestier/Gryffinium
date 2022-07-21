@@ -1,6 +1,160 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <classDiagram>
-    <entity xsi:type="Class" abstract="false" height="100" id="1a08e310-ee24-1004-8fd4-6eb81fcc8e97" visibility="PUBLIC" width="200" x="50" y="30" name="Class1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
-    <entity xsi:type="Class" abstract="false" height="100" id="1a0c32b8-ee24-1004-8fd4-6eb81fcc8e97" visibility="PUBLIC" width="200" x="1950" y="320" name="Class2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
-    <entity xsi:type="Class" abstract="false" height="100" id="1a0fac90-ee24-1004-8fd4-6eb81fcc8e97" visibility="PUBLIC" width="200" x="1450" y="1020" name="Class3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    <entity xsi:type="Class" abstract="false" height="100" id="875432fc-ee25-1004-88e3-3830c84f96c8" visibility="PUBLIC" width="200" x="510" y="140" name="Vehicle" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <constructor id="8a5c045c-ee25-1004-88e3-3830c84f96c8" name="Vehicle" visibility="PUBLIC">
+            <parameter constant="false" id="8a6ab6dc-ee25-1004-88e3-3830c84f96c8" name="serialNo" type="String"/>
+        </constructor>
+    </entity>
+    <entity xsi:type="Class" abstract="false" height="100" id="8756576c-ee25-1004-88e3-3830c84f96c8" visibility="PUBLIC" width="200" x="380" y="410" name="Car" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    <entity xsi:type="Class" abstract="false" height="100" id="8778d968-ee25-1004-88e3-3830c84f96c8" visibility="PUBLIC" width="200" x="630" y="410" name="Plane" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    <entity xsi:type="Enum" height="165" id="87821640-ee25-1004-88e3-3830c84f96c8" visibility="PUBLIC" width="195" x="90" y="70" name="Color" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <attribute static="false" visibility="PRIVATE" constant="false" id="90c8a87c-ee25-1004-8211-26d7caccb5b1" name="colorCode" type="string"/>
+        <constructor id="9186d478-ee25-1004-8211-26d7caccb5b1" visibility="PUBLIC">
+            <parameter constant="false" id="918dec7c-ee25-1004-8211-26d7caccb5b1" name="colorCode" type="String"/>
+        </constructor>
+        <value>black</value>
+        <value>white</value>
+        <value>gray</value>
+    </entity>
+    <entity xsi:type="Interface" height="100" id="88e508a8-ee25-1004-88e3-3830c84f96c8" visibility="PUBLIC" width="200" x="750" y="140" name="Flying" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    <entity xsi:type="Class" abstract="false" height="100" id="897c9dbc-ee25-1004-88e3-3830c84f96c8" visibility="PUBLIC" width="200" x="1080" y="30" name="Airport" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    <entity xsi:type="Class" abstract="false" height="100" id="89d1ea74-ee25-1004-88e3-3830c84f96c8" visibility="PUBLIC" width="200" x="290" y="700" name="Wheel" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    <entity xsi:type="Class" abstract="false" height="135" id="12f4e0ec-ee29-1004-812e-e02186efbb8f" visibility="PUBLIC" width="265" x="1110" y="400" name="Class" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <attribute static="false" visibility="PRIVATE" constant="false" id="09ffba74-ee2a-1004-8f26-37d3abda86ce" name="width" type="Integer"/>
+        <attribute static="false" visibility="PROTECTED" constant="false" id="0bdd2aac-ee2a-1004-8f26-37d3abda86ce" name="name" type="String"/>
+        <method abstract="false" static="false" type="String" id="0ec3f750-ee2a-1004-8f26-37d3abda86ce" name="toString" visibility="PUBLIC"/>
+        <method abstract="false" static="false" type="void" id="0ecfb5f4-ee2a-1004-8f26-37d3abda86ce" name="setWidth" visibility="PUBLIC">
+            <parameter constant="false" id="0f2f741c-ee2a-1004-8f26-37d3abda86ce" name="width" type="Integer"/>
+        </method>
+        <constructor id="0ec2d000-ee2a-1004-8f26-37d3abda86ce" name="Class" visibility="PUBLIC">
+            <parameter constant="false" id="0ed2da40-ee2a-1004-8f26-37d3abda86ce" name="width" type="Integer"/>
+            <parameter constant="false" id="0ee4e0b4-ee2a-1004-8f26-37d3abda86ce" name="name" type="String"/>
+        </constructor>
+    </entity>
+    <association xsi:type="BinaryAssociation" directed="true" id="8837cdc8-ee25-1004-88e3-3830c84f96c8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <label distance="0.46808510638297873" name="is colored ">
+            <offset>12.5</offset>
+        </label>
+        <target distanceMultiplicity="0.8518518518518519" id="8837cdca-ee25-1004-88e3-3830c84f96c8">
+            <entity>87821640-ee25-1004-88e3-3830c84f96c8</entity>
+            <multiplicity lowerBound="49" upperBound="42"/>
+            <multiplicityLabel distance="0.8518518518518519">
+                <offset>-12.5</offset>
+            </multiplicityLabel>
+            <nameLabel distance="0.8461538461538461" name="colors">
+                <offset>12.5</offset>
+            </nameLabel>
+            <offsetMultiplicity>-12.5</offsetMultiplicity>
+            <offsetName>12.5</offsetName>
+        </target>
+        <source id="8837cdc9-ee25-1004-88e3-3830c84f96c8">
+            <entity>875432fc-ee25-1004-88e3-3830c84f96c8</entity>
+            <multiplicity lowerBound="42" upperBound="42"/>
+            <multiplicityLabel/>
+            <nameLabel name="">
+                <offset>{"x":0,"y":-10}</offset>
+            </nameLabel>
+            <offsetName>{"x":0,"y":-10}</offsetName>
+        </source>
+    </association>
+    <association xsi:type="Aggregation" directed="false" id="89931290-ee25-1004-88e3-3830c84f96c8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <label distance="0.5405405405405406" name="contains">
+            <offset>20</offset>
+        </label>
+        <target distanceMultiplicity="0.8518518518518519" id="89931292-ee25-1004-88e3-3830c84f96c8">
+            <entity>88e508a8-ee25-1004-88e3-3830c84f96c8</entity>
+            <multiplicity lowerBound="42" upperBound="42"/>
+            <multiplicityLabel distance="0.8518518518518519">
+                <offset>-10</offset>
+            </multiplicityLabel>
+            <nameLabel distance="0.8648648648648649" name="flyings">
+                <offset>20</offset>
+            </nameLabel>
+            <offsetMultiplicity>-10</offsetMultiplicity>
+            <offsetName>20</offsetName>
+        </target>
+        <source distanceMultiplicity="0.1" id="89931291-ee25-1004-88e3-3830c84f96c8">
+            <entity>897c9dbc-ee25-1004-88e3-3830c84f96c8</entity>
+            <multiplicity lowerBound="48" upperBound="49"/>
+            <multiplicityLabel distance="0.1">
+                <offset>-20</offset>
+            </multiplicityLabel>
+            <nameLabel name="">
+                <offset>{"x":0,"y":-10}</offset>
+            </nameLabel>
+            <offsetMultiplicity>-20</offsetMultiplicity>
+            <offsetName>{"x":0,"y":-10}</offsetName>
+        </source>
+    </association>
+    <association xsi:type="Composition" directed="true" id="89e46a00-ee25-1004-88e3-3830c84f96c8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <label distance="0.5652173913043478" name="composed by">
+            <offset>10</offset>
+        </label>
+        <target distanceMultiplicity="0.9090909090909091" id="89e46a02-ee25-1004-88e3-3830c84f96c8">
+            <entity>89d1ea74-ee25-1004-88e3-3830c84f96c8</entity>
+            <multiplicity lowerBound="52" upperBound="52"/>
+            <multiplicityLabel distance="0.9090909090909091">
+                <offset>20</offset>
+            </multiplicityLabel>
+            <nameLabel distance="0.8181818181818182" name="-wheels">
+                <offset>-20</offset>
+            </nameLabel>
+            <offsetMultiplicity>20</offsetMultiplicity>
+            <offsetName>-20</offsetName>
+        </target>
+        <source distanceMultiplicity="0.09090909090909091" id="89e46a01-ee25-1004-88e3-3830c84f96c8">
+            <entity>8756576c-ee25-1004-88e3-3830c84f96c8</entity>
+            <multiplicity lowerBound="48" upperBound="49"/>
+            <multiplicityLabel distance="0.09090909090909091">
+                <offset>30</offset>
+            </multiplicityLabel>
+            <nameLabel name="">
+                <offset>{"x":0,"y":-10}</offset>
+            </nameLabel>
+            <offsetMultiplicity>30</offsetMultiplicity>
+            <offsetName>{"x":0,"y":-10}</offsetName>
+        </source>
+    </association>
+    <association xsi:type="BinaryAssociation" directed="true" id="4fca88cc-ee2a-1004-8f26-37d3abda86ce" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <vertices>[{"x":1460,"y":310},{"x":1460,"y":310},{"x":1460,"y":270}]</vertices>
+        <label distance="0.4074074074074074" name="example">
+            <offset>10</offset>
+        </label>
+        <target distanceMultiplicity="0.8888888888888888" id="4fca88ce-ee2a-1004-8f26-37d3abda86ce">
+            <entity>897c9dbc-ee25-1004-88e3-3830c84f96c8</entity>
+            <multiplicity lowerBound="42" upperBound="42"/>
+            <multiplicityLabel distance="0.8888888888888888">
+                <offset>20</offset>
+            </multiplicityLabel>
+            <nameLabel distance="0.8518518518518519" name="target">
+                <offset>-10</offset>
+            </nameLabel>
+            <offsetMultiplicity>20</offsetMultiplicity>
+            <offsetName>-10</offsetName>
+        </target>
+        <source id="4fca88cd-ee2a-1004-8f26-37d3abda86ce">
+            <entity>12f4e0ec-ee29-1004-812e-e02186efbb8f</entity>
+            <multiplicity lowerBound="42" upperBound="42"/>
+            <multiplicityLabel/>
+            <nameLabel distance="0.045454545454545456" name="source">
+                <offset>-10</offset>
+            </nameLabel>
+            <offsetName>-10</offsetName>
+        </source>
+    </association>
+    <relationship xsi:type="Generalization" id="880e5ccc-ee25-1004-88e3-3830c84f96c8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <vertices>[{"x":480,"y":330},{"x":610,"y":330}]</vertices>
+        <child>8756576c-ee25-1004-88e3-3830c84f96c8</child>
+        <parent>875432fc-ee25-1004-88e3-3830c84f96c8</parent>
+    </relationship>
+    <relationship xsi:type="Generalization" id="881be734-ee25-1004-88e3-3830c84f96c8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <vertices>[{"x":730,"y":330},{"x":610,"y":330}]</vertices>
+        <child>8778d968-ee25-1004-88e3-3830c84f96c8</child>
+        <parent>875432fc-ee25-1004-88e3-3830c84f96c8</parent>
+    </relationship>
+    <relationship xsi:type="Realization" id="892deff0-ee25-1004-88e3-3830c84f96c8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <vertices>[{"x":810,"y":330},{"x":840,"y":330}]</vertices>
+        <implementor>8778d968-ee25-1004-88e3-3830c84f96c8</implementor>
+        <interface>88e508a8-ee25-1004-88e3-3830c84f96c8</interface>
+    </relationship>
 </classDiagram>

@@ -14,29 +14,28 @@
     @views.html.modals.project_creation("project-creation-modal")
 
 
-    <nav class="navbar navbar-default">
+    <nav class="navbar noavbar-default">
         <div class="card-header tab-card-header">
             <ul class="nav nav-tabs card-header-tabs" role="tablist">
                 <li class="nav-item">
                     <button class="nav-link" id="savepng" role="tab" aria-selected="false"
-                    data-toggle="tooltip" data-placement="top" >Export to png</button>
+                    data-toggle="tooltip" data-placement="top" title="Export as svg"><i class="fa-solid fa-file-image"></i></button>
                 </li>
-                <div class="vr"></div>
             </ul>
         </div>
         <div class="card-header tab-card-header">
             <ul class="nav nav-tabs card-header-tabs" role="tablist">
                 <li class="nav-item">
                     <a class="nav-link" id="selectClass" role="tab" aria-selected="false"
-                    data-toggle="tooltip" data-placement="top" title="Class">Class</a>
+                    data-toggle="tooltip" data-placement="top" title="Class"><i class="gryffinium-icon gryffinium-class"></i></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="selectEnum" role="tab" aria-selected="false"
-                    data-toggle="tooltip" data-placement="top" title="Enum">Enum</a>
+                    data-toggle="tooltip" data-placement="top" title="Enum"><i class="gryffinium-icon gryffinium-enum"></i></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="selectInterface" role="tab" aria-selected="false"
-                    data-toggle="tooltip" data-placement="top" title="Interface">Interface</a>
+                    data-toggle="tooltip" data-placement="top" title="Interface"><i class="gryffinium-icon gryffinium-interface"></i></a>
                 </li>
             </ul>
         </div>
@@ -44,34 +43,34 @@
             <ul class="nav nav-tabs card-header-tabs" role="tablist">
                 <li class="nav-item">
                     <a class="nav-link" id="selectAssociationClass" role="tab" aria-selected="false"
-                    data-toggle="tooltip" data-placement="top" title="Association Class">Association Class</a>
+                    data-toggle="tooltip" data-placement="top" title="Association Class"><i class="gryffinium-icon gryffinium-association-class"></i></a>
                 </li>
                 <div class="vr"></div>
                 <li class="nav-item">
                     <a class="nav-link" id="selectGeneralization" role="tab" aria-selected="false"
-                    data-toggle="tooltip" data-placement="top" title="Generalization">Generalization</a>
+                    data-toggle="tooltip" data-placement="top" title="Generalization"><i class="gryffinium-icon gryffinium-generalization"></i></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="selectRealization" role="tab" aria-selected="false"
-                    data-toggle="tooltip" data-placement="top" title="Realization">Realization</a>
+                    data-toggle="tooltip" data-placement="top" title="Realization"><i class="gryffinium-icon gryffinium-realization"></i></a>
                 </li>
 
                 <div class="vr"></div>
                 <li class="nav-item">
                     <a class="nav-link active show" id="selectAssociation" role="tab" aria-selected="false"
-                    data-toggle="tooltip" data-placement="top" title="Association">Association</a>
+                    data-toggle="tooltip" data-placement="top" title="Association"><i class="gryffinium-icon gryffinium-icon-active gryffinium-association"></i></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="selectAggregation" role="tab" aria-selected="false"
-                    data-toggle="tooltip" data-placement="top" title="Aggregation">Aggregation</a>
+                    data-toggle="tooltip" data-placement="top" title="Aggregation"><i class="gryffinium-icon gryffinium-aggregation"></i></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="selectComposition" role="tab" aria-selected="false"
-                    data-toggle="tooltip" data-placement="top" title="Composition">Composition</a>
+                    data-toggle="tooltip" data-placement="top" title="Composition"><i class="gryffinium-icon gryffinium-composition"></i></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="selectMultiAssociation" role="tab" aria-selected="false"
-                    data-toggle="tooltip" data-placement="top" title="Multi association">Mutli association</a>
+                    data-toggle="tooltip" data-placement="top" title="Multi association"><i class="gryffinium-icon gryffinium-multi-association"></i></a>
                 </li>
 
                 <div class="vr"></div>
@@ -79,11 +78,11 @@
 
                 <li class="nav-item">
                     <a class="nav-link" id="selectInnerClass" role="tab" aria-selected="false"
-                    data-toggle="tooltip" data-placement="top" title="Inner class">Inner Class</a>
+                    data-toggle="tooltip" data-placement="top" title="Inner"><i class="gryffinium-icon gryffinium-inner"></i></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="selectDependency" role="tab" aria-selected="false"
-                    data-toggle="tooltip" data-placement="top" title="Dependency">Dependency</a>
+                    data-toggle="tooltip" data-placement="top" title="Dependency"><i class="gryffinium-icon gryffinium-dependency"></i></a>
                 </li>
             </ul>
         </div>
@@ -107,7 +106,6 @@
         </div>
     </div>
     <span id="measure" style="display: none"></span>
-    <canvas id="canvas" style="display: none"></canvas>
     </div>
     <script type="module">
 
@@ -143,7 +141,7 @@
             const elements = new Map();
 
             document.getElementById("savepng").addEventListener("click", function () {
-                saveToPng();
+                exportToSvg();
             })
 
             function setSelectedElement(sender, type) {
@@ -153,16 +151,19 @@
                         activeElementType.classList.remove("active");
                         activeElementType.classList.remove("show");
                         activeElementType.setAttribute("aria-selected", "false");
+                        activeElementType.children[0].classList.remove("gryffinium-icon-active");
                     }
                     activeElementType = sender;
 
                     activeElementType.classList.add("active");
                     activeElementType.classList.add("show");
+                    activeElementType.children[0].classList.add("gryffinium-icon-active");
                     activeElementType.setAttribute("aria-selected", "true");
                 } else {
                     if (activeElementType !== undefined) {
                         activeElementType.classList.remove("active");
                         activeElementType.classList.remove("show");
+                        activeElementType.children[0].classList.remove("gryffinium-icon-active");
                         activeElementType.setAttribute("aria-selected", "false");
                     }
                     activeElementType = undefined;
@@ -177,16 +178,19 @@
                         activeLinkType.classList.remove("active");
                         activeLinkType.classList.remove("show");
                         activeLinkType.setAttribute("aria-selected", "false");
+                        activeLinkType.children[0].classList.remove("gryffinium-icon-active");
                     }
                     activeLinkType = sender;
 
                     activeLinkType.classList.add("active");
                     activeLinkType.classList.add("show");
                     activeLinkType.setAttribute("aria-selected", "true");
+                    activeLinkType.children[0].classList.add("gryffinium-icon-active");
                 } else {
                     if (activeLinkType !== undefined) {
                         activeLinkType.classList.remove("active");
                         activeLinkType.classList.remove("show");
+                        activeLinkType.children[0].classList.remove("gryffinium-icon-active");
                         activeLinkType.setAttribute("aria-selected", "false");
                     }
                     activeLinkType = undefined;
@@ -307,12 +311,11 @@
             }
 
             buttonSend.onclick = function () {
-                if (!messageInput.value.isEmpty()) {
+                if (messageInput.value !== "") {
                     let command = {
                         'message': messageInput.value,
-                        'type': 'ChatMessageCommand'
                     };
-                    socket.send(command);
+                    sendMessage(command, undefined, 'ChatMessageCommand');
                     messageInput.value = '';
                 }
             };
@@ -702,6 +705,9 @@
                 interactive: {
                     labelMove: true,
                 },
+                /*guard: function(evt) {
+                    return evt.target instanceof HTMLInputElement;
+                },*/
                 defaultConnector: {
                     name: 'jumpover',
                     size: 5,
@@ -733,7 +739,13 @@
 
                 if (newScale > 0.2 && newScale < 5) {
                     paper.scale(newScale, newScale, x, y);
-                    paper.translate(-x * newScale + evt.offsetX, -y * newScale + evt.offsetY);
+                    let tx = -x * newScale + evt.offsetX;
+                    let ty = -y * newScale + evt.offsetY;
+                    if (tx > 0)
+                        tx = 0;
+                    if (ty > 0)
+                        ty = 0;
+                    paper.translate(tx, ty);
                 }
             });
 
@@ -1076,37 +1088,29 @@
             }
 
 
-            function saveToPng() {
+            function exportToSvg() {
                 paper.removeTools();
                 let currentScale = paper.scale();
                 let currentTranslate = paper.translate();
                 paper.scale(1);
-                paper.translate(0,0)
+                paper.translate(0, 0)
                 let {x, y, width, height} = paper.getContentArea();
                 let elem = document.getElementsByTagName('svg')[0];
                 elem.setAttribute('width', width + x + 20);
                 elem.setAttribute('height', height + y + 20);
                 let svgString = new XMLSerializer().serializeToString(elem);
-                let canvas = document.getElementById('canvas');
-                let ctx = canvas.getContext('2d');
                 let DOMURL = self.URL || self.webkitURL || self;
-                let img = new Image();
                 let svg = new Blob([svgString], {type: 'image/svg+xml;charset=utf-8'});
                 let url = DOMURL.createObjectURL(svg);
-                img.onload = function () {
-                    canvas.width = width + 40;
-                    canvas.height = height + 40;
-                    ctx.drawImage(img, -x + 20, -y + 20, width - 40, height - 40);
-
-                    download(canvas.toDataURL(), 'diagram.png');
-                    DOMURL.revokeObjectURL(url);
-                    elem.setAttribute('width', '100%');
-                    elem.setAttribute('height', '100%');
-                    paper.scale(currentScale.sx, currentScale.sy);
-                    paper.translate(currentTranslate.tx, currentTranslate.ty);
-                };
-                img.src = url;
+                download(url, 'diagram.svg');
+                DOMURL.revokeObjectURL(url);
+                elem.setAttribute('height', '100%');
+                elem.setAttribute('width', '100%');
+                paper.translate(currentTranslate.tx, currentTranslate.ty);
+                paper.scale(currentScale.sx, currentScale.sy);
             }
+
+
 
     </script>
 }

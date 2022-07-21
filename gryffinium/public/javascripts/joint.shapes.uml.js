@@ -7,7 +7,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 
-const fontFamiliy = 'Arial, Helvetica, sans-serif';
+const fontFamiliy = 'Helvetica, sans-serif';
 const fontSize = 15
 const umlColor = '#FFF7E1';
 
@@ -16,6 +16,8 @@ this.joint = this.joint || {};
 this.joint.shapes = this.joint.shapes || {};
 (function (exports, ElementView_mjs, LinkView_mjs, Link_mjs, basic_mjs) {
         'use strict';
+
+
 
         let Class = basic_mjs.Generic.define('uml.Class', {
             attrs: {
@@ -955,7 +957,6 @@ this.joint.shapes = this.joint.shapes || {};
         exports.InterfaceView = InterfaceView;
         exports.Enum = Enum;
         exports.EnumView = EnumView;
-
     }
     (this.joint.shapes.uml = this.joint.shapes.uml || {}, joint.dia, joint.dia, joint.dia, joint.shapes.basic)
 )

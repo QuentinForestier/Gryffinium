@@ -11,9 +11,9 @@ public class UnaryAssociationDto extends AssociationDto
     {
     }
 
-    public UnaryAssociationDto(UnaryAssociation ua, MultiAssociation parent)
+    public UnaryAssociationDto(UnaryAssociation ua)
     {
         super(ua);
-        setSourceId(parent.getId());
+        setSourceId(ua.getParent().getId());
     }
 }

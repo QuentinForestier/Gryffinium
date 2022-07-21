@@ -8,6 +8,7 @@ import uml.entities.variables.Variable;
 import uml.links.Association;
 import uml.links.ClassRelationship;
 import uml.links.Dependency;
+import uml.links.MultiAssociation;
 import uml.types.ExistingTypes;
 import uml.types.SimpleType;
 import uml.types.Type;
@@ -22,7 +23,6 @@ import java.util.HashMap;
 public class ClassDiagram
 {
 
-    private final HashMap<String, Object> elements = new HashMap<>();
 
     private final ExistingTypes existingTypes = new ExistingTypes();
 
@@ -36,7 +36,12 @@ public class ClassDiagram
     private final ArrayList<Dependency> dependencies = new ArrayList<>();
 
     @XmlElement(name = "relationship")
-    private final ArrayList<ClassRelationship> relationships = new ArrayList<>();
+    private final ArrayList<ClassRelationship> relationships =
+            new ArrayList<>();
+
+    @XmlElement(name = "multiAssociation")
+    private final ArrayList<MultiAssociation> multiAssociations =
+            new ArrayList<>();
 
     public ExistingTypes getExistingTypes()
     {
@@ -59,12 +64,12 @@ public class ClassDiagram
         }
         entities.add(entity);
         existingTypes.addType(entity);
-        elements.put(entity.getId(), entity);
     }
 
     public Entity getEntity(String id)
     {
-        Entity e = (Entity) elements.get(id);
+        Entity e =
+                (Entity) entities.stream().filter(e1 -> e1.getId().equals(id)).findFirst().orElse(null);
         if (e == null)
             throw new IllegalArgumentException("Entity does not exist");
         return e;
@@ -74,7 +79,6 @@ public class ClassDiagram
     {
         entities.remove(entity);
         existingTypes.removeType(entity);
-        elements.remove(entity.getId());
     }
 
     public void addAssociation(Association association)
@@ -122,6 +126,21 @@ public class ClassDiagram
         relationships.remove(relationship);
     }
 
+    public void getMultiAssociation(String id)
+    {
+        multiAssociations.stream().filter(m -> m.getId().equals(id)).findFirst().orElseThrow(() -> new IllegalArgumentException("MultiAssociation not found"));
+    }
+
+    public void addMultiAssociation(MultiAssociation multiAssociation)
+    {
+        multiAssociations.add(multiAssociation);
+    }
+
+    public void removeMultiAssociation(MultiAssociation multiAssociation)
+    {
+        multiAssociations.remove(multiAssociation);
+    }
+
     public ArrayNode getCreationCommands()
     {
         ArrayNode commands = Json.newArray();
@@ -148,12 +167,12 @@ public class ClassDiagram
         return commands;
     }
 
+
     public void load()
     {
         for (Entity e : entities)
         {
             existingTypes.addType(e);
-            elements.put(e.getId(), e);
         }
 
         for (Entity e : entities)

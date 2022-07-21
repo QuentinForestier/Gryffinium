@@ -34,10 +34,7 @@ public class UserActor extends AbstractActor
     public Receive createReceive()
     {
         return receiveBuilder()
-                .match(JsonNode.class, message ->
-                {
-                    user.handleMessage(message);
-                })
+                .match(JsonNode.class, user::handleMessage)
                 .build();
     }
 

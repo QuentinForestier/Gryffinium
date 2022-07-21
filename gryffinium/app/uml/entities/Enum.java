@@ -23,6 +23,7 @@ public class Enum extends ConstructableEntity
     public Enum()
     {
         super();
+        values = new ArrayList<>();
     }
 
     public Enum(String name)
@@ -30,7 +31,6 @@ public class Enum extends ConstructableEntity
         super(name);
         values = new ArrayList<>();
     }
-
 
 
     public Enum(EnumDto ge)

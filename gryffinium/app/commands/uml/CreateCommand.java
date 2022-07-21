@@ -10,6 +10,7 @@ import dto.entities.operations.OperationDto;
 import dto.links.*;
 import dto.entities.variables.*;
 import models.Project;
+import models.ProjectUser;
 import play.libs.Json;
 import uml.entities.*;
 import uml.entities.operations.Constructor;
@@ -88,7 +89,14 @@ public class CreateCommand implements Command
                 project.getDiagram().addEntity(ii);
                 result.add(Command.createResponse(ii.toDto(), elementType));
                 break;
-
+            case UNARY_ASSOCIATION:
+                UnaryAssociation ua = new UnaryAssociation(
+                        Json.fromJson(data, UnaryAssociationDto.class),
+                        project.getDiagram());
+                project.getDiagram().addAssociation(ua);
+                ua.getParent().addUnaryAssociation(ua);
+                result.add(Command.createResponse(ua.toDto(), elementType));
+                break;
 
             case BINARY_ASSOCIATION:
                 BinaryAssociation ba = new BinaryAssociation(
@@ -115,6 +123,11 @@ public class CreateCommand implements Command
                 result.add(Command.createResponse(co.toDto(), elementType));
                 break;
             case MUTLI_ASSOCIATION:
+                MultiAssociation ma = new MultiAssociation(
+                        Json.fromJson(data, MultiAssociationDto.class),
+                        project.getDiagram());
+                project.getDiagram().addMultiAssociation(ma);
+                result.add(Command.createResponse(ma.toDto(), elementType));
                 break;
             case DEPENDENCY:
                 Dependency d = new Dependency(
@@ -141,6 +154,7 @@ public class CreateCommand implements Command
                 result.add(Command.createResponse(r.toDto(), elementType));
                 break;
             case INNER:
+
                 break;
 
             case VALUE:
@@ -208,5 +222,10 @@ public class CreateCommand implements Command
         return result;
     }
 
+    @Override
+    public Boolean canExecute(ProjectUser user)
+    {
+        return user.getCanWrite();
+    }
 
 }

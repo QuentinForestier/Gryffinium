@@ -35,6 +35,8 @@ public class Composition extends Aggregation
     {
         ArrayNode result = Json.newArray();
         result.add(Command.createResponse(toDto(), ElementTypeDto.COMPOSITION));
+        result.add(getSource().getCreationCommands(this));
+        result.add(getTarget().getCreationCommands(this));
         return result;
     }
 }

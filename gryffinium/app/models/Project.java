@@ -103,7 +103,7 @@ public class Project extends Model
     public void executeCommand(Command command, ProjectUser sender)
     {
         sender = findProjectUser(sender.getUser().getId());
-        if (sender == null || !sender.getCanWrite())
+        if (sender == null || !command.canExecute(sender))
             return;
         ObjectNode response = Json.newObject();
         try

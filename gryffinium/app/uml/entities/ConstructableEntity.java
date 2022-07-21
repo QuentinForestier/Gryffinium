@@ -3,6 +3,7 @@ package uml.entities;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import dto.entities.EntityDto;
 import play.libs.Json;
+import uml.ClassDiagram;
 import uml.entities.operations.Constructor;
 import uml.entities.operations.Operation;
 
@@ -71,5 +72,16 @@ public abstract class ConstructableEntity extends Entity
             result.addAll(constructor.getCreationCommand(this));
         }
         return result;
+    }
+
+    @Override
+    public void load(ClassDiagram cd)
+    {
+        super.load(cd);
+
+        for (Constructor constructor : constructors)
+        {
+            constructor.load(cd);
+        }
     }
 }

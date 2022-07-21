@@ -154,9 +154,8 @@ public class ProjectUser extends Model
         switch (message.get("type").asText())
         {
             case "ChatMessageCommand":
-                ((ObjectNode) message).put("sender", this.user.getName());
-                cmd = Json.fromJson(message, ChatMessageCommand.class);
-
+                ObjectNode data = (ObjectNode) message.get("data");
+                cmd = new ChatMessageCommand(data.put("sender", user.getName()));
                 break;
             case "CreateCommand":
                 cmd = new CreateCommand(message.get("data"),

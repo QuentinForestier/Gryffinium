@@ -21,7 +21,6 @@ public class BinaryAssociation extends Association
     private boolean isDirected;
 
     private Role source;
-    private Role target;
 
     public BinaryAssociation(){
         super();
@@ -33,7 +32,7 @@ public class BinaryAssociation extends Association
         super(name);
         this.isDirected = isDirected;
         this.source = new Role(source.getName(), Multiplicity.N, source);
-        this.target = new Role(target.getName(), Multiplicity.N, target);
+        this.setTarget(new Role(target.getName(), Multiplicity.N, target));
     }
 
     public BinaryAssociation(Entity source, Entity target)
@@ -61,10 +60,10 @@ public class BinaryAssociation extends Association
                 Multiplicity.N,
                 cd.getEntity(gba.getSourceId()));
 
-        this.target = new Role(
+        this.setTarget(new Role(
                 "",
                 Multiplicity.N,
-                cd.getEntity(gba.getTargetId()));
+                cd.getEntity(gba.getTargetId())));
 
         fromDto(gba, cd);
     }
@@ -75,27 +74,28 @@ public class BinaryAssociation extends Association
     {
         if (this.source.getId().equals(id))
             return this.source;
-        else if (this.target.getId().equals(id))
-            return this.target;
+        else if (this.getTarget().getId().equals(id))
+            return this.getTarget();
         else
             return null;
     }
 
-
-    public void fromDto(BinaryAssociationDto dto, ClassDiagram cd)
+    @Override
+    public void fromDto(AssociationDto dto, ClassDiagram cd)
     {
         super.fromDto(dto, cd);
-        if (dto.isDirected() != null)
-            this.isDirected = dto.isDirected();
+        BinaryAssociationDto bdto = (BinaryAssociationDto) dto;
+        if (bdto.isDirected() != null)
+            this.isDirected = bdto.isDirected();
 
-        if (dto.getSourceId() != null && this.source != null)
+        if (bdto.getSourceId() != null && this.source != null)
         {
-            this.source.setEntity(cd.getEntity(dto.getSourceId()));
+            this.source.setEntity(cd.getEntity(bdto.getSourceId()));
         }
 
-        if (dto.getTargetId() != null && this.target != null)
+        if (bdto.getTargetId() != null && this.getTarget() != null)
         {
-            this.target.setEntity(cd.getEntity(dto.getTargetId()));
+            this.getTarget().setEntity(cd.getEntity(bdto.getTargetId()));
         }
 
     }
@@ -122,17 +122,6 @@ public class BinaryAssociation extends Association
         this.source = source;
     }
 
-    @XmlElement
-    public Role getTarget()
-    {
-        return target;
-    }
-
-    public void setTarget(Role target)
-    {
-        this.target = target;
-    }
-
     @Override
     public AssociationDto toDto()
     {
@@ -146,7 +135,7 @@ public class BinaryAssociation extends Association
         result.add(Command.createResponse(toDto(),
                 ElementTypeDto.BINARY_ASSOCIATION));
         result.add(source.getCreationCommands(this));
-        result.add(target.getCreationCommands(this));
+        result.add(getTarget().getCreationCommands(this));
         return result;
     }
 }

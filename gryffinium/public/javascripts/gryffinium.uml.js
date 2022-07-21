@@ -113,12 +113,27 @@ export class Constructor {
         return this.visibility + " " + this.name + this.paramsToString();
     }
 
+    updateParametersFromMessage(message) {
+        let parameter = this.parameters.find(p => p.id === message.id);
+        if (message.name !== null) {
+            parameter.name = message.name;
+        }
+        if (message.type !== null) {
+            parameter.type = message.type;
+        }
+    }
+
     paramsToString() {
         let params = "";
         this.parameters.forEach(p => {
             params += p.name + " : " + p.type + ", ";
         });
         return "(" + params.substring(0, params.length - 2) + ")";
+    }
+
+    removeParameter(id) {
+        let parameter = this.parameters.find(p => p.id === id);
+        this.parameters.splice(this.parameters.indexOf(parameter), 1);
     }
 }
 

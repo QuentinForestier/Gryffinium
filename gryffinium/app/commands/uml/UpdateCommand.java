@@ -15,6 +15,7 @@ import dto.links.GeneralizationDto;
 import dto.links.RealizationDto;
 import dto.links.components.RoleDto;
 import models.Project;
+import models.ProjectUser;
 import play.libs.Json;
 import uml.entities.*;
 import uml.entities.Class;
@@ -220,6 +221,12 @@ public class UpdateCommand implements Command
         }
 
         return result;
+    }
+
+    @Override
+    public Boolean canExecute(ProjectUser user)
+    {
+        return user.getCanWrite();
     }
 
     private ArrayNode updateConstructorName(ConstructableEntity ce, String name)

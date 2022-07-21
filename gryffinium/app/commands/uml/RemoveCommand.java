@@ -14,6 +14,7 @@ import dto.links.DependencyDto;
 import dto.links.GeneralizationDto;
 import dto.links.RealizationDto;
 import models.Project;
+import models.ProjectUser;
 import play.libs.Json;
 import uml.entities.*;
 import uml.entities.Enum;
@@ -160,5 +161,11 @@ public class RemoveCommand implements Command
         }
 
         return result;
+    }
+
+    @Override
+    public Boolean canExecute(ProjectUser user)
+    {
+        return user.getCanWrite();
     }
 }

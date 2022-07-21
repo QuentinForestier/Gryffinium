@@ -22,7 +22,8 @@
                     </div>
 
                     <div class="p-2 bd-highlight">
-                        <button class="btn btn-primary" id="createProject" onclick="createOrUpdateProject()"><i class="fa-solid fa-floppy-disk"></i></button>
+                        <button class="btn btn-primary" id="createProject" onclick="createOrUpdateProject()"
+                        data-toggle="tooltip" data-placement="top" title="Create or save project"><i class="fa-solid fa-floppy-disk"></i></button>
                     </div>
                 </div>
                 <hr>
@@ -32,7 +33,8 @@
                     aria-label="Invite a collaborator"
                     name="inputCollaborator" id="inputCollaborator"/>
                     <span class="input-group-append">
-                        <button type="button" class="btn btn-primary" id="addCollaborator" onclick="addCollaborator()">
+                        <button type="button" class="btn btn-primary" id="addCollaborator" onclick="addCollaborator()"
+                        data-toggle="tooltip" data-placement="top" title="Add a collaborator">
                             <i class="fa fa-plus"></i>
                         </button>
                     </span>
@@ -41,23 +43,7 @@
                     </div>
                 </div>
                 <ul class="list-group" id="collaboratorsList">
-                    <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                        <div class="overflow-hidden">First item</div>
-                        <button class="btn btn-default btn-xs pull-right">
-                            <span class="fa fa-edit"></span>
-                        </button>
-                    </li>
-                    <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                        <div class="overflow-hidden">First item</div>
-                        <div class="pull-right">
-                            <button class="btn btn-default btn-xs">
-                                <span class="fa fa-eye"></span>
-                            </button>
-                            <button class="btn btn-default btn-xs">
-                                <span class="fa fa-trash"></span>
-                            </button>
-                        </div>
-                    </li>
+
                 </ul>
 
             </div>
@@ -232,10 +218,15 @@
             buttonModify.onclick = function (e) {
                 updateCollaboratorRights(project, collaborator);
             }
+            buttonModify.setAttribute('data-toggle', 'tooltip');
+            buttonModify.setAttribute('data-placement', 'top');
+
             if (collaborator.canWrite) {
                 buttonModify.innerHTML = '<span class="fa fa-edit"></span>';
+                buttonModify.setAttribute('title', 'User can edit');
             } else {
                 buttonModify.innerHTML = '<span class="fa fa-eye"></span>';
+                buttonModify.setAttribute('title', 'User can only read');
             }
 
             div2.appendChild(buttonModify);
@@ -245,6 +236,9 @@
                 let buttonDelete = document.createElement('button');
                 buttonDelete.className = 'btn btn-default btn-xs pull-right';
                 buttonDelete.innerHTML = '<span class="fa fa-trash"></span>';
+                buttonDelete.setAttribute('title', 'Remove collaborator');
+                buttonDelete.setAttribute('data-toggle', 'tooltip');
+                buttonDelete.setAttribute('data-placement', 'top');
                 buttonDelete.onclick = function (e) {
                     removeCollaborator(project, collaborator);
                 }

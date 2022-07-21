@@ -36,6 +36,8 @@ public class Aggregation extends BinaryAssociation
     {
         ArrayNode result = Json.newArray();
         result.add(Command.createResponse(toDto(), ElementTypeDto.AGGREGATION));
+        result.add(getSource().getCreationCommands(this));
+        result.add(getTarget().getCreationCommands(this));
         return result;
     }
 }
