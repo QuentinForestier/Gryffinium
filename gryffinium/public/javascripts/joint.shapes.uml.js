@@ -350,7 +350,7 @@ this.joint.shapes = this.joint.shapes || {};
                         width: this.get('size').width,
                         height: this.get('size').height
                     },
-                    type: 'UpdateCommand',
+                    type: 'UPDATE_COMMAND',
                     entityType: this.getType(),
                 };
             },
@@ -364,7 +364,7 @@ this.joint.shapes = this.joint.shapes || {};
                     this.set('alreadyDeleted', true);
                     return {
                         data: {id: this.get('id')},
-                        type: 'RemoveCommand',
+                        type: 'REMOVE_COMMAND',
                         entityType: this.getType(),
                     };
                 }
@@ -514,7 +514,7 @@ this.joint.shapes = this.joint.shapes || {};
                     this.set('alreadyDeleted', true);
                     return {
                         data: {id: this.get('linkId')},
-                        type: 'RemoveCommand',
+                        type: 'REMOVE_COMMAND',
                         entityType: this.getType(),
                     };
                 }
@@ -611,7 +611,7 @@ this.joint.shapes = this.joint.shapes || {};
                             text: this.get('name'),
                         },
                         rect: {
-                            fillOpacity: 0.1,
+                            fillOpacity: 0,
                         }
                     },
                     position: {
@@ -705,7 +705,7 @@ this.joint.shapes = this.joint.shapes || {};
                             text: this.get('targetRole') ? this.get('targetRole').name : 'target',
                         },
                         rect: {
-                            fillOpacity: 0.1,
+                            fillOpacity: 0,
                         }
                     },
                     position: {
@@ -728,7 +728,7 @@ this.joint.shapes = this.joint.shapes || {};
                             text: this.get('targetRole') ? this.get('targetRole').multiplicity : '*',
                         },
                         rect: {
-                            fillOpacity: 0.1,
+                            fillOpacity: 0,
                         }
                     },
                     position: {
@@ -783,6 +783,51 @@ this.joint.shapes = this.joint.shapes || {};
         }, {
             initialize: function () {
                 Association.prototype.initialize.apply(this, arguments);
+                // label source name
+                this.appendLabel({
+                    attrs: {
+                        text: {
+                            text: this.get('sourceRole') ? this.get('sourceRole').name : 'source',
+                        },
+                        rect: {
+                            fillOpacity: 0,
+                        }
+                    },
+                    position: {
+                        distance: 0.05,
+                        offset: {
+                            x: 0,
+                            y: -10
+                        },
+                        args: {
+                            keepGradient: true,
+                            ensureLegibility: true
+                        }
+                    }
+                })
+
+                // label multiplicity target
+                this.appendLabel({
+                    attrs: {
+                        text: {
+                            text: this.get('sourceRole') ? this.get('sourceRole').multiplicity : '*',
+                        },
+                        rect: {
+                            fillOpacity: 0,
+                        }
+                    },
+                    position: {
+                        distance: 0.02,
+                        offset: {
+                            x: 0,
+                            y: 10
+                        },
+                        args: {
+                            keepGradient: true,
+                            ensureLegibility: true
+                        }
+                    }
+                })
                 this.setTargetArrow();
             },
             setTargetArrow: function () {
@@ -846,6 +891,12 @@ this.joint.shapes = this.joint.shapes || {};
         });
 
         let BinaryAssociationView = AssociationView;
+
+        let UnaryAssociation = Association.define('uml.UnaryAssociation', {},{
+            getType: function () {
+                return 'UNARY_ASSOCIATION';
+            }
+        });
 
         let Generalization = CustomLink.define('uml.Generalization', {
             attrs: {
@@ -935,6 +986,45 @@ this.joint.shapes = this.joint.shapes || {};
 
         let InnerView = CustomLinkView;
 
+
+
+        let MutliAssociation = joint.shapes.standard.Rectangle.define('uml.MultiAssociation', {
+            attrs: {
+                body: {
+                    fill: umlColor,
+                    size:{
+                        width: 50,
+                        height: 50
+                    }
+                }
+            },
+
+            associations: [],
+            id: undefined,
+            alreadyDeleted: false,
+        }, {
+            initialize: function () {
+
+                this.on('change', function () {
+                    this.trigger('uml-update');
+                }, this);
+
+
+                basic_mjs.Generic.prototype.initialize.apply(this, arguments);
+            },
+
+            getId: function () {
+                return this.get('id');
+            },
+
+            getType: function () {
+                return 'MULTI_ASSOCIATION';
+            }
+        });
+
+
+
+
         exports.Abstract = Abstract;
         exports.AbstractView = AbstractView;
         exports.Aggregation = Aggregation;
@@ -957,6 +1047,8 @@ this.joint.shapes = this.joint.shapes || {};
         exports.InterfaceView = InterfaceView;
         exports.Enum = Enum;
         exports.EnumView = EnumView;
+        exports.MultiAssociation = MutliAssociation;
+        exports.MultiAssociationView = MultiAssociationView;
     }
     (this.joint.shapes.uml = this.joint.shapes.uml || {}, joint.dia, joint.dia, joint.dia, joint.shapes.basic)
 )

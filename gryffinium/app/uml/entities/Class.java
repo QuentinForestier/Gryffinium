@@ -2,6 +2,7 @@ package uml.entities;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import commands.Command;
+import commands.CommandType;
 import dto.ElementTypeDto;
 import dto.entities.ClassDto;
 import dto.entities.EntityDto;
@@ -34,6 +35,16 @@ public class Class extends ConstructableEntity implements Implementor
         this(name, false);
     }
 
+    public Class(Class other){
+        this.setId(other.getId());
+        this.setName(other.getName());
+        this.setAbstract(other.isAbstract);
+        this.setHeight(other.getHeight());
+        this.setWidth(other.getWidth());
+        this.setX(other.getX());
+        this.setY(other.getY());
+        this.setVisibility(other.getVisibility());
+    }
 
     public Class(ClassDto gc)
     {
@@ -74,7 +85,7 @@ public class Class extends ConstructableEntity implements Implementor
     public ArrayNode getCreationCommands()
     {
         ArrayNode result = Json.newArray();
-        result.add(Command.createResponse(toDto(), ElementTypeDto.CLASS));
+        result.add(Command.createResponse(toDto(), ElementTypeDto.CLASS, CommandType.SELECT_COMMAND));
         result.addAll(getConstructorsCreationCommands());
         result.addAll(getMethodsCreationCommands());
         result.addAll(getAttributesCreationCommands());

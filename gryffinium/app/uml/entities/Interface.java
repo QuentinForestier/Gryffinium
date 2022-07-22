@@ -3,6 +3,7 @@ package uml.entities;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import commands.Command;
+import commands.CommandType;
 import dto.ElementTypeDto;
 import dto.entities.EntityDto;
 import play.libs.Json;
@@ -24,6 +25,17 @@ public class Interface extends Entity implements Implementor
         super(name);
     }
 
+    public Interface(Interface other)
+    {
+        this.setId(other.getId());
+        this.setName(other.getName());
+        this.setHeight(other.getHeight());
+        this.setWidth(other.getWidth());
+        this.setX(other.getX());
+        this.setY(other.getY());
+        this.setVisibility(other.getVisibility());
+    }
+
     public Interface(EntityDto ge)
     {
         super(ge);
@@ -40,7 +52,7 @@ public class Interface extends Entity implements Implementor
     public ArrayNode getCreationCommands()
     {
         ArrayNode result = Json.newArray();
-        result.add(Command.createResponse(toDto(), ElementTypeDto.INTERFACE));
+        result.add(Command.createResponse(toDto(), ElementTypeDto.INTERFACE, CommandType.SELECT_COMMAND));
         result.addAll(getMethodsCreationCommands());
         result.addAll(getAttributesCreationCommands());
         return result;

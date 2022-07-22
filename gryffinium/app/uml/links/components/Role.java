@@ -2,6 +2,7 @@ package uml.links.components;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import commands.Command;
+import commands.CommandType;
 import dto.ElementTypeDto;
 import dto.links.components.RoleDto;
 import tyrex.services.UUID;
@@ -184,6 +185,6 @@ public class Role
     public JsonNode getCreationCommands(Association association)
     {
         return Command.createResponse(toDto(association),
-                ElementTypeDto.ROLE);
+                ElementTypeDto.ROLE, CommandType.SELECT_COMMAND);
     }
 }

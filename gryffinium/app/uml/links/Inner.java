@@ -3,14 +3,13 @@ package uml.links;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.xml.bind.AnyTypeAdapter;
 import commands.Command;
+import commands.CommandType;
 import dto.ElementTypeDto;
 import dto.links.InnerDto;
 import dto.links.LinkDto;
 import uml.ClassDiagram;
-import uml.entities.Entity;
-import uml.entities.Implementor;
-import uml.entities.InnerEntity;
-import uml.entities.Interface;
+import uml.entities.*;
+import uml.entities.Class;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -27,10 +26,16 @@ public class Inner extends Link
 
     public Inner(Entity outer, InnerEntity inner)
     {
+        super();
         this.outer = outer;
         this.inner = inner;
     }
 
+    public Inner(InnerDto dto, ClassDiagram cd)
+    {
+        super();
+        fromDto(dto, cd);
+    }
 
     @XmlIDREF
     public Entity getOuter()
@@ -61,19 +66,37 @@ public class Inner extends Link
         super.fromDto(dto, cd);
         if (dto.getSourceId() != null)
         {
-            try
-            {
-                this.inner = (InnerEntity) cd.getEntity(dto.getSourceId());
-            }
-            catch (ClassCastException e)
-            {
-                throw new IllegalArgumentException(cd.getEntity(dto.getSourceId()).getName() + " is not a possible inner entity");
-            }
+            this.inner = convertToInnerEntity(cd.getEntity(dto.getSourceId()));
+            cd.removeEntity(cd.getEntity(dto.getSourceId()));
+            cd.addEntity((Entity)this.inner);
         }
         if (dto.getTargetId() != null)
         {
             this.outer = cd.getEntity(dto.getTargetId());
-            throw new IllegalArgumentException(cd.getEntity(dto.getTargetId()).getName() + " is not an interface");
+        }
+    }
+
+    public InnerEntity convertToInnerEntity(Entity entity){
+        if(entity instanceof Interface){
+            return new InnerInterface((Interface)entity);
+        }
+        else if(entity instanceof Class){
+            return new InnerClass((Class)entity);
+        }
+        else{
+            throw new IllegalArgumentException(entity.getName() + " cannot be an inner entity");
+        }
+    }
+
+    public Entity convertToEntity(InnerEntity innerEntity){
+        if(innerEntity instanceof InnerInterface){
+            return new Interface((InnerInterface)innerEntity);
+        }
+        else if(innerEntity instanceof InnerClass){
+            return new Class((InnerClass)innerEntity);
+        }
+        else{
+            throw new IllegalArgumentException("This inner entity cannot be an entity");
         }
     }
 
@@ -81,7 +104,7 @@ public class Inner extends Link
     public JsonNode getCreationCommands()
     {
         return Command.createResponse(toDto(),
-                ElementTypeDto.INNER);
+                ElementTypeDto.INNER, CommandType.SELECT_COMMAND);
     }
 
     @Override

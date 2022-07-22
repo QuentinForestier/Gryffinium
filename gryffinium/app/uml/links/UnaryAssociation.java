@@ -2,6 +2,7 @@ package uml.links;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import commands.Command;
+import commands.CommandType;
 import dto.ElementTypeDto;
 import dto.links.AssociationDto;
 import dto.links.LinkDto;
@@ -67,7 +68,7 @@ public class UnaryAssociation extends Association
     {
         ArrayNode result = Json.newArray();
         result.add(Command.createResponse(toDto(),
-                ElementTypeDto.UNARY_ASSOCIATION));
+                ElementTypeDto.UNARY_ASSOCIATION, CommandType.SELECT_COMMAND));
         result.add(getTarget().getCreationCommands(this));
         return result;
     }

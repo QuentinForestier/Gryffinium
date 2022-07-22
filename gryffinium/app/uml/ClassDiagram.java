@@ -5,10 +5,7 @@ import play.libs.Json;
 import uml.entities.Entity;
 import uml.entities.operations.Operation;
 import uml.entities.variables.Variable;
-import uml.links.Association;
-import uml.links.ClassRelationship;
-import uml.links.Dependency;
-import uml.links.MultiAssociation;
+import uml.links.*;
 import uml.types.ExistingTypes;
 import uml.types.SimpleType;
 import uml.types.Type;
@@ -32,12 +29,15 @@ public class ClassDiagram
     @XmlElement(name = "association")
     private final ArrayList<Association> associations = new ArrayList<>();
 
-    @XmlElement
+    @XmlElement(name = "dependency")
     private final ArrayList<Dependency> dependencies = new ArrayList<>();
 
     @XmlElement(name = "relationship")
     private final ArrayList<ClassRelationship> relationships =
             new ArrayList<>();
+
+    @XmlElement(name = "inner")
+    private final ArrayList<Inner> inners = new ArrayList<>();
 
     @XmlElement(name = "multiAssociation")
     private final ArrayList<MultiAssociation> multiAssociations =
@@ -129,6 +129,18 @@ public class ClassDiagram
     public void getMultiAssociation(String id)
     {
         multiAssociations.stream().filter(m -> m.getId().equals(id)).findFirst().orElseThrow(() -> new IllegalArgumentException("MultiAssociation not found"));
+    }
+
+    public void addInner(Inner i){
+        inners.add(i);
+    }
+
+    public Inner getInner(String id){
+        return inners.stream().filter(i -> i.getId().equals(id)).findFirst().orElseThrow(() -> new IllegalArgumentException("Inner not found"));
+    }
+
+    public void removeInner(Inner i){
+        inners.remove(i);
     }
 
     public void addMultiAssociation(MultiAssociation multiAssociation)

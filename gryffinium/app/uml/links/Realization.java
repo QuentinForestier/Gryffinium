@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.sun.xml.bind.AnyTypeAdapter;
 import commands.Command;
+import commands.CommandType;
 import dto.ElementTypeDto;
 import dto.links.LinkDto;
 import dto.links.RealizationDto;
@@ -88,7 +89,7 @@ super();
     public JsonNode getCreationCommands()
     {
         return Command.createResponse(toDto(),
-                ElementTypeDto.REALIZATION);
+                ElementTypeDto.REALIZATION, CommandType.SELECT_COMMAND);
     }
 
     @Override

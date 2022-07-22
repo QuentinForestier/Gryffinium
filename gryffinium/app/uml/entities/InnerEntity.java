@@ -6,4 +6,6 @@ public interface InnerEntity
 {
     @XmlID
     String getId();
+
+
 }

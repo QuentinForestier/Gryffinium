@@ -4,6 +4,7 @@ import actors.UserActor;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import commands.CommandType;
 import commands.chat.ChatMessageCommand;
 import commands.Command;
 import commands.uml.CreateCommand;
@@ -151,25 +152,25 @@ public class ProjectUser extends Model
     public void handleMessage(JsonNode message)
     {
         Command cmd;
-        switch (message.get("type").asText())
+        switch (CommandType.valueOf(message.get("type").asText()))
         {
-            case "ChatMessageCommand":
+            case CHAT_MESSAGE_COMMAND:
                 ObjectNode data = (ObjectNode) message.get("data");
                 cmd = new ChatMessageCommand(data.put("sender", user.getName()));
                 break;
-            case "CreateCommand":
+            case CREATE_COMMAND:
                 cmd = new CreateCommand(message.get("data"),
                         dto.ElementTypeDto.valueOf(message.get("entityType").asText()));
                 break;
-            case "UpdateCommand":
+            case UPDATE_COMMAND:
                 cmd = new UpdateCommand(message.get("data"),
                         dto.ElementTypeDto.valueOf(message.get("entityType").asText()));
                 break;
-            case "RemoveCommand":
+            case REMOVE_COMMAND:
                 cmd = new RemoveCommand(message.get("data"),
                         dto.ElementTypeDto.valueOf(message.get("entityType").asText()));
                 break;
-            case "SelectCommand":
+            case SELECT_COMMAND:
                 cmd = new SelectCommand();
                 break;
             default:

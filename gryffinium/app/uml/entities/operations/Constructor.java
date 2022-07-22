@@ -3,6 +3,7 @@ package uml.entities.operations;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import commands.Command;
+import commands.CommandType;
 import dto.ElementTypeDto;
 import dto.entities.operations.MethodDto;
 import dto.entities.operations.OperationDto;
@@ -36,7 +37,7 @@ public class Constructor extends Operation
     public ArrayNode getCreationCommand(Entity e)
     {
         ArrayNode result = Json.newArray();
-        result.add(Command.createResponse(toDto(e), ElementTypeDto.CONSTRUCTOR));
+        result.add(Command.createResponse(toDto(e), ElementTypeDto.CONSTRUCTOR, CommandType.SELECT_COMMAND));
         result.addAll(getParametersCreationCommands(e));
         return result;
     }

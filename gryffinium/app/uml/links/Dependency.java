@@ -3,6 +3,7 @@ package uml.links;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import commands.Command;
+import commands.CommandType;
 import dto.ElementTypeDto;
 import dto.links.DependencyDto;
 import dto.links.LabeledLinkDto;
@@ -85,7 +86,7 @@ public class Dependency extends LabeledLink
     public JsonNode getCreationCommands()
     {
         return Command.createResponse(toDto(),
-                ElementTypeDto.DEPENDENCY);
+                ElementTypeDto.DEPENDENCY, CommandType.SELECT_COMMAND);
     }
 
     @Override

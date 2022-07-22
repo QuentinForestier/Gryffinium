@@ -2,6 +2,7 @@ package uml.entities.variables;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import commands.Command;
+import commands.CommandType;
 import dto.ElementTypeDto;
 import dto.entities.variables.ParameterDto;
 import dto.entities.variables.VariableDto;
@@ -79,7 +80,7 @@ public class Parameter extends Variable
 
     public JsonNode getCreationCommand(Entity e, Operation o)
     {
-        return Command.createResponse(toDto(e, o), ElementTypeDto.PARAMETER);
+        return Command.createResponse(toDto(e, o), ElementTypeDto.PARAMETER, CommandType.SELECT_COMMAND);
     }
 
     @Override
@@ -91,6 +92,6 @@ public class Parameter extends Variable
         dto.setParentId(getParent().getId());
         dto.setMethodId(getParentOperation().getId());
 
-        return Command.createResponse(dto, ElementTypeDto.PARAMETER);
+        return Command.createResponse(dto, ElementTypeDto.PARAMETER, CommandType.SELECT_COMMAND);
     }
 }

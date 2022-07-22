@@ -2,6 +2,7 @@ package uml.links;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import commands.Command;
+import commands.CommandType;
 import dto.ElementTypeDto;
 import dto.links.BinaryAssociationDto;
 import play.libs.Json;
@@ -35,7 +36,7 @@ public class Aggregation extends BinaryAssociation
     public ArrayNode getCreationCommands()
     {
         ArrayNode result = Json.newArray();
-        result.add(Command.createResponse(toDto(), ElementTypeDto.AGGREGATION));
+        result.add(Command.createResponse(toDto(), ElementTypeDto.AGGREGATION, CommandType.SELECT_COMMAND));
         result.add(getSource().getCreationCommands(this));
         result.add(getTarget().getCreationCommands(this));
         return result;

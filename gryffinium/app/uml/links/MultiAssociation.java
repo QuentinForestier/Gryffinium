@@ -3,6 +3,7 @@ package uml.links;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import commands.Command;
+import commands.CommandType;
 import dto.ElementTypeDto;
 import dto.links.MultiAssociationDto;
 import dto.links.UnaryAssociationDto;
@@ -138,7 +139,7 @@ public class MultiAssociation
     {
         ArrayNode result = Json.newArray();
         result.add(Command.createResponse(toDto(),
-                ElementTypeDto.MUTLI_ASSOCIATION));
+                ElementTypeDto.MUTLI_ASSOCIATION, CommandType.SELECT_COMMAND));
         return result;
     }
 }

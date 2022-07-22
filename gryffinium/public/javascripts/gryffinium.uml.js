@@ -10,6 +10,7 @@ export class ElementType {
     static Generalization = new ElementType("GENERALIZATION");
     static Realization = new ElementType("REALIZATION");
     static BinaryAssociation = new ElementType("BINARY_ASSOCIATION");
+    static UnaryAssociation = new ElementType("UNARY_ASSOCIATION");
     static Aggregation = new ElementType("AGGREGATION");
     static Composition = new ElementType("COMPOSITION");
 

@@ -2,6 +2,7 @@ package uml.links;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import commands.Command;
+import commands.CommandType;
 import dto.ElementTypeDto;
 import dto.links.LinkDto;
 import dto.links.GeneralizationDto;
@@ -71,7 +72,7 @@ public class Generalization extends ClassRelationship
     @Override
     public JsonNode getCreationCommands()
     {
-        return Command.createResponse(toDto(), ElementTypeDto.GENERALIZATION);
+        return Command.createResponse(toDto(), ElementTypeDto.GENERALIZATION, CommandType.SELECT_COMMAND);
     }
 
     @XmlIDREF

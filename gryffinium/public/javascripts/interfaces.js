@@ -58,7 +58,7 @@ export function generateRoleInterface(body, element, role, send, update = false)
         container.innerHTML = "";
     } else {
         container = document.createElement("div");
-        container.className = "col-sm-auto";
+        container.className = "col-sm-3";
         body.append(container);
     }
 
@@ -82,7 +82,7 @@ export function generateRoleInterface(body, element, role, send, update = false)
             name: input.value,
             id: role.id,
             associationId: element.getId(),
-        }, 'ROLE', 'UpdateCommand')
+        }, 'ROLE', 'UPDATE_COMMAND')
     }));
 
     let row2 = document.createElement("tr");
@@ -94,7 +94,7 @@ export function generateRoleInterface(body, element, role, send, update = false)
             multiplicity: input.value,
             id: role.id,
             associationId: element.getId(),
-        }, 'ROLE', 'UpdateCommand')
+        }, 'ROLE', 'UPDATE_COMMAND')
     }));
 
 }
@@ -124,7 +124,7 @@ export function generateBinaryAssociationSettingsInterface(body, element, send, 
         container.innerHTML = "";
     } else {
         container = document.createElement("div");
-        container.className = "col-sm-auto";
+        container.className = "col-sm-3";
         container.id = "container-settings"
         body.append(container);
     }
@@ -165,7 +165,7 @@ export function generateBinaryAssociationSettingsInterface(body, element, send, 
         send({
             id: element.getId(),
             isDirected: check.checked
-        }, element.getType(), 'UpdateCommand');
+        }, element.getType(), 'UPDATE_COMMAND');
     }
 
     let label = document.createElement("label");
@@ -180,7 +180,7 @@ export function generateBinaryAssociationSettingsInterface(body, element, send, 
     table.append(row2);
 
     let btnContainer = document.createElement("div");
-    btnContainer.className = "form-group col-sm-auto ";
+    btnContainer.className = "form-group col-sm-3 ";
     let td2 = document.createElement("td");
     row2.append(td2);
     td2.append(btnContainer);
@@ -204,7 +204,7 @@ export function generateSwapButton(element, send) {
                 vertices: element.get('vertices') ? element.get('vertices').reverse() : undefined,
             },
             element.getType(),
-            'UpdateCommand');
+            'UPDATE_COMMAND');
     }
     return button;
 }
@@ -223,7 +223,7 @@ export function generateHeaderTitleInterface(element, send) {
         send({
             id: element.getId(),
             name: this.value,
-        }, element.getType(), 'UpdateCommand')
+        }, element.getType(), 'UPDATE_COMMAND')
     }
 
     return title
@@ -247,7 +247,7 @@ export function generateEntityHeader(header, element, send) {
     row.className = 'row align-middle';
 
     let tmp = document.createElement('div');
-    tmp.className = 'col-sm-auto';
+    tmp.className = 'col-sm-3';
     tmp.append(title);
 
     row.append(tmp);
@@ -259,12 +259,12 @@ export function generateEntityHeader(header, element, send) {
                     visibility: input.value,
                 },
                 element.getType(),
-                'UpdateCommand');
+                'UPDATE_COMMAND');
         }
     }).firstChild;
 
     tmp = document.createElement('div');
-    tmp.className = 'col-sm-auto';
+    tmp.className = 'col-sm-3';
     tmp.append(visibility);
 
     row.append(tmp);
@@ -281,12 +281,12 @@ export function generateEntityHeader(header, element, send) {
                     isAbstract: input.checked,
                 },
                 element.getType(),
-                'UpdateCommand');
+                'UPDATE_COMMAND');
         }
     }).firstChild
 
     tmp = document.createElement('div');
-    tmp.className = 'col-sm-auto';
+    tmp.className = 'col-sm-3';
 
 
     checkbox.className = checkbox.className + ' form-check-input';
@@ -321,7 +321,7 @@ export function generateAttributesInterface(body, element, send, update = false)
         container.innerHTML = "";
     } else {
         container = document.createElement("div");
-        container.className = "col-sm-auto";
+        container.className = "col-sm-3";
         container.id = "container-attributes"
         body.append(container);
     }
@@ -352,7 +352,7 @@ export function generateAttributesInterface(body, element, send, update = false)
                 isConstant: false,
             },
             'ATTRIBUTE',
-            'CreateCommand');
+            'CREATE_COMMAND');
     }));
 
     for (let attribute of element.get('attributes')) {
@@ -372,7 +372,7 @@ export function generateAttributeRowInterface(element, attribute, send) {
                     name: input.value,
                 },
                 'ATTRIBUTE',
-                'UpdateCommand');
+                'UPDATE_COMMAND');
         }
     }));
 
@@ -385,7 +385,7 @@ export function generateAttributeRowInterface(element, attribute, send) {
                     type: input.value,
                 },
                 'ATTRIBUTE',
-                'UpdateCommand');
+                'UPDATE_COMMAND');
         }
     }));
 
@@ -399,7 +399,7 @@ export function generateAttributeRowInterface(element, attribute, send) {
                     visibility: input.value,
                 },
                 'ATTRIBUTE',
-                'UpdateCommand');
+                'UPDATE_COMMAND');
         }
     }));
 
@@ -412,7 +412,7 @@ export function generateAttributeRowInterface(element, attribute, send) {
                     isConstant: input.checked,
                 },
                 'ATTRIBUTE',
-                'UpdateCommand');
+                'UPDATE_COMMAND');
         }
     }));
 
@@ -425,7 +425,7 @@ export function generateAttributeRowInterface(element, attribute, send) {
                     isStatic: input.checked,
                 },
                 'ATTRIBUTE',
-                'UpdateCommand');
+                'UPDATE_COMMAND');
         }
     }));
 
@@ -459,7 +459,7 @@ export function generateAttributeRowInterface(element, attribute, send) {
                     id: attribute.id,
                 },
                 'ATTRIBUTE',
-                'RemoveCommand');
+                'REMOVE_COMMAND');
         }  // Remove
     ));
 
@@ -473,7 +473,7 @@ export function generateMethodsInterface(body, element, send, update = false) {
         container.innerHTML = "";
     } else {
         container = document.createElement("div");
-        container.className = "col-sm-auto";
+        container.className = "col-sm-3";
         container.id = "container-methods"
         body.append(container);
     }
@@ -504,7 +504,7 @@ export function generateMethodsInterface(body, element, send, update = false) {
                 isAbstract: false,
             },
             entityType,
-            'CreateCommand');
+            'CREATE_COMMAND');
     }));
 
     for (let constructor of element.get('constructors')) {
@@ -543,7 +543,7 @@ export function generateMethodRowInterface(element, method, send) {
                     name: input.value,
                 },
                 'METHOD',
-                'UpdateCommand');
+                'UPDATE_COMMAND');
         }
     }));
 
@@ -556,7 +556,7 @@ export function generateMethodRowInterface(element, method, send) {
                     type: input.value,
                 },
                 'METHOD',
-                'UpdateCommand');
+                'UPDATE_COMMAND');
         }
     }));
 
@@ -569,7 +569,7 @@ export function generateMethodRowInterface(element, method, send) {
                     visibility: input.value,
                 },
                 'METHOD',
-                'UpdateCommand');
+                'UPDATE_COMMAND');
         }
     }));
 
@@ -582,7 +582,7 @@ export function generateMethodRowInterface(element, method, send) {
                     isAbstract: input.checked,
                 },
                 'METHOD',
-                'UpdateCommand');
+                'UPDATE_COMMAND');
         }
     }));
 
@@ -595,7 +595,7 @@ export function generateMethodRowInterface(element, method, send) {
                     isStatic: input.checked,
                 },
                 'METHOD',
-                'UpdateCommand');
+                'UPDATE_COMMAND');
         }
     }));
 
@@ -629,7 +629,7 @@ export function generateMethodRowInterface(element, method, send) {
                     id: method.id,
                 },
                 'METHOD',
-                'RemoveCommand');
+                'REMOVE_COMMAND');
         }  // Remove
     ));
 
@@ -669,7 +669,7 @@ export function generateConstructorRowInterface(element, constructor, send) {
                     visibility: input.value,
                 },
                 'CONSTRUCTOR',
-                'UpdateCommand');
+                'UPDATE_COMMAND');
         }
     }));
 
@@ -709,7 +709,7 @@ export function generateConstructorRowInterface(element, constructor, send) {
                     id: constructor.id,
                 },
                 'CONSTRUCTOR',
-                'RemoveCommand');
+                'REMOVE_COMMAND');
         }  // Remove
     ));
 
@@ -723,7 +723,7 @@ export function generateValuesInterface(body, element, send, update = false) {
         container.innerHTML = "";
     } else {
         container = document.createElement("div");
-        container.className = "col-sm-auto";
+        container.className = "col-sm-3";
         container.id = "container-values"
         body.append(container);
     }
@@ -749,7 +749,7 @@ export function generateValuesInterface(body, element, send, update = false) {
                 name: "value",
             },
             'VALUE',
-            'CreateCommand');
+            'CREATE_COMMAND');
     }));
 
     for (let value of element.get('values')) {
@@ -769,7 +769,7 @@ export function generateValueRowInterface(element, value, send) {
                     oldValue: value.name,
                 },
                 'VALUE',
-                'UpdateCommand');
+                'UPDATE_COMMAND');
         }
     }));
 
@@ -804,7 +804,7 @@ export function generateValueRowInterface(element, value, send) {
                     value: value.name,
                 },
                 'VALUE',
-                'RemoveCommand');
+                'REMOVE_COMMAND');
         }  // Remove
     ));
 
@@ -816,7 +816,7 @@ export function generateParametersInterface(element, method, send) {
     let container = null;
     if (document.getElementById("container-parameters") === null) {
         container = document.createElement("div");
-        container.className = "col-sm-auto";
+        container.className = "col-sm-3";
         container.id = "container-parameters"
         container.display = "none";
         containerBody.append(container);
@@ -849,7 +849,7 @@ export function generateParametersInterface(element, method, send) {
                 type: "String",
             },
             'PARAMETER',
-            'CreateCommand');
+            'CREATE_COMMAND');
     }));
 
     if (method === null) {
@@ -878,7 +878,7 @@ export function generateParameterRowInterface(element, method, parameter, send) 
                     name: input.value,
                 },
                 'PARAMETER',
-                'UpdateCommand');
+                'UPDATE_COMMAND');
         }
     }));
 
@@ -891,7 +891,7 @@ export function generateParameterRowInterface(element, method, parameter, send) 
                     type: input.value,
                 },
                 'PARAMETER',
-                'UpdateCommand');
+                'UPDATE_COMMAND');
         }
     }));
 
@@ -926,7 +926,7 @@ export function generateParameterRowInterface(element, method, parameter, send) 
                     id: parameter.id,
                 },
                 'PARAMETER',
-                'RemoveCommand');
+                'REMOVE_COMMAND');
         }  // Remove
     ));
 

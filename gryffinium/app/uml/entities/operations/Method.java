@@ -3,6 +3,7 @@ package uml.entities.operations;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import commands.Command;
+import commands.CommandType;
 import dto.ElementTypeDto;
 import dto.entities.operations.MethodDto;
 import dto.entities.operations.OperationDto;
@@ -137,7 +138,7 @@ public class Method extends Operation implements Subscribers
     public ArrayNode getCreationCommand(Entity e)
     {
         ArrayNode result = Json.newArray();
-        result.add(Command.createResponse(toDto(e), ElementTypeDto.METHOD));
+        result.add(Command.createResponse(toDto(e), ElementTypeDto.METHOD, CommandType.SELECT_COMMAND));
         result.addAll(getParametersCreationCommands(e));
         return result;
     }
@@ -167,6 +168,6 @@ public class Method extends Operation implements Subscribers
         dto.setType(getType().getName());
         dto.setId(getId());
         dto.setParentId(getParent().getId());
-        return Command.createResponse(dto, ElementTypeDto.METHOD);
+        return Command.createResponse(dto, ElementTypeDto.METHOD, CommandType.SELECT_COMMAND);
     }
 }

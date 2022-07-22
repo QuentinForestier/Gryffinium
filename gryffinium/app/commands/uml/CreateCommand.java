@@ -4,6 +4,7 @@ import akka.dispatch.sysmsg.Create;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import commands.Command;
+import commands.CommandType;
 import dto.entities.*;
 import dto.entities.operations.MethodDto;
 import dto.entities.operations.OperationDto;
@@ -53,7 +54,7 @@ public class CreateCommand implements Command
             case CLASS:
                 Class c = new Class(Json.fromJson(data, ClassDto.class));
                 project.getDiagram().addEntity(c);
-                result.add(Command.createResponse(c.toDto(), elementType));
+                result.add(Command.createResponse(c.toDto(), elementType, CommandType.CREATE_COMMAND));
                 break;
             case INNER_CLASS:
                 InnerClass ic = new InnerClass(
@@ -61,7 +62,7 @@ public class CreateCommand implements Command
                         project.getDiagram());
 
                 project.getDiagram().addEntity(ic);
-                result.add(Command.createResponse(ic.toDto(), elementType));
+                result.add(Command.createResponse(ic.toDto(), elementType, CommandType.CREATE_COMMAND));
                 break;
             case ASSOCIATION_CLASS:
                 AssociationClass ac = new AssociationClass(
@@ -69,25 +70,25 @@ public class CreateCommand implements Command
                         project.getDiagram());
 
                 project.getDiagram().addEntity(ac);
-                result.add(Command.createResponse(ac.toDto(), elementType));
+                result.add(Command.createResponse(ac.toDto(), elementType, CommandType.CREATE_COMMAND));
                 break;
             case ENUM:
                 Enum e = new Enum(Json.fromJson(data, EnumDto.class));
                 project.getDiagram().addEntity(e);
-                result.add(Command.createResponse(e.toDto(), elementType));
+                result.add(Command.createResponse(e.toDto(), elementType, CommandType.CREATE_COMMAND));
                 break;
             case INTERFACE:
                 Interface i = new Interface(Json.fromJson(data,
                         EntityDto.class));
                 project.getDiagram().addEntity(i);
-                result.add(Command.createResponse(i.toDto(), elementType));
+                result.add(Command.createResponse(i.toDto(), elementType, CommandType.CREATE_COMMAND));
                 break;
             case INNER_INTERFACE:
                 InnerInterface ii = new InnerInterface(
                         Json.fromJson(data, InnerInterfaceDto.class),
                         project.getDiagram());
                 project.getDiagram().addEntity(ii);
-                result.add(Command.createResponse(ii.toDto(), elementType));
+                result.add(Command.createResponse(ii.toDto(), elementType, CommandType.CREATE_COMMAND));
                 break;
             case UNARY_ASSOCIATION:
                 UnaryAssociation ua = new UnaryAssociation(
@@ -95,7 +96,7 @@ public class CreateCommand implements Command
                         project.getDiagram());
                 project.getDiagram().addAssociation(ua);
                 ua.getParent().addUnaryAssociation(ua);
-                result.add(Command.createResponse(ua.toDto(), elementType));
+                result.add(Command.createResponse(ua.toDto(), elementType, CommandType.CREATE_COMMAND));
                 break;
 
             case BINARY_ASSOCIATION:
@@ -104,7 +105,7 @@ public class CreateCommand implements Command
                         project.getDiagram());
 
                 project.getDiagram().addAssociation(ba);
-                result.add(Command.createResponse(ba.toDto(), elementType));
+                result.add(Command.createResponse(ba.toDto(), elementType, CommandType.CREATE_COMMAND));
                 break;
             case AGGREGATION:
                 Aggregation ag = new Aggregation(
@@ -112,7 +113,7 @@ public class CreateCommand implements Command
                         project.getDiagram());
 
                 project.getDiagram().addAssociation(ag);
-                result.add(Command.createResponse(ag.toDto(), elementType));
+                result.add(Command.createResponse(ag.toDto(), elementType, CommandType.CREATE_COMMAND));
                 break;
             case COMPOSITION:
                 Composition co = new Composition(
@@ -120,14 +121,14 @@ public class CreateCommand implements Command
                         project.getDiagram());
                 project.getDiagram().addAssociation(co);
 
-                result.add(Command.createResponse(co.toDto(), elementType));
+                result.add(Command.createResponse(co.toDto(), elementType, CommandType.CREATE_COMMAND));
                 break;
             case MUTLI_ASSOCIATION:
                 MultiAssociation ma = new MultiAssociation(
                         Json.fromJson(data, MultiAssociationDto.class),
                         project.getDiagram());
                 project.getDiagram().addMultiAssociation(ma);
-                result.add(Command.createResponse(ma.toDto(), elementType));
+                result.add(Command.createResponse(ma.toDto(), elementType, CommandType.CREATE_COMMAND));
                 break;
             case DEPENDENCY:
                 Dependency d = new Dependency(
@@ -135,7 +136,7 @@ public class CreateCommand implements Command
                         project.getDiagram());
 
                 project.getDiagram().addDependency(d);
-                result.add(Command.createResponse(d.toDto(), elementType));
+                result.add(Command.createResponse(d.toDto(), elementType, CommandType.CREATE_COMMAND));
                 break;
             case GENERALIZATION:
                 Generalization g = new Generalization(
@@ -143,7 +144,7 @@ public class CreateCommand implements Command
                         project.getDiagram());
 
                 project.getDiagram().addRelationship(g);
-                result.add(Command.createResponse(g.toDto(), elementType));
+                result.add(Command.createResponse(g.toDto(), elementType, CommandType.CREATE_COMMAND));
                 break;
             case REALIZATION:
                 Realization r = new Realization(
@@ -151,9 +152,14 @@ public class CreateCommand implements Command
                         project.getDiagram());
 
                 project.getDiagram().addRelationship(r);
-                result.add(Command.createResponse(r.toDto(), elementType));
+                result.add(Command.createResponse(r.toDto(), elementType, CommandType.CREATE_COMMAND));
                 break;
             case INNER:
+                Inner inner = new Inner(
+                        Json.fromJson(data, InnerDto.class),
+                        project.getDiagram());
+
+                project.getDiagram().addInner(inner);
 
                 break;
 
@@ -167,7 +173,7 @@ public class CreateCommand implements Command
                 gv.setValue("value" + eParent.getValues().size());
                 eParent.addValue(gv.getValue());
 
-                result.add(Command.createResponse(gv, elementType));
+                result.add(Command.createResponse(gv, elementType, CommandType.CREATE_COMMAND));
                 break;
 
             case ATTRIBUTE:
@@ -179,7 +185,7 @@ public class CreateCommand implements Command
                 attrParent.addAttribute(a);
 
                 result.add(Command.createResponse(a.toDto(attrParent),
-                        elementType));
+                        elementType, CommandType.CREATE_COMMAND));
                 break;
             case PARAMETER:
                 ParameterDto gp = Json.fromJson(data,
@@ -191,7 +197,7 @@ public class CreateCommand implements Command
 
                 op.addParam(p);
                 result.add(Command.createResponse(p.toDto(paramParent, op),
-                        elementType));
+                        elementType, CommandType.CREATE_COMMAND));
                 break;
 
 
@@ -205,7 +211,7 @@ public class CreateCommand implements Command
                 ctorParent.addConstructor(ctor);
 
                 result.add(Command.createResponse(ctor.toDto(ctorParent),
-                        elementType));
+                        elementType, CommandType.CREATE_COMMAND));
                 break;
             case METHOD:
                 MethodDto gm = Json.fromJson(data,
@@ -216,7 +222,7 @@ public class CreateCommand implements Command
                         project.getDiagram().getEntity(gm.getParentId());
                 methParent.addMethod(m);
                 result.add(Command.createResponse(m.toDto(methParent),
-                        elementType));
+                        elementType, CommandType.CREATE_COMMAND));
                 break;
         }
         return result;

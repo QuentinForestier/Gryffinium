@@ -18,12 +18,19 @@
         <div class="card-header tab-card-header">
             <ul class="nav nav-tabs card-header-tabs" role="tablist">
                 <li class="nav-item">
-                    <button class="nav-link" id="savepng" role="tab" aria-selected="false"
-                    data-toggle="tooltip" data-placement="top" title="Export as svg"><i class="fa-solid fa-file-image"></i></button>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle nav-link" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-file-image"></i> Export
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="exportDropdown">
+                            <li><button class="dropdown-item" id="savesvg" type="button">Export as SVG</button></li>
+                            <li><button class="dropdown-item" id="savepng" type="button">Export as PNG</button></li>
+                        </ul>
+                    </div>
                 </li>
             </ul>
         </div>
-        <div class="card-header tab-card-header">
+        <div class=" card-header tab-card-header">
             <ul class="nav nav-tabs card-header-tabs" role="tablist">
                 <li class="nav-item">
                     <a class="nav-link" id="selectClass" role="tab" aria-selected="false"
@@ -141,7 +148,10 @@
             const elements = new Map();
 
             document.getElementById("savepng").addEventListener("click", function () {
-                exportToSvg();
+                exportToImage('png');
+            })
+            document.getElementById("savesvg").addEventListener("click", function () {
+                exportToImage('svg');
             })
 
             function setSelectedElement(sender, type) {
@@ -315,14 +325,14 @@
                     let command = {
                         'message': messageInput.value,
                     };
-                    sendMessage(command, undefined, 'ChatMessageCommand');
+                    sendMessage(command, undefined, 'CHAT_MESSAGE_COMMAND');
                     messageInput.value = '';
                 }
             };
 
             socket.onopen = function () {
 
-                sendMessage({}, '', 'SelectCommand');
+                sendMessage({}, '', 'SELECT_COMMAND');
 
                 socket.onmessage = function (event) {
                     let message = JSON.parse(event.data);
@@ -330,12 +340,12 @@
                         console.log(message.message)
                     } else {
                         for (let command of message.commands) {
-                            switch (message.commandType) {
-                                case 'ChatMessageCommand':
+                            switch (command.commandType) {
+                                case 'CHAT_MESSAGE_COMMAND':
                                     receiveChatMessage(command);
                                     break;
-                                case 'SelectCommand':
-                                case 'CreateCommand':
+                                case 'SELECT_COMMAND':
+                                case 'CREATE_COMMAND':
                                     let elem = null;
                                     let parent = null;
                                     switch (command.elementType) {
@@ -432,6 +442,8 @@
                                                 movingVertices = link;
                                             });
                                             break;
+                                        case ElementType.UnaryAssociation.name:
+
                                         case ElementType.Aggregation.name:
                                             elem = new uml.Aggregation({
                                                 source: {id: command.sourceId},
@@ -556,7 +568,7 @@
 
                                     }
                                     break;
-                                case 'UpdateCommand':
+                                case 'UPDATE_COMMAND':
                                     switch (command.elementType) {
                                         case ElementType.Class.name:
                                         case ElementType.Interface.name:
@@ -615,15 +627,13 @@
                                             break
                                         case ElementType.Role.name:
                                             elements.get(command.associationId).updateRole(command.id, command);
-
-
                                             if (selectedElement === elements.get(command.associationId)) {
                                                 generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
                                             }
                                             break;
                                     }
                                     break;
-                                case 'RemoveCommand':
+                                case 'REMOVE_COMMAND':
                                     switch (command.elementType) {
                                         case ElementType.Class.name:
                                         case ElementType.Interface.name:
@@ -636,6 +646,7 @@
                                             let elem = elements.get(command.id);
                                             elem.set('alreadyDeleted', true)
                                             elem.remove();
+                                            elements.remove(elem.getId());
                                             break;
                                         case ElementType.AssociationClass.name:
                                             // TODO AssociationClass
@@ -765,7 +776,7 @@
                                 height: 100,
                             },
                             selectedType,
-                            'CreateCommand');
+                            'CREATE_COMMAND');
                 } else if (event.button === 1) {
                     dragStartPosition = {x: x * scale.sx, y: y * scale.sy};
                 }
@@ -788,7 +799,7 @@
                             width: elementView.model.getSize().width,
                             height: elementView.model.getSize().height,
                         },
-                        elementView.model.getType(), 'UpdateCommand');
+                        elementView.model.getType(), 'UPDATE_COMMAND');
             })
 
             paper.on('link:disconnect', function (linkView) {
@@ -804,14 +815,14 @@
                         targetId: target.id,
                         isDirected: false,
                         name: linkView.model.getType(),
-                    }, linkView.model.getType(), 'CreateCommand');
+                    }, linkView.model.getType(), 'CREATE_COMMAND');
                     linkView.model.remove();
                 } else {
                     sendMessage({
                         sourceId: source.id,
                         targetId: target.id,
                         id: linkView.model.get('linkId'),
-                    }, linkView.model.getType(), 'UpdateCommand');
+                    }, linkView.model.getType(), 'UPDATE_COMMAND');
                 }
 
             });
@@ -835,14 +846,14 @@
                                     distanceName: index % 2 ? label.position.distance : undefined,
                                     offsetName: index % 2 ? JSON.stringify(label.position.offset) : undefined,
                                     associationId: linkView.model.getId(),
-                                }, 'ROLE', 'UpdateCommand');
+                                }, 'ROLE', 'UPDATE_COMMAND');
                             } else {
                                 let label = linkView.model.get('labels')[0];
                                 sendMessage({
                                     id: linkView.model.getId(),
                                     distance: label.position.distance,
                                     offset: JSON.stringify(label.position.offset),
-                                }, linkView.model.getType(), 'UpdateCommand');
+                                }, linkView.model.getType(), 'UPDATE_COMMAND');
                             }
                         }
                     }
@@ -886,7 +897,7 @@
                                 height: moving.get('size').height
                             },
                             moving.getType(),
-                            'UpdateCommand');
+                            'UPDATE_COMMAND');
                     let cellBBox = paper.findViewByModel(moving).getBBox();
                     console.log('top left : {x : ' + cellBBox.x + ', y : ' + cellBBox.y + '}');
                     console.log(`bottom right : {x : ${(cellBBox.x + cellBBox.width)}, y : ${(cellBBox.y + cellBBox.height)}}`);
@@ -904,7 +915,7 @@
                         sourceAnchor: view.sourceAnchor,
                         targetAnchor: view.targetAnchor,
                         vertices: JSON.stringify(movingVertices.get('vertices')),
-                    }, movingVertices.getType(), 'UpdateCommand');
+                    }, movingVertices.getType(), 'UPDATE_COMMAND');
                     movingVertices = undefined;
                 }
             });
@@ -1088,29 +1099,61 @@
             }
 
 
-            function exportToSvg() {
+            function exportToImage(filetype) {
                 paper.removeTools();
                 let currentScale = paper.scale();
                 let currentTranslate = paper.translate();
                 paper.scale(1);
                 paper.translate(0, 0)
                 let {x, y, width, height} = paper.getContentArea();
+                let margin = 20;
                 let elem = document.getElementsByTagName('svg')[0];
-                elem.setAttribute('width', width + x + 20);
-                elem.setAttribute('height', height + y + 20);
+                elem.setAttribute('width', width + x + margin);
+                elem.setAttribute('height', height + y + margin);
                 let svgString = new XMLSerializer().serializeToString(elem);
                 let DOMURL = self.URL || self.webkitURL || self;
                 let svg = new Blob([svgString], {type: 'image/svg+xml;charset=utf-8'});
                 let url = DOMURL.createObjectURL(svg);
-                download(url, 'diagram.svg');
-                DOMURL.revokeObjectURL(url);
+                if (filetype === 'png') {
+                    let canvas = document.createElement('canvas');
+                    canvas.width = (width + x + margin);
+                    canvas.height = (height + y + margin);
+                    let ctx = canvas.getContext('2d');
+                    let img = new Image();
+                    img.onload = function () {
+                        // draw it to the canvas
+                        ctx.drawImage(this, margin, margin, (width + x + margin), (height + y + margin));
+
+                        DOMURL.revokeObjectURL(url);
+                        // now we can resolve the promise, passing the base64 url
+                        download(canvas.toDataURL(), 'diagram.png');
+                    };
+
+                    // load the image
+                    img.src = url;
+                } else {
+                    download(url, 'diagram.svg');
+                    DOMURL.revokeObjectURL(url);
+                }
                 elem.setAttribute('height', '100%');
                 elem.setAttribute('width', '100%');
                 paper.translate(currentTranslate.tx, currentTranslate.ty);
                 paper.scale(currentScale.sx, currentScale.sy);
             }
 
+            /*let tmp = new uml.MultiAssociation({
+                position: {
+                    x: 100,
+                    y: 100
+                },
+                size: {
+                    width: 50,
+                    height: 50
+                },
+                angle: 45
+            });
 
+            tmp.addTo(graph);*/
 
     </script>
 }

@@ -3,6 +3,7 @@ package uml.links;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import commands.Command;
+import commands.CommandType;
 import dto.ElementTypeDto;
 import dto.links.AssociationDto;
 import dto.links.BinaryAssociationDto;
@@ -133,7 +134,7 @@ public class BinaryAssociation extends Association
     {
         ArrayNode result = Json.newArray();
         result.add(Command.createResponse(toDto(),
-                ElementTypeDto.BINARY_ASSOCIATION));
+                ElementTypeDto.BINARY_ASSOCIATION, CommandType.SELECT_COMMAND));
         result.add(source.getCreationCommands(this));
         result.add(getTarget().getCreationCommands(this));
         return result;

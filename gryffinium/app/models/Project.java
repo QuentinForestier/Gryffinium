@@ -110,7 +110,6 @@ public class Project extends Model
         {
             response.set("commands", command.execute(this));
 
-            response.put("commandType", command.getClass().getSimpleName());
         }
         catch (Exception e)
         {

@@ -2,6 +2,7 @@ package uml.entities;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import commands.Command;
+import commands.CommandType;
 import dto.ElementTypeDto;
 import dto.entities.EntityDto;
 import dto.entities.EnumDto;
@@ -94,7 +95,7 @@ public class Enum extends ConstructableEntity
     public ArrayNode getCreationCommands()
     {
         ArrayNode result = Json.newArray();
-        result.add(Command.createResponse(toDto(), ElementTypeDto.ENUM));
+        result.add(Command.createResponse(toDto(), ElementTypeDto.ENUM, CommandType.SELECT_COMMAND));
         result.addAll(getConstructorsCreationCommands());
         result.addAll(getMethodsCreationCommands());
         result.addAll(getAttributesCreationCommands());
@@ -103,7 +104,7 @@ public class Enum extends ConstructableEntity
             ValueDto ev = new ValueDto();
             ev.setValue(value);
             ev.setParentId(getId());
-            result.add(Command.createResponse(ev, ElementTypeDto.VALUE));
+            result.add(Command.createResponse(ev, ElementTypeDto.VALUE, CommandType.SELECT_COMMAND));
         }
         return result;
     }

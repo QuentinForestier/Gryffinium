@@ -4,7 +4,6 @@ import dto.entities.InnerInterfaceDto;
 import uml.ClassDiagram;
 import uml.links.Inner;
 
-import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlType;
@@ -21,6 +20,17 @@ public class InnerInterface extends Interface implements InnerEntity
         this.isStatic = isStatic;
     }
 
+    public InnerInterface(Interface other){
+        this.setId(other.getId());
+        this.setName(other.getName());
+        this.setHeight(other.getHeight());
+        this.setWidth(other.getWidth());
+        this.setX(other.getX());
+        this.setY(other.getY());
+        this.setVisibility(other.getVisibility());
+        this.setStatic(false);
+    }
+
     public InnerInterface(String name)
     {
         this(name, false);
@@ -35,10 +45,10 @@ public class InnerInterface extends Interface implements InnerEntity
         }
 
         this.inner = new Inner(cd.getEntity(gi.getOuter()), this);
-        setGraphical(gi, cd);
+        fromDto(gi, cd);
     }
 
-    public void setGraphical(InnerInterfaceDto gi, ClassDiagram cd)
+    public void fromDto(InnerInterfaceDto gi, ClassDiagram cd)
     {
         super.fromDto(gi);
         if(gi.getStatic() != null)
