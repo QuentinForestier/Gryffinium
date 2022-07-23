@@ -22,6 +22,8 @@ import uml.entities.Class;
 import uml.entities.Enum;
 import uml.links.*;
 
+import java.util.List;
+
 public class CreateCommand implements Command
 {
     JsonNode data;
@@ -160,7 +162,7 @@ public class CreateCommand implements Command
                         project.getDiagram());
 
                 project.getDiagram().addInner(inner);
-
+                result.add(Command.createResponse(inner.toDto(), elementType, CommandType.CREATE_COMMAND));
                 break;
 
             case VALUE:
@@ -233,5 +235,6 @@ public class CreateCommand implements Command
     {
         return user.getCanWrite();
     }
+
 
 }

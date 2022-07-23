@@ -1,5 +1,3 @@
-let uml = joint.shapes.uml;
-
 
 export class ElementType {
     static Class = new ElementType("CLASS");
@@ -15,7 +13,7 @@ export class ElementType {
     static Composition = new ElementType("COMPOSITION");
 
     static MultiAssociation = new ElementType("MUTLI_ASSOCIATION");
-    static InnerClass = new ElementType("INNER_CLASS");
+    static Inner = new ElementType("INNER");
     static Dependency = new ElementType("DEPENDENCY");
 
     static Role = new ElementType("ROLE");

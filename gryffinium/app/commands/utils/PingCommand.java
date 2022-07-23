@@ -1,25 +1,23 @@
-package commands.uml;
+package commands.utils;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import commands.Command;
-import dto.entities.*;
+import commands.CommandType;
 import models.Project;
 import models.ProjectUser;
+import org.joda.time.DateTime;
 import play.libs.Json;
 
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
-public class SelectCommand implements Command
+public class PingCommand implements Command
 {
     @Override
     public ArrayNode execute(Project project)
     {
-        ArrayNode result = Json.newArray();
-
-        result.addAll(project.getDiagram().getCreationCommands());
-
-        return result;
+        return Json.newArray().add(Command.createResponse("", null, CommandType.PING_COMMAND));
     }
 
     @Override
@@ -33,5 +31,4 @@ public class SelectCommand implements Command
     {
         return List.of(user);
     }
-
 }

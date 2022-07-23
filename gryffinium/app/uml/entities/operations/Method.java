@@ -168,6 +168,6 @@ public class Method extends Operation implements Subscribers
         dto.setType(getType().getName());
         dto.setId(getId());
         dto.setParentId(getParent().getId());
-        return Command.createResponse(dto, ElementTypeDto.METHOD, CommandType.SELECT_COMMAND);
+        return Command.createResponse(dto, ElementTypeDto.METHOD, CommandType.UPDATE_COMMAND);
     }
 }

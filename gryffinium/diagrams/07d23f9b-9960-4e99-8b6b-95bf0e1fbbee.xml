@@ -7,7 +7,7 @@
     </entity>
     <entity xsi:type="Class" abstract="false" height="100" id="8756576c-ee25-1004-88e3-3830c84f96c8" visibility="PUBLIC" width="200" x="380" y="410" name="Car" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
     <entity xsi:type="Class" abstract="false" height="100" id="8778d968-ee25-1004-88e3-3830c84f96c8" visibility="PUBLIC" width="200" x="630" y="410" name="Plane" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
-    <entity xsi:type="Enum" height="165" id="87821640-ee25-1004-88e3-3830c84f96c8" visibility="PUBLIC" width="195" x="140" y="100" name="Color" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <entity xsi:type="Enum" height="165" id="87821640-ee25-1004-88e3-3830c84f96c8" visibility="PUBLIC" width="195" x="140" y="90" name="Color" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <attribute static="false" visibility="PRIVATE" constant="false" id="90c8a87c-ee25-1004-8211-26d7caccb5b1" name="colorCode" type="string"/>
         <constructor id="9186d478-ee25-1004-8211-26d7caccb5b1" visibility="PUBLIC">
             <parameter constant="false" id="918dec7c-ee25-1004-8211-26d7caccb5b1" name="colorCode" type="String"/>
@@ -17,18 +17,25 @@
         <value>gray</value>
     </entity>
     <entity xsi:type="Interface" height="100" id="88e508a8-ee25-1004-88e3-3830c84f96c8" visibility="PUBLIC" width="200" x="820" y="90" name="Flying" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
-    <entity xsi:type="Class" abstract="false" height="100" id="897c9dbc-ee25-1004-88e3-3830c84f96c8" visibility="PUBLIC" width="200" x="1270" y="90" name="Airport" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
-    <entity xsi:type="Class" abstract="false" height="100" id="89d1ea74-ee25-1004-88e3-3830c84f96c8" visibility="PUBLIC" width="200" x="290" y="700" name="Wheel" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
-    <entity xsi:type="Class" abstract="false" height="100" id="1ee3bb90-ee2d-1004-864a-4bdcac3a9226" visibility="PUBLIC" width="200" x="7530" y="1990" name="Class1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
-    <entity xsi:type="Class" abstract="false" height="100" id="97788f7c-ee2d-1004-8163-36295c8b8650" visibility="PUBLIC" width="200" x="1370" y="350" name="Class2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
-    <entity xsi:type="Class" abstract="false" height="100" id="9ad915d8-ee2d-1004-8163-36295c8b8650" visibility="PUBLIC" width="200" x="1130" y="430" name="Class3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
-    <entity xsi:type="Enum" height="100" id="9adae714-ee2d-1004-8163-36295c8b8650" visibility="PUBLIC" width="200" x="910" y="550" name="Enum1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <entity xsi:type="Class" abstract="false" height="100" id="897c9dbc-ee25-1004-88e3-3830c84f96c8" visibility="PUBLIC" width="200" x="1270" y="90" name="Command" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <attribute static="false" visibility="PRIVATE" constant="false" id="b3e54df8-ee2d-1004-8a95-75207dcec862" name="Hello" type="string"/>
+    </entity>
+    <entity xsi:type="Class" abstract="false" height="100" id="89d1ea74-ee25-1004-88e3-3830c84f96c8" visibility="PUBLIC" width="200" x="390" y="640" name="Wheel" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    <entity xsi:type="Class" abstract="false" height="100" id="9ad915d8-ee2d-1004-8163-36295c8b8650" visibility="PUBLIC" width="200" x="1220" y="490" name="Class3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    <entity xsi:type="Enum" height="135" id="9adae714-ee2d-1004-8163-36295c8b8650" visibility="PUBLIC" width="200" x="860" y="410" name="Enum1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <attribute static="false" visibility="PRIVATE" constant="false" id="a37bb68c-ee2d-1004-8163-36295c8b8650" name="attribute" type="string"/>
         <method abstract="false" static="false" type="void" id="a38156c8-ee2d-1004-8163-36295c8b8650" name="method" visibility="PUBLIC"/>
         <value>value0</value>
     </entity>
-    <entity xsi:type="Interface" height="100" id="9ae64fc8-ee2d-1004-8163-36295c8b8650" visibility="PUBLIC" width="200" x="1110" y="280" name="Interface1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
-    <entity xsi:type="Class" abstract="false" height="100" id="9ae99de0-ee2d-1004-8163-36295c8b8650" visibility="PUBLIC" width="200" x="1100" y="350" name="Class4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    <entity xsi:type="Interface" height="100" id="9ae64fc8-ee2d-1004-8163-36295c8b8650" visibility="PUBLIC" width="200" x="940" y="290" name="Interface1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    <entity xsi:type="Class" abstract="false" height="100" id="97788f7c-ee2d-1004-8163-36295c8b8650" visibility="PUBLIC" width="200" x="1540" y="440" name="Class1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    <entity xsi:type="Class" abstract="false" height="100" id="97788f7c-ee2d-1004-8163-36295c8b8650" visibility="PUBLIC" width="200" x="1540" y="440" name="Class5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    <entity xsi:type="Class" abstract="false" height="100" id="97788f7c-ee2d-1004-8163-36295c8b8650" visibility="PUBLIC" width="200" x="1540" y="440" name="Class6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    <entity xsi:type="Class" abstract="false" height="100" id="97788f7c-ee2d-1004-8163-36295c8b8650" visibility="PUBLIC" width="200" x="1540" y="440" name="Class7" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    <entity xsi:type="Class" abstract="false" height="100" id="9ae99de0-ee2d-1004-8163-36295c8b8650" visibility="PUBLIC" width="135" x="1570" y="180" name="Class4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    <entity xsi:type="Class" abstract="false" height="100" id="97788f7c-ee2d-1004-8163-36295c8b8650" visibility="PUBLIC" width="200" x="1540" y="440" name="Class8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    <entity xsi:type="Class" abstract="false" height="100" id="97788f7c-ee2d-1004-8163-36295c8b8650" visibility="PUBLIC" width="200" x="1540" y="440" name="Class9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    <entity xsi:type="InnerClass" static="false" abstract="false" height="100" id="97788f7c-ee2d-1004-8163-36295c8b8650" visibility="PUBLIC" width="200" x="1540" y="440" name="Class2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
     <association xsi:type="BinaryAssociation" directed="true" id="8837cdc8-ee25-1004-88e3-3830c84f96c8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <label distance="0.45161290322580644" name="is colored ">
             <offset>20</offset>
@@ -131,4 +138,8 @@
         <implementor>8778d968-ee25-1004-88e3-3830c84f96c8</implementor>
         <interface>88e508a8-ee25-1004-88e3-3830c84f96c8</interface>
     </relationship>
+    <inner id="8d51264c-ee2f-1004-8947-023c761de742">
+        <inner>97788f7c-ee2d-1004-8163-36295c8b8650</inner>
+        <outer>9ae99de0-ee2d-1004-8163-36295c8b8650</outer>
+    </inner>
 </classDiagram>

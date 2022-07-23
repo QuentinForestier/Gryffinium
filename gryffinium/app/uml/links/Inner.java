@@ -20,8 +20,9 @@ public class Inner extends Link
     private Entity outer;
     private InnerEntity inner;
 
-    public Inner(){
-    super();
+    public Inner()
+    {
+        super();
     }
 
     public Inner(Entity outer, InnerEntity inner)
@@ -64,11 +65,24 @@ public class Inner extends Link
     public void fromDto(LinkDto dto, ClassDiagram cd)
     {
         super.fromDto(dto, cd);
-        if (dto.getSourceId() != null)
+        if (dto.getSourceId() != null && (this.getInner() == null || !dto.getSourceId().equals(this.getInner().getId())))
         {
-            this.inner = convertToInnerEntity(cd.getEntity(dto.getSourceId()));
-            cd.removeEntity(cd.getEntity(dto.getSourceId()));
-            cd.addEntity((Entity)this.inner);
+            try
+            {
+                InnerEntity ie = (InnerEntity) cd.getEntity(dto.getSourceId());
+                if(this.inner != null){
+                    cd.removeEntity((Entity)ie);
+                    cd.addEntity(convertToEntity(ie));
+                }
+                this.inner = (InnerEntity) cd.getEntity(dto.getSourceId());
+            }
+            catch (ClassCastException e)
+            {
+                this.inner =
+                        convertToInnerEntity(cd.getEntity(dto.getSourceId()));
+                cd.removeEntity(cd.getEntity(dto.getSourceId()));
+                cd.addEntity((Entity) this.inner);
+            }
         }
         if (dto.getTargetId() != null)
         {
@@ -76,27 +90,37 @@ public class Inner extends Link
         }
     }
 
-    public InnerEntity convertToInnerEntity(Entity entity){
-        if(entity instanceof Interface){
-            return new InnerInterface((Interface)entity);
+    public InnerEntity convertToInnerEntity(Entity entity)
+    {
+        if (entity instanceof Interface)
+        {
+            return new InnerInterface((Interface) entity);
         }
-        else if(entity instanceof Class){
-            return new InnerClass((Class)entity);
+        else if (entity instanceof Class)
+        {
+            return new InnerClass((Class) entity);
         }
-        else{
-            throw new IllegalArgumentException(entity.getName() + " cannot be an inner entity");
+        else
+        {
+            throw new IllegalArgumentException(entity.getName() + " cannot be" +
+                    " an inner entity");
         }
     }
 
-    public Entity convertToEntity(InnerEntity innerEntity){
-        if(innerEntity instanceof InnerInterface){
-            return new Interface((InnerInterface)innerEntity);
+    public Entity convertToEntity(InnerEntity innerEntity)
+    {
+        if (innerEntity instanceof InnerInterface)
+        {
+            return new Interface((InnerInterface) innerEntity);
         }
-        else if(innerEntity instanceof InnerClass){
-            return new Class((InnerClass)innerEntity);
+        else if (innerEntity instanceof InnerClass)
+        {
+            return new Class((InnerClass) innerEntity);
         }
-        else{
-            throw new IllegalArgumentException("This inner entity cannot be an entity");
+        else
+        {
+            throw new IllegalArgumentException("This inner entity cannot be " +
+                    "an entity");
         }
     }
 

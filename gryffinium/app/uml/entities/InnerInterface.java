@@ -15,6 +15,11 @@ public class InnerInterface extends Interface implements InnerEntity
     private Inner inner;
     private boolean isStatic;
 
+    public InnerInterface()
+    {
+        super();
+    }
+
     public InnerInterface(String name, boolean isStatic){
         super(name);
         this.isStatic = isStatic;

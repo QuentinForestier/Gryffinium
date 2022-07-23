@@ -8,11 +8,17 @@ import models.Project;
 import models.ProjectUser;
 import play.libs.Json;
 
+import java.util.List;
+
 public interface Command
 {
     ArrayNode execute(Project project);
 
     Boolean canExecute(ProjectUser user);
+
+    default List<ProjectUser> targets(Project project, ProjectUser user){
+        return project.getProjectUsers();
+    }
 
     static JsonNode createResponse(Object response, ElementTypeDto type, CommandType cmd)
     {

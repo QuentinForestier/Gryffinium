@@ -10,10 +10,7 @@ import dto.entities.operations.OperationDto;
 import dto.entities.variables.AttributeDto;
 import dto.entities.variables.ParameterDto;
 import dto.entities.variables.ValueDto;
-import dto.links.BinaryAssociationDto;
-import dto.links.DependencyDto;
-import dto.links.GeneralizationDto;
-import dto.links.RealizationDto;
+import dto.links.*;
 import dto.links.components.RoleDto;
 import models.Project;
 import models.ProjectUser;
@@ -24,6 +21,8 @@ import uml.entities.Enum;
 import uml.entities.operations.Constructor;
 import uml.entities.operations.Operation;
 import uml.entities.variables.Parameter;
+
+import java.util.List;
 
 import static dto.ElementTypeDto.CONSTRUCTOR;
 
@@ -160,6 +159,10 @@ public class UpdateCommand implements Command
                 break;
 
             case INNER:
+                InnerDto innerDto = Json.fromJson(data,
+                        InnerDto.class);
+                project.getDiagram().getInner(innerDto.getId()).fromDto(innerDto, project.getDiagram());
+                result.add(Command.createResponse(innerDto, elementType, CommandType.UPDATE_COMMAND));
                 break;
 
             case VALUE:

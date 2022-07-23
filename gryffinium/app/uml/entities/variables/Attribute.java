@@ -103,6 +103,6 @@ public class Attribute extends Variable
         dto.setId(this.getId());
         dto.setType(getType().getName());
         dto.setParentId(this.getParent().getId());
-        return Command.createResponse(dto, ElementTypeDto.ATTRIBUTE, CommandType.SELECT_COMMAND);
+        return Command.createResponse(dto, ElementTypeDto.ATTRIBUTE, CommandType.UPDATE_COMMAND);
     }
 }

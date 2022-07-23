@@ -176,6 +176,10 @@ public class ClassDiagram
             commands.add(r.getCreationCommands());
         }
 
+        for(Inner i : inners){
+            commands.add(i.getCreationCommands());
+        }
+
         return commands;
     }
 

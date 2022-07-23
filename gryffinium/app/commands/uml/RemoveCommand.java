@@ -10,16 +10,16 @@ import dto.entities.operations.OperationDto;
 import dto.entities.variables.AttributeDto;
 import dto.entities.variables.ParameterDto;
 import dto.entities.variables.ValueDto;
-import dto.links.BinaryAssociationDto;
-import dto.links.DependencyDto;
-import dto.links.GeneralizationDto;
-import dto.links.RealizationDto;
+import dto.links.*;
 import models.Project;
 import models.ProjectUser;
 import play.libs.Json;
 import uml.entities.*;
 import uml.entities.Enum;
 import uml.entities.operations.Operation;
+import uml.links.Inner;
+
+import java.util.List;
 
 public class RemoveCommand implements Command
 {
@@ -44,37 +44,43 @@ public class RemoveCommand implements Command
                 ge = Json.fromJson(data,
                         ClassDto.class);
                 project.getDiagram().removeEntity(project.getDiagram().getEntity(ge.getId()));
-                result.add(Command.createResponse(ge, elementType, CommandType.REMOVE_COMMAND));
+                result.add(Command.createResponse(ge, elementType,
+                        CommandType.REMOVE_COMMAND));
                 break;
             case INNER_CLASS:
                 ge = Json.fromJson(data,
                         InnerClassDto.class);
                 project.getDiagram().removeEntity(project.getDiagram().getEntity(ge.getId()));
-                result.add(Command.createResponse(ge, elementType, CommandType.REMOVE_COMMAND));
+                result.add(Command.createResponse(ge, elementType,
+                        CommandType.REMOVE_COMMAND));
                 break;
             case ASSOCIATION_CLASS:
                 ge = Json.fromJson(data,
                         AssociationClassDto.class);
                 project.getDiagram().removeEntity(project.getDiagram().getEntity(ge.getId()));
-                result.add(Command.createResponse(ge, elementType, CommandType.REMOVE_COMMAND));
+                result.add(Command.createResponse(ge, elementType,
+                        CommandType.REMOVE_COMMAND));
                 break;
             case ENUM:
                 ge = Json.fromJson(data,
                         EnumDto.class);
                 project.getDiagram().removeEntity(project.getDiagram().getEntity(ge.getId()));
-                result.add(Command.createResponse(ge, elementType, CommandType.REMOVE_COMMAND));
+                result.add(Command.createResponse(ge, elementType,
+                        CommandType.REMOVE_COMMAND));
                 break;
             case INTERFACE:
                 ge = Json.fromJson(data,
                         EntityDto.class);
                 project.getDiagram().removeEntity(project.getDiagram().getEntity(ge.getId()));
-                result.add(Command.createResponse(ge, elementType, CommandType.REMOVE_COMMAND));
+                result.add(Command.createResponse(ge, elementType,
+                        CommandType.REMOVE_COMMAND));
                 break;
             case INNER_INTERFACE:
                 ge = Json.fromJson(data,
                         InnerInterfaceDto.class);
                 project.getDiagram().removeEntity(project.getDiagram().getEntity(ge.getId()));
-                result.add(Command.createResponse(ge, elementType, CommandType.REMOVE_COMMAND));
+                result.add(Command.createResponse(ge, elementType,
+                        CommandType.REMOVE_COMMAND));
                 break;
 
 
@@ -84,7 +90,8 @@ public class RemoveCommand implements Command
                 BinaryAssociationDto gba = Json.fromJson(data,
                         BinaryAssociationDto.class);
                 project.getDiagram().removeAssociation(project.getDiagram().getAssociation(gba.getId()));
-                result.add(Command.createResponse(gba, elementType, CommandType.REMOVE_COMMAND));
+                result.add(Command.createResponse(gba, elementType,
+                        CommandType.REMOVE_COMMAND));
                 break;
             case MUTLI_ASSOCIATION:
                 break;
@@ -92,21 +99,32 @@ public class RemoveCommand implements Command
                 DependencyDto gd = Json.fromJson(data,
                         DependencyDto.class);
                 project.getDiagram().removeDependency(project.getDiagram().getDependency(gd.getId()));
-                result.add(Command.createResponse(gd, elementType, CommandType.REMOVE_COMMAND));
+                result.add(Command.createResponse(gd, elementType,
+                        CommandType.REMOVE_COMMAND));
                 break;
             case GENERALIZATION:
                 GeneralizationDto gdto = Json.fromJson(data,
                         GeneralizationDto.class);
                 project.getDiagram().removeRelationship(project.getDiagram().getRelationship(gdto.getId()));
-                result.add(Command.createResponse(gdto, elementType, CommandType.REMOVE_COMMAND));
+                result.add(Command.createResponse(gdto, elementType,
+                        CommandType.REMOVE_COMMAND));
                 break;
             case REALIZATION:
                 RealizationDto rdto = Json.fromJson(data,
                         RealizationDto.class);
                 project.getDiagram().removeRelationship(project.getDiagram().getRelationship(rdto.getId()));
-                result.add(Command.createResponse(rdto, elementType, CommandType.REMOVE_COMMAND));
+                result.add(Command.createResponse(rdto, elementType,
+                        CommandType.REMOVE_COMMAND));
                 break;
             case INNER:
+                InnerDto innerDto = Json.fromJson(data,
+                        InnerDto.class);
+                Inner inner = project.getDiagram().getInner(innerDto.getId());
+                project.getDiagram().removeEntity((Entity) inner.getInner());
+                project.getDiagram().addEntity(inner.convertToEntity(inner.getInner()));
+                project.getDiagram().removeInner(project.getDiagram().getInner(innerDto.getId()));
+                result.add(Command.createResponse(innerDto, elementType,
+                        CommandType.REMOVE_COMMAND));
                 break;
 
             case VALUE:
@@ -116,7 +134,8 @@ public class RemoveCommand implements Command
                 Enum e =
                         (Enum) project.getDiagram().getEntity(gv.getParentId());
                 e.removeValue(gv.getValue());
-                result.add(Command.createResponse(gv, elementType, CommandType.REMOVE_COMMAND));
+                result.add(Command.createResponse(gv, elementType,
+                        CommandType.REMOVE_COMMAND));
                 break;
 
             case ATTRIBUTE:
@@ -125,7 +144,8 @@ public class RemoveCommand implements Command
                 Entity parent =
                         project.getDiagram().getEntity(ga.getParentId());
                 parent.removeAttribute(parent.getAttribute(ga.getId()));
-                result.add(Command.createResponse(ga, elementType, CommandType.REMOVE_COMMAND));
+                result.add(Command.createResponse(ga, elementType,
+                        CommandType.REMOVE_COMMAND));
                 break;
             case PARAMETER:
                 ParameterDto gp = Json.fromJson(data,
@@ -139,7 +159,8 @@ public class RemoveCommand implements Command
                     op = ce.getConstructorById(gp.getMethodId());
                 }
                 op.removeParam(gp.getId());
-                result.add(Command.createResponse(gp, elementType, CommandType.REMOVE_COMMAND));
+                result.add(Command.createResponse(gp, elementType,
+                        CommandType.REMOVE_COMMAND));
                 break;
 
 
@@ -149,7 +170,8 @@ public class RemoveCommand implements Command
                 ConstructableEntity ce =
                         (ConstructableEntity) project.getDiagram().getEntity(go.getParentId());
                 ce.removeConstructor(ce.getConstructorById(go.getId()));
-                result.add(Command.createResponse(go, elementType, CommandType.REMOVE_COMMAND));
+                result.add(Command.createResponse(go, elementType,
+                        CommandType.REMOVE_COMMAND));
                 break;
             case METHOD:
                 MethodDto gm = Json.fromJson(data,
@@ -157,7 +179,8 @@ public class RemoveCommand implements Command
                 Entity parent2 =
                         project.getDiagram().getEntity(gm.getParentId());
                 parent2.removeMethod(parent2.getMethodById(gm.getId()));
-                result.add(Command.createResponse(gm, elementType, CommandType.REMOVE_COMMAND));
+                result.add(Command.createResponse(gm, elementType,
+                        CommandType.REMOVE_COMMAND));
                 break;
         }
 
@@ -169,4 +192,5 @@ public class RemoveCommand implements Command
     {
         return user.getCanWrite();
     }
+
 }

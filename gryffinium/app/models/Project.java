@@ -109,29 +109,21 @@ public class Project extends Model
         try
         {
             response.set("commands", command.execute(this));
-
+            for (ProjectUser user : command.targets(this, sender))
+            {
+                if (user.getActor() != null)
+                    user.send(response);
+            }
         }
         catch (Exception e)
         {
 
             response.put("commandType", "Error");
             response.put("message", e.getMessage());
-            e.printStackTrace();
-        }
-
-        if (command instanceof SelectCommand)
-        {
             sender.send(response);
         }
-        else
-        {
 
-            for (ProjectUser user : projectUsers)
-            {
-                if (user.getActor() != null)
-                    user.send(response);
-            }
-        }
+
     }
 
     public void removeUser(ProjectUser user)
@@ -248,7 +240,7 @@ public class Project extends Model
                     saveDiagram();
                     checkConnectedUsers();
                 }
-            }, 10 * 1000, 10 * 1000);
+            }, 60 * 1000, 60 * 1000);
         }
         catch (Exception e)
         {

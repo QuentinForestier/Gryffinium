@@ -8,6 +8,8 @@ import models.Project;
 import models.ProjectUser;
 import play.libs.Json;
 
+import java.util.List;
+
 public class ChatMessageCommand implements Command
 {
     private String message;
@@ -58,4 +60,6 @@ public class ChatMessageCommand implements Command
     {
         return true;
     }
+
+
 }

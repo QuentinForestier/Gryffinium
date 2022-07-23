@@ -58,7 +58,7 @@ export function generateRoleInterface(body, element, role, send, update = false)
         container.innerHTML = "";
     } else {
         container = document.createElement("div");
-        container.className = "col-sm-3";
+        container.className = "col-sm-auto";
         body.append(container);
     }
 
@@ -124,7 +124,7 @@ export function generateBinaryAssociationSettingsInterface(body, element, send, 
         container.innerHTML = "";
     } else {
         container = document.createElement("div");
-        container.className = "col-sm-3";
+        container.className = "col-sm-auto";
         container.id = "container-settings"
         body.append(container);
     }
@@ -180,7 +180,7 @@ export function generateBinaryAssociationSettingsInterface(body, element, send, 
     table.append(row2);
 
     let btnContainer = document.createElement("div");
-    btnContainer.className = "form-group col-sm-3 ";
+    btnContainer.className = "form-group col-sm-auto ";
     let td2 = document.createElement("td");
     row2.append(td2);
     td2.append(btnContainer);
@@ -211,7 +211,8 @@ export function generateSwapButton(element, send) {
 
 export function generateHeaderTitleInterface(element, send) {
     let title = document.createElement('input');
-    title.className = 'offcanvas-title form-control form-control-sm form-control-plaintext input-sm text-center p-0';
+    title.className = 'offcanvas-title form-control form-control-sm input-sm text-center p-0';
+
     title.type = 'text';
     title.addEventListener('keypress', function (e) {
         if (e.code === "Enter") {
@@ -247,7 +248,7 @@ export function generateEntityHeader(header, element, send) {
     row.className = 'row align-middle';
 
     let tmp = document.createElement('div');
-    tmp.className = 'col-sm-3';
+    tmp.className = 'col-sm-auto';
     tmp.append(title);
 
     row.append(tmp);
@@ -264,7 +265,7 @@ export function generateEntityHeader(header, element, send) {
     }).firstChild;
 
     tmp = document.createElement('div');
-    tmp.className = 'col-sm-3';
+    tmp.className = 'col-sm-auto';
     tmp.append(visibility);
 
     row.append(tmp);
@@ -286,7 +287,7 @@ export function generateEntityHeader(header, element, send) {
     }).firstChild
 
     tmp = document.createElement('div');
-    tmp.className = 'col-sm-3';
+    tmp.className = 'col-sm-auto';
 
 
     checkbox.className = checkbox.className + ' form-check-input';
@@ -321,7 +322,7 @@ export function generateAttributesInterface(body, element, send, update = false)
         container.innerHTML = "";
     } else {
         container = document.createElement("div");
-        container.className = "col-sm-3";
+        container.className = "col-sm-auto";
         container.id = "container-attributes"
         body.append(container);
     }
@@ -473,7 +474,7 @@ export function generateMethodsInterface(body, element, send, update = false) {
         container.innerHTML = "";
     } else {
         container = document.createElement("div");
-        container.className = "col-sm-3";
+        container.className = "col-sm-auto";
         container.id = "container-methods"
         body.append(container);
     }
@@ -723,7 +724,7 @@ export function generateValuesInterface(body, element, send, update = false) {
         container.innerHTML = "";
     } else {
         container = document.createElement("div");
-        container.className = "col-sm-3";
+        container.className = "col-sm-auto";
         container.id = "container-values"
         body.append(container);
     }
@@ -816,7 +817,7 @@ export function generateParametersInterface(element, method, send) {
     let container = null;
     if (document.getElementById("container-parameters") === null) {
         container = document.createElement("div");
-        container.className = "col-sm-3";
+        container.className = "col-sm-auto";
         container.id = "container-parameters"
         container.display = "none";
         containerBody.append(container);

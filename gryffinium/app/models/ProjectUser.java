@@ -11,6 +11,7 @@ import commands.uml.CreateCommand;
 import commands.uml.RemoveCommand;
 import commands.uml.SelectCommand;
 import commands.uml.UpdateCommand;
+import commands.utils.PingCommand;
 import io.ebean.Model;
 import io.ebean.annotation.NotNull;
 import play.libs.Json;
@@ -98,7 +99,6 @@ public class ProjectUser extends Model
 
         if (actor == null)
         {
-            project.removeUser(this);
             this.disconnect();
         }
         this.actor = actor;
@@ -172,6 +172,9 @@ public class ProjectUser extends Model
                 break;
             case SELECT_COMMAND:
                 cmd = new SelectCommand();
+                break;
+            case PING_COMMAND:
+                cmd = new PingCommand();
                 break;
             default:
                 throw new IllegalArgumentException("Unknown message type");

@@ -334,6 +334,10 @@
 
                 sendMessage({}, '', 'SELECT_COMMAND');
 
+                setInterval(function () {
+                    sendMessage({}, '', 'PING_COMMAND');
+                }, 5000);
+
                 socket.onmessage = function (event) {
                     let message = JSON.parse(event.data);
                     if (message.commandType === 'Error') {
@@ -443,7 +447,7 @@
                                             });
                                             break;
                                         case ElementType.UnaryAssociation.name:
-
+                                            break;
                                         case ElementType.Aggregation.name:
                                             elem = new uml.Aggregation({
                                                 source: {id: command.sourceId},
@@ -491,8 +495,16 @@
                                         case ElementType.MultiAssociation.name:
                                             // TODO MutliAssociation
                                             break;
-                                        case ElementType.InnerClass.name:
-                                            // TODO InnerClass
+                                        case ElementType.Inner.name:
+                                            elem = new uml.Inner({
+                                                source: {id: command.sourceId},
+                                                target: {id: command.targetId},
+                                                linkId: command.id,
+                                                vertices: JSON.parse(command.vertices),
+                                            });
+                                            elem.on('change:vertices', function (link) {
+                                                movingVertices = link;
+                                            });
                                             break;
                                         case ElementType.Dependency.name:
                                             elem = new uml.Dependency({
@@ -580,6 +592,7 @@
                                         case ElementType.Aggregation.name:
                                         case ElementType.Composition.name:
                                         case ElementType.Dependency.name:
+                                        case ElementType.Inner.name:
                                             if (command.visibility !== undefined) {
                                                 command.visibility = Visibility.getVisibility(command.visibility);
                                             }
@@ -587,12 +600,10 @@
                                             if (selectedElement === elements.get(command.id)) {
                                                 generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
                                             }
+
                                             break;
                                         case ElementType.MultiAssociation.name:
                                             // TODO MutliAssociation
-                                            break;
-                                        case ElementType.InnerClass.name:
-                                            // TODO InnerClass
                                             break;
                                         case ElementType.Attribute.name:
                                             elements.get(command.parentId).updateAttributesFromMessage(command);
@@ -643,6 +654,7 @@
                                         case ElementType.Aggregation.name:
                                         case ElementType.Composition.name:
                                         case ElementType.Dependency.name:
+                                        case ElementType.Inner.name:
                                             let elem = elements.get(command.id);
                                             elem.set('alreadyDeleted', true)
                                             elem.remove();
@@ -653,9 +665,6 @@
                                             break;
                                         case ElementType.MultiAssociation.name:
                                             // TODO MutliAssociation
-                                            break;
-                                        case ElementType.InnerClass.name:
-                                            // TODO InnerClass
                                             break;
                                         case ElementType.Attribute.name:
                                             elements.get(command.parentId).removeAttribute(command.id);
@@ -1116,13 +1125,13 @@
                 let url = DOMURL.createObjectURL(svg);
                 if (filetype === 'png') {
                     let canvas = document.createElement('canvas');
-                    canvas.width = (width + x + margin);
-                    canvas.height = (height + y + margin);
+                    canvas.width = width + 2 * margin;
+                    canvas.height = height + 2 * margin;
                     let ctx = canvas.getContext('2d');
                     let img = new Image();
                     img.onload = function () {
                         // draw it to the canvas
-                        ctx.drawImage(this, margin, margin, (width + x + margin), (height + y + margin));
+                        ctx.drawImage(this, -x + margin, -y + margin);
 
                         DOMURL.revokeObjectURL(url);
                         // now we can resolve the promise, passing the base64 url

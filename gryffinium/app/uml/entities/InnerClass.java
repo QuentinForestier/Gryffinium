@@ -15,6 +15,11 @@ public class InnerClass extends Class implements InnerEntity
     private Inner inner;
     private boolean isStatic;
 
+    public InnerClass()
+    {
+        super();
+    }
+
     public InnerClass(String name, Entity outer, boolean isStatic)
     {
         super(name);
