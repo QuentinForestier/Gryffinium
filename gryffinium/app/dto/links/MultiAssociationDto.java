@@ -1,22 +1,29 @@
 package dto.links;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import play.libs.Json;
 import uml.links.Link;
 import uml.links.MultiAssociation;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MultiAssociationDto
 {
     private String id;
 
-    private ArrayList<String> unaryAssociations = new ArrayList<>();
+    private ArrayNode targets;
 
     private Double x;
     private Double y;
 
+    public MultiAssociationDto()
+    {
+    }
+
     public MultiAssociationDto(MultiAssociation ma){
         this.id = ma.getId();
-        this.unaryAssociations = ma.getUnaryAssociations().stream().map(Link::getId).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+        this.targets = (ArrayNode) Json.toJson(ma.getUnaryAssociations().stream().map(Link::getId).collect(ArrayList::new, ArrayList::add, ArrayList::addAll));
         this.setX(ma.getX());
         this.setY(ma.getY());
     }
@@ -31,14 +38,14 @@ public class MultiAssociationDto
         this.id = id;
     }
 
-    public ArrayList<String> getUnaryAssociations()
+    public ArrayNode getTargets()
     {
-        return unaryAssociations;
+        return targets;
     }
 
-    public void setUnaryAssociations(ArrayList<String> unaryAssociations)
+    public void setTargets(ArrayNode targets)
     {
-        this.unaryAssociations = unaryAssociations;
+        this.targets = targets;
     }
 
     public Double getX()

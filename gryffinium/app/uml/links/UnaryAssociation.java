@@ -12,6 +12,8 @@ import uml.ClassDiagram;
 import uml.links.components.Multiplicity;
 import uml.links.components.Role;
 
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType(name = "UnaryAssociation")
@@ -34,6 +36,7 @@ public class UnaryAssociation extends Association
         fromDto(dto, cd);
     }
 
+    @XmlIDREF
     public MultiAssociation getParent()
     {
         return parent;
@@ -43,6 +46,7 @@ public class UnaryAssociation extends Association
     {
         this.parent = parent;
     }
+
 
     public Role getRole(String id)
     {
@@ -57,6 +61,11 @@ public class UnaryAssociation extends Association
     public void fromDto(UnaryAssociationDto dto, ClassDiagram cd)
     {
         super.fromDto(dto, cd);
+
+        if(dto.getSourceId() != null)
+        {
+            this.parent = cd.getMultiAssociation(dto.getSourceId());
+        }
 
         if (dto.getTargetId() != null && this.getTarget() != null)
         {

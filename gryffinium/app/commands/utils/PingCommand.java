@@ -17,7 +17,7 @@ public class PingCommand implements Command
     @Override
     public ArrayNode execute(Project project)
     {
-        return Json.newArray().add(Command.createResponse("", null, CommandType.PING_COMMAND));
+        return Json.newArray().add(Command.createResponse(Json.newObject().put("response", "ping"), null, CommandType.PING_COMMAND));
     }
 
     @Override

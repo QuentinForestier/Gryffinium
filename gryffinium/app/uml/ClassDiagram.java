@@ -126,9 +126,14 @@ public class ClassDiagram
         relationships.remove(relationship);
     }
 
-    public void getMultiAssociation(String id)
+    public ArrayList<MultiAssociation> getMultiAssociations()
     {
-        multiAssociations.stream().filter(m -> m.getId().equals(id)).findFirst().orElseThrow(() -> new IllegalArgumentException("MultiAssociation not found"));
+        return multiAssociations;
+    }
+
+    public MultiAssociation getMultiAssociation(String id)
+    {
+        return multiAssociations.stream().filter(m -> m.getId().equals(id)).findFirst().orElseThrow(() -> new IllegalArgumentException("MultiAssociation not found"));
     }
 
     public void addInner(Inner i){
@@ -178,6 +183,10 @@ public class ClassDiagram
 
         for(Inner i : inners){
             commands.add(i.getCreationCommands());
+        }
+
+        for(MultiAssociation m : multiAssociations){
+            commands.addAll(m.getCreationCommands());
         }
 
         return commands;

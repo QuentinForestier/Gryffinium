@@ -1,6 +1,5 @@
 package commands.uml;
 
-import akka.dispatch.sysmsg.Create;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import commands.Command;
@@ -21,8 +20,6 @@ import uml.entities.variables.*;
 import uml.entities.Class;
 import uml.entities.Enum;
 import uml.links.*;
-
-import java.util.List;
 
 public class CreateCommand implements Command
 {
@@ -125,12 +122,16 @@ public class CreateCommand implements Command
 
                 result.add(Command.createResponse(co.toDto(), elementType, CommandType.CREATE_COMMAND));
                 break;
-            case MUTLI_ASSOCIATION:
+            case MULTI_ASSOCIATION:
                 MultiAssociation ma = new MultiAssociation(
                         Json.fromJson(data, MultiAssociationDto.class),
                         project.getDiagram());
                 project.getDiagram().addMultiAssociation(ma);
                 result.add(Command.createResponse(ma.toDto(), elementType, CommandType.CREATE_COMMAND));
+                for(UnaryAssociation unary : ma.getUnaryAssociations())
+                {
+                    result.addAll(unary.getCreationCommands());
+                }
                 break;
             case DEPENDENCY:
                 Dependency d = new Dependency(

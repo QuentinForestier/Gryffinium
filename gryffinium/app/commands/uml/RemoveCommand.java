@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import commands.Command;
 import commands.CommandType;
+import dto.ElementTypeDto;
 import dto.entities.*;
 import dto.entities.operations.MethodDto;
 import dto.entities.operations.OperationDto;
@@ -18,8 +19,8 @@ import uml.entities.*;
 import uml.entities.Enum;
 import uml.entities.operations.Operation;
 import uml.links.Inner;
-
-import java.util.List;
+import uml.links.MultiAssociation;
+import uml.links.UnaryAssociation;
 
 public class RemoveCommand implements Command
 {
@@ -93,7 +94,41 @@ public class RemoveCommand implements Command
                 result.add(Command.createResponse(gba, elementType,
                         CommandType.REMOVE_COMMAND));
                 break;
-            case MUTLI_ASSOCIATION:
+            case MULTI_ASSOCIATION:
+                MultiAssociationDto gma = Json.fromJson(data,
+                        MultiAssociationDto.class);
+                project.getDiagram().removeMultiAssociation(project.getDiagram().getMultiAssociation(gma.getId()));
+                result.add(Command.createResponse(gma, elementType,
+                        CommandType.REMOVE_COMMAND));
+                break;
+            case UNARY_ASSOCIATION:
+                UnaryAssociationDto gua = Json.fromJson(data,
+                        UnaryAssociationDto.class);
+                MultiAssociation multiAssociation =
+                        project.getDiagram().getMultiAssociation(gua.getSourceId());
+                UnaryAssociation unaryAssociation =
+                        multiAssociation.getUnaryAssociation(gua.getId());
+
+                multiAssociation.removeUnaryAssociation(unaryAssociation);
+                result.add(Command.createResponse(gua, elementType,
+                        CommandType.REMOVE_COMMAND));
+
+                if (multiAssociation.getUnaryAssociations().size() < 3)
+                {
+                    for (UnaryAssociation ua :
+                            multiAssociation.getUnaryAssociations())
+                    {
+                        result.add(Command.createResponse(ua.toDto(),
+                                ElementTypeDto.UNARY_ASSOCIATION,
+                                CommandType.REMOVE_COMMAND));
+                    }
+                    multiAssociation.getUnaryAssociations().clear();
+                    result.add(Command.createResponse(multiAssociation.toDto(),
+                            ElementTypeDto.MULTI_ASSOCIATION,
+                            CommandType.REMOVE_COMMAND));
+                }
+
+
                 break;
             case DEPENDENCY:
                 DependencyDto gd = Json.fromJson(data,

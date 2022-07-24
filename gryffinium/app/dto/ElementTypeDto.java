@@ -1,7 +1,5 @@
 package dto;
 
-import com.sun.javadoc.Type;
-
 public enum ElementTypeDto
 {
     // Entities
@@ -15,7 +13,7 @@ public enum ElementTypeDto
     // Links
     UNARY_ASSOCIATION,
     BINARY_ASSOCIATION,
-    MUTLI_ASSOCIATION,
+    MULTI_ASSOCIATION,
     AGGREGATION,
     COMPOSITION,
     DEPENDENCY,

@@ -10,13 +10,13 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 const fontFamiliy = 'Helvetica, sans-serif';
 const fontSize = 15
 const umlColor = '#FFF7E1';
+const selectedUmlColor = '#bfb9a8';
 
 
 this.joint = this.joint || {};
 this.joint.shapes = this.joint.shapes || {};
 (function (exports, ElementView_mjs, LinkView_mjs, Link_mjs, basic_mjs) {
         'use strict';
-
 
 
         let Class = basic_mjs.Generic.define('uml.Class', {
@@ -62,6 +62,7 @@ this.joint.shapes = this.joint.shapes || {};
             height: undefined,
             alreadyDeleted: false,
             visibility: 'public',
+            toolsBox: undefined,
         }, {
             markup: [
                 '<g class="rotatable">',
@@ -93,6 +94,52 @@ this.joint.shapes = this.joint.shapes || {};
                 this.updateRectangles(true);
 
                 basic_mjs.Generic.prototype.initialize.apply(this, arguments);
+            },
+
+            selected: function (flag) {
+                if (flag) {
+                    this.attr({
+                        '.uml-class-name-rect': {
+                            fill: selectedUmlColor,
+                        }
+                    });
+                    this.attr({
+                        '.uml-class-attrs-rect': {
+                            fill: selectedUmlColor,
+                        }
+                    });
+                    this.attr({
+                        '.uml-class-methods-rect': {
+                            fill: selectedUmlColor,
+                        }
+                    });
+                    this.attr({
+                        '.uml-class-values-rect': {
+                            fill: selectedUmlColor,
+                        }
+                    });
+                } else {
+                    this.attr({
+                        '.uml-class-name-rect': {
+                            fill: umlColor,
+                        }
+                    });
+                    this.attr({
+                        '.uml-class-attrs-rect': {
+                            fill: umlColor,
+                        }
+                    });
+                    this.attr({
+                        '.uml-class-methods-rect': {
+                            fill: umlColor,
+                        }
+                    });
+                    this.attr({
+                        '.uml-class-values-rect': {
+                            fill: umlColor,
+                        }
+                    });
+                }
             },
 
             getClassName: function () {
@@ -483,6 +530,7 @@ this.joint.shapes = this.joint.shapes || {};
             alreadyDeleted: false,
 
             verticesChanged: false,
+            toolsBox: undefined,
         }, {
             markup: [{
                 tagName: 'path',
@@ -547,7 +595,6 @@ this.joint.shapes = this.joint.shapes || {};
                 }
 
                 if (message.vertices) {
-
                     this.set('vertices', JSON.parse(message.vertices));
                 }
 
@@ -892,11 +939,30 @@ this.joint.shapes = this.joint.shapes || {};
 
         let BinaryAssociationView = AssociationView;
 
-        let UnaryAssociation = Association.define('uml.UnaryAssociation', {},{
+        let UnaryAssociation = Association.define('uml.UnaryAssociation', {}, {
+            initialize: function () {
+                Association.prototype.initialize.apply(this, arguments);
+
+            },
             getType: function () {
                 return 'UNARY_ASSOCIATION';
-            }
+            },
+            removeCommand: function () {
+                if (!this.get('alreadyDeleted')) {
+                    this.set('alreadyDeleted', true);
+                    return {
+                        data: {id: this.get('linkId'), sourceId: this.get('source').id,},
+                        type: 'REMOVE_COMMAND',
+                        entityType: this.getType(),
+
+                    };
+                }
+                return null;
+            },
         });
+
+
+        let UnaryAssociationView = AssociationView;
 
         let Generalization = CustomLink.define('uml.Generalization', {
             attrs: {
@@ -987,12 +1053,11 @@ this.joint.shapes = this.joint.shapes || {};
         let InnerView = CustomLinkView;
 
 
-
         let MutliAssociation = joint.shapes.standard.Rectangle.define('uml.MultiAssociation', {
             attrs: {
                 body: {
                     fill: umlColor,
-                    size:{
+                    size: {
                         width: 50,
                         height: 50
                     }
@@ -1019,10 +1084,13 @@ this.joint.shapes = this.joint.shapes || {};
 
             getType: function () {
                 return 'MULTI_ASSOCIATION';
+            },
+            updateFromMessage: function (message) {
+                if(message.x && message.y) {
+                    this.set('position', {x: message.x, y: message.y});
+                }
             }
         });
-
-
 
 
         exports.Abstract = Abstract;
@@ -1047,8 +1115,9 @@ this.joint.shapes = this.joint.shapes || {};
         exports.InterfaceView = InterfaceView;
         exports.Enum = Enum;
         exports.EnumView = EnumView;
+        exports.UnaryAssociation = UnaryAssociation;
+        exports.UnaryAssociationView = UnaryAssociationView;
         exports.MultiAssociation = MutliAssociation;
-        exports.MultiAssociationView = MultiAssociationView;
     }
     (this.joint.shapes.uml = this.joint.shapes.uml || {}, joint.dia, joint.dia, joint.dia, joint.shapes.basic)
 )

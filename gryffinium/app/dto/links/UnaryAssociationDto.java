@@ -14,6 +14,7 @@ public class UnaryAssociationDto extends AssociationDto
     public UnaryAssociationDto(UnaryAssociation ua)
     {
         super(ua);
-        setSourceId(ua.getParent().getId());
+        this.setTargetId(ua.getTarget().getEntity().getId());
+        this.setSourceId(ua.getParent().getId());
     }
 }

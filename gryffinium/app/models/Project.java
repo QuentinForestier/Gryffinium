@@ -95,6 +95,11 @@ public class Project extends Model
         this.projectUsers = projectUsers;
     }
 
+    public void stopTimer()
+    {
+        autoSaveTimer.cancel();
+    }
+
     public void addUser(ProjectUser user)
     {
         this.projectUsers.add(user);
@@ -167,8 +172,7 @@ public class Project extends Model
             user.disconnect();
         }
 
-        autoSaveTimer.cancel();
-
+        Project.openProjects.get(this.id).stopTimer();
         Project.openProjects.remove(this.id);
         this.saveDiagram();
     }
@@ -232,7 +236,7 @@ public class Project extends Model
 
                 getDiagram().load();
             }
-            autoSaveTimer.scheduleAtFixedRate(new TimerTask()
+            /* autoSaveTimer.scheduleAtFixedRate(new TimerTask()
             {
                 @Override
                 public void run()
@@ -240,7 +244,7 @@ public class Project extends Model
                     saveDiagram();
                     checkConnectedUsers();
                 }
-            }, 60 * 1000, 60 * 1000);
+            }, 10 * 1000, 10 * 1000);*/
         }
         catch (Exception e)
         {

@@ -1,6 +1,7 @@
 package uml.links;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import commands.Command;
 import commands.CommandType;
@@ -11,9 +12,7 @@ import play.libs.Json;
 import tyrex.services.UUID;
 import uml.ClassDiagram;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -24,7 +23,8 @@ public class MultiAssociation
     private String id;
     private ArrayList<UnaryAssociation> unaryAssociations = new ArrayList<>();
 
-    private Point position;
+    private Double x;
+    private Double y;
 
 
     public MultiAssociation()
@@ -35,7 +35,7 @@ public class MultiAssociation
     public MultiAssociation(MultiAssociationDto dto, ClassDiagram cd)
     {
         this();
-        fromDto(dto);
+        fromDto(dto, cd);
     }
 
 
@@ -61,40 +61,44 @@ public class MultiAssociation
         this.id = id;
     }
 
-    @XmlElement
-    public Point getPosition()
-    {
-        return position;
-    }
 
-    public void setPosition(Point position)
-    {
-        this.position = position;
-    }
-
+    @XmlAttribute
     public Double getX()
     {
-        return position.getX();
+        return x;
     }
 
+    @XmlAttribute
     public Double getY()
     {
-        return position.getY();
+        return y;
     }
 
     public void setX(Double x)
     {
-        position.setLocation(x, position.getY());
+        this.x = x;
     }
 
     public void setY(Double y)
     {
-        position.setLocation(position.getX(), y);
+        this.y = y;
     }
 
     public void addUnaryAssociation(UnaryAssociation unaryAssociation)
     {
         unaryAssociations.add(unaryAssociation);
+    }
+
+    public UnaryAssociation getUnaryAssociation(String id)
+    {
+        for (UnaryAssociation unaryAssociation : unaryAssociations)
+        {
+            if (unaryAssociation.getId().equals(id))
+            {
+                return unaryAssociation;
+            }
+        }
+        return null;
     }
 
     public void removeUnaryAssociation(UnaryAssociation unaryAssociation)
@@ -107,18 +111,20 @@ public class MultiAssociation
         return new MultiAssociationDto(this);
     }
 
-    public void fromDto(MultiAssociationDto dto)
+    public void fromDto(MultiAssociationDto dto, ClassDiagram cd)
     {
         if (dto.getId() != null)
         {
             this.setId(dto.getId());
         }
-        if (dto.getUnaryAssociations() != null)
+        if (dto.getTargets() != null)
         {
-            for (String unaryAssociationId : dto.getUnaryAssociations())
+            for (JsonNode unaryAssociationId : dto.getTargets())
             {
-                UnaryAssociation unaryAssociation = new UnaryAssociation();
-                unaryAssociation.setId(unaryAssociationId);
+                UnaryAssociationDto uadto = new UnaryAssociationDto();
+                uadto.setTargetId(unaryAssociationId.asText());
+                uadto.setName("unary");
+                UnaryAssociation unaryAssociation = new UnaryAssociation(uadto, cd);
                 unaryAssociation.setParent(this);
                 this.addUnaryAssociation(unaryAssociation);
             }
@@ -139,7 +145,11 @@ public class MultiAssociation
     {
         ArrayNode result = Json.newArray();
         result.add(Command.createResponse(toDto(),
-                ElementTypeDto.MUTLI_ASSOCIATION, CommandType.SELECT_COMMAND));
+                ElementTypeDto.MULTI_ASSOCIATION, CommandType.SELECT_COMMAND));
+        for (UnaryAssociation unaryAssociation : unaryAssociations)
+        {
+            result.addAll(unaryAssociation.getCreationCommands());
+        }
         return result;
     }
 }

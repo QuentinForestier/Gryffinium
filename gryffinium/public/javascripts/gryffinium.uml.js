@@ -12,7 +12,7 @@ export class ElementType {
     static Aggregation = new ElementType("AGGREGATION");
     static Composition = new ElementType("COMPOSITION");
 
-    static MultiAssociation = new ElementType("MUTLI_ASSOCIATION");
+    static MultiAssociation = new ElementType("MULTI_ASSOCIATION");
     static Inner = new ElementType("INNER");
     static Dependency = new ElementType("DEPENDENCY");
 
