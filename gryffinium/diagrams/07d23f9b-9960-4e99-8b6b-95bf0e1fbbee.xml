@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<classDiagram>
+    <entity xsi:type="Class" abstract="false" height="100" id="8462a37c-ee33-1004-85df-cfd5ed1dfabe" visibility="PUBLIC" width="200" x="440" y="360" name="Class1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    <entity xsi:type="Class" abstract="false" height="100" id="8463a5b0-ee33-1004-85df-cfd5ed1dfabe" visibility="PUBLIC" width="200" x="1140" y="300" name="Class2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    <entity xsi:type="Class" abstract="false" height="100" id="8468a36d-ee33-1004-85df-cfd5ed1dfabe" visibility="PUBLIC" width="200" x="730" y="150" name="Class3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    <association xsi:type="BinaryAssociation" directed="false" id="8468a36e-ee33-1004-85df-cfd5ed1dfabe" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <label name="ASSOCIATION_CLASS"/>
+        <target id="8468a370-ee33-1004-85df-cfd5ed1dfabe">
+            <entity>8463a5b0-ee33-1004-85df-cfd5ed1dfabe</entity>
+            <multiplicity lowerBound="42" upperBound="42"/>
+            <multiplicityLabel/>
+            <nameLabel name=""/>
+        </target>
+        <source id="8468a36f-ee33-1004-85df-cfd5ed1dfabe">
+            <entity>8462a37c-ee33-1004-85df-cfd5ed1dfabe</entity>
+            <multiplicity lowerBound="42" upperBound="42"/>
+            <multiplicityLabel/>
+            <nameLabel name=""/>
+        </source>
+    </association>
+    <associationClass id="8468a36c-ee33-1004-85df-cfd5ed1dfabe">
+        <associatedClass>8468a36d-ee33-1004-85df-cfd5ed1dfabe</associatedClass>
+        <association>8468a36e-ee33-1004-85df-cfd5ed1dfabe</association>
+    </associationClass>
+</classDiagram>

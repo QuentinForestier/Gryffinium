@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<classDiagram>
+    <entity xsi:type="Class" abstract="false" height="100" id="850d018c-ee33-1004-85df-cfd5ed1dfabe" visibility="PUBLIC" width="200" x="350" y="380" name="Class1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    <entity xsi:type="Class" abstract="false" height="100" id="850e530c-ee33-1004-85df-cfd5ed1dfabe" visibility="PUBLIC" width="200" x="1130" y="330" name="Class2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    <entity xsi:type="Class" abstract="false" height="100" id="850f7a5c-ee33-1004-85df-cfd5ed1dfabe" visibility="PUBLIC" width="200" x="660" y="160" name="Class3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    <entity xsi:type="Class" abstract="false" height="100" id="dd85c45c-ee33-1004-8d53-e95edc08bca6" visibility="PUBLIC" width="200" x="140" y="120" name="Class4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    <association xsi:type="BinaryAssociation" directed="false" id="85131c0c-ee33-1004-85df-cfd5ed1dfabe" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <label name="BINARY_ASSOCIATION"/>
+        <target id="85131c0e-ee33-1004-85df-cfd5ed1dfabe">
+            <entity>850f7a5c-ee33-1004-85df-cfd5ed1dfabe</entity>
+            <multiplicity lowerBound="42" upperBound="42"/>
+            <multiplicityLabel/>
+            <nameLabel name=""/>
+        </target>
+        <source id="85131c0d-ee33-1004-85df-cfd5ed1dfabe">
+            <entity>850e530c-ee33-1004-85df-cfd5ed1dfabe</entity>
+            <multiplicity lowerBound="42" upperBound="42"/>
+            <multiplicityLabel/>
+            <nameLabel name=""/>
+        </source>
+    </association>
+</classDiagram>
