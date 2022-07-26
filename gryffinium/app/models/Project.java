@@ -236,7 +236,7 @@ public class Project extends Model
 
                 getDiagram().load();
             }
-            /* autoSaveTimer.scheduleAtFixedRate(new TimerTask()
+             autoSaveTimer.scheduleAtFixedRate(new TimerTask()
             {
                 @Override
                 public void run()
@@ -244,7 +244,7 @@ public class Project extends Model
                     saveDiagram();
                     checkConnectedUsers();
                 }
-            }, 10 * 1000, 10 * 1000);*/
+            }, 10 * 1000, 10 * 1000);
         }
         catch (Exception e)
         {

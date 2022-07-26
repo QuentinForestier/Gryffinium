@@ -939,6 +939,15 @@ this.joint.shapes = this.joint.shapes || {};
 
         let BinaryAssociationView = AssociationView;
 
+        let AssociationClass = Association.define('uml.AssociationClass', {
+            associatedClass: undefined,
+        },{
+            getType: function () {
+                return 'ASSOCIATION_CLASS';
+            }
+        });
+
+
         let UnaryAssociation = Association.define('uml.UnaryAssociation', {}, {
             initialize: function () {
                 Association.prototype.initialize.apply(this, arguments);
@@ -960,7 +969,6 @@ this.joint.shapes = this.joint.shapes || {};
                 return null;
             },
         });
-
 
         let UnaryAssociationView = AssociationView;
 
@@ -1092,6 +1100,13 @@ this.joint.shapes = this.joint.shapes || {};
             }
         });
 
+        let SimpleLink = CustomLink.define('uml.SimpleLink', {
+            attrs: {
+                line: {
+                    strokeDasharray: '5,5',
+                }
+            }
+        },{});
 
         exports.Abstract = Abstract;
         exports.AbstractView = AbstractView;
@@ -1118,6 +1133,7 @@ this.joint.shapes = this.joint.shapes || {};
         exports.UnaryAssociation = UnaryAssociation;
         exports.UnaryAssociationView = UnaryAssociationView;
         exports.MultiAssociation = MutliAssociation;
+        exports.SimpleLink = SimpleLink;
     }
     (this.joint.shapes.uml = this.joint.shapes.uml || {}, joint.dia, joint.dia, joint.dia, joint.shapes.basic)
 )

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import commands.Command;
 import commands.CommandType;
+import dto.AssociationClassDto;
+import dto.ElementTypeDto;
 import dto.entities.*;
 import dto.entities.operations.MethodDto;
 import dto.entities.operations.OperationDto;
@@ -12,6 +14,7 @@ import dto.entities.variables.*;
 import models.Project;
 import models.ProjectUser;
 import play.libs.Json;
+import uml.AssociationClass;
 import uml.entities.*;
 import uml.entities.operations.Constructor;
 import uml.entities.operations.Method;
@@ -68,7 +71,11 @@ public class CreateCommand implements Command
                         Json.fromJson(data, AssociationClassDto.class),
                         project.getDiagram());
 
-                project.getDiagram().addEntity(ac);
+                project.getDiagram().addEntity(ac.getAssociatedClass());
+                project.getDiagram().addAssociation(ac.getAssociation());
+                project.getDiagram().addAssociationClass(ac);
+                result.addAll(ac.getAssociation().getCreationCommands());
+                result.addAll(ac.getAssociatedClass().getCreationCommands());
                 result.add(Command.createResponse(ac.toDto(), elementType, CommandType.CREATE_COMMAND));
                 break;
             case ENUM:

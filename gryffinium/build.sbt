@@ -18,5 +18,6 @@ libraryDependencies += "org.mindrot" % "jbcrypt" % "0.4"
 
 libraryDependencies += "com.fasterxml.jackson.dataformat" % "jackson-dataformat-xml" % "2.11.4"
 
+libraryDependencies += "org.mockito" % "mockito-core" % "4.6.1" % "test"
 
 libraryDependencies += javaForms

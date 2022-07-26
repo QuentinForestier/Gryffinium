@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import commands.Command;
 import commands.CommandType;
+import dto.AssociationClassDto;
 import dto.entities.*;
 import dto.entities.operations.MethodDto;
 import dto.entities.operations.OperationDto;
@@ -21,7 +22,6 @@ import uml.entities.Enum;
 import uml.entities.operations.Constructor;
 import uml.entities.operations.Operation;
 import uml.entities.variables.Parameter;
-import uml.links.Association;
 import uml.links.MultiAssociation;
 
 import static dto.ElementTypeDto.CONSTRUCTOR;
@@ -64,6 +64,8 @@ public class UpdateCommand implements Command
                 {
                     result.addAll(updateConstructorName(c, ge.getName()));
                 }
+
+
                 c.fromDto(ge);
 
                 if (ge.getName() != null)
@@ -86,7 +88,7 @@ public class UpdateCommand implements Command
                 AssociationClassDto gac =
                         Json.fromJson(data,
                                 AssociationClassDto.class);
-                project.getDiagram().getEntity(gac.getId()).fromDto(gac);
+                project.getDiagram().getAssociationClass(gac.getId()).fromDto(gac, project.getDiagram());
                 result.add(Command.createResponse(gac, elementType,
                         CommandType.UPDATE_COMMAND));
                 break;

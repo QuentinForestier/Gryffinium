@@ -3,18 +3,14 @@ package uml;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import play.libs.Json;
 import uml.entities.Entity;
-import uml.entities.operations.Operation;
-import uml.entities.variables.Variable;
 import uml.links.*;
 import uml.types.ExistingTypes;
 import uml.types.SimpleType;
 import uml.types.Type;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 @XmlRootElement
 public class ClassDiagram
@@ -42,6 +38,10 @@ public class ClassDiagram
     @XmlElement(name = "multiAssociation")
     private final ArrayList<MultiAssociation> multiAssociations =
             new ArrayList<>();
+
+    @XmlElement(name="associationClass")
+    private final ArrayList<AssociationClass> associationClasses = new ArrayList<>();
+
 
     public ExistingTypes getExistingTypes()
     {
@@ -158,6 +158,26 @@ public class ClassDiagram
         multiAssociations.remove(multiAssociation);
     }
 
+    public void addAssociationClass(AssociationClass associationClass)
+    {
+        associationClasses.add(associationClass);
+    }
+
+    public AssociationClass getAssociationClass(String id)
+    {
+        return associationClasses.stream().filter(a -> a.getId().equals(id)).findFirst().orElseThrow(() -> new IllegalArgumentException("AssociationClass not found"));
+    }
+
+    public void removeAssociationClass(AssociationClass associationClass)
+    {
+        associationClasses.remove(associationClass);
+    }
+
+    public ArrayList<AssociationClass> getAssociationClasses()
+    {
+        return associationClasses;
+    }
+
     public ArrayNode getCreationCommands()
     {
         ArrayNode commands = Json.newArray();
@@ -187,6 +207,10 @@ public class ClassDiagram
 
         for(MultiAssociation m : multiAssociations){
             commands.addAll(m.getCreationCommands());
+        }
+
+        for(AssociationClass a : associationClasses){
+            commands.addAll(a.getCreationsCommand());
         }
 
         return commands;

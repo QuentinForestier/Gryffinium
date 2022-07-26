@@ -82,7 +82,7 @@ public class ProjectController extends Controller
         return ok(Utils.createResponse(project.toJson(), true));
     }
 
-    // PATCH
+    // POST
     @Security.Authenticated(Secured.class)
     public Result update(Http.Request request, String id)
     {
@@ -130,7 +130,8 @@ public class ProjectController extends Controller
 
         // TODO delete xml file
 
-        project.close();
+        if (Project.openProjects.containsKey(project.getId()))
+            project.close();
 
         return ok(Utils.createResponse("Project deleted successfully", true));
     }
@@ -330,14 +331,14 @@ public class ProjectController extends Controller
 
     }
 
-    private Project findProject(UUID uuid, boolean findAndOpen)
+    private Project findProject(UUID uuid, boolean open)
     {
         Project p = Project.openProjects.get(uuid);
         if (p == null)
         {
             p = projectRepository.findById(uuid);
 
-            if (findAndOpen && p != null)
+            if (open && p != null)
             {
                 Project.openProjects.put(p.getId(), p);
                 p.loadDiagram();

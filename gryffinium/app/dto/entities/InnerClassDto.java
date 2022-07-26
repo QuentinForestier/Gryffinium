@@ -9,10 +9,14 @@ public class InnerClassDto extends ClassDto
 
     private String outer;
 
+    public InnerClassDto(){
+        super();
+    }
+
     public InnerClassDto(InnerClass ic)
     {
         super(ic);
-        // TODO
+        this.isStatic = ic.isStatic();
     }
 
     public Boolean isStatic()

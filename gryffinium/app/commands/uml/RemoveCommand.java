@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import commands.Command;
 import commands.CommandType;
+import dto.AssociationClassDto;
 import dto.ElementTypeDto;
 import dto.entities.*;
 import dto.entities.operations.MethodDto;
@@ -15,6 +16,7 @@ import dto.links.*;
 import models.Project;
 import models.ProjectUser;
 import play.libs.Json;
+import uml.AssociationClass;
 import uml.entities.*;
 import uml.entities.Enum;
 import uml.entities.operations.Operation;
@@ -56,11 +58,14 @@ public class RemoveCommand implements Command
                         CommandType.REMOVE_COMMAND));
                 break;
             case ASSOCIATION_CLASS:
-                ge = Json.fromJson(data,
+                AssociationClassDto acdto = Json.fromJson(data,
                         AssociationClassDto.class);
-                project.getDiagram().removeEntity(project.getDiagram().getEntity(ge.getId()));
-                result.add(Command.createResponse(ge, elementType,
+                AssociationClass ac = project.getDiagram().getAssociationClass(acdto.getId());
+                project.getDiagram().removeAssociationClass(ac);
+                result.add(Command.createResponse(acdto, elementType,
                         CommandType.REMOVE_COMMAND));
+                result.add(Command.createResponse(ac.getAssociatedClass().toDto(), ElementTypeDto.CLASS, CommandType.REMOVE_COMMAND));
+                result.add(Command.createResponse(ac.getAssociation().toDto(), ElementTypeDto.BINARY_ASSOCIATION, CommandType.REMOVE_COMMAND));
                 break;
             case ENUM:
                 ge = Json.fromJson(data,

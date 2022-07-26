@@ -11,10 +11,15 @@ public class InnerInterfaceDto extends EntityDto
 
     private String outer;
 
+    public InnerInterfaceDto()
+    {
+        super();
+    }
+
     public InnerInterfaceDto(InnerInterface e)
     {
         super(e);
-        // TODO
+        setStatic(e.isStatic());
     }
 
     public Boolean getStatic()

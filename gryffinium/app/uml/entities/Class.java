@@ -7,10 +7,9 @@ import dto.ElementTypeDto;
 import dto.entities.ClassDto;
 import dto.entities.EntityDto;
 import play.libs.Json;
-import uml.ClassDiagram;
+import uml.AssociationClass;
 
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 

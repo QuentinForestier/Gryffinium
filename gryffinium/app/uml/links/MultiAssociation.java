@@ -119,6 +119,13 @@ public class MultiAssociation
         }
         if (dto.getTargets() != null)
         {
+            this.unaryAssociations.clear();
+
+            if(dto.getTargets().size() < 3)
+            {
+                throw new IllegalArgumentException("MultiAssociation must have at least 3 targets");
+            }
+
             for (JsonNode unaryAssociationId : dto.getTargets())
             {
                 UnaryAssociationDto uadto = new UnaryAssociationDto();
