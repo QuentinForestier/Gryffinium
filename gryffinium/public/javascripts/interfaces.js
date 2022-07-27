@@ -45,6 +45,17 @@ export function generateModifierInterface(canvas, header, body, element, send, u
             generateRoleInterface(body, element, element.getSourceRole(), send);
             generateRoleInterface(body, element, element.getTargetRole(), send);
             break;
+        case 'UNARY_ASSOCIATION':
+            generateLinkHeader(header, element, send);
+            generateRoleInterface(body, element, element.getTargetRole(), send);
+            break;
+        case 'GENERALIZATION':
+        case 'REALIZATION':
+        case 'INNER':
+            canvas.hide();
+            break;
+        case 'DEPENDENCY':
+            generateLinkHeader(header, element, send);
 
     }
 
@@ -223,6 +234,7 @@ export function generateHeaderTitleInterface(element, send) {
     title.onblur = function () {
         send({
             id: element.getId(),
+            sourceId: element.get('source') === undefined ? undefined : element.get('source').id,
             name: this.value,
         }, element.getType(), 'UPDATE_COMMAND')
     }

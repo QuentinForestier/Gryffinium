@@ -120,6 +120,7 @@ public class RemoveCommand implements Command
 
                 if (multiAssociation.getUnaryAssociations().size() < 3)
                 {
+                    project.getDiagram().removeMultiAssociation(multiAssociation);
                     for (UnaryAssociation ua :
                             multiAssociation.getUnaryAssociations())
                     {

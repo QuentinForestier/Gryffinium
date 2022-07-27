@@ -21,6 +21,31 @@ import java.util.ArrayList;
 public abstract class Entity extends Type
 {
 
+    @XmlID
+    @XmlAttribute
+    public String getId()
+    {
+        return id;
+    }
+
+    @XmlAttribute
+    public int getX()
+    {
+        return x;
+    }
+
+    @XmlAttribute
+    public int getY()
+    {
+        return y;
+    }
+
+    @XmlElement(name="attribute")
+    public ArrayList<Attribute> getAttributes()
+    {
+        return attributes;
+    }
+
     private String id;
 
     private int x;
@@ -86,34 +111,21 @@ public abstract class Entity extends Type
     }
 
 
-    @XmlID
-    @XmlAttribute
-    public String getId()
-    {
-        return id;
-    }
+
 
     public void setId(String id)
     {
         this.id = id;
     }
 
-    @XmlAttribute
-    public int getX()
-    {
-        return x;
-    }
+
 
     public void setX(int x)
     {
         this.x = x;
     }
 
-    @XmlAttribute
-    public int getY()
-    {
-        return y;
-    }
+
 
     public void setY(int y)
     {
@@ -180,11 +192,7 @@ public abstract class Entity extends Type
         return attributes.stream().filter(a -> a.getId().equals(id)).findFirst().orElse(null);
     }
 
-    @XmlElement(name="attribute")
-    public ArrayList<Attribute> getAttributes()
-    {
-        return attributes;
-    }
+
 
     public void addAttribute(Attribute attribute)
     {

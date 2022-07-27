@@ -4,223 +4,148 @@
 <style type="text/css"><![CDATA[
 text { font:12px Dialog; }
 ]]></style>
-<line x1="610" y1="390" x2="610" y2="420" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="610" y1="420" x2="960" y2="420" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<polygon points="610,390 617,403 610,416 603,403" style="fill:rgb(0,0,0);stroke:none" />
-<polygon points="610,390 617,403 610,416 603,403" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="620" y1="320" x2="620" y2="220" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="620" y1="220" x2="950" y2="220" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<polygon points="620,320 613,307 620,294 627,307" style="fill:rgb(0,0,0);stroke:none" />
-<polygon points="620,320 613,307 620,294 627,307" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<polyline points="930,228 950,220 930,212" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="1090" y1="40" x2="410" y2="40" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="410" y1="40" x2="410" y2="190" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<polygon points="1090,40 1077,47 1064,40 1077,33" style="fill:rgb(255,255,255);stroke:none" />
-<polygon points="1090,40 1077,47 1064,40 1077,33" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<polyline points="402,170 410,190 418,170" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="960" y1="410" x2="960" y2="260" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<path d="M614,260 C614,263.3137085 616.6862915,266 620,266 C623.3137085,266 626,263.3137085 626,260" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="960" y1="260" x2="626" y2="260" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="614" y1="260" x2="480" y2="260" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<polygon points="960,410 953,397 960,384 967,397" style="fill:rgb(255,255,255);stroke:none" />
-<polygon points="960,410 953,397 960,384 967,397" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<polyline points="500,252 480,260 500,268" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<path d="M590,254 C586.6862915,254 584,256.6862915 584,260 C584,263.3137085 586.6862915,266 590,266" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="590" y1="320" x2="590" y2="266" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="590" y1="254" x2="590" y2="169" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<polygon points="590,320 583,307 590,294 597,307" style="fill:rgb(255,255,255);stroke:none" />
-<polygon points="590,320 583,307 590,294 597,307" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<polyline points="598,189 590,169 582,189" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="1160" y1="280" x2="1270" y2="280" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="1270" y1="280" x2="1270" y2="215" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<polygon points="1160,280 1173,273 1186,280 1173,287" style="fill:rgb(0,0,0);stroke:none" />
-<polygon points="1160,280 1173,273 1186,280 1173,287" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="820" y1="510" x2="1160" y2="510" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="1160" y1="510" x2="1160" y2="465" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<polygon points="820,510 833,503 846,510 833,517" style="fill:rgb(0,0,0);stroke:none" />
-<polygon points="820,510 833,503 846,510 833,517" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="1060" y1="250" x2="680" y2="250" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="680" y1="250" x2="680" y2="169" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<polygon points="1060,250 1047,257 1034,250 1047,243" style="fill:rgb(255,255,255);stroke:none" />
+<polygon points="1060,250 1047,257 1034,250 1047,243" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<polyline points="688,189 680,169 672,189" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
 <line x1="970" y1="160" x2="970" y2="110" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
 <line x1="970" y1="110" x2="680" y2="110" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
 <polygon points="970,160 963,147 970,134 977,147" style="fill:rgb(255,255,255);stroke:none" />
 <polygon points="970,160 963,147 970,134 977,147" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
 <polyline points="700,102 680,110 700,118" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="1060" y1="250" x2="680" y2="250" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<path d="M680,214 C676.6862915,214 674,216.6862915 674,220 C674,223.3137085 676.6862915,226 680,226" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="680" y1="250" x2="680" y2="226" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="680" y1="214" x2="680" y2="169" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<polygon points="1060,250 1047,257 1034,250 1047,243" style="fill:rgb(255,255,255);stroke:none" />
-<polygon points="1060,250 1047,257 1034,250 1047,243" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<polyline points="688,189 680,169 672,189" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="1270" y1="160" x2="1270" y2="140" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="1270" y1="140" x2="1160" y2="140" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="1160" y1="140" x2="1160" y2="95" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<polygon points="1160,95 1168,115 1152,115" style="fill:rgb(255,255,255);stroke:none" />
-<polygon points="1160,95 1168,115 1152,115" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="830" y1="580" x2="830" y2="440" style="fill:none;stroke:rgb(64,64,64);stroke-dasharray:7;stroke-dashoffset:0" />
-<line x1="830" y1="440" x2="780" y2="440" style="fill:none;stroke:rgb(64,64,64);stroke-dasharray:7;stroke-dashoffset:0" />
-<line x1="780" y1="440" x2="780" y2="369" style="fill:none;stroke:rgb(64,64,64);stroke-dasharray:7;stroke-dashoffset:0" />
-<polygon points="780,369 788,389 772,389" style="fill:rgb(255,255,255);stroke:none" />
-<polygon points="780,369 788,389 772,389" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="440" y1="470" x2="440" y2="440" style="fill:none;stroke:rgb(64,64,64);stroke-dasharray:7;stroke-dashoffset:0" />
-<line x1="440" y1="440" x2="780" y2="440" style="fill:none;stroke:rgb(64,64,64);stroke-dasharray:7;stroke-dashoffset:0" />
-<line x1="780" y1="440" x2="780" y2="369" style="fill:none;stroke:rgb(64,64,64);stroke-dasharray:7;stroke-dashoffset:0" />
-<polygon points="780,369 788,389 772,389" style="fill:rgb(255,255,255);stroke:none" />
-<polygon points="780,369 788,389 772,389" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="950" y1="580" x2="950" y2="560" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="950" y1="560" x2="750" y2="560" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="750" y1="560" x2="750" y2="515" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<polygon points="750,515 758,535 742,535" style="fill:rgb(255,255,255);stroke:none" />
-<polygon points="750,515 758,535 742,535" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="750" y1="580" x2="750" y2="515" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<polygon points="750,515 758,535 742,535" style="fill:rgb(255,255,255);stroke:none" />
-<polygon points="750,515 758,535 742,535" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="750" y1="460" x2="750" y2="430" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="750" y1="430" x2="570" y2="430" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="570" y1="430" x2="570" y2="390" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<polygon points="570,390 578,410 562,410" style="fill:rgb(255,255,255);stroke:none" />
-<polygon points="570,390 578,410 562,410" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="420" y1="320" x2="420" y2="290" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="420" y1="290" x2="420" y2="290" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="420" y1="290" x2="420" y2="260" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<polygon points="420,260 428,280 412,280" style="fill:rgb(255,255,255);stroke:none" />
-<polygon points="420,260 428,280 412,280" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="550" y1="320" x2="550" y2="290" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="550" y1="290" x2="420" y2="290" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="420" y1="290" x2="420" y2="260" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<polygon points="420,260 428,280 412,280" style="fill:rgb(255,255,255);stroke:none" />
-<polygon points="420,260 428,280 412,280" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="420" y1="470" x2="420" y2="430" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="420" y1="430" x2="570" y2="430" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="570" y1="430" x2="570" y2="390" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<polygon points="570,390 578,410 562,410" style="fill:rgb(255,255,255);stroke:none" />
-<polygon points="570,390 578,410 562,410" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="750" y1="700" x2="750" y2="650" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<polygon points="750,650 758,670 742,670" style="fill:rgb(255,255,255);stroke:none" />
-<polygon points="750,650 758,670 742,670" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="1030" y1="410" x2="1030" y2="380" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="1030" y1="380" x2="1110" y2="380" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="1110" y1="380" x2="1110" y2="320" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<polygon points="1110,320 1118,340 1102,340" style="fill:rgb(255,255,255);stroke:none" />
-<polygon points="1110,320 1118,340 1102,340" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="1020" y1="160" x2="1020" y2="140" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="1020" y1="140" x2="1160" y2="140" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="1160" y1="140" x2="1160" y2="95" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<polygon points="1160,95 1168,115 1152,115" style="fill:rgb(255,255,255);stroke:none" />
-<polygon points="1160,95 1168,115 1152,115" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="240" y1="320" x2="240" y2="290" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="240" y1="290" x2="420" y2="290" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="420" y1="290" x2="420" y2="260" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<polygon points="420,260 428,280 412,280" style="fill:rgb(255,255,255);stroke:none" />
-<polygon points="420,260 428,280 412,280" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="420" y1="620" x2="420" y2="525" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<polygon points="420,525 428,545 412,545" style="fill:rgb(255,255,255);stroke:none" />
-<polygon points="420,525 428,545 412,545" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="440" y1="620" x2="440" y2="590" style="fill:none;stroke:rgb(64,64,64);stroke-dasharray:7;stroke-dashoffset:0" />
-<line x1="440" y1="590" x2="580" y2="590" style="fill:none;stroke:rgb(64,64,64);stroke-dasharray:7;stroke-dashoffset:0" />
-<line x1="580" y1="590" x2="580" y2="529" style="fill:none;stroke:rgb(64,64,64);stroke-dasharray:7;stroke-dashoffset:0" />
-<polygon points="580,529 588,549 572,549" style="fill:rgb(255,255,255);stroke:none" />
-<polygon points="580,529 588,549 572,549" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<line x1="660" y1="700" x2="660" y2="590" style="fill:none;stroke:rgb(64,64,64);stroke-dasharray:7;stroke-dashoffset:0" />
-<line x1="660" y1="590" x2="580" y2="590" style="fill:none;stroke:rgb(64,64,64);stroke-dasharray:7;stroke-dashoffset:0" />
-<line x1="580" y1="590" x2="580" y2="529" style="fill:none;stroke:rgb(64,64,64);stroke-dasharray:7;stroke-dashoffset:0" />
-<polygon points="580,529 588,549 572,549" style="fill:rgb(255,255,255);stroke:none" />
-<polygon points="580,529 588,549 572,549" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="820" y1="510" x2="1160" y2="510" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="1160" y1="510" x2="1160" y2="465" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<polygon points="820,510 833,503 846,510 833,517" style="fill:rgb(0,0,0);stroke:none" />
+<polygon points="820,510 833,503 846,510 833,517" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="1160" y1="280" x2="1270" y2="280" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="1270" y1="280" x2="1270" y2="215" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<polygon points="1160,280 1173,273 1186,280 1173,287" style="fill:rgb(0,0,0);stroke:none" />
+<polygon points="1160,280 1173,273 1186,280 1173,287" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="590" y1="320" x2="590" y2="169" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<polygon points="590,320 583,307 590,294 597,307" style="fill:rgb(255,255,255);stroke:none" />
+<polygon points="590,320 583,307 590,294 597,307" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<polyline points="598,189 590,169 582,189" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="960" y1="410" x2="960" y2="260" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<path d="M584,260 C584,263.3137085 586.6862915,266 590,266 C593.3137085,266 596,263.3137085 596,260" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="960" y1="260" x2="596" y2="260" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="584" y1="260" x2="480" y2="260" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<polygon points="960,410 953,397 960,384 967,397" style="fill:rgb(255,255,255);stroke:none" />
+<polygon points="960,410 953,397 960,384 967,397" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<polyline points="500,252 480,260 500,268" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="1090" y1="40" x2="410" y2="40" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="410" y1="40" x2="410" y2="190" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<polygon points="1090,40 1077,47 1064,40 1077,33" style="fill:rgb(255,255,255);stroke:none" />
+<polygon points="1090,40 1077,47 1064,40 1077,33" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<polyline points="402,170 410,190 418,170" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<path d="M620,254 C616.6862915,254 614,256.6862915 614,260 C614,263.3137085 616.6862915,266 620,266" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="620" y1="320" x2="620" y2="266" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="620" y1="254" x2="620" y2="220" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<path d="M686,220 C686,216.6862915 683.3137085,214 680,214 C676.6862915,214 674,216.6862915 674,220" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="620" y1="220" x2="674" y2="220" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="686" y1="220" x2="950" y2="220" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<polygon points="620,320 613,307 620,294 627,307" style="fill:rgb(0,0,0);stroke:none" />
+<polygon points="620,320 613,307 620,294 627,307" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="610" y1="390" x2="610" y2="420" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="610" y1="420" x2="960" y2="420" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<polygon points="610,390 617,403 610,416 603,403" style="fill:rgb(0,0,0);stroke:none" />
+<polygon points="610,390 617,403 610,416 603,403" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
 <line x1="1220" y1="410" x2="1220" y2="380" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
 <line x1="1220" y1="380" x2="1110" y2="380" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
 <line x1="1110" y1="380" x2="1110" y2="320" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
 <polygon points="1110,320 1118,340 1102,340" style="fill:rgb(255,255,255);stroke:none" />
 <polygon points="1110,320 1118,340 1102,340" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
-<rect x="1190" y="160" width="150" height="56" style="fill:rgb(102,204,0);stroke:none" />
-<rect x="1190" y="160" width="150" height="56" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="1234" y="182" style="font:12px Ubuntu">Parameter</text>
-<line x1="1190" y1="195" x2="1340" y2="195" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<line x1="1190" y1="205" x2="1340" y2="205" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<rect x="700" y="300" width="160" height="69" style="fill:rgb(255,204,102);stroke:none" />
-<rect x="700" y="300" width="160" height="69" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="742" y="319" style="font:11px Ubuntu">&lt;&lt; interface &gt;&gt;</text>
-<text x="742" y="336" style="font:12px Ubuntu">Implementor</text>
-<line x1="700" y1="349" x2="860" y2="349" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<line x1="700" y1="359" x2="860" y2="359" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<rect x="370" y="320" width="100" height="55" style="fill:rgb(255,204,102);stroke:none" />
-<rect x="370" y="320" width="100" height="55" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="386" y="342" style="font:12px Ubuntu">SimpleType</text>
-<line x1="370" y1="355" x2="470" y2="355" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<line x1="370" y1="365" x2="470" y2="365" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<rect x="520" y="320" width="100" height="69" style="fill:rgb(255,204,102);stroke:none" />
-<rect x="520" y="320" width="100" height="69" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="552" y="342" style="font:12px Ubuntu">Entity</text>
-<line x1="520" y1="355" x2="620" y2="355" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="528" y="370" style="font:12px Ubuntu">- id : String</text>
-<line x1="520" y1="379" x2="620" y2="379" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<rect x="660" y="700" width="180" height="69" style="fill:rgb(255,204,102);stroke:none" />
-<rect x="660" y="700" width="180" height="69" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="720" y="722" style="font:12px Ubuntu">InnerClass</text>
-<line x1="660" y1="735" x2="840" y2="735" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="668" y="750" style="font:12px Ubuntu">- isStatic : Boolean</text>
-<line x1="660" y1="759" x2="840" y2="759" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<rect x="680" y="460" width="140" height="55" style="fill:rgb(255,204,102);stroke:none" />
-<rect x="680" y="460" width="140" height="55" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="692" y="482" style="font:12px Ubuntu">ConstructableEntity</text>
-<line x1="680" y1="495" x2="820" y2="495" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<line x1="680" y1="505" x2="820" y2="505" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<rect x="670" y="580" width="160" height="69" style="fill:rgb(255,204,102);stroke:none" />
-<rect x="670" y="580" width="160" height="69" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="735" y="602" style="font:12px Ubuntu">Class</text>
-<line x1="670" y1="615" x2="830" y2="615" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="678" y="630" style="font:12px Ubuntu">- isAbstract : Boolean</text>
-<line x1="670" y1="639" x2="830" y2="639" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<rect x="880" y="580" width="140" height="69" style="fill:rgb(255,204,102);stroke:none" />
-<rect x="880" y="580" width="140" height="69" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="934" y="602" style="font:12px Ubuntu">Enum</text>
-<line x1="880" y1="615" x2="1020" y2="615" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="888" y="630" style="font:12px Ubuntu">- values : List&lt;String&gt;</text>
-<line x1="880" y1="639" x2="1020" y2="639" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<rect x="370" y="470" width="100" height="55" style="fill:rgb(255,204,102);stroke:none" />
-<rect x="370" y="470" width="100" height="55" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="393" y="492" style="font:12px Ubuntu">Interface</text>
-<line x1="370" y1="505" x2="470" y2="505" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<line x1="370" y1="515" x2="470" y2="515" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<rect x="950" y="160" width="140" height="69" style="fill:rgb(102,204,0);stroke:none" />
-<rect x="950" y="160" width="140" height="69" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="996" y="182" style="font:12px Ubuntu">Attribut</text>
-<line x1="950" y1="195" x2="1090" y2="195" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="958" y="210" style="font:12px Ubuntu">- isStatic : Boolean</text>
-<line x1="950" y1="219" x2="1090" y2="219" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<rect x="530" y="50" width="150" height="115" style="fill:rgb(255,247,225);stroke:none" />
-<rect x="530" y="50" width="150" height="115" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="576" y="69" style="font:11px Ubuntu">&lt;&lt; enum &gt;&gt;</text>
-<text x="580" y="86" style="font:12px Ubuntu">Visibility</text>
-<line x1="530" y1="99" x2="680" y2="99" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="538" y="114" style="font:12px Ubuntu">PUBLIC</text>
-<text x="538" y="128" style="font:12px Ubuntu">PACKAGE</text>
-<text x="538" y="142" style="font:12px Ubuntu">PROTECTED</text>
-<text x="538" y="156" style="font:12px Ubuntu">PRIVATE</text>
-<rect x="1060" y="250" width="100" height="69" style="fill:rgb(102,204,0);stroke:none" />
-<rect x="1060" y="250" width="100" height="69" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="1080" y="272" style="font:12px Ubuntu">Operation</text>
-<line x1="1060" y1="285" x2="1160" y2="285" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="1068" y="300" style="font:12px Ubuntu">- name : String</text>
-<line x1="1060" y1="309" x2="1160" y2="309" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<rect x="960" y="410" width="140" height="83" style="fill:rgb(102,204,0);stroke:none" />
-<rect x="960" y="410" width="140" height="83" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="1007" y="432" style="font:12px Ubuntu">Method</text>
-<line x1="960" y1="445" x2="1100" y2="445" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="968" y="460" style="font:12px Ubuntu">- isAbstract : Boolean</text>
-<text x="968" y="474" style="font:12px Ubuntu">- isStatic : Boolean</text>
-<line x1="960" y1="483" x2="1100" y2="483" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<rect x="1090" y="10" width="140" height="83" style="fill:rgb(102,204,0);stroke:none" />
-<rect x="1090" y="10" width="140" height="83" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="1136" y="32" style="font:12px Ubuntu">Variable</text>
-<line x1="1090" y1="45" x2="1230" y2="45" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="1098" y="60" style="font:12px Ubuntu">- name : String</text>
-<text x="1098" y="74" style="font:12px Ubuntu">- isConstant : Boolean</text>
-<line x1="1090" y1="83" x2="1230" y2="83" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<rect x="350" y="190" width="130" height="69" style="fill:rgb(255,204,102);stroke:none" />
-<rect x="350" y="190" width="130" height="69" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="401" y="212" style="font:12px Ubuntu">Type</text>
-<line x1="350" y1="225" x2="480" y2="225" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="358" y="240" style="font:12px Ubuntu">- name : String</text>
-<line x1="350" y1="249" x2="480" y2="249" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<line x1="660" y1="700" x2="660" y2="590" style="fill:none;stroke:rgb(64,64,64);stroke-dasharray:7;stroke-dashoffset:0" />
+<line x1="660" y1="590" x2="580" y2="590" style="fill:none;stroke:rgb(64,64,64);stroke-dasharray:7;stroke-dashoffset:0" />
+<line x1="580" y1="590" x2="580" y2="529" style="fill:none;stroke:rgb(64,64,64);stroke-dasharray:7;stroke-dashoffset:0" />
+<polygon points="580,529 588,549 572,549" style="fill:rgb(255,255,255);stroke:none" />
+<polygon points="580,529 588,549 572,549" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="440" y1="620" x2="440" y2="590" style="fill:none;stroke:rgb(64,64,64);stroke-dasharray:7;stroke-dashoffset:0" />
+<line x1="440" y1="590" x2="580" y2="590" style="fill:none;stroke:rgb(64,64,64);stroke-dasharray:7;stroke-dashoffset:0" />
+<line x1="580" y1="590" x2="580" y2="529" style="fill:none;stroke:rgb(64,64,64);stroke-dasharray:7;stroke-dashoffset:0" />
+<polygon points="580,529 588,549 572,549" style="fill:rgb(255,255,255);stroke:none" />
+<polygon points="580,529 588,549 572,549" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="420" y1="620" x2="420" y2="525" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<polygon points="420,525 428,545 412,545" style="fill:rgb(255,255,255);stroke:none" />
+<polygon points="420,525 428,545 412,545" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="240" y1="320" x2="240" y2="290" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="240" y1="290" x2="420" y2="290" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="420" y1="290" x2="420" y2="260" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<polygon points="420,260 428,280 412,280" style="fill:rgb(255,255,255);stroke:none" />
+<polygon points="420,260 428,280 412,280" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="1020" y1="160" x2="1020" y2="140" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="1020" y1="140" x2="1160" y2="140" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="1160" y1="140" x2="1160" y2="95" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<polygon points="1160,95 1168,115 1152,115" style="fill:rgb(255,255,255);stroke:none" />
+<polygon points="1160,95 1168,115 1152,115" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="1030" y1="410" x2="1030" y2="380" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="1030" y1="380" x2="1110" y2="380" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="1110" y1="380" x2="1110" y2="320" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<polygon points="1110,320 1118,340 1102,340" style="fill:rgb(255,255,255);stroke:none" />
+<polygon points="1110,320 1118,340 1102,340" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="750" y1="700" x2="750" y2="650" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<polygon points="750,650 758,670 742,670" style="fill:rgb(255,255,255);stroke:none" />
+<polygon points="750,650 758,670 742,670" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="420" y1="470" x2="420" y2="430" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="420" y1="430" x2="570" y2="430" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="570" y1="430" x2="570" y2="390" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<polygon points="570,390 578,410 562,410" style="fill:rgb(255,255,255);stroke:none" />
+<polygon points="570,390 578,410 562,410" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="550" y1="320" x2="550" y2="290" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="550" y1="290" x2="420" y2="290" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="420" y1="290" x2="420" y2="260" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<polygon points="420,260 428,280 412,280" style="fill:rgb(255,255,255);stroke:none" />
+<polygon points="420,260 428,280 412,280" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="420" y1="320" x2="420" y2="290" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="420" y1="290" x2="420" y2="290" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="420" y1="290" x2="420" y2="260" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<polygon points="420,260 428,280 412,280" style="fill:rgb(255,255,255);stroke:none" />
+<polygon points="420,260 428,280 412,280" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="750" y1="460" x2="750" y2="430" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="750" y1="430" x2="570" y2="430" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="570" y1="430" x2="570" y2="390" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<polygon points="570,390 578,410 562,410" style="fill:rgb(255,255,255);stroke:none" />
+<polygon points="570,390 578,410 562,410" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="750" y1="580" x2="750" y2="515" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<polygon points="750,515 758,535 742,535" style="fill:rgb(255,255,255);stroke:none" />
+<polygon points="750,515 758,535 742,535" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="950" y1="580" x2="950" y2="560" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="950" y1="560" x2="750" y2="560" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="750" y1="560" x2="750" y2="515" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<polygon points="750,515 758,535 742,535" style="fill:rgb(255,255,255);stroke:none" />
+<polygon points="750,515 758,535 742,535" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="440" y1="470" x2="440" y2="440" style="fill:none;stroke:rgb(64,64,64);stroke-dasharray:7;stroke-dashoffset:0" />
+<line x1="440" y1="440" x2="780" y2="440" style="fill:none;stroke:rgb(64,64,64);stroke-dasharray:7;stroke-dashoffset:0" />
+<line x1="780" y1="440" x2="780" y2="369" style="fill:none;stroke:rgb(64,64,64);stroke-dasharray:7;stroke-dashoffset:0" />
+<polygon points="780,369 788,389 772,389" style="fill:rgb(255,255,255);stroke:none" />
+<polygon points="780,369 788,389 772,389" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="830" y1="580" x2="830" y2="440" style="fill:none;stroke:rgb(64,64,64);stroke-dasharray:7;stroke-dashoffset:0" />
+<line x1="830" y1="440" x2="780" y2="440" style="fill:none;stroke:rgb(64,64,64);stroke-dasharray:7;stroke-dashoffset:0" />
+<line x1="780" y1="440" x2="780" y2="369" style="fill:none;stroke:rgb(64,64,64);stroke-dasharray:7;stroke-dashoffset:0" />
+<polygon points="780,369 788,389 772,389" style="fill:rgb(255,255,255);stroke:none" />
+<polygon points="780,369 788,389 772,389" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="1270" y1="160" x2="1270" y2="140" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="1270" y1="140" x2="1160" y2="140" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<line x1="1160" y1="140" x2="1160" y2="95" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<polygon points="1160,95 1168,115 1152,115" style="fill:rgb(255,255,255);stroke:none" />
+<polygon points="1160,95 1168,115 1152,115" style="fill:none;stroke:rgb(64,64,64);stroke-linecap:square" />
+<rect x="1150" y="410" width="130" height="56" style="fill:rgb(102,204,0);stroke:none" />
+<rect x="1150" y="410" width="130" height="56" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="1180" y="432" style="font:12px Ubuntu">Constructor</text>
+<line x1="1150" y1="445" x2="1280" y2="445" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<line x1="1150" y1="455" x2="1280" y2="455" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<rect x="510" y="460" width="130" height="69" style="fill:rgb(255,204,102);stroke:none" />
+<rect x="510" y="460" width="130" height="69" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="537" y="479" style="font:11px Ubuntu">&lt;&lt; interface &gt;&gt;</text>
+<text x="542" y="496" style="font:12px Ubuntu">InnerEntity</text>
+<line x1="510" y1="509" x2="640" y2="509" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<line x1="510" y1="519" x2="640" y2="519" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<rect x="370" y="620" width="120" height="69" style="fill:rgb(255,204,102);stroke:none" />
+<rect x="370" y="620" width="120" height="69" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="388" y="642" style="font:12px Ubuntu">InnerInterface</text>
+<line x1="370" y1="655" x2="490" y2="655" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="378" y="670" style="font:12px Ubuntu">- isStatic : Boole...</text>
+<line x1="370" y1="679" x2="490" y2="679" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
 <rect x="160" y="320" width="180" height="195" style="fill:rgb(255,204,102);stroke:none" />
 <rect x="160" y="320" width="180" height="195" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
 <text x="210" y="342" style="font:12px Ubuntu">PrimitiveType</text>
@@ -236,53 +161,128 @@ text { font:12px Dialog; }
 <text x="168" y="482" style="font:12px Ubuntu">+ STRING_TYPE : PrimitiveTy...</text>
 <line x1="160" y1="491" x2="340" y2="491" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
 <text x="168" y="506" style="font:12px Ubuntu">- PrimitiveType (name : Stri...</text>
-<rect x="370" y="620" width="100" height="69" style="fill:rgb(255,204,102);stroke:none" />
-<rect x="370" y="620" width="100" height="69" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="378" y="642" style="font:12px Ubuntu">InnerInterfa...</text>
-<line x1="370" y1="655" x2="470" y2="655" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="378" y="670" style="font:12px Ubuntu">- isStatic : Bo...</text>
-<line x1="370" y1="679" x2="470" y2="679" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<rect x="510" y="460" width="130" height="69" style="fill:rgb(255,204,102);stroke:none" />
-<rect x="510" y="460" width="130" height="69" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="537" y="479" style="font:11px Ubuntu">&lt;&lt; interface &gt;&gt;</text>
-<text x="542" y="496" style="font:12px Ubuntu">InnerEntity</text>
-<line x1="510" y1="509" x2="640" y2="509" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<line x1="510" y1="519" x2="640" y2="519" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<rect x="1150" y="410" width="130" height="55" style="fill:rgb(102,204,0);stroke:none" />
-<rect x="1150" y="410" width="130" height="55" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="1180" y="432" style="font:12px Ubuntu">Constructor</text>
-<line x1="1150" y1="445" x2="1280" y2="445" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<line x1="1150" y1="455" x2="1280" y2="455" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
-<text x="593" y="408" style="font:14px Ubuntu">1</text>
-<text x="625" y="411" style="font:14px Ubuntu">-parent</text>
-<text x="937" y="448" style="font:14px Ubuntu">*</text>
-<text x="867" y="437" style="font:14px Ubuntu">-methods</text>
-<text x="624" y="289" style="font:14px Ubuntu">1</text>
-<text x="938" y="212" style="font:14px Ubuntu">*</text>
-<text x="874" y="238" style="font:14px Ubuntu">-attributs</text>
-<text x="1078" y="32" style="font:14px Ubuntu">*</text>
-<text x="415" y="182" style="font:14px Ubuntu">1</text>
-<text x="361" y="166" style="font:14px Ubuntu">-type</text>
-<text x="968" y="382" style="font:14px Ubuntu">*</text>
-<text x="485" y="252" style="font:14px Ubuntu">1</text>
-<text x="501" y="254" style="font:14px Ubuntu">-returnType</text>
-<text x="592" y="291" style="font:14px Ubuntu">*</text>
-<text x="577" y="187" style="font:14px Ubuntu">1</text>
-<text x="595" y="187" style="font:14px Ubuntu">-visibility</text>
-<text x="1169" y="267" style="font:14px Ubuntu">1</text>
-<text x="1169" y="308" style="font:14px Ubuntu">-parent</text>
-<text x="1258" y="233" style="font:14px Ubuntu">*</text>
-<text x="1275" y="233" style="font:14px Ubuntu">-params</text>
+<rect x="350" y="190" width="130" height="69" style="fill:rgb(255,204,102);stroke:none" />
+<rect x="350" y="190" width="130" height="69" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="401" y="212" style="font:12px Ubuntu">Type</text>
+<line x1="350" y1="225" x2="480" y2="225" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="358" y="240" style="font:12px Ubuntu">- name : String</text>
+<line x1="350" y1="249" x2="480" y2="249" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<rect x="1090" y="10" width="140" height="83" style="fill:rgb(102,204,0);stroke:none" />
+<rect x="1090" y="10" width="140" height="83" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="1136" y="32" style="font:12px Ubuntu">Variable</text>
+<line x1="1090" y1="45" x2="1230" y2="45" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="1098" y="60" style="font:12px Ubuntu">- name : String</text>
+<text x="1098" y="74" style="font:12px Ubuntu">- isConstant : Boolean</text>
+<line x1="1090" y1="83" x2="1230" y2="83" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<rect x="960" y="410" width="140" height="83" style="fill:rgb(102,204,0);stroke:none" />
+<rect x="960" y="410" width="140" height="83" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="1007" y="432" style="font:12px Ubuntu">Method</text>
+<line x1="960" y1="445" x2="1100" y2="445" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="968" y="460" style="font:12px Ubuntu">- isAbstract : Boolean</text>
+<text x="968" y="474" style="font:12px Ubuntu">- isStatic : Boolean</text>
+<line x1="960" y1="483" x2="1100" y2="483" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<rect x="1060" y="250" width="100" height="69" style="fill:rgb(102,204,0);stroke:none" />
+<rect x="1060" y="250" width="100" height="69" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="1080" y="272" style="font:12px Ubuntu">Operation</text>
+<line x1="1060" y1="285" x2="1160" y2="285" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="1068" y="300" style="font:12px Ubuntu">- name : String</text>
+<line x1="1060" y1="309" x2="1160" y2="309" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<rect x="530" y="50" width="150" height="115" style="fill:rgb(255,247,225);stroke:none" />
+<rect x="530" y="50" width="150" height="115" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="576" y="69" style="font:11px Ubuntu">&lt;&lt; enum &gt;&gt;</text>
+<text x="580" y="86" style="font:12px Ubuntu">Visibility</text>
+<line x1="530" y1="99" x2="680" y2="99" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="538" y="114" style="font:12px Ubuntu">PUBLIC</text>
+<text x="538" y="128" style="font:12px Ubuntu">PACKAGE</text>
+<text x="538" y="142" style="font:12px Ubuntu">PROTECTED</text>
+<text x="538" y="156" style="font:12px Ubuntu">PRIVATE</text>
+<rect x="950" y="160" width="140" height="69" style="fill:rgb(102,204,0);stroke:none" />
+<rect x="950" y="160" width="140" height="69" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="996" y="182" style="font:12px Ubuntu">Attribut</text>
+<line x1="950" y1="195" x2="1090" y2="195" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="958" y="210" style="font:12px Ubuntu">- isStatic : Boolean</text>
+<line x1="950" y1="219" x2="1090" y2="219" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<rect x="370" y="470" width="100" height="55" style="fill:rgb(255,204,102);stroke:none" />
+<rect x="370" y="470" width="100" height="55" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="393" y="492" style="font:12px Ubuntu">Interface</text>
+<line x1="370" y1="505" x2="470" y2="505" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<line x1="370" y1="515" x2="470" y2="515" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<rect x="880" y="580" width="140" height="69" style="fill:rgb(255,204,102);stroke:none" />
+<rect x="880" y="580" width="140" height="69" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="934" y="602" style="font:12px Ubuntu">Enum</text>
+<line x1="880" y1="615" x2="1020" y2="615" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="888" y="630" style="font:12px Ubuntu">- values : List&lt;String&gt;</text>
+<line x1="880" y1="639" x2="1020" y2="639" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<rect x="670" y="580" width="160" height="69" style="fill:rgb(255,204,102);stroke:none" />
+<rect x="670" y="580" width="160" height="69" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="735" y="602" style="font:12px Ubuntu">Class</text>
+<line x1="670" y1="615" x2="830" y2="615" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="678" y="630" style="font:12px Ubuntu">- isAbstract : Boolean</text>
+<line x1="670" y1="639" x2="830" y2="639" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<rect x="680" y="460" width="140" height="55" style="fill:rgb(255,204,102);stroke:none" />
+<rect x="680" y="460" width="140" height="55" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="692" y="482" style="font:12px Ubuntu">ConstructableEntity</text>
+<line x1="680" y1="495" x2="820" y2="495" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<line x1="680" y1="505" x2="820" y2="505" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<rect x="660" y="700" width="180" height="69" style="fill:rgb(255,204,102);stroke:none" />
+<rect x="660" y="700" width="180" height="69" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="720" y="722" style="font:12px Ubuntu">InnerClass</text>
+<line x1="660" y1="735" x2="840" y2="735" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="668" y="750" style="font:12px Ubuntu">- isStatic : Boolean</text>
+<line x1="660" y1="759" x2="840" y2="759" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<rect x="520" y="320" width="100" height="69" style="fill:rgb(255,204,102);stroke:none" />
+<rect x="520" y="320" width="100" height="69" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="552" y="342" style="font:12px Ubuntu">Entity</text>
+<line x1="520" y1="355" x2="620" y2="355" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="528" y="370" style="font:12px Ubuntu">- id : String</text>
+<line x1="520" y1="379" x2="620" y2="379" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<rect x="370" y="320" width="100" height="55" style="fill:rgb(255,204,102);stroke:none" />
+<rect x="370" y="320" width="100" height="55" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="386" y="342" style="font:12px Ubuntu">SimpleType</text>
+<line x1="370" y1="355" x2="470" y2="355" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<line x1="370" y1="365" x2="470" y2="365" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<rect x="700" y="300" width="160" height="69" style="fill:rgb(255,204,102);stroke:none" />
+<rect x="700" y="300" width="160" height="69" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="742" y="319" style="font:11px Ubuntu">&lt;&lt; interface &gt;&gt;</text>
+<text x="742" y="336" style="font:12px Ubuntu">Implementor</text>
+<line x1="700" y1="349" x2="860" y2="349" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<line x1="700" y1="359" x2="860" y2="359" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<rect x="1190" y="160" width="150" height="55" style="fill:rgb(102,204,0);stroke:none" />
+<rect x="1190" y="160" width="150" height="55" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="1234" y="182" style="font:12px Ubuntu">Parameter</text>
+<line x1="1190" y1="195" x2="1340" y2="195" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<line x1="1190" y1="205" x2="1340" y2="205" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
+<text x="1029" y="271" style="font:14px Ubuntu">*</text>
+<text x="667" y="187" style="font:14px Ubuntu">1</text>
+<text x="685" y="187" style="font:14px Ubuntu">-visibility</text>
+<text x="958" y="152" style="font:14px Ubuntu">*</text>
+<text x="685" y="102" style="font:14px Ubuntu">1</text>
+<text x="685" y="128" style="font:14px Ubuntu">-visibility</text>
 <text x="836" y="502" style="font:14px Ubuntu">1</text>
 <text x="858" y="500" style="font:14px Ubuntu">-parent</text>
 <text x="1148" y="483" style="font:14px Ubuntu">*</text>
 <text x="1165" y="483" style="font:14px Ubuntu">-constructors</text>
-<text x="958" y="152" style="font:14px Ubuntu">*</text>
-<text x="685" y="102" style="font:14px Ubuntu">1</text>
-<text x="685" y="128" style="font:14px Ubuntu">-visibility</text>
-<text x="1029" y="271" style="font:14px Ubuntu">*</text>
-<text x="667" y="187" style="font:14px Ubuntu">1</text>
-<text x="685" y="187" style="font:14px Ubuntu">-visibility</text>
+<text x="1169" y="267" style="font:14px Ubuntu">1</text>
+<text x="1169" y="308" style="font:14px Ubuntu">-parent</text>
+<text x="1258" y="233" style="font:14px Ubuntu">*</text>
+<text x="1275" y="233" style="font:14px Ubuntu">-params</text>
+<text x="592" y="291" style="font:14px Ubuntu">*</text>
+<text x="577" y="187" style="font:14px Ubuntu">1</text>
+<text x="595" y="187" style="font:14px Ubuntu">-visibility</text>
+<text x="968" y="382" style="font:14px Ubuntu">*</text>
+<text x="485" y="252" style="font:14px Ubuntu">1</text>
+<text x="501" y="254" style="font:14px Ubuntu">-returnType</text>
+<text x="1078" y="32" style="font:14px Ubuntu">*</text>
+<text x="415" y="182" style="font:14px Ubuntu">1</text>
+<text x="361" y="166" style="font:14px Ubuntu">-type</text>
+<text x="624" y="289" style="font:14px Ubuntu">*</text>
+<text x="625" y="312" style="font:14px Ubuntu">-parent</text>
+<text x="938" y="212" style="font:14px Ubuntu">*</text>
+<text x="874" y="238" style="font:14px Ubuntu">-attributs</text>
+<text x="593" y="408" style="font:14px Ubuntu">1</text>
+<text x="625" y="411" style="font:14px Ubuntu">-parent</text>
+<text x="937" y="448" style="font:14px Ubuntu">*</text>
+<text x="867" y="437" style="font:14px Ubuntu">-methods</text>
 <path d="M140,-29 L140,1 L190,1 Q220,1 220,-29 L140,-29" style="fill:rgb(255,247,225);stroke:none" />
 <path d="M140,-29 L140,1 L190,1 Q220,1 220,-29 L140,-29" style="fill:none;stroke:rgb(65,65,65);stroke-width:1.2;stroke-linecap:square" />
 <text x="145" y="-7" style="font:16px Ubuntu">Entities</text>

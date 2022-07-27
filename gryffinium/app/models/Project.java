@@ -34,8 +34,10 @@ public class Project extends Model
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     public List<ProjectUser> projectUsers;
 
+    @Transient
     public static final Map<UUID, Project> openProjects = new HashMap<>();
 
+    @Transient
     private Timer autoSaveTimer = new Timer();
 
     public Project(String name)

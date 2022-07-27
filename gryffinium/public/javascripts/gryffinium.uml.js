@@ -87,7 +87,11 @@ export class Attribute {
 
     toString() {
 
-        return this.visibility + " " + this.name + " : " + this.type;
+        let result = this.visibility + " " + this.name + " : " + this.type;
+        if(this.isConstant || this.isStatic) {
+            result += `{${this.isConstant ? "const" : ''}${this.isConstant && this.isStatic ? ', ' : ''}${this.isStatic ? "static" : ""}}`;
+        }
+        return result;
     }
 }
 
