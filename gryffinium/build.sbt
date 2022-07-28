@@ -1,6 +1,8 @@
 name := """Gryffinium"""
 organization := "com.quentinforestier"
 
+maintainer := "quentin.forestier@heig-vd.ch"
+
 version := "1.0-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava, PlayEbean)

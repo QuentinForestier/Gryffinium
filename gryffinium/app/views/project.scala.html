@@ -858,7 +858,9 @@
                 interactive: {
                     labelMove: true,
                 },
-                /*guard: function(evt) {
+                /*
+                Utile lorsque les éléments pourront être éditer sur le diagramme
+                guard: function(evt) {
                     return evt.target instanceof HTMLInputElement;
                 },*/
                 defaultConnector: {
@@ -948,10 +950,6 @@
                             height: elementView.model.getSize().height,
                         },
                         elementView.model.getType(), 'UPDATE_COMMAND');
-            })
-
-            paper.on('link:disconnect', function (linkView) {
-                console.log('test')
             })
 
             paper.on('link:connect', function (linkView) {
