@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<classDiagram>
-    <entity xsi:type="Class" abstract="false" height="100" id="274683f0-ee3a-1004-876d-f86f7c40a14a" visibility="PUBLIC" width="200" x="440" y="110" name="Class1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
-    <entity xsi:type="Class" abstract="false" height="100" id="27478110-ee3a-1004-876d-f86f7c40a14a" visibility="PUBLIC" width="200" x="1150" y="90" name="Class2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
-    <entity xsi:type="Class" abstract="false" height="100" id="2748fdec-ee3a-1004-876d-f86f7c40a14a" visibility="PUBLIC" width="200" x="880" y="410" name="Class3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
-</classDiagram>
