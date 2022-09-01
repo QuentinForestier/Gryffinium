@@ -156,7 +156,11 @@ export class Method {
     }
 
     toString() {
-        return this.visibility + " " + this.name + this.paramsToString() + " : " + this.type;
+        let result = this.visibility + " " + this.name + " : " + this.type;
+        if(this.isAbstract || this.isStatic) {
+            result += `{${this.isAbstract ? "abstract" : ''}${this.isConstant && this.isStatic ? ', ' : ''}${this.isStatic ? "static" : ""}}`;
+        }
+        return result;
     }
 
     paramsToString() {

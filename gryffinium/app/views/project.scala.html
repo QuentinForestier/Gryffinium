@@ -370,7 +370,9 @@
                 socket.onmessage = function (event) {
                     let message = JSON.parse(event.data);
                     if (message.commandType === 'Error') {
-                        console.log(message.message)
+                        if(message.message !== null) {
+                            alert(message.message)
+                        }
                     } else {
                         for (let command of message.commands) {
                             switch (command.commandType) {
@@ -552,7 +554,7 @@
                                                     y: -10
                                                 } : JSON.parse(command.offset),
                                                 linkId: command.id,
-                                                name: command.name,
+                                                name: "",
                                                 vertices: JSON.parse(command.vertices),
                                                 toolsBox: unaryToolsView
                                             });

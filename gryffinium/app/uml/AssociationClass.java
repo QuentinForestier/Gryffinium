@@ -107,11 +107,20 @@ public class AssociationClass
         }
     }
 
-    public ArrayNode getCreationsCommand(){
-        ArrayNode result = Json.newArray();
-        result.add(Command.createResponse(toDto(),
-                ElementTypeDto.ASSOCIATION_CLASS, CommandType.SELECT_COMMAND));
-        return result;
+    public ArrayNode getCreationsCommand()
+    {
+        try
+        {
+            ArrayNode result = Json.newArray();
+            result.add(Command.createResponse(toDto(),
+                    ElementTypeDto.ASSOCIATION_CLASS,
+                    CommandType.SELECT_COMMAND));
+            return result;
+        }
+        catch (Exception e)
+        {
+            return Json.newArray();
+        }
     }
 }
 
