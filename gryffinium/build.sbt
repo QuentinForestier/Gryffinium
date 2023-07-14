@@ -3,23 +3,30 @@ organization := "com.quentinforestier"
 
 maintainer := "quentin.forestier@heig-vd.ch"
 
-version := "1.0-SNAPSHOT"
+version := "1.0.0-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava, PlayEbean)
 
-scalaVersion := "2.13.8"
+scalaVersion := "2.13.11"
 
-libraryDependencies += guice
-
+// Runtime Dependencies
 libraryDependencies ++= Seq(
+  // https://github.com/playframework/playframework/releases/2.8.15
+  "com.google.inject" % "guice" % "7.0.0",
+  "com.google.inject.extensions" % "guice-assistedinject" % "7.0.0",
+  "net.jodah" % "typetools" % "0.6.3",
+
   jdbc,
-  "org.postgresql" % "postgresql" % "42.3.3",
+  javaForms,
+  "org.postgresql" % "postgresql" % "42.6.0",
+  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.15.2",
+  "com.fasterxml.jackson.core" % "jackson-databind" % "2.15.2",
+  "com.fasterxml.jackson.dataformat" % "jackson-dataformat-xml" % "2.15.2",
+  "org.mindrot" % "jbcrypt" % "0.4"
 )
 
-libraryDependencies += "org.mindrot" % "jbcrypt" % "0.4"
+// Test Dependencies
+libraryDependencies += "org.mockito" % "mockito-core" % "5.4.0" % "test"
 
-libraryDependencies += "com.fasterxml.jackson.dataformat" % "jackson-dataformat-xml" % "2.11.4"
-
-libraryDependencies += "org.mockito" % "mockito-core" % "4.6.1" % "test"
-
-libraryDependencies += javaForms
+// Dependencies Check Directives
+dependencyUpdatesFailBuild := true
