@@ -28,5 +28,5 @@ jobs:
         distribution: 'temurin'
         cache: 'sbt'
     - name: Check dependencies
-      run: sbt dependencyUpdates
+      run: cd gryffinium; sbt dependencyUpdates
       # Optional: This step uploads information to the GitHub dependency graph and unblocking Dependabot alerts for the repository
