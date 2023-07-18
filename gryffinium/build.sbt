@@ -17,6 +17,10 @@ libraryDependencies ++= Seq(
   "com.google.inject.extensions" % "guice-assistedinject" % "5.1.0",
   "net.jodah" % "typetools" % "0.6.3",
 
+  // Needed to be injected correctly
+  "io.ebean" % "ebean" % "13.20.1",
+  "io.ebean" % "ebean-agent" % "13.20.1",
+
   jdbc,
   javaForms,
   "org.postgresql" % "postgresql" % "42.6.0",
