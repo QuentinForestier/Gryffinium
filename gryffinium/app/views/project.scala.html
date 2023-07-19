@@ -860,11 +860,9 @@
                 interactive: {
                     labelMove: true,
                 },
-                /*
-                Utile lorsque les éléments pourront être éditer sur le diagramme
                 guard: function(evt) {
                     return evt.target instanceof HTMLInputElement;
-                },*/
+                },
                 defaultConnector: {
                     name: 'jumpover',
                     size: 5,
@@ -882,6 +880,10 @@
                 },
                 linkPinning: false,
             });
+
+
+            let form  = new uml.Form();
+            form.addTo(graph);
 
             graph.on("remove", function (cell) {
                 if (!cell.get('alreadyDeleted') && cell.getId()) {
