@@ -18,124 +18,7 @@ this.joint.shapes = this.joint.shapes || {};
 (function (exports, ElementView_mjs, LinkView_mjs, Link_mjs, basic_mjs) {
         'use strict';
 
-        let Form = basic_mjs.Generic.define('uml.Form', {
-            attrs: {
-                body: {
-                    width: 'calc(w)',
-                    height: 'calc(h)',
-                },
-                foreignObject: {
-                    width: '200',
-                    height: '100',
-                    x: 6,
-                    y: 6
-                }
-            },
-        }, {
-            markup: [
-                {
-                    tagName: 'rect',
-                    selector: 'body'
-                },
-                {
-                    tagName: 'foreignObject',
-                    selector: 'foreignObject',
-                    children: [
-                        {
-                            tagName: 'div',
-                            namespaceURI: 'http://www.w3.org/1999/xhtml',
-                            selector: 'background',
-                            style: {
-                                backgroundColor: umlColor,
-                                border: '1px solid black',
-                                height: '100%'
-                            },
-                            children: [
-                                {
-                                    tagName: 'div',
-                                    selector: 'header'
-                                },
 
-                                {
-                                    tagName: 'input',
-                                    selector: 'header',
-                                    style: {
-                                        fontStyle:'italic',
-                                        color: '#000000',
-                                        fontSize: fontSize + 2,
-                                        fontFamily: fontFamiliy,
-                                        textAlign: 'center',
-                                        border:'none',
-                                        width:'100%',
-                                        backgroundColor: umlColor,
-                                        padding: 'none',
-                                    },
-                                },
-                                {
-                                    tagName: 'hr',
-                                    selector:'line',
-                                    style:{
-                                        height:'0px',
-                                        border:0,
-                                        borderTop: 'solid 1px #000000',
-                                        backgroundColor:'#000000',
-                                        margin:0,
-                                    }
-                                },
-                                {
-                                    tagName: 'div',
-                                    selector: 'attrs',
-                                    style: {
-                                        color: '#000000',
-                                        fontSize: fontSize,
-                                        fontFamily: fontFamiliy,
-                                        padding: '10px',
-                                        margin: 0,
-
-                                    },
-                                    children:[
-                                        {
-                                            tagName: 'input',
-                                            selector:'attr1',
-                                            style:{
-                                                width:'auto',
-                                                height:'100%',
-                                                border:'none',
-                                                display:'inline',
-                                                padding:'none',
-                                                backgroundColor:umlColor,
-                                            },
-
-                                            textContent: 'attr1'
-                                        },
-                                        {
-                                            tagName: 'input',
-                                            selector:'attr2',
-                                            style:{
-                                                width:'100%',
-                                                height:'100%',
-                                            },
-                                            textContent: 'attr1'
-                                        }
-                                    ]
-                                },
-                                {
-                                    tagName: 'hr',
-                                    selector:'line2',
-                                    style:{
-                                        height:'0px',
-                                        border:0,
-                                        borderTop: 'solid 1px #000000',
-                                        backgroundColor:'#000000',
-                                        margin:0,
-                                    }
-                                },
-                            ]
-                        }
-                    ]
-                }
-            ]
-        });
 
         let Class = basic_mjs.Generic.define('uml.Class', {
             attrs: {
@@ -1059,7 +942,7 @@ this.joint.shapes = this.joint.shapes || {};
 
         let AssociationClass = Association.define('uml.AssociationClass', {
             associatedClass: undefined,
-        },{
+        }, {
             getType: function () {
                 return 'ASSOCIATION_CLASS';
             }
@@ -1214,7 +1097,7 @@ this.joint.shapes = this.joint.shapes || {};
                 return 'MULTI_ASSOCIATION';
             },
             updateFromMessage: function (message) {
-                if(message.x && message.y) {
+                if (message.x && message.y) {
                     this.set('position', {x: message.x, y: message.y});
                 }
             }
@@ -1226,7 +1109,7 @@ this.joint.shapes = this.joint.shapes || {};
                     strokeDasharray: '5,5',
                 }
             }
-        },{});
+        }, {});
 
         exports.Abstract = Abstract;
         exports.AbstractView = AbstractView;
@@ -1254,7 +1137,6 @@ this.joint.shapes = this.joint.shapes || {};
         exports.UnaryAssociationView = UnaryAssociationView;
         exports.MultiAssociation = MutliAssociation;
         exports.SimpleLink = SimpleLink;
-        exports.Form = Form;
     }
     (this.joint.shapes.uml = this.joint.shapes.uml || {}, joint.dia, joint.dia, joint.dia, joint.shapes.basic)
 )
