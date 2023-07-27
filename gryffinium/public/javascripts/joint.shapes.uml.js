@@ -12,6 +12,17 @@ const fontSize = 15
 const umlColor = '#FFF7E1';
 const selectedUmlColor = '#bfb9a8';
 
+const standardInput = {
+    style: {
+        display: 'flex',
+        height: '100%',
+        border: 'none',
+        padding: 'none',
+        backgroundColor: umlColor,
+    },
+    size: 8,
+}
+
 
 this.joint = this.joint || {};
 this.joint.shapes = this.joint.shapes || {};

@@ -124,7 +124,8 @@
                     Constructor,
                     Parameter,
                     Visibility,
-                    Role
+                    Role,
+                    Entity,
                 } from "@routes.Assets.versioned("javascripts/gryffinium.uml.js")"
                 import {
                     generateModifierInterface,
@@ -135,9 +136,13 @@
                 } from "@routes.Assets.versioned("javascripts/interfaces.js")"
 
 
-                import {Form} from "@routes.Assets.versioned("javascripts/custom.gryffinium.js")";
 
 
+                // Didnt find a way to do it properly...
+                window.htmlChangeListener = function(sender, id){
+                    console.log(sender);
+                    console.log(id);
+                }
 
                 // TODO : get hostname
                 const socket = new WebSocket('ws://' + document.location.hostname + ':9000@routes.ProjectController.socket(uuid)');
@@ -159,6 +164,9 @@
                 document.getElementById("savesvg").addEventListener("click", function () {
                     exportToImage('svg');
                 })
+
+
+
 
                 function setSelectedElement(sender, type) {
                     if (type !== undefined) {
@@ -886,8 +894,12 @@
                 });
 
 
-                let form = new Form();
-                form.addTo(graph);
+
+
+                let entity = new Entity();
+                entity.addTo(graph);
+
+
 
 
                 graph.on("remove", function (cell) {
