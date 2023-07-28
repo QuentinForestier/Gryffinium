@@ -1,4 +1,3 @@
-
 /** Other things **/
 const fontFamiliy = 'Helvetica, sans-serif';
 const fontSize = 15
@@ -18,8 +17,9 @@ const standardInput = {
 /** END Other things **/
 
 /** Graphical elements **/
-export const Entity = joint.dia.Element.define('Entity', {
+export const Entity = joint.shapes.standard.Rectangle.define('Entity', {
     attrs: {
+
         body: {
             width: 'calc(w)',
             height: 'calc(h)',
@@ -27,7 +27,7 @@ export const Entity = joint.dia.Element.define('Entity', {
         },
         foreignObject: {
             width: '200',
-            height: '150',
+            height:'100',
             x: 0,
             y: 0,
 
@@ -40,7 +40,7 @@ export const Entity = joint.dia.Element.define('Entity', {
             },
 
         },
-        headerDiv: {
+        headerContainer: {
             style: {
                 padding: 3,
                 display: 'flex',
@@ -55,24 +55,25 @@ export const Entity = joint.dia.Element.define('Entity', {
                 alignSelf: 'center',
                 border: 'none',
                 margin: 'auto',
-                backgroundColor: umlColor,
+                backgroundColor: 'inherit',
                 textAlign: 'center',
                 padding: 0
             },
             size: '10',
             value: 'Header'
         },
-        lock:{
-            style:{
-                width:25,
-                height:25,
-                position:'fixed',
-                borderRadius:100,
-                backgroundColor:'blue',
-                border:'solid 1px white',
+        lock: {
+            style: {
+                width: 25,
+                height: 25,
+                position: 'fixed',
+                borderRadius: 100,
+                backgroundColor: 'blue',
+                border: 'solid 1px white',
             }
         },
-        values: {
+
+        valuesContainer: {
             style: {
                 display: 'flex',
                 fontSize: fontSize,
@@ -82,7 +83,7 @@ export const Entity = joint.dia.Element.define('Entity', {
 
             },
         },
-        attrs: {
+        attrsContainer: {
             style: {
                 display: 'flex',
                 fontSize: fontSize,
@@ -90,7 +91,7 @@ export const Entity = joint.dia.Element.define('Entity', {
                 padding: 3,
             },
         },
-        methods: {
+        methodsContainer: {
             style: {
                 display: 'flex',
                 fontSize: fontSize,
@@ -99,104 +100,65 @@ export const Entity = joint.dia.Element.define('Entity', {
                 padding: 3,
             },
         },
+
+        id:undefined,
+        name: undefined,
+
+        alreadyDeleted:false,
+        toolsBox: undefined,
+
     },
 }, {
     markup: [
-        {
-            tagName: 'rect',
-            selector: 'body'
-        },
-        {
-            tagName: 'foreignObject',
-            selector: 'foreignObject',
-            style: {
-                color: '#000000',
-                fontFamily: fontFamiliy,
-                fontSize: fontSize,
-            },
-            children: [
-                {
-                    tagName: 'div',
-                    namespaceURI: 'http://www.w3.org/1999/xhtml',
-                    selector: 'background',
-                    children: [
-                        // Header
-                        {
-                            tagName: 'div',
-                            selector: 'headerDiv',
-                            children: [
-                                {
-                                    tagName: 'input',
-                                    selector: 'header',
-                                },{
-                                tagName: 'div',
-                                    selector: 'lock',
-                                }
-                            ]
-                        },
-                        // Values
-                        {
-                            tagName: 'div',
-                            selector: 'values',
-                        },
-                        // Attrs
-                        {
-                            tagName: 'div',
-                            selector: 'attrs',
-                        },
-                        // Methods
-                        {
-                            tagName: 'div',
-                            selector: 'methods',
-                        },
 
-                    ]
-                }
-            ]
-        }
     ],
 
     initialize: function () {
-        joint.dia.Element.prototype.initialize.apply(this, arguments);
+        this.on('change:name', function(){
+            this.trigger('uml-update');
+        })
+
         this.updateMarkup(true, true, true);
+        this.autoHeight([1,2,3,4,5,6])
+        joint.shapes.standard.Rectangle.prototype.initialize.apply(this, arguments);
     },
     updateMarkup: function (showVal, showAttr, showMeth) {
         let attributes = {
             tagName: 'div',
-            selector: 'attrs',
+            selector: 'attrsContainer',
             children: []
         };
 
         let values = {
             tagName: 'div',
-            selector: 'values',
+            selector: 'valuesContainer',
             children: []
         };
 
         let methods = {
             tagName: 'div',
-            selector: 'methods',
+            selector: 'methodsContainer',
             children: []
         };
 
-        for (let i = 0; i <3; ++i) {
+        for (let i = 0; i < 2; ++i) {
 
-            let obj = this.generateInput("Val", {parentId:1, text:"val"+i, id: i});
+            let obj = this.generateInput("Val", {parentId: 1, text: "val" + i, id: i});
 
             values.children.push(obj.markup);
         }
 
-        for (let i = 0; i <2; ++i) {
+        for (let i = 0; i < 2; ++i) {
 
-            let obj = this.generateInput("Attr", {parentId:1, text:"attr"+i, id: i});
+            let obj = this.generateInput("Attr", {parentId: 1, text: "attr" + i, id: i});
 
             attributes.children.push(obj.markup);
         }
 
 
-        for (let i = 0; i <2; ++i) {
+        for (let i = 0; i < 2; ++i) {
 
-            let obj = this.generateInput("Meth", {parentId:1, text:"meth"+i, id: i});
+            let obj = this.generateInput("Meth", {parentId: 1, text: "meth" + i, id: i});
 
             methods.children.push(obj.markup);
         }
@@ -204,7 +166,7 @@ export const Entity = joint.dia.Element.define('Entity', {
         let sections = [
             {
                 tagName: 'div',
-                selector: 'headerDiv',
+                selector: 'headerContainer',
                 children: [
                     {
                         tagName: 'input',
@@ -218,15 +180,15 @@ export const Entity = joint.dia.Element.define('Entity', {
             },
         ]
 
-        if( values.children.length > 0 && showVal){
+        if (values.children.length > 0 && showVal) {
             sections.push(values);
-            this.attr()['attrs'].style.borderTop = "solid 1px black";
-            this.attr()['methods'].style.borderTop = "solid 1px black";
+            this.attr()['attrsContainer'].style.borderTop = "solid 1px black";
+            this.attr()['methodsContainer'].style.borderTop = "solid 1px black";
         }
 
-        if(attributes.children.length > 0 && showAttr){
+        if (attributes.children.length > 0 && showAttr) {
             sections.push(attributes);
-            this.attr()['methods'].style.borderTop = "solid 1px black";
+            this.attr()['methodsContainer'].style.borderTop = "solid 1px black";
         }
         //values.children.length > 0 && showVal ? sections.push(values) : undefined;
         methods.children.length > 0 && showMeth ? sections.push(methods) : undefined;
@@ -257,9 +219,8 @@ export const Entity = joint.dia.Element.define('Entity', {
         ]
 
 
-        console.log(markup);
         this.set('markup', markup);
-
+        this.trigger('uml-update');
     },
 
     generateInput: function (type, data) {
@@ -271,16 +232,113 @@ export const Entity = joint.dia.Element.define('Entity', {
 
         let attr = {...standardInput};
         attr.value = data.text;
-        attr.onchange = 'window.htmlChangeListener(this, ' + data.id + ')';
+        //attr.onchange = 'window.htmlChangeListener(this, ' + data.id + ', ' + data.parentId + ')';
 
         this.attr()[type + data.id] = attr;
 
         return {attr, markup};
 
     },
+    setWidth: function(width = 100){
+        this.get('attrs').foreignObject.width = width;
+    },
+    getWidth: function(){
+        return this.get('attrs').foreignObject.width;
+    },
+    autoWidth: function(elements){
+        const span = document.getElementById('measure')
+        span.fontSize = fontSize
+        span.fontFamily = fontFamiliy
+
+        let maxLineLength = 0;
+        elements.forEach(function (elem) {
+
+                span.innerText = elem.toString();
+                let lineSize = $(span).width();
+
+                maxLineLength = Math.max(maxLineLength, lineSize)
+                maxLineLength = (Math.round(maxLineLength / 10) * 10)
+            }
+        );
+
+        this.setWidth(Math.max(120, maxLineLength));
+    },
+
+    setHeight: function(height = 100){
+        this.get('attrs').foreignObject.height = height;
+    },
+    getHeight:function(){
+        return this.get('attrs').foreignObject.height;
+    },
+    autoHeight: function(elements){
+
+        this.setHeight(elements.length * (19.6) + 55);
+    },
+
+    setColor: function(color){
+        this.get('attrs').background.style.backgroundColor = color;
+    },
+    getColor: function(){
+        return this.get('attrs').background.style.backgroundColor;
+    },
+
+    selected: function(isSelected){
+        // TODO
+    },
+
+    getEntityName: function(){
+        return this.get('attrs').header.value;
+    },
+    setEntityName: function(name){
+      this.get('attrs').header.value = name;
+        this.trigger('uml-update')
+    },
+
+    getInputValue: function(type, id){
+        return this.get('attrs')[type+id].value;
+    },
+    setInputValue: function(type, id, text){
+
+        this.get('attrs')[type+id].value = text;
+        //this.attr(type+id + '/props/value', 'current');
+        console.log(this);
+        this.trigger('uml-update')
+    },
+
+    /*getId: function(){
+        return this.get('id');
+    },*/
+
+    /*getType: function(){
+        return 'CLASS';
+    }*/
 
 
 });
+
+
+export const EntityView = joint.dia.ElementView.extend({
+    events:{
+       'change input': 'onChange'
+    },
+    initialize: function () {
+
+        joint.dia.ElementView.prototype.initialize.apply(this, arguments);
+
+        this.listenTo(this.model, 'uml-update', function () {
+            this.update();
+            this.resize();
+        });
+
+    },
+    onChange: function(evt){
+        let selector = evt.target.attributes['joint-selector'].value;
+
+        this.model.attr(selector+'/value',evt.target.value);
+        console.log(this.model.get('attrs')[selector].value)
+        //this.model.attr(selector+ '/props/value', 'current');
+    }
+})
 
 
 /** END Graphical elements **/
@@ -381,7 +439,7 @@ export class Attribute {
     toString() {
 
         let result = this.visibility + " " + this.name + " : " + this.type;
-        if(this.isConstant || this.isStatic) {
+        if (this.isConstant || this.isStatic) {
             result += `{${this.isConstant ? "const" : ''}${this.isConstant && this.isStatic ? ', ' : ''}${this.isStatic ? "static" : ""}}`;
         }
         return result;
@@ -450,7 +508,7 @@ export class Method {
 
     toString() {
         let result = this.visibility + " " + this.name + " : " + this.type;
-        if(this.isAbstract || this.isStatic) {
+        if (this.isAbstract || this.isStatic) {
             result += `{${this.isAbstract ? "abstract" : ''}${this.isConstant && this.isStatic ? ', ' : ''}${this.isStatic ? "static" : ""}}`;
         }
         return result;

@@ -126,6 +126,7 @@
                     Visibility,
                     Role,
                     Entity,
+                        EntityView,
                 } from "@routes.Assets.versioned("javascripts/gryffinium.uml.js")"
                 import {
                     generateModifierInterface,
@@ -139,10 +140,12 @@
 
 
                 // Didnt find a way to do it properly...
-                window.htmlChangeListener = function(sender, id){
+               /* window.htmlChangeListener = function(sender, id, parentId){
                     console.log(sender);
-                    console.log(id);
-                }
+                    entity.setInputValue('Val', 1, 'help');
+                    entity.updateMarkup(true, true, true);
+                    console.log(entity.getInputValue('Val',1));
+                }*/
 
                 // TODO : get hostname
                 const socket = new WebSocket('ws://' + document.location.hostname + ':9000@routes.ProjectController.socket(uuid)');
@@ -891,6 +894,7 @@
                         name: 'connectionPerpendicular',
                     },
                     linkPinning: false,
+                    elementView: EntityView,
                 });
 
 
@@ -898,9 +902,7 @@
 
                 let entity = new Entity();
                 entity.addTo(graph);
-
-
-
+                entity.setEntityName('YEP');
 
                 graph.on("remove", function (cell) {
                     if (!cell.get('alreadyDeleted') && cell.getId()) {
@@ -932,6 +934,8 @@
                 let moving = null;
 
                 paper.on('blank:pointerdown', function (event, x, y) {
+                    console.log(entity);
+                    entity.setInputValue('Val',0, 'Test123');
                     if (!selectMultiAssociationMode) {
                         selectedElement = undefined;
                         generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage);
@@ -964,6 +968,7 @@
                 });
 
                 paper.on('element:pointerdblclick', function (elementView) {
+                    entity.setInputValue('Val',0, 'Coucou');
                     elementView.model.trigger('change:autoresize')
                     sendMessage({
                                 id: elementView.model.getId(),
@@ -1254,6 +1259,7 @@
                     if (!selectMultiAssociationMode) {
                         paper.removeTools();
                         elementView.addTools(elementView.model.get('toolsBox'));
+
                     }
                 });
 
