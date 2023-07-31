@@ -17,7 +17,7 @@ const standardInput = {
 /** END Other things **/
 
 /** Graphical elements **/
-export const Entity = joint.shapes.standard.Rectangle.define('Entity', {
+export const Entity = joint.dia.Element.define('Entity', {
     attrs: {
 
         body: {
@@ -195,10 +195,7 @@ export const Entity = joint.shapes.standard.Rectangle.define('Entity', {
 
 
         let markup = [
-            {
-                tagName: 'rect',
-                selector: 'body'
-            },
+            
             {
                 tagName: 'foreignObject',
                 selector: 'foreignObject',
@@ -232,7 +229,6 @@ export const Entity = joint.shapes.standard.Rectangle.define('Entity', {
 
         let attr = {...standardInput};
         attr.value = data.text;
-        //attr.onchange = 'window.htmlChangeListener(this, ' + data.id + ', ' + data.parentId + ')';
 
         this.attr()[type + data.id] = attr;
 
@@ -298,10 +294,8 @@ export const Entity = joint.shapes.standard.Rectangle.define('Entity', {
         return this.get('attrs')[type+id].value;
     },
     setInputValue: function(type, id, text){
-
-        this.get('attrs')[type+id].value = text;
-        //this.attr(type+id + '/props/value', 'current');
-        console.log(this);
+        let selector = type+id;
+        this.attr(selector + '/value', text);
         this.trigger('uml-update')
     },
 
@@ -314,31 +308,18 @@ export const Entity = joint.shapes.standard.Rectangle.define('Entity', {
     }*/
 
 
+}, {
+    attributes:{
+        value:{
+            set: function(text, _, node){
+                if('value' in node) node.value = text;
+            }
+        }
+    }
 });
 
 
-export const EntityView = joint.dia.ElementView.extend({
-    events:{
-       'change input': 'onChange'
-    },
-    initialize: function () {
 
-        joint.dia.ElementView.prototype.initialize.apply(this, arguments);
-
-        this.listenTo(this.model, 'uml-update', function () {
-            this.update();
-            this.resize();
-        });
-
-    },
-    onChange: function(evt){
-        let selector = evt.target.attributes['joint-selector'].value;
-
-        this.model.attr(selector+'/value',evt.target.value);
-        console.log(this.model.get('attrs')[selector].value)
-        //this.model.attr(selector+ '/props/value', 'current');
-    }
-})
 
 
 /** END Graphical elements **/

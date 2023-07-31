@@ -126,7 +126,7 @@
                     Visibility,
                     Role,
                     Entity,
-                        EntityView,
+                        //EntityView,
                 } from "@routes.Assets.versioned("javascripts/gryffinium.uml.js")"
                 import {
                     generateModifierInterface,
@@ -894,7 +894,25 @@
                         name: 'connectionPerpendicular',
                     },
                     linkPinning: false,
-                    elementView: EntityView,
+                    elementView: joint.dia.ElementView.extend({
+                        events:{
+                            'change input': 'onChange'
+                        },
+                        initialize: function () {
+
+                            joint.dia.ElementView.prototype.initialize.apply(this, arguments);
+
+                            this.listenTo(this.model, 'uml-update', function () {
+                                this.update();
+                                this.resize();
+                            });
+
+                        },
+                        onChange: function(evt){
+                            let input = evt.target;
+                            this.model.attr(input.name + '/value', input.value);
+                        }
+                    }),
                 });
 
 
