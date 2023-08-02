@@ -125,7 +125,9 @@
                     Parameter,
                     Visibility,
                     Role,
-                    Entity,
+                    Class,
+                        Interface,
+                        Enum,
                         //EntityView,
                 } from "@routes.Assets.versioned("javascripts/gryffinium.uml.js")"
                 import {
@@ -400,20 +402,18 @@
                                         let parent = null;
                                         switch (command.elementType) {
                                             case ElementType.Class.name:
-                                                elem = new uml.Class({
-                                                    name: command.name,
+                                                elem = new Class({
                                                     position: {
                                                         x: command.x,
                                                         y: command.y
                                                     },
-                                                    size: {
-                                                        width: command.width,
-                                                        height: command.height
-                                                    },
                                                     id: command.id,
                                                     toolsBox: elementToolsView,
                                                 });
-                                                elem.setSizeAndPosition({width: command.width, height: command.height});
+                                                elem.setEntityName(command.name);
+                                                elem.setWidth(command.width);
+                                                elem.setHeight(command.height);
+                                                //elem.setSizeAndPosition({width: command.width, height: command.height});
                                                 break;
                                             case ElementType.Interface.name:
                                                 elem = new uml.Interface({
@@ -910,7 +910,7 @@
                         },
                         onChange: function(evt){
                             let input = evt.target;
-                            this.model.attr(input.name + '/value', input.value);
+                            this.model.attr(input.attributes['joint-selector'].value + '/value', input.value);
                         }
                     }),
                 });
@@ -918,9 +918,17 @@
 
 
 
-                let entity = new Entity();
+                let entity = new Class();
                 entity.addTo(graph);
                 entity.setEntityName('YEP');
+
+                let inter = new Interface();
+                inter.addTo(graph);
+                inter.setEntityName('Inter')
+
+                let en = new Enum();
+                en.addTo(graph);
+                en.setEntityName('en');
 
                 graph.on("remove", function (cell) {
                     if (!cell.get('alreadyDeleted') && cell.getId()) {
@@ -952,8 +960,7 @@
                 let moving = null;
 
                 paper.on('blank:pointerdown', function (event, x, y) {
-                    console.log(entity);
-                    entity.setInputValue('Val',0, 'Test123');
+
                     if (!selectMultiAssociationMode) {
                         selectedElement = undefined;
                         generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage);
@@ -986,7 +993,6 @@
                 });
 
                 paper.on('element:pointerdblclick', function (elementView) {
-                    entity.setInputValue('Val',0, 'Coucou');
                     elementView.model.trigger('change:autoresize')
                     sendMessage({
                                 id: elementView.model.getId(),

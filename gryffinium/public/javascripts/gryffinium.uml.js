@@ -17,62 +17,397 @@ const standardInput = {
 /** END Other things **/
 
 /** Graphical elements **/
-export const Entity = joint.dia.Element.define('Entity', {
-    attrs: {
+const Entity = joint.dia.Element.define('Entity', {
+        attrs: {
 
-        body: {
-            width: 'calc(w)',
-            height: 'calc(h)',
+            body: {
+                width: 'calc(w)',
+                height: 'calc(h)',
 
-        },
-        foreignObject: {
-            width: '200',
-            height:'100',
-            x: 0,
-            y: 0,
+            },
+            foreignObject: {
+                width: '200',
+                height: '100',
+                x: 0,
+                y: 0,
 
-        },
-        background: {
-            style: {
-                backgroundColor: umlColor,
-                border: '2px solid blue',
-                height: '100%'
+            },
+            background: {
+                style: {
+                    backgroundColor: umlColor,
+                    border: '2px solid blue',
+                    height: '100%'
+                },
+
+            },
+            headerContainer: {
+                style: {
+                    padding: 3,
+                    display: 'flex',
+                    borderBottom: 'solid 1px black',
+                    flexDirection: 'column',
+                },
+            },
+            entityTag: {
+                style: {
+                    fontWeight: 'bold',
+                    //fontStyle:'italic',
+                    fontSize: fontSize + 2,
+                    alignSelf: 'center',
+                    border: 'none',
+                    margin: 'auto',
+                    backgroundColor: 'inherit',
+                    textAlign: 'center',
+                    padding: 0,
+                    height: fontSize,
+                },
+
+
+            },
+            header: {
+                style: {
+                    fontWeight: 'bold',
+                    //fontStyle:'italic',
+                    fontSize: fontSize + 2,
+                    alignSelf: 'center',
+                    border: 'none',
+                    margin: 'auto',
+                    backgroundColor: 'inherit',
+                    textAlign: 'center',
+                    padding: 0
+                },
+                size: '10',
+                value: 'Header'
+            },
+            lock: {
+                style: {
+                    width: 25,
+                    height: 25,
+                    position: 'fixed',
+                    borderRadius: 100,
+                    backgroundColor: 'blue',
+                    border: 'solid 1px white',
+                }
             },
 
-        },
-        headerContainer: {
-            style: {
-                padding: 3,
-                display: 'flex',
-                borderBottom: 'solid 1px black',
+
+            attrsContainer: {
+                style: {
+                    display: 'flex',
+                    fontSize: fontSize,
+                    flexDirection: 'column',
+                    padding: 3,
+                },
             },
-        },
-        header: {
-            style: {
-                fontWeight: 'bold',
-                //fontStyle:'italic',
-                fontSize: fontSize + 2,
-                alignSelf: 'center',
-                border: 'none',
-                margin: 'auto',
-                backgroundColor: 'inherit',
-                textAlign: 'center',
-                padding: 0
+            methodsContainer: {
+                style: {
+                    display: 'flex',
+                    fontSize: fontSize,
+                    //borderTop: 'solid 1px black',
+                    flexDirection: 'column',
+                    padding: 3,
+                },
             },
-            size: '10',
-            value: 'Header'
+
+            id: undefined,
+            name: undefined,
+            umlAttributes: [],
+            methods: [],
+
+            visibility: 'public',
+
+            alreadyDeleted: false,
+            toolsBox: undefined,
+            height: undefined,
+
+
+            hideAttrs: false,
+            hideMethods: false,
+
+
         },
-        lock: {
-            style: {
-                width: 25,
-                height: 25,
-                position: 'fixed',
-                borderRadius: 100,
-                backgroundColor: 'blue',
-                border: 'solid 1px white',
+    },
+    {
+        markup: [],
+        initialize: function () {
+            this.on('change:name', function () {
+                this.trigger('uml-update');
+            })
+
+            this.updateMarkup();
+            joint.dia.Element.prototype.initialize.apply(this, arguments);
+        },
+        updateMarkup: function () {
+
+
+            let markup = [
+                {
+                    tagName: 'foreignObject',
+                    selector: 'foreignObject',
+                    style: {
+                        color: '#000000',
+                        fontFamily: fontFamiliy,
+                        fontSize: fontSize,
+                    },
+                    children: [
+                        {
+                            tagName: 'div',
+                            namespaceURI: 'http://www.w3.org/1999/xhtml',
+                            selector: 'background',
+                            children: this.sectionsMarkup(),
+                        }
+                    ]
+                }
+            ]
+
+
+            this.set('markup', markup);
+            this.autoHeight();
+            this.trigger('uml-update');
+        },
+
+        generateSectionMarkup: function (name, type, list) {
+            let section = {
+                tagName: 'div',
+                selector: name,
+                children: [],
             }
+            console.log('generate');
+            for (let val of list) {
+
+                let obj = this.generateInput(type, {parentId: this.get('id'), text: type + val.id, id: val.id});
+
+                section.children.push(obj.markup);
+            }
+
+            return section;
         },
 
+        sectionsMarkup: function () {
+
+
+            let sections = [
+                {
+                    tagName: 'div',
+                    selector: 'headerContainer',
+                    children: [
+                        {
+                            tagName: 'input',
+                            selector: 'header',
+                        },
+                        {
+                            tagName: 'div',
+                            selector: 'lock',
+                        }
+                    ]
+                }
+            ]
+
+            let a = this.generateSectionMarkup('attrsContainer', 'Attr', this.attr('umlAttributes'));
+
+            if (a.children.length > 0 && !this.attr('hideAttrs')) {
+
+                sections.push(a);
+                this.attr()['attrsContainer'].style.borderBottom = "solid 1px black";
+            }
+
+            let m = this.generateSectionMarkup('methodsContainer', 'Meth', this.attr('methods'));
+
+            if (m.children.length > 0 && !this.attr('hideMethods')) {
+
+                sections.push(m);
+                this.attr()['methodsContainer'].style.borderBottom = "solid 1px black";
+            }
+
+            // Add << >> title on entity if needed
+            if (this.getHeaderName() !== '')
+                sections[0].children.splice(0, 0, {
+                    tagName: 'p',
+                    selector: 'entityTag',
+                    textContent: this.getHeaderName(),
+                })
+
+            return sections;
+
+        },
+
+        nbVisibleElements: function () {
+            let nb = this.getHeaderName() === '' ? 1 : 2; // Header
+            nb += this.attr('umlAttributes').length * (this.attr('hideAttrs') ? 0 : 1);
+            nb += this.attr('methods').length * (this.attr('hideMethods') ? 0 : 1);
+
+            return nb;
+        },
+
+        generateInput: function (type, data) {
+
+            let markup = {
+                tagName: 'input',
+                selector: type + data.id,
+            };
+
+            let attr = {...standardInput};
+            attr.value = data.text;
+
+            this.attr()[type + data.id] = attr;
+
+            return {attr, markup};
+
+        },
+        setWidth: function (width = 100) {
+            this.get('attrs').foreignObject.width = width;
+        },
+        getWidth: function () {
+            return this.get('attrs').foreignObject.width;
+        },
+        autoWidth: function (elements) {
+            const span = document.getElementById('measure')
+            span.fontSize = fontSize
+            span.fontFamily = fontFamiliy
+
+            let maxLineLength = 0;
+            elements.forEach(function (elem) {
+
+                    span.innerText = elem.toString();
+                    let lineSize = $(span).width();
+
+                    maxLineLength = Math.max(maxLineLength, lineSize)
+                    maxLineLength = (Math.round(maxLineLength / 10) * 10)
+                }
+            );
+
+            this.setWidth(Math.max(120, maxLineLength));
+        },
+
+        setHeight: function (height = 100) {
+            this.get('attrs').foreignObject.height = Math.max(height, 100);
+        },
+        getHeight: function () {
+            return this.get('attrs').foreignObject.height;
+        },
+        autoHeight: function () {
+
+            let nbElements = this.nbVisibleElements();
+
+            this.setHeight(nbElements * (19.6) + 45);
+            this.trigger('uml-update');
+        },
+
+        setColor: function (color) {
+            this.get('attrs').background.style.backgroundColor = color;
+        },
+        getColor: function () {
+            return this.get('attrs').background.style.backgroundColor;
+        },
+
+        selected: function (isSelected) {
+            // TODO
+        },
+
+        getEntityName: function () {
+            return this.get('attrs').header.value;
+        },
+        setEntityName: function (name) {
+            this.get('attrs').header.value = name;
+            this.trigger('uml-update')
+        },
+
+        getHeaderName: function () {
+            return '';
+        },
+
+        getInputValue: function (type, id) {
+            return this.get('attrs')[type + id].value;
+        },
+        setInputValue: function (type, id, text) {
+            let selector = type + id;
+            this.attr(selector + '/value', text);
+            this.trigger('uml-update')
+        },
+
+        addAttribute: function (attribute) {
+            console.log(this.attr('umlAttributes'));
+            this.attr('umlAttributes').push(attribute);
+            this.updateMarkup();
+        },
+
+        setAttributes: function (attributes) {
+            this.set('umlAttributes', attributes);
+            this.updateMarkup();
+        },
+
+        getId: function () {
+            return this.get('id');
+        },
+
+        getType: function () {
+            return 'CLASS';
+        },
+
+
+    }, {
+        attributes: {
+            value: {
+                set: function (text, _, node) {
+                    if ('value' in node) node.value = text;
+                }
+            }
+        }
+    });
+
+export let Interface = Entity.define('Interface', {}, {
+    initialize: function () {
+        Entity.prototype.initialize.apply(this, arguments);
+    },
+    getType: function () {
+        return 'INTERFACE';
+    },
+    getHeaderName: function () {
+        return '<<Interface>>';
+    },
+
+})
+
+let ConstructableEntity = Entity.define('ConstructableEntity', {
+        constructors: [],
+    },
+    {
+        initialize: function () {
+            Entity.prototype.initialize.apply(this, arguments);
+        },
+
+        getType: function () {
+            return 'CONSTRUCTABLE_ENTITY';
+        },
+        sectionsMarkup: function () {
+
+            let sections = Entity.prototype.sectionsMarkup.apply(this, arguments);
+
+            let m = Entity.prototype.generateSectionMarkup.call(this, 'methodsContainer', 'Meth', this.attr('constructors') + this.attr('methods'));
+
+            if (m.children.length > 0 && !this.attr('hideMethods')) {
+                for (let sec of sections) {
+                    if (sec.selector === 'methodsContainer') {
+                        sec.children = m.children;
+                    }
+                }
+            }
+
+
+            return sections;
+
+        },
+
+        nbVisibleElements: function () {
+            let nb = Entity.prototype.nbVisibleElements.apply(this, arguments);
+            console.log(this.get('constructors'))
+            nb += this.get('constructors').length * (this.attr('hideMethods') ? 0 : 1);
+            return nb;
+        },
+    }
+);
+
+export let Enum = ConstructableEntity.define('Enum', {
         valuesContainer: {
             style: {
                 display: 'flex',
@@ -83,243 +418,58 @@ export const Entity = joint.dia.Element.define('Entity', {
 
             },
         },
-        attrsContainer: {
-            style: {
-                display: 'flex',
-                fontSize: fontSize,
-                flexDirection: 'column',
-                padding: 3,
-            },
-        },
-        methodsContainer: {
-            style: {
-                display: 'flex',
-                fontSize: fontSize,
-                //borderTop: 'solid 1px black',
-                flexDirection: 'column',
-                padding: 3,
-            },
+        hideVal: false,
+        values: [],
+    },
+    {
+        initialize: function () {
+            ConstructableEntity.prototype.initialize.apply(this, arguments);
         },
 
-        id:undefined,
-        name: undefined,
+        getType: function () {
+            return 'ENUM';
+        },
 
-        alreadyDeleted:false,
-        toolsBox: undefined,
+        sectionsMarkup: function () {
 
-    },
-}, {
-    markup: [
+            let sections = ConstructableEntity.prototype.sectionsMarkup.apply(this, arguments);
 
-    ],
+            let v = ConstructableEntity.prototype.generateSectionMarkup.call(this, 'valuesContainer', 'Val', this.get('values'));
 
-    initialize: function () {
-        this.on('change:name', function(){
-            this.trigger('uml-update');
-        })
-
-        this.updateMarkup(true, true, true);
-        this.autoHeight([1,2,3,4,5,6])
-        joint.shapes.standard.Rectangle.prototype.initialize.apply(this, arguments);
-    },
-    updateMarkup: function (showVal, showAttr, showMeth) {
-        let attributes = {
-            tagName: 'div',
-            selector: 'attrsContainer',
-            children: []
-        };
-
-        let values = {
-            tagName: 'div',
-            selector: 'valuesContainer',
-            children: []
-        };
-
-        let methods = {
-            tagName: 'div',
-            selector: 'methodsContainer',
-            children: []
-        };
-
-        for (let i = 0; i < 2; ++i) {
-
-            let obj = this.generateInput("Val", {parentId: 1, text: "val" + i, id: i});
-
-            values.children.push(obj.markup);
-        }
-
-        for (let i = 0; i < 2; ++i) {
-
-            let obj = this.generateInput("Attr", {parentId: 1, text: "attr" + i, id: i});
-
-            attributes.children.push(obj.markup);
-        }
-
-
-        for (let i = 0; i < 2; ++i) {
-
-            let obj = this.generateInput("Meth", {parentId: 1, text: "meth" + i, id: i});
-
-            methods.children.push(obj.markup);
-        }
-
-        let sections = [
-            {
-                tagName: 'div',
-                selector: 'headerContainer',
-                children: [
-                    {
-                        tagName: 'input',
-                        selector: 'header',
-                    },
-                    {
-                        tagName: 'div',
-                        selector: 'lock',
-                    }
-                ]
-            },
-        ]
-
-        if (values.children.length > 0 && showVal) {
-            sections.push(values);
-            this.attr()['attrsContainer'].style.borderTop = "solid 1px black";
-            this.attr()['methodsContainer'].style.borderTop = "solid 1px black";
-        }
-
-        if (attributes.children.length > 0 && showAttr) {
-            sections.push(attributes);
-            this.attr()['methodsContainer'].style.borderTop = "solid 1px black";
-        }
-        //values.children.length > 0 && showVal ? sections.push(values) : undefined;
-        methods.children.length > 0 && showMeth ? sections.push(methods) : undefined;
-
-
-        let markup = [
-            
-            {
-                tagName: 'foreignObject',
-                selector: 'foreignObject',
-                style: {
-                    color: '#000000',
-                    fontFamily: fontFamiliy,
-                    fontSize: fontSize,
-                },
-                children: [
-                    {
-                        tagName: 'div',
-                        namespaceURI: 'http://www.w3.org/1999/xhtml',
-                        selector: 'background',
-                        children: sections,
-                    }
-                ]
+            if (v.children.length > 0 && !this.attr('hideValues')) {
+                sections.splice(0,0,v);
+                this.get('valuesContainer').style.borderBottom = "solid 1px black";
             }
-        ]
 
 
-        this.set('markup', markup);
-        this.trigger('uml-update');
+            return sections;
+
+        },
+
+        nbVisibleElements: function () {
+            let nb = ConstructableEntity.prototype.nbVisibleElements.apply(this, arguments);
+            nb += this.get('values').length * (this.attr('hideVals') ? 0 : 1);
+            return nb;
+        },
+
+        getHeaderName: function () {
+            return '<<Enum>>';
+        },
+    })
+
+export let Class = ConstructableEntity.define('Class', {
+        isAbstract: false,
     },
+    {
+        initialize: function () {
+            ConstructableEntity.prototype.initialize.apply(this, arguments);
+        },
 
-    generateInput: function (type, data) {
-
-        let markup = {
-            tagName: 'input',
-            selector: type + data.id,
-        };
-
-        let attr = {...standardInput};
-        attr.value = data.text;
-
-        this.attr()[type + data.id] = attr;
-
-        return {attr, markup};
-
-    },
-    setWidth: function(width = 100){
-        this.get('attrs').foreignObject.width = width;
-    },
-    getWidth: function(){
-        return this.get('attrs').foreignObject.width;
-    },
-    autoWidth: function(elements){
-        const span = document.getElementById('measure')
-        span.fontSize = fontSize
-        span.fontFamily = fontFamiliy
-
-        let maxLineLength = 0;
-        elements.forEach(function (elem) {
-
-                span.innerText = elem.toString();
-                let lineSize = $(span).width();
-
-                maxLineLength = Math.max(maxLineLength, lineSize)
-                maxLineLength = (Math.round(maxLineLength / 10) * 10)
-            }
-        );
-
-        this.setWidth(Math.max(120, maxLineLength));
-    },
-
-    setHeight: function(height = 100){
-        this.get('attrs').foreignObject.height = height;
-    },
-    getHeight:function(){
-        return this.get('attrs').foreignObject.height;
-    },
-    autoHeight: function(elements){
-
-        this.setHeight(elements.length * (19.6) + 55);
-    },
-
-    setColor: function(color){
-        this.get('attrs').background.style.backgroundColor = color;
-    },
-    getColor: function(){
-        return this.get('attrs').background.style.backgroundColor;
-    },
-
-    selected: function(isSelected){
-        // TODO
-    },
-
-    getEntityName: function(){
-        return this.get('attrs').header.value;
-    },
-    setEntityName: function(name){
-      this.get('attrs').header.value = name;
-        this.trigger('uml-update')
-    },
-
-    getInputValue: function(type, id){
-        return this.get('attrs')[type+id].value;
-    },
-    setInputValue: function(type, id, text){
-        let selector = type+id;
-        this.attr(selector + '/value', text);
-        this.trigger('uml-update')
-    },
-
-    /*getId: function(){
-        return this.get('id');
-    },*/
-
-    /*getType: function(){
-        return 'CLASS';
-    }*/
-
-
-}, {
-    attributes:{
-        value:{
-            set: function(text, _, node){
-                if('value' in node) node.value = text;
-            }
-        }
+        getType: function () {
+            return 'CLASS';
+        },
     }
-});
-
-
-
+)
 
 
 /** END Graphical elements **/
