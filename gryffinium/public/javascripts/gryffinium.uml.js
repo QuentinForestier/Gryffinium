@@ -293,21 +293,21 @@ const Entity = joint.dia.Element.define('Entity', {
             this.trigger('uml-update');
         },
 
-        setX: function(x){
+        setX: function (x) {
             this.get('position').x = x;
             this.trigger('uml-update');
         },
 
-        getX: function(){
+        getX: function () {
             return this.get('position').x;
         },
 
-        setY: function(y){
-            this.get('position').y =y;
+        setY: function (y) {
+            this.get('position').y = y;
             this.trigger('uml-update');
         },
 
-        getY: function(){
+        getY: function () {
             return this.get('position').y;
         },
 
@@ -344,7 +344,6 @@ const Entity = joint.dia.Element.define('Entity', {
         },
 
         addAttribute: function (attribute) {
-            console.log(this.attr('umlAttributes'));
             this.attr('umlAttributes').push(attribute);
             this.updateMarkup();
         },
@@ -354,6 +353,23 @@ const Entity = joint.dia.Element.define('Entity', {
             this.updateMarkup();
         },
 
+        removeAttribute: function (id) {
+            this.set('umlAttributes', this.get('umlAttributes').filter(attr => attr.id !== id));
+            this.updateMarkup();
+        },
+
+        updateAttribute: function (attribute) {
+            let index = this.get('umlAttributes').map(function (x) {
+                return x.id;
+            }).indexOf(attribute.id);
+
+            if (index !== -1) {
+                this.get('umlAttributes')[index].update(attribute);
+                this.setInputValue('Attr', attribute.id, attribute.toString());
+            }
+
+        },
+
         getId: function () {
             return this.get('id');
         },
@@ -361,6 +377,37 @@ const Entity = joint.dia.Element.define('Entity', {
         getType: function () {
             return 'CLASS';
         },
+
+        update: function (modification) {
+            if (modification.name) {
+                this.setEntityName(modification.name);
+            }
+
+            if (modification.width) {
+                this.setWidth(modification.width);
+            }
+
+            if (modification.height) {
+                this.setHeight(modification.height);
+            }
+
+            if (modification.x) {
+                this.setX(modification.x);
+            }
+
+            if (modification.y) {
+                this.setY(modification.y);
+            }
+
+            if (modification.color) {
+                this.setColor(modification.color);
+            }
+
+            if (modification.visibility) {
+                //this.setVisibility(modification.visibility);
+            }
+
+        }
 
 
     }, {
@@ -487,6 +534,14 @@ export let Class = ConstructableEntity.define('Class', {
         getType: function () {
             return ElementType.Class.name;
         },
+
+        update: function (modification) {
+            ConstructableEntity.prototype.update.call(this, modification);
+
+            if (modification.isAbstract) {
+                //this.setIsAbstract(modification.isAbstract);
+            }
+        }
     }
 );
 
@@ -511,7 +566,7 @@ export class UMLController {
         let elem = undefined;
         let parent = undefined;
 
-        switch (command.elementType){
+        switch (command.elementType) {
             case ElementType.Class.name:
                 elem = new Class({
                     id: command.id,
@@ -554,7 +609,7 @@ export class UMLController {
 
         }
 
-        if(elem !== undefined){
+        if (elem !== undefined) {
             this.entities.set(elem.getId(), elem);
         }
         return elem;
@@ -565,8 +620,28 @@ export class UMLController {
     }
 
     update(command) {
-        switch (command.elementType){
-
+        switch (command.elementType) {
+            case ElementType.Class.name:
+            case ElementType.Interface.name:
+            case ElementType.Enum.name:
+            case ElementType.AssociationClass.name:
+            case ElementType.Generalization.name:
+            case ElementType.Realization.name:
+            case ElementType.BinaryAssociation.name:
+            case ElementType.Aggregation.name:
+            case ElementType.Composition.name:
+            case ElementType.Dependency.name:
+            case ElementType.Inner.name:
+            case ElementType.MultiAssociation.name:
+            case ElementType.UnaryAssociation.name:
+                if (command.visibility !== undefined) {
+                    command.visibility = Visibility.getVisibility(command.visibility);
+                }
+                this.entities.get(command.id).update(command);
+                break;
+            case ElementType.Attribute.name:
+                this.entities.get(command.parentId).updateAttribute(command);
+                break;
         }
     }
 
@@ -681,6 +756,29 @@ export class Attribute {
         this.visibility = Visibility.getVisibility(visibility);
     }
 
+    update(modification) {
+        if (modification.id) {
+            this.id = modification.id;
+        }
+        if (modification.name) {
+            this.name = modification.name;
+        }
+        if (modification.type) {
+            this.type = modification.type;
+        }
+        if (modification.visibility) {
+            this.visibility = Visibility.getVisibility(modification.visibility);
+        }
+        if (modification.isConstant) {
+            this.isConstant = modification.isConstant;
+        }
+        if (modification.isStatic) {
+            this.isStatic = modification.isStatic;
+        }
+
+
+    }
+
     toString() {
 
         let result = this.visibility + " " + this.name + " : " + this.type;
@@ -707,6 +805,17 @@ export class Constructor {
         this.parameters.push(parameter);
     }
 
+    update(modification) {
+        if (modification.id) {
+            this.id = modification.id;
+        }
+        if (modification.name) {
+            this.name = modification.name;
+        }
+        if (modification.visibility) {
+            this.visibility = Visibility.getVisibility(modification.visibility);
+        }
+    }
 
     toString() {
         return this.visibility + " " + this.name + this.paramsToString();
@@ -767,6 +876,27 @@ export class Method {
         return "(" + params.substring(0, params.length - 2) + ")";
     }
 
+    update(modification) {
+        if (modification.id) {
+            this.id = modification.id;
+        }
+        if (modification.name) {
+            this.name = modification.name;
+        }
+        if (modification.type) {
+            this.type = modification.type;
+        }
+        if (modification.visibility) {
+            this.visibility = Visibility.getVisibility(modification.visibility);
+        }
+        if (modification.isAbstract) {
+            this.isAbstract = modification.isAbstract;
+        }
+        if (modification.isStatic) {
+            this.isStatic = modification.isStatic;
+        }
+    }
+
     addParameter(parameter) {
         this.parameters.push(parameter);
     }
@@ -790,6 +920,12 @@ export class Method {
 export class Value {
     constructor(name) {
         this.name = name;
+    }
+
+    update(modification) {
+        if (modification.name) {
+            this.name = modification.name;
+        }
     }
 
     toString() {
