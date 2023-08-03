@@ -293,6 +293,24 @@ const Entity = joint.dia.Element.define('Entity', {
             this.trigger('uml-update');
         },
 
+        setX: function(x){
+            this.get('position').x = x;
+            this.trigger('uml-update');
+        },
+
+        getX: function(){
+            return this.get('position').x;
+        },
+
+        setY: function(y){
+            this.get('position').y =y;
+            this.trigger('uml-update');
+        },
+
+        getY: function(){
+            return this.get('position').y;
+        },
+
         setColor: function (color) {
             this.get('attrs').background.style.backgroundColor = color;
         },
@@ -360,7 +378,7 @@ export let Interface = Entity.define('Interface', {}, {
         Entity.prototype.initialize.apply(this, arguments);
     },
     getType: function () {
-        return 'INTERFACE';
+        return ElementType.Interface.name;
     },
     getHeaderName: function () {
         return '<<Interface>>';
@@ -427,7 +445,7 @@ export let Enum = ConstructableEntity.define('Enum', {
         },
 
         getType: function () {
-            return 'ENUM';
+            return ElementType.Enum.name;
         },
 
         sectionsMarkup: function () {
@@ -437,7 +455,7 @@ export let Enum = ConstructableEntity.define('Enum', {
             let v = ConstructableEntity.prototype.generateSectionMarkup.call(this, 'valuesContainer', 'Val', this.get('values'));
 
             if (v.children.length > 0 && !this.attr('hideValues')) {
-                sections.splice(0,0,v);
+                sections.splice(0, 0, v);
                 this.get('valuesContainer').style.borderBottom = "solid 1px black";
             }
 
@@ -455,7 +473,8 @@ export let Enum = ConstructableEntity.define('Enum', {
         getHeaderName: function () {
             return '<<Enum>>';
         },
-    })
+    }
+);
 
 export let Class = ConstructableEntity.define('Class', {
         isAbstract: false,
@@ -466,20 +485,115 @@ export let Class = ConstructableEntity.define('Class', {
         },
 
         getType: function () {
-            return 'CLASS';
+            return ElementType.Class.name;
         },
     }
-)
+);
 
 
 /** END Graphical elements **/
 
+/** Controller **/
+
+export class UMLController {
+
+    entities = new Map();
+
+    onChatMessage = undefined;
+    sendMessage = undefined;
+
+    constructor(onChatMessage, sendMessage) {
+        this.onChatMessage = onChatMessage;
+        this.sendMessage = sendMessage;
+    }
+
+    create(command) {
+        let elem = undefined;
+        let parent = undefined;
+
+        switch (command.elementType){
+            case ElementType.Class.name:
+                elem = new Class({
+                    id: command.id,
+                    name: name,
+                    toolsBox: elementToolsView,
+                    position: {
+                        x: command.x,
+                        y: command.y
+                    },
+                    width: command.width,
+                    height: command.height
+                });
+                break
+            case ElementType.Interface.name:
+                elem = new Interface({
+                    id: command.id,
+                    name: name,
+                    toolsBox: elementToolsView,
+                    position: {
+                        x: command.x,
+                        y: command.y
+                    },
+                    width: command.width,
+                    height: command.height
+                });
+                break
+            case ElementType.Enum.name:
+                elem = new Enum({
+                    id: command.id,
+                    name: name,
+                    toolsBox: elementToolsView,
+                    position: {
+                        x: command.x,
+                        y: command.y
+                    },
+                    width: command.width,
+                    height: command.height
+                });
+                break
+
+        }
+
+        if(elem !== undefined){
+            this.entities.set(elem.getId(), elem);
+        }
+        return elem;
+    }
+
+    delete(command) {
+
+    }
+
+    update(command) {
+        switch (command.elementType){
+
+        }
+    }
+
+    onMessage(message) {
+        for (let command of message.commands) {
+            switch (command.commandType) {
+                case 'CHAT_MESSAGE_COMMAND':
+                    this.onChatMessage(command);
+                    break;
+                case 'SELECT_COMMAND':
+                case 'CREATE_COMMAND':
+                    this.create(command);
+                    break;
+                case 'UPDATE_COMMAND':
+                    this.update(command);
+                    break;
+                case 'REMOVE_COMMAND':
+                    this.delete(command);
+                    break;
+            }
+        }
+    }
+}
+
+/** END Controller **/
+
 /** Utility elements **/
-
-/** END Utility elements**/
-
-
-/** Hidden elements **/
 
 export class ElementType {
     static Class = new ElementType("CLASS");
@@ -746,4 +860,4 @@ export class Role {
     }
 }
 
-/** END Hidden elements **/
+/** END Utility elements**/
