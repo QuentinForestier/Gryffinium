@@ -962,7 +962,8 @@ this.joint.shapes = this.joint.shapes || {};
 
         let UnaryAssociation = Association.define('uml.UnaryAssociation', {
             parent: undefined,
-        }, {
+        },
+            {
             initialize: function () {
                 Association.prototype.initialize.apply(this, arguments);
 
