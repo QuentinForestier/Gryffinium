@@ -38,7 +38,7 @@ const resizeLGrip = new joint.elementTools.Button({
         let elem = this.model;
         resizingStartPos = function (x, y) {
 
-            let coords = UMLController.paper.snapToGrid(x, y);
+            let coords = GryffiniumManager.paper.snapToGrid(x, y);
             let size = elem.attributes.size;
             let position = elem.attributes.position;
 
@@ -77,7 +77,7 @@ const resizeRGrip = new joint.elementTools.Button({
             let size = elem.attributes.size;
             let position = elem.attributes.position;
 
-            let coords = UMLController.paper.snapToGrid(x, y);
+            let coords = paper.snapToGrid(x, y);
 
             let deltaWidth = coords.x - (position.x + size.width);
 
@@ -1252,94 +1252,18 @@ export let SimpleLink = CustomLink.define('uml.SimpleLink', {
 
 //region Controller
 
-export class UMLController {
+export class GryffiniumManager {
 
     entities = new Map();
 
     onChatMessage = undefined;
+    onVerticesChange = undefined;
     sendMessage = undefined;
 
-    movingVertices = undefined;
-
-    static graph = undefined;
-    static paper = undefined;
-
-    dragStartPosition = null;
-    moving = null;
-
-    selectedLink = new BinaryAssociation();
-    selectedEntity = undefined;
-    selectedElement = undefined;
-
-    constructor(document, onChatMessage, sendMessage) {
+    constructor(onVerticesChange, onChatMessage, sendMessage) {
         this.onChatMessage = onChatMessage;
         this.sendMessage = sendMessage;
-        this.graph = new joint.dia.Graph();
-        this.paper = new joint.dia.Paper({
-            el: document.getElementById('paper'),
-            width: document.documentElement.clientWidth,
-            height: document.documentElement.clientHeight,
-            gridSize: 10,
-            model: this.graph,
-            drawGrid: true,
-            interactive: {
-                labelMove: true,
-            },
-            guard: function (evt) {
-                return evt.target instanceof HTMLInputElement;
-            },
-            defaultConnector: {
-                name: 'jumpover',
-                size: 5,
-            },
-            defaultLink: new BinaryAssociation(),
-            defaultAnchor: {
-                name: 'perpendicular',
-                args: {
-                    perpendicular: true,
-                    fixed: true,
-                }
-            },
-            defaultLinkAnchor: {
-                name: 'connectionPerpendicular',
-            },
-            linkPinning: false,
-            elementView: joint.dia.ElementView.extend({
-                events: {
-                    'change input': 'onChange'
-                },
-                initialize: function () {
 
-                    joint.dia.ElementView.prototype.initialize.apply(this, arguments);
-
-                    this.listenTo(this.model, 'uml-update', function () {
-                        this.update();
-                        this.resize();
-                    });
-
-                },
-                onChange: function (evt) {
-                    let input = evt.target;
-                    this.model.attr(input.attributes['joint-selector'].value + '/value', input.value);
-                }
-            }),
-            linkView: joint.dia.LinkView.extend({
-                initialize: function () {
-
-                    joint.dia.LinkView.prototype.initialize.apply(this, arguments);
-
-                    this.listenTo(this.model, 'uml-update', function () {
-                        this.update();
-                    });
-
-                }
-            })
-        });
-        this.initEvents();
-    }
-
-    onVerticesChange(link) {
-        this.movingVertices = link;
     }
 
     create(command) {
@@ -1464,7 +1388,7 @@ export class UMLController {
                     vertices: JSON.parse(command.vertices),
                     toolsBox: linkToolsView,
                 });
-                    elem.on('change:vertices', (link) => this.onVerticesChange(link));
+                elem.on('change:vertices', (link) => this.onVerticesChange(link));
                 break;
             case ElementType.BinaryAssociation.name:
                 elem = new BinaryAssociation({
@@ -1707,129 +1631,7 @@ export class UMLController {
         }
     }
 
-    onMouseMove(evt) {
-        if (this.dragStartPosition) {
-            let newPosX = evt.offsetX - this.dragStartPosition.x;
-            let newPosY = evt.offsetY - this.dragStartPosition.y;
-            if (newPosX > 0) {
-                newPosX = 0;
-            }
-            if (newPosY > 0) {
-                newPosY = 0;
-            }
-            this.paper.translate(newPosX, newPosY);
-        }
-
-        if (resizingStartPos) {
-            resizingStartPos(evt.offsetX, evt.offsetY);
-        }
-    }
-
-    onMouseUp(evt) {
-        evt.preventDefault();
-        if (resizingStartPos) {
-            let cmd = resizingStartPos(evt.offsetX, evt.offsetY);
-            sendMessage(cmd.data, cmd.entityType, cmd.type);
-
-            resizingStartPos = null;
-        }
-        if (this.moving) {
-            sendMessage({
-                    id: this.moving.get('id'),
-                    x: this.moving.get('position').x,
-                    y: this.moving.get('position').y,
-                    width: this.moving.get('size').width,
-                    height: this.moving.get('size').height
-                },
-                this.moving.getType(),
-                'UPDATE_COMMAND');
-            this.moving = null;
-        }
-
-        if (this.movingVertices) {
-            let view = this.paper.findViewByModel(this.movingVertices);
-            sendMessage({
-                id: this.movingVertices.getId(),
-                sourceId: this.movingVertices.get('source').id,
-                sourceAnchor: view.sourceAnchor,
-                targetAnchor: view.targetAnchor,
-                vertices: JSON.stringify(this.movingVertices.get('vertices')),
-            }, this.movingVertices.getType(), 'UPDATE_COMMAND');
-            this.movingVertices = undefined;
-        }
-    }
-
-    selectLinkType(linkType) {
-        switch (linkType) {
-            case ElementType.Inner:
-                this.paper.options.defaultLink = new Inner();
-                break;
-            case ElementType.Aggregation:
-                this.paper.options.defaultLink = new Aggregation();
-                break;
-            case ElementType.BinaryAssociation:
-                this.paper.options.defaultLink = new BinaryAssociation();
-                break;
-            case ElementType.Composition:
-                this.paper.options.defaultLink = new Composition();
-                break;
-            case ElementType.Dependency:
-                this.paper.options.defaultLink = new Dependency();
-                break;
-            case ElementType.Generalization:
-                this.paper.options.defaultLink = new Generalization();
-                break;
-            case ElementType.Realization:
-                this.paper.options.defaultLink = new Realization();
-                break;
-            case ElementType.AssociationClass:
-                this.paper.options.defaultLink = new AssociationClass();
-                break;
-
-        }
-    }
-
-    selectEntityType(entityType) {
-        switch (entityType) {
-            case ElementType.Class:
-                this.selectedEntity = ElementType.Class.name;
-                break;
-            case ElementType.Interface:
-                this.selectedEntity = ElementType.Interface.name;
-                break;
-            case ElementType.Enum:
-                this.selectedEntity = ElementType.Enum.name;
-                break;
-            default:
-                this.selectedEntity = undefined;
-
-        }
-    }
-
-    initEvents() {
-        //region Graph
-        this.graph.on("remove", (cell) => this.remove(cell));
-        this.graph.on('change:position', (cell) => this.changePosition(cell));
-
-        //endregion
-        //region Paper
-        this.paper.on("blank:mousewheel", (evt, x, y, delta) => this.zoom(evt, x, y, delta));
-        this.paper.on('blank:pointerdown', (event, x, y) => this.blankPointerDown(event, x, y));
-        this.paper.on('cell:pointerup blank:pointerup', (event, x, y) => this.pointerUp(event, x, y));
-
-        this.paper.on('element:pointerdblclick', (elementView) => this.elemDoubleClick(elementView));
-        this.paper.on('element:mouseenter', (elementView) => this.elemMouseEnter(elementView));
-        this.paper.on('element:mouseleave', (elementView) => this.elemMouseLeave(elementView));
-        this.paper.on('element:pointerdown', (elementView) => this.elemPointerDown(elementView));
-
-        this.paper.on('link:connect', (linkView) => this.linkConnect(linkView));
-        this.paper.on('link:pointerup', (linkView) => this.linkPointerUp(linkView));
-        this.paper.on('link:pointerdown', (linkView) => this.linkPointerDown(linkView));
-        //endregion
-
-    }
-
-    remove(cell) {
+    removeEntity(cell) {
         if (!cell.get('alreadyDeleted') && cell.getId()) {
             let cmd = cell.removeCommand();
             if (cmd !== null)
@@ -1837,193 +1639,91 @@ export class UMLController {
         }
     }
 
-    changePosition(cell) {
-        if (cell.get('position').x < 0)
-            cell.set('position', {x: 0, y: cell.get('position').y});
-        if (cell.get('position').y < 0)
-            cell.set('position', {x: cell.get('position').x, y: 0});
-        this.moving = cell;
-    }
-
-    zoom(evt, x, y, delta) {
-        evt.preventDefault();
-        const oldScale = this.paper.scale().sx;
-        const newScale = oldScale + 0.2 * delta * oldScale
-
-        if (newScale > 0.2 && newScale < 5) {
-            this.paper.scale(newScale, newScale, x, y);
-            let tx = -x * newScale + evt.offsetX;
-            let ty = -y * newScale + evt.offsetY;
-            if (tx > 0)
-                tx = 0;
-            if (ty > 0)
-                ty = 0;
-            this.paper.translate(tx, ty);
-        }
-    }
-
-    blankPointerDown(event, x, y) {
-        document.activeElement.blur();
-        if (!selectMultiAssociationMode) {
-            this.selectedElement = undefined;
-            //generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage);
-            let scale = this.paper.scale();
-            if (this.selectedEntity) {
-                this.sendMessage({
-                        x: x - 100,
-                        y: y - 50,
-                        width: 200,
-                        height: 100,
-                    },
-                    this.selectedEntity,
-                    'CREATE_COMMAND');
-            } else if (event.button === 1) {
-                this.dragStartPosition = {x: x * scale.sx, y: y * scale.sy};
-            }
-        }
-    }
-
-    pointerUp(cellView, evt, x, y) {
-        this.dragStartPosition = null;
-        // TODO
-        if (!selectMultiAssociationMode) {
-            this.paper.removeTools();
-        }
-    }
-
-
-    elemDoubleClick(elementView) {
-        elementView.model.autoWidth();
+    addEntity(entityType, x, y) {
         this.sendMessage({
-                id: elementView.model.getId(),
-                width: elementView.model.getWidth(),
-                height: elementView.model.getHeight(),
+                x: x - 100,
+                y: y - 50,
+                width: 200,
+                height: 100,
             },
-            elementView.model.getType(), 'UPDATE_COMMAND');
+            entityType,
+            'CREATE_COMMAND');
     }
 
-    elemMouseEnter(elementView) {
-        if (!selectMultiAssociationMode) {
-            this.paper.removeTools();
-            elementView.addTools(elementView.model.get('toolsBox'));
-        }
-    }
+    addLink(linkType, sourceId, targetId) {
+        let source = this.entities.get(sourceId);
+        let target = this.entities.get(targetId);
 
-    elemMouseLeave(elementView) {
-        if (elementView.model !== this.selectedElement && !selectMultiAssociationMode) {
-            this.paper.removeTools();
-        }
-    }
+        if (linkType === ElementType.AssociationClass.name) {
+            let x = (Math.max(source.get('position').x, target.getX()) - Math.min(source.getX(), target.getX())) / 2 + Math.min(source.getWidth(), target.getWidth());
+            let y = Math.min(source.getY(), target.getY()) - 150;
 
-    elemPointerDown(elementView) {
-        document.activeElement.blur();
-        if (selectMultiAssociationMode) {
-            if (selectedForMulti.includes(elementView.model)) {
-                selectedForMulti.splice(selectedForMulti.indexOf(elementView.model), 1);
-                elementView.removeTools();
-                elementView.model.selected(false);
-            } else {
-                selectedForMulti.push(elementView.model);
-                elementView.model.selected(true);
-            }
-
-        } else {
-            this.paper.removeTools();
-            elementView.addTools(elementView.model.get('toolsBox'));
-            if (this.selectedElement === elementView.model)
-                return;
-            this.selectedElement = elementView.model;
-
-            //if (selectedElement !== undefined && selectedElement.getId() !== undefined)
-            //    generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage);
-        }
-    }
-
-    linkConnect(linkView) {
-        let source = this.entities.get(linkView.model.get('source').id);
-        let target = this.entities.get(linkView.model.get('target').id);
-        if (linkView.model.get('linkId') === undefined) {
-            if (linkView.model.getType() === "ASSOCIATION_CLASS") {
-                let x = (Math.max(source.get('position').x, target.getX()) - Math.min(source.getX(), target.getX())) / 2 + Math.min(source.getWidth(), target.getWidth());
-                let y = Math.min(source.getY(), target.getY()) - 150;
-
-                this.sendMessage({
-                    classDto: {
-                        x: x,
-                        y: y,
-                        width: 200,
-                        height: 100,
-                    },
-                    associationDto: {
-                        sourceId: source.id,
-                        targetId: target.id,
-                        isDirected: false,
-                        name: linkView.model.getType(),
-                    }
-                }, linkView.model.getType(), 'CREATE_COMMAND')
-            } else {
-                this.sendMessage({
+            this.sendMessage({
+                classDto: {
+                    x: x,
+                    y: y,
+                    width: 200,
+                    height: 100,
+                },
+                associationDto: {
                     sourceId: source.id,
                     targetId: target.id,
                     isDirected: false,
-                    name: linkView.model.getType(),
-                }, linkView.model.getType(), 'CREATE_COMMAND');
-            }
-            linkView.model.remove();
+                    name: linkType,
+                }
+            }, linkType, 'CREATE_COMMAND');
         } else {
             this.sendMessage({
                 sourceId: source.id,
                 targetId: target.id,
-                id: linkView.model.get('linkId'),
-            }, linkView.model.getType(), 'UPDATE_COMMAND');
+                isDirected: false,
+                name: linkType,
+            }, linkType, 'CREATE_COMMAND');
         }
     }
 
-    linkPointerUp(linkView) {
-        try {
-            if (linkView.model.getLabelsChanged() !== []) {
-                let indexes = linkView.model.get('labelsChanged');
-                linkView.model.set('labelsChanged', []);
-                for (let index of indexes) {
-                    if (index !== 0) {
-                        let roleIndex = Math.ceil(index / 2) - 1;
-                        let label = linkView.model.get('labels')[index];
-                        let role = roleIndex === 0 ? linkView.model.getTargetRole() : linkView.model.getSourceRole();
-                        this.sendMessage({
-                            id: role.id,
-                            distanceMultiplicity: index % 2 ? undefined : label.position.distance,
-                            offsetMultiplicity: index % 2 ? undefined : JSON.stringify(label.position.offset),
-                            distanceName: index % 2 ? label.position.distance : undefined,
-                            offsetName: index % 2 ? JSON.stringify(label.position.offset) : undefined,
-                            associationId: linkView.model.getId(),
-                            sourceId: linkView.model.get('source').id,
-                        }, 'ROLE', 'UPDATE_COMMAND');
-                    } else {
-                        let label = linkView.model.get('labels')[0];
-                        this.sendMessage({
-                            id: linkView.model.getId(),
-                            distance: label.position.distance,
-                            offset: JSON.stringify(label.position.offset),
-                            sourceId: linkView.model.get('source').id,
-                        }, linkView.model.getType(), 'UPDATE_COMMAND');
-                    }
+    updateEntity(entity, update) {
+        update.id = entity.getId();
+        this.sendMessage(update, entity.getType(), 'UPDATE_COMMAND');
+    }
+
+    updateLink(link, update) {
+        update.id = link.getId();
+        this.sendMessage({
+            update,
+        }, link.getType(), 'UPDATE_COMMAND');
+    }
+
+
+    updateLinksLabels(link){
+        try{
+            for(let index of labelsChanged){
+                if (index !== 0) {
+                    let roleIndex = Math.ceil(index / 2) - 1;
+                    let label = link.get('labels')[index];
+                    let role = roleIndex === 0 ? link.getTargetRole() : link.getSourceRole();
+                    this.sendMessage({
+                        id: role.id,
+                        distanceMultiplicity: index % 2 ? undefined : label.position.distance,
+                        offsetMultiplicity: index % 2 ? undefined : JSON.stringify(label.position.offset),
+                        distanceName: index % 2 ? label.position.distance : undefined,
+                        offsetName: index % 2 ? JSON.stringify(label.position.offset) : undefined,
+                        associationId: link.getId(),
+                        sourceId: link.get('source').id,
+                    }, 'ROLE', 'UPDATE_COMMAND');
+                } else {
+                    let label = link.get('labels')[0];
+                    this.sendMessage({
+                        id: link.getId(),
+                        distance: label.position.distance,
+                        offset: JSON.stringify(label.position.offset),
+                        sourceId: link.get('source').id,
+                    }, link.getType(), 'UPDATE_COMMAND');
                 }
             }
-        } catch (e) {
-            // Nothing to catch, just ignore it
+        }catch(e){
+            // Ignore
         }
-    }
-
-    linkPointerDown(linkView) {
-        this.paper.removeTools();
-        linkView.addTools(linkView.model.get('toolsBox'));
-
-        if (this.selectedElement === linkView.model)
-            return;
-        this.selectedElement = linkView.model;
-
-        //if (selectedElement !== undefined && selectedElement.getId() !== undefined)
-        //generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage);
     }
 
 
