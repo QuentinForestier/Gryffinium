@@ -3,7 +3,6 @@ const fontFamiliy = 'Helvetica, sans-serif';
 const fontSize = 15
 const umlColor = '#FFF7E1';
 
-
 const standardInput = {
     style: {
         display: 'flex',
@@ -11,142 +10,15 @@ const standardInput = {
         border: 'none',
         padding: 'none',
         backgroundColor: umlColor,
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
+        textOverflow: 'ellipsis',
     },
     size: 8,
 }
 
-
-const resizeLGrip = new joint.elementTools.Button({
-    markup: [{
-        tagName: 'rect',
-        selector: 'button',
-        attributes: {
-            width: 10,
-            height: 10,
-            fill: '#777777',
-            cursor: 'w-resize'
-        }
-    }],
-    x: '0%',
-    y: '50%',
-    offset: {
-        x: -5,
-        y: -5
-    },
-    rotate: true,
-    action: function (evt) {
-        let elem = this.model;
-        resizingStartPos = function (x, y) {
-
-            let coords = GryffiniumManager.paper.snapToGrid(x, y);
-            let size = elem.attributes.size;
-            let position = elem.attributes.position;
-
-            let deltaWidth = position.x - coords.x;
-
-            if (size.width + deltaWidth <= 100)
-                deltaWidth = 0;
-
-            return elem.setSizeAndPosition(
-                {width: size.width + deltaWidth, height: elem.getHeight()},
-                {x: position.x - deltaWidth, y: position.y});
-        }
-    }
-});
-const resizeRGrip = new joint.elementTools.Button({
-    markup: [{
-        tagName: 'rect',
-        selector: 'button',
-        attributes: {
-            width: 10,
-            height: 10,
-            fill: '#777777',
-            cursor: 'e-resize'
-        }
-    }],
-    x: '100%',
-    y: '50%',
-    offset: {
-        x: -5,
-        y: -5
-    },
-    rotate: true,
-    action: function (evt) {
-        let elem = this.model;
-        resizingStartPos = function (x, y) {
-            let size = elem.attributes.size;
-            let position = elem.attributes.position;
-
-            let coords = paper.snapToGrid(x, y);
-
-            let deltaWidth = coords.x - (position.x + size.width);
-
-            if (size.width + deltaWidth <= 100)
-                deltaWidth = 0;
-
-            return elem.setSizeAndPosition({width: size.width + deltaWidth, height: elem.getHeight()});
-
-        }
-    }
-});
-
-const linkButton = new joint.elementTools.Connect({
-    x: '100%',
-    y: '0%',
-    offset: {x: -5, y: -5},
-    action: function (evt, _view, tool) {
-        return tool.dragstart(evt);
-    }
-})
-
-const multiAssociationToolsView = new joint.dia.ToolsView({
-    tools: [
-        new joint.elementTools.Boundary(),
-    ]
-})
-
-const elementToolsView = new joint.dia.ToolsView({
-    tools: [
-        new joint.elementTools.Boundary(),
-        new joint.elementTools.Remove(),
-        resizeLGrip,
-        resizeRGrip,
-        linkButton,
-
-
-    ]
-});
-
-const myTargetArrowhead = new joint.linkTools.TargetArrowhead();
-const mySourceArrowhead = new joint.linkTools.SourceArrowhead();
-
-myTargetArrowhead.el.setAttribute('d', 'M -20, 0 a 6,6 0 1,0 12, 0 a 6,6 0 1,0 -12,0')
-myTargetArrowhead.el.setAttribute('stroke-width', '1')
-mySourceArrowhead.el.setAttribute('d', 'M 0, 0 a 6,6 0 1,0 12, 0 a 6,6 0 1,0 -12,0')
-mySourceArrowhead.el.setAttribute('stroke-width', '1')
-
-const linkToolsView = new joint.dia.ToolsView({
-    tools: [
-        new joint.linkTools.Vertices(),
-        mySourceArrowhead, myTargetArrowhead,
-        new joint.linkTools.Boundary(), new joint.linkTools.Remove(),
-    ]
-});
-
-const unaryToolsView = new joint.dia.ToolsView({
-    tools: [
-        new joint.linkTools.Vertices(),
-        new joint.linkTools.Boundary(), new joint.linkTools.Remove(),
-    ]
-});
 //endregion
 
-//region Global attributes
-let resizingStartPos = undefined;
-
-let selectMultiAssociationMode = false;
-let selectedForMulti = [];
-//endregion
 
 //region Entities
 const Entity = joint.dia.Element.define('Entity', {
@@ -206,9 +78,12 @@ const Entity = joint.dia.Element.define('Entity', {
                     margin: 'auto',
                     backgroundColor: 'inherit',
                     textAlign: 'center',
-                    padding: 0
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap', /* Don't forget this one */
+                    textOverflow: 'ellipsis',
+                    padding: 0,
                 },
-                size: '10',
+
                 value: 'Header'
             },
             lock: {
@@ -295,14 +170,12 @@ const Entity = joint.dia.Element.define('Entity', {
             this.autoHeight();
             this.trigger('uml-update');
         },
-
         generateSectionMarkup: function (name, type, list) {
             let section = {
                 tagName: 'div',
                 selector: name,
                 children: [],
             }
-            console.log('generate');
             for (let val of list) {
 
                 let obj = this.generateInput(type, {parentId: this.get('id'), text: type + val.id, id: val.id});
@@ -312,7 +185,6 @@ const Entity = joint.dia.Element.define('Entity', {
 
             return section;
         },
-
         sectionsMarkup: function () {
 
 
@@ -360,7 +232,6 @@ const Entity = joint.dia.Element.define('Entity', {
             return sections;
 
         },
-
         nbVisibleElements: function () {
             let nb = this.getHeaderName() === '' ? 1 : 2; // Header
             nb += this.attr('umlAttributes').length * (this.attr('hideAttrs') ? 0 : 1);
@@ -368,7 +239,6 @@ const Entity = joint.dia.Element.define('Entity', {
 
             return nb;
         },
-
         generateInput: function (type, data) {
 
             let markup = {
@@ -384,86 +254,98 @@ const Entity = joint.dia.Element.define('Entity', {
             return {attr, markup};
 
         },
-        setWidth: function (width = 100) {
-            this.get('attrs').foreignObject.width = width;
+        getVisibleElements: function () {
+            let elements = [];
+            elements.push(this.getEntityName());
+            elements.push(this.getHeaderName());
+
+            if (!this.attr('hideAttrs'))
+                elements.concat(this.attr('umlAttributes'));
+
+            if (!this.attr('hideMethods'))
+                elements.concat(this.attr('methods'));
+
+            return elements;
+        },
+        setWidth: function (width = 100, update = true) {
+            this.get('attrs').foreignObject.width = Math.max(width, 100);
+            this.get('attrs').header.style.width = '90%';
+            if (update)
+                this.trigger('uml-update');
         },
         getWidth: function () {
-            return this.get('attrs').foreignObject.width;
+            return parseFloat(this.get('attrs').foreignObject.width);
         },
-        autoWidth: function (elements) {
+        autoWidth: function () {
             const span = document.getElementById('measure')
             span.fontSize = fontSize
             span.fontFamily = fontFamiliy
 
             let maxLineLength = 0;
-            elements.forEach(function (elem) {
+            this.getVisibleElements().forEach(function (elem) {
 
-                    span.innerText = elem.toString();
-                    let lineSize = $(span).width();
+                    span.innerText = elem;
+                    let lineSize = $(span).width() * 1.45;
 
                     maxLineLength = Math.max(maxLineLength, lineSize)
                     maxLineLength = (Math.round(maxLineLength / 10) * 10)
                 }
             );
 
-            this.setWidth(Math.max(120, maxLineLength));
-        },
+            this.setWidth(Math.max(100, maxLineLength));
 
-        setHeight: function (height = 100) {
+        },
+        setHeight: function (height = 100, update = true) {
             this.get('attrs').foreignObject.height = Math.max(height, 100);
+            if (update)
+                this.trigger('uml-update');
         },
         getHeight: function () {
-            return this.get('attrs').foreignObject.height;
+            return parseFloat(this.get('attrs').foreignObject.height);
         },
         autoHeight: function () {
 
             let nbElements = this.nbVisibleElements();
 
             this.setHeight(nbElements * (19.6) + 45);
-            this.trigger('uml-update');
-        },
 
-        setX: function (x) {
-            this.get('position').x = x;
-            this.trigger('uml-update');
         },
-
+        setX: function (x, update = true) {
+            this.position(x, this.getY());
+            if (update)
+                this.trigger('uml-update');
+        },
         getX: function () {
             return this.get('position').x;
         },
-
-        setY: function (y) {
-            this.get('position').y = y;
-            this.trigger('uml-update');
+        setY: function (y, update = true) {
+            this.position(this.getX(), y);
+            if (update)
+                this.trigger('uml-update');
         },
-
         getY: function () {
             return this.get('position').y;
         },
-
         setColor: function (color) {
             this.get('attrs').background.style.backgroundColor = color;
         },
         getColor: function () {
             return this.get('attrs').background.style.backgroundColor;
         },
-
         selected: function (isSelected) {
             // TODO
         },
-
         getEntityName: function () {
             return this.get('attrs').header.value;
         },
         setEntityName: function (name) {
             this.get('attrs').header.value = name;
+            this.setInputValue('header', '', name);
             this.trigger('uml-update')
         },
-
         getHeaderName: function () {
             return '';
         },
-
         getInputValue: function (type, id) {
             return this.get('attrs')[type + id].value;
         },
@@ -472,22 +354,18 @@ const Entity = joint.dia.Element.define('Entity', {
             this.attr(selector + '/value', text);
             this.trigger('uml-update')
         },
-
         addAttribute: function (attribute) {
             this.attr('umlAttributes').push(attribute);
             this.updateMarkup();
         },
-
         setAttributes: function (attributes) {
             this.set('umlAttributes', attributes);
             this.updateMarkup();
         },
-
         removeAttribute: function (id) {
             this.set('umlAttributes', this.get('umlAttributes').filter(attr => attr.id !== id));
             this.updateMarkup();
         },
-
         updateAttribute: function (attribute) {
             let index = this.get('umlAttributes').map(function (x) {
                 return x.id;
@@ -499,15 +377,35 @@ const Entity = joint.dia.Element.define('Entity', {
             }
 
         },
+        addMethod: function (method) {
+            this.attr('methods').push(method);
+            this.updateMarkup();
+        },
+        setMethods: function (methods) {
+            this.set('methods', methods);
+            this.updateMarkup();
+        },
+        removeMethod: function (id) {
+            this.set('methods', this.get('methods').filter(method => method.id !== id));
+            this.updateMarkup();
+        },
+        updateMethod: function (method) {
+            let index = this.get('methods').map(function (x) {
+                return x.id;
+            }).indexOf(method.id);
 
+            if (index !== -1) {
+                this.get('methods')[index].update(method);
+                this.setInputValue('Method', method.id, method.toString());
+            }
+
+        },
         getId: function () {
             return this.get('id');
         },
-
         getType: function () {
-            return 'CLASS';
+            return 'ENTITY';
         },
-
         update: function (modification) {
             if (modification.name) {
                 this.setEntityName(modification.name);
@@ -537,9 +435,10 @@ const Entity = joint.dia.Element.define('Entity', {
                 //this.setVisibility(modification.visibility);
             }
 
-        }
-
-
+        },
+        getOperation(id) {
+            return this.get('methods').find(m => m.id === id);
+        },
     }, {
         attributes: {
             value: {
@@ -574,6 +473,13 @@ let ConstructableEntity = Entity.define('ConstructableEntity', {
         getType: function () {
             return 'CONSTRUCTABLE_ENTITY';
         },
+        getVisibleElements: function () {
+            let elements = Entity.prototype.getVisibleElements.apply(this, arguments);
+            if (!this.attr('hideMethods')) {
+                elements = elements.concat(this.get('constructors'));
+            }
+            return elements;
+        },
         sectionsMarkup: function () {
 
             let sections = Entity.prototype.sectionsMarkup.apply(this, arguments);
@@ -592,10 +498,38 @@ let ConstructableEntity = Entity.define('ConstructableEntity', {
             return sections;
 
         },
+        addConstructor: function (constructor) {
+            this.attr('constructors').push(constructor);
+            this.updateMarkup();
+        },
+        setConstructors: function (constructors) {
+            this.set('constructors', constructors);
+            this.updateMarkup();
+        },
+        removeConstructor: function (id) {
+            this.set('constructors', this.get('constructors').filter(constructor => constructor.id !== id));
+            this.updateMarkup();
+        },
+        updateConstructor: function (constructor) {
+            let index = this.get('constructors').map(function (x) {
+                return x.id;
+            }).indexOf(constructor.id);
 
+            if (index !== -1) {
+                this.get('constructors')[index].update(constructor);
+                this.setInputValue('Meth', constructor.id, constructor.toString());
+            }
+
+        },
+        getOperation(id) {
+            let op = Entity.prototype.getOperation.call(this, id);
+            if (!op) {
+                op = this.get('constructors').find(m => m.id === id);
+            }
+            return op;
+        },
         nbVisibleElements: function () {
             let nb = Entity.prototype.nbVisibleElements.apply(this, arguments);
-            console.log(this.get('constructors'))
             nb += this.get('constructors').length * (this.attr('hideMethods') ? 0 : 1);
             return nb;
         },
@@ -650,6 +584,30 @@ export let Enum = ConstructableEntity.define('Enum', {
         getHeaderName: function () {
             return '<<Enum>>';
         },
+
+        addValue: function (value) {
+            this.attr('values').push(value);
+            this.updateMarkup();
+        },
+        setValues: function (values) {
+            this.set('values', values);
+            this.updateMarkup();
+        },
+        removeValue: function (id) {
+            this.set('values', this.get('values').filter(value => value.id !== id));
+            this.updateMarkup();
+        },
+        updateValue: function (value) {
+            let index = this.get('values').map(function (x) {
+                return x.id;
+            }).indexOf(value.id);
+
+            if (index !== -1) {
+                this.get('values')[index].update(value);
+                this.setInputValue('Val', value.id, value.toString());
+            }
+
+        },
     }
 );
 
@@ -671,7 +629,7 @@ export let Class = ConstructableEntity.define('Class', {
             if (modification.isAbstract) {
                 //this.setIsAbstract(modification.isAbstract);
             }
-        }
+        },
     }
 );
 
@@ -1261,6 +1219,7 @@ export class GryffiniumManager {
     sendMessage = undefined;
 
     constructor(onVerticesChange, onChatMessage, sendMessage) {
+        this.onVerticesChange = onVerticesChange;
         this.onChatMessage = onChatMessage;
         this.sendMessage = sendMessage;
 
@@ -1275,7 +1234,6 @@ export class GryffiniumManager {
                 elem = new Class({
                     id: command.id,
                     name: command.name,
-                    toolsBox: elementToolsView,
                     position: {
                         x: command.x,
                         y: command.y
@@ -1289,7 +1247,6 @@ export class GryffiniumManager {
                 elem = new Interface({
                     id: command.id,
                     name: command.name,
-                    toolsBox: elementToolsView,
                     position: {
                         x: command.x,
                         y: command.y
@@ -1303,7 +1260,6 @@ export class GryffiniumManager {
                 elem = new Enum({
                     id: command.id,
                     name: command.name,
-                    toolsBox: elementToolsView,
                     position: {
                         x: command.x,
                         y: command.y
@@ -1316,8 +1272,7 @@ export class GryffiniumManager {
             case ElementType.AssociationClass.name:
                 elem = new SimpleLink({
                     source: {id: command.classDto.id},
-                    target: {id: elements.get(command.associationDto.id).get('id')},
-                    toolsBox: undefined,
+                    target: {id: this.entities.get(command.associationDto.id).get('id')},
                 })
                 break;
             case ElementType.Generalization.name:
@@ -1351,7 +1306,6 @@ export class GryffiniumManager {
                     },
                     linkId: command.id,
                     vertices: JSON.parse(command.vertices),
-                    toolsBox: linkToolsView,
                 });
                 elem.on('change:vertices', (link) => this.onVerticesChange(link));
                 break;
@@ -1386,7 +1340,6 @@ export class GryffiniumManager {
                     },
                     linkId: command.id,
                     vertices: JSON.parse(command.vertices),
-                    toolsBox: linkToolsView,
                 });
                 elem.on('change:vertices', (link) => this.onVerticesChange(link));
                 break;
@@ -1407,7 +1360,6 @@ export class GryffiniumManager {
                     isDirected: command.isDirected,
                     name: command.name,
                     vertices: JSON.parse(command.vertices),
-                    toolsBox: linkToolsView,
                 });
 
                 elem.on('change:vertices', (link) => this.onVerticesChange(link));
@@ -1431,7 +1383,6 @@ export class GryffiniumManager {
                     linkId: command.id,
                     name: "",
                     vertices: JSON.parse(command.vertices),
-                    toolsBox: unaryToolsView
                 });
 
 
@@ -1454,7 +1405,6 @@ export class GryffiniumManager {
                     isDirected: command.isDirected,
                     name: command.name,
                     vertices: JSON.parse(command.vertices),
-                    toolsBox: linkToolsView,
                 });
                 elem.on('change:vertices', (link) => this.onVerticesChange(link));
                 break;
@@ -1475,7 +1425,6 @@ export class GryffiniumManager {
                     isDirected: command.isDirected,
                     name: command.name,
                     vertices: JSON.parse(command.vertices),
-                    toolsBox: linkToolsView,
                 });
                 elem.on('change:vertices', (link) => this.onVerticesChange(link));
                 break;
@@ -1502,7 +1451,6 @@ export class GryffiniumManager {
                     target: {id: command.targetId},
                     linkId: command.id,
                     vertices: JSON.parse(command.vertices),
-                    toolsBox: linkToolsView,
                 });
                 elem.on('change:vertices', (link) => this.onVerticesChange(link));
                 break;
@@ -1518,71 +1466,88 @@ export class GryffiniumManager {
                     linkId: command.id,
                     name: command.name,
                     vertices: JSON.parse(command.vertices),
-                    toolsBox: linkToolsView,
                 });
                 elem.on('change:vertices', (link) => this.onVerticesChange(link));
                 break;
             case ElementType.Attribute.name:
                 let attribute = new Attribute(command.id, command.name, command.type, command.visibility.toLowerCase(), command.isConstant, command.isStatic);
-                parent = elements.get(command.parentId);
+                parent = this.entities.get(command.parentId);
                 parent.addAttribute(attribute);
-                /*if (parent === selectedElement) {
-                    generateAttributesInterface(document.getElementById("container-attributes"), selectedElement, sendMessage, true)
-                }*/
                 break;
             case ElementType.Method.name:
                 let m = new Method(command.id, command.name, command.type, command.visibility.toLowerCase(), command.isAbstract, command.isStatic);
-                parent = elements.get(command.parentId);
+                parent = this.entities.get(command.parentId);
                 parent.addMethod(m);
-                /*if (parent === selectedElement) {
-                    generateMethodsInterface(document.getElementById("container-methods"), selectedElement, sendMessage, true)
-                }*/
                 break;
             case ElementType.Constructor.name:
                 let constructor = new Constructor(command.id, command.name, command.visibility.toLowerCase());
-                parent = elements.get(command.parentId);
+                parent = this.entities.get(command.parentId);
                 parent.addConstructor(constructor);
-                /*if (parent === selectedElement) {
-                    generateMethodsInterface(document.getElementById("container-methods"), selectedElement, sendMessage, true)
-                }*/
                 break;
             case ElementType.Value.name:
                 let value = new Value(command.value);
-                parent = elements.get(command.parentId);
+                parent = this.entities.get(command.parentId);
                 parent.addValue(value);
-                /*if (parent === selectedElement) {
-                    generateValuesInterface(document.getElementById("container-values"), selectedElement, sendMessage, true)
-                }*/
                 break;
             case ElementType.Parameter.name:
                 let parameter = new Parameter(command.id, command.name, command.type);
-                elements.get(command.parentId).getOperation(command.methodId).addParameter(parameter);
-                elements.get(command.parentId).update();
-                /*if (elements.get(command.parentId) === selectedElement) {
-                    generateParametersInterface(selectedElement, elements.get(command.parentId).getOperation(command.methodId), sendMessage)
-                }*/
+                this.entities.get(command.parentId).getOperation(command.methodId).addParameter(parameter);
+                this.entities.get(command.parentId).update();
                 break;
             case ElementType.Role.name:
                 let role = new Role(command.id, command.name, command.multiplicity, command.distanceName, command.offsetName, command.distanceMultiplicity, command.offsetMultiplicity);
-                parent = elements.get(command.associationId);
+                parent = this.entities.get(command.associationId);
                 parent.updateRole(command.id, role);
-
-                /*if (parent === selectedElement) {
-                    generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
-                }*/
                 break;
         }
 
         if (elem !== undefined) {
-
             this.entities.set(elem.getId(), elem);
-            elem.addTo(this.graph);
+
         }
+        return elem;
 
     }
 
     delete(command) {
-
+        switch (command.elementType) {
+            case ElementType.Class.name:
+            case ElementType.Interface.name:
+            case ElementType.Enum.name:
+            case ElementType.Generalization.name:
+            case ElementType.BinaryAssociation.name:
+            case ElementType.Aggregation.name:
+            case ElementType.Composition.name:
+            case ElementType.Dependency.name:
+            case ElementType.Inner.name:
+            case ElementType.MultiAssociation.name:
+                let elem = this.entities.get(command.id);
+                if (elem !== undefined) {
+                    elem.remove();
+                    this.entities.delete(elem.getId());
+                }
+                break;
+            case ElementType.AssociationClass.name:
+                // TODO AssociationClass
+                break;
+                // TODO MutliAssociation
+                break;
+            case ElementType.Attribute.name:
+                this.entities.get(command.parentId).removeAttribute(command.id);
+                break;
+            case ElementType.Method.name:
+                this.entities.get(command.parentId).removeMethod(command.id);
+                break;
+            case ElementType.Constructor.name:
+                this.entities.get(command.parentId).removeConstructor(command.id);
+                break;
+            case ElementType.Value.name:
+                this.entities.get(command.parentId).removeValue(command.value);
+                break;
+            case ElementType.Parameter.name:
+                this.entities.get(command.parentId).getOperation(command.methodId).removeParameter(command.id);
+                break
+        }
     }
 
     update(command) {
@@ -1608,6 +1573,77 @@ export class GryffiniumManager {
             case ElementType.Attribute.name:
                 this.entities.get(command.parentId).updateAttribute(command);
                 break;
+            case ElementType.Method.name:
+                this.entities.get(command.parentId).updateMethod(command);
+                break;
+            case ElementType.Constructor.name:
+                this.entities.get(command.parentId).updateConstructor(command);
+                break;
+            case ElementType.Value.name:
+                this.entities.get(command.parentId).updateValue(command.oldValue, command.value);
+                break;
+            case ElementType.Parameter.name:
+                this.entities.get(command.parentId).getOperation(command.methodId).updateParametersFromMessage(command);
+                this.entities.get(command.parentId).update();
+                break
+            case ElementType.Role.name:
+                this.entities.get(command.associationId).updateRole(command.id, command);
+                break;
+        }
+    }
+
+    addAttributeOnSelectedElement() {
+        if (this.selectedElement) {
+            this.sendMessage({
+                    parentId: this.selectedElement.getId(),
+                    name: "attribute",
+                    type: "string",
+                    visibility: "private",
+                    isStatic: false,
+                    isConstant: false,
+                },
+                'ATTRIBUTE',
+                'CREATE_COMMAND');
+        }
+    }
+
+    addMethodOnSelectedElement() {
+        if (this.selectedElement) {
+            this.sendMessage({
+                    parentId: this.selectedElement.getId(),
+                    name: "method",
+                    visibility: "public",
+                    type: "void",
+                    isStatic: false,
+                    isAbstract: false,
+                },
+                "METHOD",
+                'CREATE_COMMAND');
+        }
+    }
+
+    addConstructorOnSelectedElement() {
+        if (this.selectedElement) {
+            this.sendMessage({
+                    parentId: this.selectedElement.getId(),
+                    visibility: "public",
+                    type: "void",
+                    isStatic: false,
+                    isAbstract: false,
+                },
+                "CONSTRUCTOR",
+                'CREATE_COMMAND');
+        }
+    }
+
+    addValueOnSelectedElement() {
+        if (this.selectedElement) {
+            this.sendMessage({
+                    parentId: this.selectedElement.getId(),
+                    name: "value",
+                },
+                'VALUE',
+                'CREATE_COMMAND');
         }
     }
 
@@ -1619,7 +1655,7 @@ export class GryffiniumManager {
                     break;
                 case 'SELECT_COMMAND':
                 case 'CREATE_COMMAND':
-                    this.create(command);
+                    return this.create(command);
                     break;
                 case 'UPDATE_COMMAND':
                     this.update(command);
@@ -1632,11 +1668,7 @@ export class GryffiniumManager {
     }
 
     removeEntity(cell) {
-        if (!cell.get('alreadyDeleted') && cell.getId()) {
-            let cmd = cell.removeCommand();
-            if (cmd !== null)
-                this.sendMessage(cmd.data, cmd.entityType, cmd.type);
-        }
+        this.sendMessage({id: cell.getId()}, cell.getType(), 'REMOVE_COMMAND');
     }
 
     addEntity(entityType, x, y) {
@@ -1695,9 +1727,9 @@ export class GryffiniumManager {
     }
 
 
-    updateLinksLabels(link){
-        try{
-            for(let index of labelsChanged){
+    updateLinksLabels(link) {
+        try {
+            for (let index of labelsChanged) {
                 if (index !== 0) {
                     let roleIndex = Math.ceil(index / 2) - 1;
                     let label = link.get('labels')[index];
@@ -1721,7 +1753,7 @@ export class GryffiniumManager {
                     }, link.getType(), 'UPDATE_COMMAND');
                 }
             }
-        }catch(e){
+        } catch (e) {
             // Ignore
         }
     }

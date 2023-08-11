@@ -46,6 +46,22 @@
                 </li>
             </ul>
         </div>
+        <div class=" card-header tab-card-header">
+            <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link" id="selectClass" role="tab" aria-selected="false"
+                    data-toggle="tooltip" data-placement="top" title="Class"><i class="gryffinium-icon gryffinium-class"></i></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="selectEnum" role="tab" aria-selected="false"
+                    data-toggle="tooltip" data-placement="top" title="Enum"><i class="gryffinium-icon gryffinium-enum"></i></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="selectInterface" role="tab" aria-selected="false"
+                    data-toggle="tooltip" data-placement="top" title="Interface"><i class="gryffinium-icon gryffinium-interface"></i></a>
+                </li>
+            </ul>
+        </div>
         <div class="card-header tab-card-header">
             <ul class="nav nav-tabs card-header-tabs" role="tablist">
                 <li class="nav-item">
@@ -79,7 +95,6 @@
                     <a class="nav-link" id="selectMultiAssociation" role="tab" aria-selected="false"
                     data-toggle="tooltip" data-placement="top" title="Multi association"><i class="gryffinium-icon gryffinium-multi-association"></i></a>
                 </li>
-
                 <div class="vr"></div>
                 <div class="vr"></div>
 
@@ -118,16 +133,7 @@
 
             import {
                 ElementType,
-                Attribute,
-                Method,
-                Value,
-                Constructor,
-                Parameter,
-                Visibility,
-                Role,
-                Class,
-                Interface,
-                Enum,
+                BinaryAssociation,
                 GryffiniumManager
                 //EntityView,
             } from "@routes.Assets.versioned("javascripts/gryffinium.uml.js")"
@@ -161,8 +167,153 @@
             })
 
 
+            //region Tools
+            const resizeLGrip = new joint.elementTools.Button({
+                markup: [{
+                    tagName: 'rect',
+                    selector: 'button',
+                    attributes: {
+                        width: 10,
+                        height: 10,
+                        fill: '#777777',
+                        cursor: 'w-resize'
+                    }
+                }],
+                x: '0%',
+                y: '50%',
+                offset: {
+                    x: -5,
+                    y: -5
+                },
+                rotate: true,
+                action: function (evt) {
+
+                    let elem = this.model;
+                    resizingStartPositions = (x, y) => {
+
+
+                        let coords = paper.snapToGrid(x, y);
+
+                        let deltaWidth = elem.getX() - coords.x;
+
+
+                        if (elem.getWidth() + deltaWidth <= 100)
+                            deltaWidth = 0;
+
+                        elem.setX(elem.getX() - deltaWidth);
+                        elem.setWidth(elem.getWidth() + deltaWidth);
+
+
+                        return {
+                            data: {
+                                id: elem.getId(),
+                                x: elem.getX(),
+                                y: elem.getY(),
+                                width: elem.getWidth(),
+                                height: elem.getHeight(),
+                            },
+                            entity: elem,
+                        };
+                    }
+                }
+            });
+            const resizeRGrip = new joint.elementTools.Button({
+                markup: [{
+                    tagName: 'rect',
+                    selector: 'button',
+                    attributes: {
+                        width: 10,
+                        height: 10,
+                        fill: '#777777',
+                        cursor: 'e-resize'
+                    }
+                }],
+                x: '100%',
+                y: '50%',
+                offset: {
+                    x: -5,
+                    y: -5
+                },
+                rotate: true,
+                action: function (evt) {
+                    let elem = this.model;
+                    resizingStartPositions = (x, y) => {
+
+                        let coords = paper.snapToGrid(x, y);
+
+                        let deltaWidth = coords.x - (elem.getX() + elem.getWidth());
+
+
+                        elem.setWidth(elem.getWidth() + deltaWidth);
+
+                        return {
+                            data: {
+                                id: elem.getId(),
+                                x: elem.getX(),
+                                y: elem.getY(),
+                                width: elem.getWidth(),
+                                height: elem.getHeight(),
+                            },
+                            entity:elem,
+                        };
+
+
+                    }
+                }
+            });
+
+            const linkButton = new joint.elementTools.Connect({
+                x: '100%',
+                y: '0%',
+                offset: {x: -5, y: -5},
+                action: function (evt, _view, tool) {
+                    return tool.dragstart(evt);
+                }
+            })
+
+            const multiAssociationToolsView = new joint.dia.ToolsView({
+                tools: [
+                    new joint.elementTools.Boundary(),
+                ]
+            })
+
+            const elementToolsView = new joint.dia.ToolsView({
+                tools: [
+                    new joint.elementTools.Boundary(),
+                    new joint.elementTools.Remove(),
+                    resizeLGrip,
+                    resizeRGrip,
+                    linkButton,
+                ]
+            });
+
+            const myTargetArrowhead = new joint.linkTools.TargetArrowhead();
+            const mySourceArrowhead = new joint.linkTools.SourceArrowhead();
+
+            myTargetArrowhead.el.setAttribute('d', 'M -20, 0 a 6,6 0 1,0 12, 0 a 6,6 0 1,0 -12,0')
+            myTargetArrowhead.el.setAttribute('stroke-width', '1')
+            mySourceArrowhead.el.setAttribute('d', 'M 0, 0 a 6,6 0 1,0 12, 0 a 6,6 0 1,0 -12,0')
+            mySourceArrowhead.el.setAttribute('stroke-width', '1')
+
+            const linkToolsView = new joint.dia.ToolsView({
+                tools: [
+                    new joint.linkTools.Vertices(),
+                    mySourceArrowhead, myTargetArrowhead,
+                    new joint.linkTools.Boundary(), new joint.linkTools.Remove(),
+                ]
+            });
+
+            const unaryToolsView = new joint.dia.ToolsView({
+                tools: [
+                    new joint.linkTools.Vertices(),
+                    new joint.linkTools.Boundary(), new joint.linkTools.Remove(),
+                ]
+            });
+
+            //endregion
+
             function setSelectedElement(sender, type) {
-                controller.selectEntityType(type);
+                selectedEntityType = type;
                 if (type !== undefined) {
                     if (activeElementType !== undefined) {
                         activeElementType.classList.remove("active");
@@ -188,8 +339,7 @@
             }
 
             function setSelectedLink(sender, type) {
-
-                controller.selectLinkType(type);
+                selectedAssociationType = type;
                 if (activeLinkType !== undefined) {
                     activeLinkType.classList.remove("active");
                     activeLinkType.classList.remove("show");
@@ -202,6 +352,7 @@
                 activeLinkType.classList.add("show");
                 activeLinkType.setAttribute("aria-selected", "true");
                 activeLinkType.children[0].classList.add("gryffinium-icon-active");
+
             }
 
             document.getElementById("selectClass").addEventListener("click", function () {
@@ -216,18 +367,16 @@
 
             document.getElementById("selectAssociationClass").addEventListener("click", function () {
                 setSelectedLink(this, ElementType.AssociationClass);
-                controller.selectLinkType();
             });
 
 
             document.getElementById("selectAssociation").addEventListener("click", function () {
                 setSelectedLink(this, ElementType.BinaryAssociation);
-                controller.selectLinkType();
+
             });
 
             document.getElementById("selectAggregation").addEventListener("click", function () {
                 setSelectedLink(this, ElementType.Aggregation);
-                controller.selectLinkType();
             });
 
             document.getElementById("selectComposition").addEventListener("click", function () {
@@ -245,34 +394,34 @@
             });
 
             /*document.getElementById("selectMultiAssociation").addEventListener("click", function () {
-                // TODO : set selected type
+            // TODO : set selected type
 
-                if (selectMultiAssociationMode) {
-                    let targets = [];
-                    let meanX = 0;
-                    let meanY = 0;
-                    for (let i = 0; i < selectedForMulti.length; i++) {
-                        targets.push(selectedForMulti[i].getId());
-                        meanX += selectedForMulti[i].get('position').x;
-                        meanY += selectedForMulti[i].get('position').y;
-                        selectedForMulti[i].selected(false);
-                    }
+            if (selectMultiAssociationMode) {
+            let targets = [];
+            let meanX = 0;
+            let meanY = 0;
+            for (let i = 0; i < selectedForMulti.length; i++) {
+            targets.push(selectedForMulti[i].getId());
+            meanX += selectedForMulti[i].get('position').x;
+            meanY += selectedForMulti[i].get('position').y;
+            selectedForMulti[i].selected(false);
+            }
 
-                    meanX /= selectedForMulti.length;
-                    meanY /= selectedForMulti.length;
+            meanX /= selectedForMulti.length;
+            meanY /= selectedForMulti.length;
 
-                    sendMessage({
-                        targets,
-                        x: meanX,
-                        y: meanY,
-                    }, 'MULTI_ASSOCIATION', 'CREATE_COMMAND');
-                    this.innerHTML = '<i class="gryffinium-icon gryffinium-multi-association"></i>';
-                    selectMultiAssociationMode = false;
-                    selectedForMulti = [];
-                } else {
-                    this.innerHTML = '<i class="fa fa-check"></i>';
-                    selectMultiAssociationMode = true;
-                }
+            sendMessage({
+            targets,
+            x: meanX,
+            y: meanY,
+            }, 'MULTI_ASSOCIATION', 'CREATE_COMMAND');
+            this.innerHTML = '<i class="gryffinium-icon gryffinium-multi-association"></i>';
+            selectMultiAssociationMode = false;
+            selectedForMulti = [];
+            } else {
+            this.innerHTML = '<i class="fa fa-check"></i>';
+            selectMultiAssociationMode = true;
+            }
             });*/
 
             document.getElementById("selectInnerClass").addEventListener("click", function () {
@@ -362,8 +511,28 @@
 
                 socket.onmessage = function (event) {
                     let message = JSON.parse(event.data);
-                    controller.onMessage(message);
+                    for (let command of message.commands) {
+                        switch (command.commandType) {
+                            case 'CHAT_MESSAGE_COMMAND':
+                                receiveChatMessage(command);
+                                break;
+                            case 'SELECT_COMMAND':
+                            case 'CREATE_COMMAND':
+                                let elem = manager.create(command);
+                                if (elem) {
+                                    elem.addTo(graph);
+                                }
+                                break;
+                            case 'UPDATE_COMMAND':
+                                manager.update(command);
+                                break;
+                            case 'REMOVE_COMMAND':
+                                manager.delete(command);
+                                break;
+                        }
+                    }
                 };
+
 
                 socket.onclose = function () {
                     console.log('WebSocket closed');
@@ -379,7 +548,7 @@
                 width: document.documentElement.clientWidth,
                 height: document.documentElement.clientHeight,
                 gridSize: 10,
-                model: this.graph,
+                model: graph,
                 drawGrid: true,
                 interactive: {
                     labelMove: true,
@@ -409,6 +578,7 @@
                     },
                     initialize: function () {
 
+
                         joint.dia.ElementView.prototype.initialize.apply(this, arguments);
 
                         this.listenTo(this.model, 'uml-update', function () {
@@ -419,7 +589,9 @@
                     },
                     onChange: function (evt) {
                         let input = evt.target;
-                        this.model.attr(input.attributes['joint-selector'].value + '/value', input.value);
+                        if(input.attributes['joint-selector'].value === 'header'){
+                            manager.updateEntity(this.model, {name: input.value});
+                        }
                     }
                 }),
                 linkView: joint.dia.LinkView.extend({
@@ -435,6 +607,7 @@
                 })
             });
 
+
             let multiAssociationMode = false;
             let selectedEntityType = undefined;
             let selectedAssociationType = undefined;
@@ -446,7 +619,7 @@
                     cell.set('position', {x: 0, y: cell.get('position').y});
                 if (cell.get('position').y < 0)
                     cell.set('position', {x: cell.get('position').x, y: 0});
-                this.moving = cell;
+                moving = cell;
             }
 
             function zoom(paper, evt, x, y, delta) {
@@ -485,6 +658,7 @@
             }
 
             let movingVertices = undefined;
+
             function onVerticesChange(link) {
                 movingVertices = link;
             }
@@ -502,12 +676,12 @@
                     });
                     selectedElements = [];
                 } else if (event.button === 0 && !multiAssociationMode) {
-                    manager.addEntity(selectedEntityType, x, y);
-
+                    manager.addEntity(selectedEntityType.name, x, y);
+                    setSelectedElement(undefined);
                 }
 
                 if (event.button === 1) {
-                    startMoveCanvas(paper.scale, x, y);
+                    startMoveCanvas(paper.scale(), x, y);
                 }
 
 
@@ -520,7 +694,7 @@
                 autoWidth(elementView);
             });
             paper.on('element:mouseenter', (elementView) => {
-                elementView.addTools(elementView.model.get('toolsBox'));
+                elementView.addTools(elementToolsView);
             });
             paper.on('element:mouseleave', (elementView) => {
                 if (!selectedElements.includes(elementView))
@@ -531,8 +705,8 @@
             paper.on('element:pointerdown', (elementView) => {
                 document.activeElement.blur();
                 // TODO Multi Association
-                elementView.addTools(elementView.model.get('toolsBox'));
-                this.selectedElements.push(elementView);
+                elementView.addTools(elementToolsView);
+                selectedElements.push(elementView);
             });
 
             paper.on('link:connect', (linkView) => {
@@ -550,16 +724,16 @@
                 }
             });
             paper.on('link:pointerdown', (linkView) => {
-                linkView.addTools(linkView.model.get('toolsBox'));
+                linkView.addTools(linkToolsView);
                 selectedElements.push(linkView);
             });
 
 
             let resizingStartPositions = undefined;
             document.getElementById('diagram').addEventListener('mousemove', (evt) => {
-                if(dragStartPosition){
-                    let newPosX = evt.offsetX - this.dragStartPosition.x;
-                    let newPosY = evt.offsetY - this.dragStartPosition.y;
+                if (dragStartPosition) {
+                    let newPosX = evt.offsetX - dragStartPosition.x;
+                    let newPosY = evt.offsetY - dragStartPosition.y;
                     if (newPosX > 0) {
                         newPosX = 0;
                     }
@@ -570,39 +744,40 @@
                 }
 
                 if (resizingStartPositions) {
-                    resizingStartPositions(evt.offsetX, evt.offsetY);
+
+                    resizingStartPositions(evt.clientX, evt.clientY);
                 }
             });
 
             document.getElementById('diagram').addEventListener('mouseup', (evt) => {
                 evt.preventDefault();
                 if (resizingStartPositions) {
-                    let cmd = resizingStartPositions(evt.offsetX, evt.offsetY);
+                    let cmd = resizingStartPositions(evt.clientX, evt.clientY);
                     manager.updateEntity(cmd.entity, cmd.data);
 
                     resizingStartPositions = null;
                 }
 
-                if(moving){
+                if (moving) {
                     manager.updateEntity(moving, {
-                        id: moving.get('id'),
-                        x: moving.get('position').x,
-                        y: moving.get('position').y,
-                        width: moving.get('size').width,
-                        height: moving.get('size').height
+                        id: moving.getId(),
+                        x: moving.getX(),
+                        y: moving.getY(),
+                        width: moving.getWidth(),
+                        height: moving.getHeight(),
                     });
                     moving = null;
                 }
 
-                if(movingVertices){
-                    let view = this.paper.findViewByModel(this.movingVertices);
+                if (movingVertices) {
+                    let view = paper.findViewByModel(movingVertices);
 
                     manager.updateLink(movingVertices, {
                         id: movingVertices.get('id'),
-                        sourceId: this.movingVertices.get('source').id,
+                        sourceId: movingVertices.get('source').id,
                         sourceAnchor: view.sourceAnchor,
                         targetAnchor: view.targetAnchor,
-                        vertices: JSON.stringify(this.movingVertices.get('vertices')),
+                        vertices: JSON.stringify(movingVertices.get('vertices')),
                     });
                     movingVertices = null;
                 }
@@ -610,106 +785,106 @@
 
 
             /*let resizeLGrip = new joint.elementTools.Button({
-                markup: [{
-                    tagName: 'rect',
-                    selector: 'button',
-                    attributes: {
-                        width: 10,
-                        height: 10,
-                        fill: '#777777',
-                        cursor: 'w-resize'
-                    }
-                }],
-                x: '0%',
-                y: '50%',
-                offset: {
-                    x: -5,
-                    y: -5
-                },
-                rotate: true,
-                action: function (evt) {
-                    let elem = this.model;
-                    resizingStartPos = function (x, y) {
+            markup: [{
+            tagName: 'rect',
+            selector: 'button',
+            attributes: {
+            width: 10,
+            height: 10,
+            fill: '#777777',
+            cursor: 'w-resize'
+            }
+            }],
+            x: '0%',
+            y: '50%',
+            offset: {
+            x: -5,
+            y: -5
+            },
+            rotate: true,
+            action: function (evt) {
+            let elem = this.model;
+            resizingStartPos = function (x, y) {
 
-                        let coords = paper.snapToGrid(x, y);
-                        let size = elem.attributes.size;
-                        let position = elem.attributes.position;
+            let coords = paper.snapToGrid(x, y);
+            let size = elem.attributes.size;
+            let position = elem.attributes.position;
 
-                        let deltaWidth = position.x - coords.x;
+            let deltaWidth = position.x - coords.x;
 
-                        if (size.width + deltaWidth <= 100)
-                            deltaWidth = 0;
+            if (size.width + deltaWidth <= 100)
+            deltaWidth = 0;
 
-                        return elem.setSizeAndPosition(
-                                {width: size.width + deltaWidth, height: elem.getHeight()},
-                                {x: position.x - deltaWidth, y: position.y});
-                    }
-                }
+            return elem.setSizeAndPosition(
+            {width: size.width + deltaWidth, height: elem.getHeight()},
+            {x: position.x - deltaWidth, y: position.y});
+            }
+            }
             });
             let resizeRGrip = new joint.elementTools.Button({
-                markup: [{
-                    tagName: 'rect',
-                    selector: 'button',
-                    attributes: {
-                        width: 10,
-                        height: 10,
-                        fill: '#777777',
-                        cursor: 'e-resize'
-                    }
-                }],
-                x: '100%',
-                y: '50%',
-                offset: {
-                    x: -5,
-                    y: -5
-                },
-                rotate: true,
-                action: function (evt) {
-                    let elem = this.model;
-                    resizingStartPos = function (x, y) {
-                        let size = elem.attributes.size;
-                        let position = elem.attributes.position;
+            markup: [{
+            tagName: 'rect',
+            selector: 'button',
+            attributes: {
+            width: 10,
+            height: 10,
+            fill: '#777777',
+            cursor: 'e-resize'
+            }
+            }],
+            x: '100%',
+            y: '50%',
+            offset: {
+            x: -5,
+            y: -5
+            },
+            rotate: true,
+            action: function (evt) {
+            let elem = this.model;
+            resizingStartPos = function (x, y) {
+            let size = elem.attributes.size;
+            let position = elem.attributes.position;
 
-                        let coords = paper.snapToGrid(x, y);
+            let coords = paper.snapToGrid(x, y);
 
-                        let deltaWidth = coords.x - (position.x + size.width);
+            let deltaWidth = coords.x - (position.x + size.width);
 
-                        if (size.width + deltaWidth <= 100)
-                            deltaWidth = 0;
+            if (size.width + deltaWidth <= 100)
+            deltaWidth = 0;
 
-                        return elem.setSizeAndPosition({width: size.width + deltaWidth, height: elem.getHeight()});
+            return elem.setSizeAndPosition({width: size.width + deltaWidth, height: elem.getHeight()});
 
-                    }
-                }
+            }
+            }
             });
 
             let linkButton = new joint.elementTools.Connect({
-                x: '100%',
-                y: '0%',
-                offset: {x: -5, y: -5},
-                action: function (evt, _view, tool) {
-                    return tool.dragstart(evt);
-                }
+            x: '100%',
+            y: '0%',
+            offset: {x: -5, y: -5},
+            action: function (evt, _view, tool) {
+            return tool.dragstart(evt);
+            }
             })
 
 
             let multiAssociationToolsView = new joint.dia.ToolsView({
-                tools: [
-                    new joint.elementTools.Boundary(),
-                ]
+            tools: [
+            new joint.elementTools.Boundary(),
+            ]
             })
 
 
             let elementToolsView = new joint.dia.ToolsView({
-                tools: [
-                    new joint.elementTools.Boundary(),
-                    new joint.elementTools.Remove(),
-                    resizeLGrip,
-                    resizeRGrip,
-                    linkButton,
+            tools: [
+            new joint.elementTools.Boundary(),
+            new joint.elementTools.Remove(),
+            resizeLGrip,
+            resizeRGrip,
+            linkButton,
 
 
-                ]
+            ]
             });
 
             let myTargetArrowhead = new joint.linkTools.TargetArrowhead();
@@ -721,18 +896,18 @@
             mySourceArrowhead.el.setAttribute('stroke-width', '1')
 
             let linkToolsView = new joint.dia.ToolsView({
-                tools: [
-                    new joint.linkTools.Vertices(),
-                    mySourceArrowhead, myTargetArrowhead,
-                    new joint.linkTools.Boundary(), new joint.linkTools.Remove(),
-                ]
+            tools: [
+            new joint.linkTools.Vertices(),
+            mySourceArrowhead, myTargetArrowhead,
+            new joint.linkTools.Boundary(), new joint.linkTools.Remove(),
+            ]
             });
 
             let unaryToolsView = new joint.dia.ToolsView({
-                tools: [
-                    new joint.linkTools.Vertices(),
-                    new joint.linkTools.Boundary(), new joint.linkTools.Remove(),
-                ]
+            tools: [
+            new joint.linkTools.Vertices(),
+            new joint.linkTools.Boundary(), new joint.linkTools.Remove(),
+            ]
             });*/
 
 
@@ -787,15 +962,15 @@
             }
 
             /*let tmp = new uml.MultiAssociation({
-                position: {
-                    x: 100,
-                    y: 100
-                },
-                size: {
-                    width: 50,
-                    height: 50
-                },
-                angle: 45
+            position: {
+            x: 100,
+            y: 100
+            },
+            size: {
+            width: 50,
+            height: 50
+            },
+            angle: 45
             });
 
             tmp.addTo(graph);*/
