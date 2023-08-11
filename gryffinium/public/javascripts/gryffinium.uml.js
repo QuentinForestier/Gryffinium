@@ -17,6 +17,7 @@ const standardInput = {
     size: 8,
 }
 
+
 //endregion
 
 
@@ -1223,6 +1224,7 @@ export class GryffiniumManager {
         this.onChatMessage = onChatMessage;
         this.sendMessage = sendMessage;
 
+
     }
 
     create(command) {
@@ -1273,6 +1275,7 @@ export class GryffiniumManager {
                 elem = new SimpleLink({
                     source: {id: command.classDto.id},
                     target: {id: this.entities.get(command.associationDto.id).get('id')},
+
                 })
                 break;
             case ElementType.Generalization.name:
@@ -1672,6 +1675,7 @@ export class GryffiniumManager {
     }
 
     addEntity(entityType, x, y) {
+
         this.sendMessage({
                 x: x - 100,
                 y: y - 50,
@@ -1698,6 +1702,7 @@ export class GryffiniumManager {
                     height: 100,
                 },
                 associationDto: {
+
                     sourceId: source.id,
                     targetId: target.id,
                     isDirected: false,
@@ -1757,6 +1762,7 @@ export class GryffiniumManager {
             // Ignore
         }
     }
+
 
 
 }
