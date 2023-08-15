@@ -25,7 +25,6 @@ const standardInput = {
 //region Entities
 const Entity = joint.dia.Element.define('Entity', {
         attrs: {
-
             body: {
                 width: 'calc(w)',
                 height: 'calc(h)',
@@ -117,24 +116,21 @@ const Entity = joint.dia.Element.define('Entity', {
                     padding: 3,
                 },
             },
-
-            id: undefined,
-            name: undefined,
-            umlAttributes: new Map(),
-            methods: new Map(),
-
-            visibility: 'public',
-
-            alreadyDeleted: false,
-            toolsBox: undefined,
-            height: undefined,
-
-
-            hideAttrs: false,
-            hideMethods: false,
-
-
         },
+        id: undefined,
+        name: undefined,
+        umlAttributes: new Map(),
+        methods: new Map(),
+
+        visibility: 'public',
+
+        alreadyDeleted: false,
+        toolsBox: undefined,
+        height: undefined,
+
+
+        hideAttrs: false,
+        hideMethods: false,
     },
     {
         markup: [],
@@ -142,6 +138,8 @@ const Entity = joint.dia.Element.define('Entity', {
             this.on('change:name', function () {
                 this.trigger('uml-update');
             })
+            this.set('umlAttributes', new Map());
+            this.set('methods', new Map());
 
             joint.dia.Element.prototype.initialize.apply(this, arguments);
             this.updateMarkup();
@@ -209,18 +207,18 @@ const Entity = joint.dia.Element.define('Entity', {
                 }
             ]
 
-            let tmp = this.attr('umlAttributes');
-            let a = this.generateSectionMarkup('attrsContainer', 'Attr', this.attr()['umlAttributes'].values());
+            let tmp = this.get('umlAttributes');
+            let a = this.generateSectionMarkup('attrsContainer', 'Attr', this.get('umlAttributes').values());
 
-            if (a.children.length > 0 && !this.attr('hideAttrs')) {
+            if (a.children.length > 0 && !this.get('hideAttrs')) {
 
                 sections.push(a);
-                this.attr()['attrsContainer'].style.borderBottom = "solid 1px black";
+                this.attr('attrsContainer').style.borderBottom = "solid 1px black";
             }
 
-            let m = this.generateSectionMarkup('methodsContainer', 'Meth', this.attr('methods').values());
+            let m = this.generateSectionMarkup('methodsContainer', 'Meth', this.get('methods').values());
 
-            if (m.children.length > 0 && !this.attr('hideMethods')) {
+            if (m.children.length > 0 && !this.get('hideMethods')) {
 
                 sections.push(m);
                 //this.attr()['methodsContainer'].style.borderBottom = "solid 1px black";
@@ -239,8 +237,8 @@ const Entity = joint.dia.Element.define('Entity', {
         },
         nbVisibleElements: function () {
             let nb = this.getHeaderName() === '' ? 1 : 2; // Header
-            nb += this.attr('umlAttributes').size * (this.attr('hideAttrs') ? 0 : 1);
-            nb += this.attr('methods').size * (this.attr('hideMethods') ? 0 : 1);
+            nb += this.get('umlAttributes').size * (this.get('hideAttrs') ? 0 : 1);
+            nb += this.get('methods').size * (this.get('hideMethods') ? 0 : 1);
 
             return nb;
         },
@@ -265,11 +263,11 @@ const Entity = joint.dia.Element.define('Entity', {
             elements.push(this.getEntityName());
             elements.push(this.getHeaderName());
 
-            if (!this.attr('hideAttrs'))
-                elements.concat(this.attr('umlAttributes').values());
+            if (!this.get('hideAttrs'))
+                elements.concat(this.get('umlAttributes').values());
 
-            if (!this.attr('hideMethods'))
-                elements.concat(this.attr('methods').values());
+            if (!this.get('hideMethods'))
+                elements.concat(this.get('methods').values());
 
             return elements;
         },
@@ -361,43 +359,43 @@ const Entity = joint.dia.Element.define('Entity', {
             this.trigger('uml-update')
         },
         getAttribute: function (id) {
-            if (this.attr('umlAttributes').has(id))
-                return this.attr('umlAttributes').get(id);
+            if (this.get('umlAttributes').has(id))
+                return this.get('umlAttributes').get(id);
         },
         addAttribute: function (attribute) {
-            this.attr('umlAttributes').set(attribute.id, attribute);
+            this.get('umlAttributes').set(attribute.id, attribute);
             this.updateMarkup();
         },
         removeAttribute: function (id) {
-            this.attr('umlAttributes').delete(id)
+            this.get('umlAttributes').delete(id)
             this.updateMarkup();
         },
         updateAttribute: function (attribute) {
 
-            if (this.attr('umlAttributes').has(attribute.id)) {
-                this.attr('umlAttributes').get(attribute.id).update(attribute);
+            if (this.get('umlAttributes').has(attribute.id)) {
+                this.get('umlAttributes').get(attribute.id).update(attribute);
                 this.setInputValue('Attr', attribute.id, attribute.toString());
             }
 
         },
 
         getMethod: function (id) {
-            if (this.attr('methods').has(id))
-                return this.attr('methods').get(id);
+            if (this.get('methods').has(id))
+                return this.get('methods').get(id);
         },
         addMethod: function (method) {
-            this.attr('methods').set(method.id, method);
+            this.get('methods').set(method.id, method);
             this.updateMarkup();
         },
         removeMethod: function (id) {
-            this.attr('methods').delete(id)
+            this.get('methods').delete(id)
             this.updateMarkup();
         },
         updateMethod: function (method) {
 
-            if (this.attr('methods').has(method.id)) {
-                this.attr('methods').get(method.id).update(method);
-                this.setInputValue('Meth', method.id, this.attr('methods').get(method.id).toString());
+            if (this.get('methods').has(method.id)) {
+                this.get('methods').get(method.id).update(method);
+                this.setInputValue('Meth', method.id, this.get('methods').get(method.id).toString());
             }
 
         },
@@ -438,8 +436,8 @@ const Entity = joint.dia.Element.define('Entity', {
 
         },
         getOperation(id) {
-            if (this.attr('methods').has(id))
-                return this.attr('methods').get(id);
+            if (this.get('methods').has(id))
+                return this.get('methods').get(id);
         },
     }, {
         attributes: {
@@ -466,12 +464,11 @@ export let Interface = Entity.define('Interface', {}, {
 
 let ConstructableEntity = Entity.define('ConstructableEntity',
     {
-        attrs: {
-            constructors: new Map(),
-        },
+        constructors: new Map(),
     },
     {
         initialize: function () {
+            this.set('constructors', new Map());
             Entity.prototype.initialize.apply(this, arguments);
         },
 
@@ -480,8 +477,8 @@ let ConstructableEntity = Entity.define('ConstructableEntity',
         },
         getVisibleElements: function () {
             let elements = Entity.prototype.getVisibleElements.apply(this, arguments);
-            if (!this.attr('hideMethods')) {
-                elements = elements.concat(this.attr('constructors'));
+            if (!this.get('hideMethods')) {
+                elements = elements.concat(this.get('constructors'));
             }
             return elements;
         },
@@ -490,12 +487,12 @@ let ConstructableEntity = Entity.define('ConstructableEntity',
             let sections = Entity.prototype.sectionsMarkup.apply(this, arguments);
 
             // concat constructors and methods
-            let concat = new Map([...this.attr('constructors'), ...this.attr('methods')]);
+            let concat = new Map([...this.get('constructors'), ...this.get('methods')]);
 
 
             let m = Entity.prototype.generateSectionMarkup.call(this, 'methodsContainer', 'Meth', concat.values());
 
-            if (m.children.length > 0 && !this.attr('hideMethods')) {
+            if (m.children.length > 0 && !this.get('hideMethods')) {
                 for (let sec of sections) {
                     if (sec.selector === 'methodsContainer') {
                         sec.children = m.children;
@@ -508,7 +505,7 @@ let ConstructableEntity = Entity.define('ConstructableEntity',
 
         },
         addConstructor: function (constructor) {
-            this.attr('constructors').push(constructor);
+            this.get('constructors').push(constructor);
             this.updateMarkup();
         },
         setConstructors: function (constructors) {
@@ -516,30 +513,30 @@ let ConstructableEntity = Entity.define('ConstructableEntity',
             this.updateMarkup();
         },
         removeConstructor: function (id) {
-            this.set('constructors', this.attr('constructors').filter(constructor => constructor.id !== id));
+            this.set('constructors', this.get('constructors').filter(constructor => constructor.id !== id));
             this.updateMarkup();
         },
         updateConstructor: function (constructor) {
-            let index = this.attr('constructors').map(function (x) {
+            let index = this.get('constructors').map(function (x) {
                 return x.id;
             }).indexOf(constructor.id);
 
             if (index !== -1) {
-                this.attr('constructors')[index].update(constructor);
+                this.get('constructors')[index].update(constructor);
                 this.setInputValue('Meth', constructor.id, constructor.toString());
             }
 
         },
         getOperation(id) {
             let op = Entity.prototype.getOperation.call(this, id);
-            if (!op && this.attr('constructors').has(id)) {
-                op = this.attr('constructors').get(id);
+            if (!op && this.get('constructors').has(id)) {
+                op = this.get('constructors').get(id);
             }
             return op;
         },
         nbVisibleElements: function () {
             let nb = Entity.prototype.nbVisibleElements.apply(this, arguments);
-            nb += this.attr('constructors').size * (this.attr('hideMethods') ? 0 : 1);
+            nb += this.get('constructors').size * (this.get('hideMethods') ? 0 : 1);
             return nb;
         },
     }
@@ -557,14 +554,14 @@ export let Enum = ConstructableEntity.define('Enum', {
 
                 },
             },
-            hideVal: false,
-            values: new Map(),
-        }
+        },
+        hideVal: false,
+        values: new Map(),
     },
     {
         initialize: function () {
+            this.set('values', new Map());
             ConstructableEntity.prototype.initialize.apply(this, arguments);
-            this.attr('valuesContainer', this.attr('valuesContainer'));
         },
 
         getType: function () {
@@ -575,9 +572,9 @@ export let Enum = ConstructableEntity.define('Enum', {
 
             let sections = ConstructableEntity.prototype.sectionsMarkup.apply(this, arguments);
 
-            let v = ConstructableEntity.prototype.generateSectionMarkup.call(this, 'valuesContainer', 'Val', this.attr('values').values());
+            let v = ConstructableEntity.prototype.generateSectionMarkup.call(this, 'valuesContainer', 'Val', this.get('values').values());
 
-            if (v.children.length > 0 && !this.attr('hideValues')) {
+            if (v.children.length > 0 && !this.get('hideVal')) {
                 sections.splice(1, 0, v);
 
             }
@@ -589,7 +586,7 @@ export let Enum = ConstructableEntity.define('Enum', {
 
         nbVisibleElements: function () {
             let nb = ConstructableEntity.prototype.nbVisibleElements.apply(this, arguments);
-            nb += this.attr('values').size * (this.attr('hideVals') ? 0 : 1);
+            nb += this.get('values').size * (this.get('hideVal') ? 0 : 1);
             return nb;
         },
 
@@ -598,17 +595,17 @@ export let Enum = ConstructableEntity.define('Enum', {
         },
 
         addValue: function (value) {
-            if (value.id && this.attr('values').has(value.id))
-                this.attr('values').remove(value.id)
-            this.attr('values').set(value.name, value);
+            if (value.id && this.get('values').has(value.id))
+                this.get('values').remove(value.id)
+            this.get('values').set(value.name, value);
             this.updateMarkup();
         },
         removeValue: function (name) {
-            this.attr('values').delete(name);
+            this.get('values').delete(name);
             this.updateMarkup();
         },
         updateValue: function (value) {
-            if (this.attr('values').has(value.id)) {
+            if (this.get('values').has(value.id)) {
                 this.removeValue(value.id);
                 this.addValue(value);
                 this.setInputValue('Val', value.name, value.toString());
@@ -618,9 +615,7 @@ export let Enum = ConstructableEntity.define('Enum', {
 );
 
 export let Class = ConstructableEntity.define('Class', {
-        attrs: {
-            isAbstract: false,
-        }
+        isAbstract: false,
     },
     {
         initialize: function () {
