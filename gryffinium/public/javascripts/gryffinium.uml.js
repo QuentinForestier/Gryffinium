@@ -486,17 +486,20 @@ let ConstructableEntity = Entity.define('ConstructableEntity',
 
             let sections = Entity.prototype.sectionsMarkup.apply(this, arguments);
 
-            // concat constructors and methods
-            let concat = new Map([...this.get('constructors'), ...this.get('methods')]);
 
+            let c = Entity.prototype.generateSectionMarkup.call(this, 'methodsContainer', 'Const', this.get('constructors').values());
+            let methodEmpty = true;
+            if (c.children.length > 0 && !this.get('hideMethods')) {
 
-            let m = Entity.prototype.generateSectionMarkup.call(this, 'methodsContainer', 'Meth', concat.values());
-
-            if (m.children.length > 0 && !this.get('hideMethods')) {
                 for (let sec of sections) {
                     if (sec.selector === 'methodsContainer') {
-                        sec.children = m.children;
+                        methodEmpty = false;
+                        sec.children = [...c.children, ...sec.children];
                     }
+                }
+
+                if (methodEmpty) {
+                    sections.push(c);
                 }
             }
 
@@ -505,26 +508,19 @@ let ConstructableEntity = Entity.define('ConstructableEntity',
 
         },
         addConstructor: function (constructor) {
-            this.get('constructors').push(constructor);
-            this.updateMarkup();
-        },
-        setConstructors: function (constructors) {
-            this.set('constructors', constructors);
+            this.get('constructors').set(constructor.id, constructor);
             this.updateMarkup();
         },
         removeConstructor: function (id) {
-            this.set('constructors', this.get('constructors').filter(constructor => constructor.id !== id));
+            this.get('constructors').delete(id)
             this.updateMarkup();
         },
         updateConstructor: function (constructor) {
-            let index = this.get('constructors').map(function (x) {
-                return x.id;
-            }).indexOf(constructor.id);
-
-            if (index !== -1) {
-                this.get('constructors')[index].update(constructor);
-                this.setInputValue('Meth', constructor.id, constructor.toString());
+            if (this.get('constructors').has(constructor.id)) {
+                this.get('constructors').get(constructor.id).update(constructor);
+                this.setInputValue('Const', constructor.id, this.get('constructors').get(constructor.id).toString());
             }
+
 
         },
         getOperation(id) {
@@ -1586,7 +1582,8 @@ export class GryffiniumManager {
                 this.entities.get(command.parentId).updateMethod(m);
                 break;
             case ElementType.Constructor.name:
-                this.entities.get(command.parentId).updateConstructor(command);
+                let c = new Method(command.id, command.name,  command.visibility);
+                this.entities.get(command.parentId).updateConstructor(c);
                 break;
             case ElementType.Value.name:
                 let v = new Value(command.value, command.oldValue);
@@ -1597,7 +1594,7 @@ export class GryffiniumManager {
                 let parentEntity = this.entities.get(command.parentId);
                 let operation = parentEntity.getOperation(command.methodId);
                 operation.updateParametersFromMessage(command);
-                this.entities.get(command.parentId).setInputValue("Meth", operation.id, operation.toString());
+                this.entities.get(command.parentId).setInputValue((operation instanceof Method ? 'Meth' : 'Const'), operation.id, operation.toString());
                 break
             case ElementType.Role.name:
                 this.entities.get(command.associationId).updateRole(command.id, command);
@@ -1647,12 +1644,12 @@ export class GryffiniumManager {
     updateMethod(update) {
 
         if (update.parameters) {
-            this.updateParamters(update);
+            this.updateParameters(update);
         }
         this.sendMessage(update, 'METHOD', 'UPDATE_COMMAND');
     }
 
-    updateParamters(update) {
+    updateParameters(update) {
         let method = this.entities.get(update.parentId).getOperation(update.id);
 
         for (let i = 0; i < Math.max(update.parameters.length, method.parameters.length); i++) {
@@ -1682,13 +1679,7 @@ export class GryffiniumManager {
                 }, 'PARAMETER', 'REMOVE_COMMAND')
             }
         }
-        update.parameters.forEach(parameter => {
-            if (method.parameters.find(p => p.id === parameter.id)) {
 
-            } else {
-
-            }
-        });
     }
 
     removeMethod(method) {
@@ -1710,6 +1701,9 @@ export class GryffiniumManager {
     }
 
     updateConstructor(update) {
+        if (update.parameters) {
+            this.updateParameters(update);
+        }
         this.sendMessage(update, 'CONSTRUCTOR', 'UPDATE_COMMAND');
     }
 
@@ -1998,6 +1992,33 @@ export class Attribute {
 }
 
 export class Constructor {
+
+    static CONSTRUCTOR_REGEX = /\s*([-+#~])\s*(\w+)\s*\(([\S\s]*)\)\s*/;
+    static fromString(text) {
+
+        let match = text.match(Constructor.CONSTRUCTOR_REGEX);
+
+        if (match === null) {
+            throw new Error("Invalid method format");
+        }
+
+        let method = new Method();
+        method.visibility = Visibility.getVisibility(match[1]);
+        method.name = match[2];
+        if (match[3] !== "") {
+            let match_params = [...match[3].matchAll(Method.PARAMS_REGEX)];
+
+            let params = [];
+            if (match_params === []) {
+                throw new Error("Invalid parameters format");
+            }
+            for (let param of match_params) {
+                params.push(new Parameter(undefined, param[2], param[3]));
+            }
+            method.parameters = params;
+        }
+        return method;
+    }
     constructor(id, name, visibility) {
         this.id = id;
         this.name = name;

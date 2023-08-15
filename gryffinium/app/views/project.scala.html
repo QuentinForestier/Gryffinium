@@ -462,6 +462,11 @@
                     manager.addValueOnElement(selectedElements[0].model);
             });
 
+            btnConstructor.addEventListener('click', function () {
+                if (selectedElements.length === 1)
+                    manager.addConstructorOnElement(selectedElements[0].model);
+            });
+
             setInsideContentButtonsVisibility(false);
 
             function setInsideContentButtonsVisibility(show, showValue, showConstructor) {
@@ -666,12 +671,13 @@
                                         parameters: method.parameters,
                                     });
                                     break;
-                                    case 'Cons':
+                                    case 'Const':
 
                                     if(input.value === "") {
                                         manager.removeConstructor({id: id, parentId: this.model.getId()});
                                         return;
                                     }
+
                                     let constructor = Constructor.fromString(input.value);
                                     constructor.id = id;
                                     manager.updateConstructor({
