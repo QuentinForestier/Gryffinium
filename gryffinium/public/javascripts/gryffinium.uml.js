@@ -9,10 +9,11 @@ const standardInput = {
         height: '100%',
         border: 'none',
         padding: 'none',
-        backgroundColor: umlColor,
+        backgroundColor: 'inherit',
         overflow: 'hidden',
         whiteSpace: 'nowrap',
         textOverflow: 'ellipsis',
+        width: '95%',
     },
     size: 8,
 }
@@ -119,8 +120,8 @@ const Entity = joint.dia.Element.define('Entity', {
 
             id: undefined,
             name: undefined,
-            umlAttributes: [],
-            methods: [],
+            umlAttributes: new Map(),
+            methods: new Map(),
 
             visibility: 'public',
 
@@ -168,9 +169,11 @@ const Entity = joint.dia.Element.define('Entity', {
 
 
             this.set('markup', markup);
+
             this.autoHeight();
             this.trigger('uml-update');
         },
+
         generateSectionMarkup: function (name, type, list) {
             let section = {
                 tagName: 'div',
@@ -179,7 +182,7 @@ const Entity = joint.dia.Element.define('Entity', {
             }
             for (let val of list) {
 
-                let obj = this.generateInput(type, {parentId: this.get('id'), text: type + val.id, id: val.id});
+                let obj = this.generateInput(type, this.getId(), val);
 
                 section.children.push(obj.markup);
             }
@@ -206,7 +209,8 @@ const Entity = joint.dia.Element.define('Entity', {
                 }
             ]
 
-            let a = this.generateSectionMarkup('attrsContainer', 'Attr', this.attr('umlAttributes'));
+            let tmp = this.attr('umlAttributes');
+            let a = this.generateSectionMarkup('attrsContainer', 'Attr', this.attr()['umlAttributes'].values());
 
             if (a.children.length > 0 && !this.attr('hideAttrs')) {
 
@@ -214,12 +218,12 @@ const Entity = joint.dia.Element.define('Entity', {
                 this.attr()['attrsContainer'].style.borderBottom = "solid 1px black";
             }
 
-            let m = this.generateSectionMarkup('methodsContainer', 'Meth', this.attr('methods'));
+            let m = this.generateSectionMarkup('methodsContainer', 'Meth', this.attr('methods').values());
 
             if (m.children.length > 0 && !this.attr('hideMethods')) {
 
                 sections.push(m);
-                this.attr()['methodsContainer'].style.borderBottom = "solid 1px black";
+                //this.attr()['methodsContainer'].style.borderBottom = "solid 1px black";
             }
 
             // Add << >> title on entity if needed
@@ -235,22 +239,23 @@ const Entity = joint.dia.Element.define('Entity', {
         },
         nbVisibleElements: function () {
             let nb = this.getHeaderName() === '' ? 1 : 2; // Header
-            nb += this.attr('umlAttributes').length * (this.attr('hideAttrs') ? 0 : 1);
-            nb += this.attr('methods').length * (this.attr('hideMethods') ? 0 : 1);
+            nb += this.attr('umlAttributes').size * (this.attr('hideAttrs') ? 0 : 1);
+            nb += this.attr('methods').size * (this.attr('hideMethods') ? 0 : 1);
 
             return nb;
         },
-        generateInput: function (type, data) {
+        generateInput: function (type, parent, data) {
 
             let markup = {
                 tagName: 'input',
-                selector: type + data.id,
+                selector: type + "_" + data.id,
             };
 
             let attr = {...standardInput};
-            attr.value = data.text;
+            attr.value = data.toString();
+            attr.parent = parent;
 
-            this.attr()[type + data.id] = attr;
+            this.attr()[type + "_" + data.id] = attr;
 
             return {attr, markup};
 
@@ -261,10 +266,10 @@ const Entity = joint.dia.Element.define('Entity', {
             elements.push(this.getHeaderName());
 
             if (!this.attr('hideAttrs'))
-                elements.concat(this.attr('umlAttributes'));
+                elements.concat(this.attr('umlAttributes').values());
 
             if (!this.attr('hideMethods'))
-                elements.concat(this.attr('methods'));
+                elements.concat(this.attr('methods').values());
 
             return elements;
         },
@@ -348,56 +353,51 @@ const Entity = joint.dia.Element.define('Entity', {
             return '';
         },
         getInputValue: function (type, id) {
-            return this.get('attrs')[type + id].value;
+            return this.get('attrs')[type + "_" + id].value;
         },
         setInputValue: function (type, id, text) {
-            let selector = type + id;
+            let selector = type + "_" + id;
             this.attr(selector + '/value', text);
             this.trigger('uml-update')
         },
-        addAttribute: function (attribute) {
-            this.attr('umlAttributes').push(attribute);
-            this.updateMarkup();
+        getAttribute: function (id) {
+            if (this.attr('umlAttributes').has(id))
+                return this.attr('umlAttributes').get(id);
         },
-        setAttributes: function (attributes) {
-            this.set('umlAttributes', attributes);
+        addAttribute: function (attribute) {
+            this.attr('umlAttributes').set(attribute.id, attribute);
             this.updateMarkup();
         },
         removeAttribute: function (id) {
-            this.set('umlAttributes', this.get('umlAttributes').filter(attr => attr.id !== id));
+            this.attr('umlAttributes').delete(id)
             this.updateMarkup();
         },
         updateAttribute: function (attribute) {
-            let index = this.get('umlAttributes').map(function (x) {
-                return x.id;
-            }).indexOf(attribute.id);
 
-            if (index !== -1) {
-                this.get('umlAttributes')[index].update(attribute);
+            if (this.attr('umlAttributes').has(attribute.id)) {
+                this.attr('umlAttributes').get(attribute.id).update(attribute);
                 this.setInputValue('Attr', attribute.id, attribute.toString());
             }
 
         },
-        addMethod: function (method) {
-            this.attr('methods').push(method);
-            this.updateMarkup();
+
+        getMethod: function (id) {
+            if (this.attr('methods').has(id))
+                return this.attr('methods').get(id);
         },
-        setMethods: function (methods) {
-            this.set('methods', methods);
+        addMethod: function (method) {
+            this.attr('methods').set(method.id, method);
             this.updateMarkup();
         },
         removeMethod: function (id) {
-            this.set('methods', this.get('methods').filter(method => method.id !== id));
+            this.attr('methods').delete(id)
             this.updateMarkup();
         },
         updateMethod: function (method) {
-            let index = this.get('methods').map(function (x) {
-                return x.id;
-            }).indexOf(method.id);
 
-            if (index !== -1) {
-                this.get('methods')[index].update(method);
-                this.setInputValue('Method', method.id, method.toString());
+            if (this.attr('methods').has(method.id)) {
+                this.attr('methods').get(method.id).update(method);
+                this.setInputValue('Meth', method.id, this.attr('methods').get(method.id).toString());
             }
 
         },
@@ -438,7 +438,8 @@ const Entity = joint.dia.Element.define('Entity', {
 
         },
         getOperation(id) {
-            return this.get('methods').find(m => m.id === id);
+            if (this.attr('methods').has(id))
+                return this.attr('methods').get(id);
         },
     }, {
         attributes: {
@@ -463,8 +464,11 @@ export let Interface = Entity.define('Interface', {}, {
 
 })
 
-let ConstructableEntity = Entity.define('ConstructableEntity', {
-        constructors: [],
+let ConstructableEntity = Entity.define('ConstructableEntity',
+    {
+        attrs: {
+            constructors: new Map(),
+        },
     },
     {
         initialize: function () {
@@ -477,7 +481,7 @@ let ConstructableEntity = Entity.define('ConstructableEntity', {
         getVisibleElements: function () {
             let elements = Entity.prototype.getVisibleElements.apply(this, arguments);
             if (!this.attr('hideMethods')) {
-                elements = elements.concat(this.get('constructors'));
+                elements = elements.concat(this.attr('constructors'));
             }
             return elements;
         },
@@ -485,7 +489,11 @@ let ConstructableEntity = Entity.define('ConstructableEntity', {
 
             let sections = Entity.prototype.sectionsMarkup.apply(this, arguments);
 
-            let m = Entity.prototype.generateSectionMarkup.call(this, 'methodsContainer', 'Meth', this.attr('constructors') + this.attr('methods'));
+            // concat constructors and methods
+            let concat = new Map([...this.attr('constructors'), ...this.attr('methods')]);
+
+
+            let m = Entity.prototype.generateSectionMarkup.call(this, 'methodsContainer', 'Meth', concat.values());
 
             if (m.children.length > 0 && !this.attr('hideMethods')) {
                 for (let sec of sections) {
@@ -508,52 +516,55 @@ let ConstructableEntity = Entity.define('ConstructableEntity', {
             this.updateMarkup();
         },
         removeConstructor: function (id) {
-            this.set('constructors', this.get('constructors').filter(constructor => constructor.id !== id));
+            this.set('constructors', this.attr('constructors').filter(constructor => constructor.id !== id));
             this.updateMarkup();
         },
         updateConstructor: function (constructor) {
-            let index = this.get('constructors').map(function (x) {
+            let index = this.attr('constructors').map(function (x) {
                 return x.id;
             }).indexOf(constructor.id);
 
             if (index !== -1) {
-                this.get('constructors')[index].update(constructor);
+                this.attr('constructors')[index].update(constructor);
                 this.setInputValue('Meth', constructor.id, constructor.toString());
             }
 
         },
         getOperation(id) {
             let op = Entity.prototype.getOperation.call(this, id);
-            if (!op) {
-                op = this.get('constructors').find(m => m.id === id);
+            if (!op && this.attr('constructors').has(id)) {
+                op = this.attr('constructors').get(id);
             }
             return op;
         },
         nbVisibleElements: function () {
             let nb = Entity.prototype.nbVisibleElements.apply(this, arguments);
-            nb += this.get('constructors').length * (this.attr('hideMethods') ? 0 : 1);
+            nb += this.attr('constructors').size * (this.attr('hideMethods') ? 0 : 1);
             return nb;
         },
     }
 );
 
 export let Enum = ConstructableEntity.define('Enum', {
-        valuesContainer: {
-            style: {
-                display: 'flex',
-                fontSize: fontSize,
-                //borderBottom: 'solid 1px black',
-                flexDirection: 'column',
-                padding: 3,
+        attrs: {
+            valuesContainer: {
+                style: {
+                    display: 'flex',
+                    fontSize: fontSize,
+                    borderBottom: 'solid 1px black',
+                    flexDirection: 'column',
+                    padding: 3,
 
+                },
             },
-        },
-        hideVal: false,
-        values: [],
+            hideVal: false,
+            values: new Map(),
+        }
     },
     {
         initialize: function () {
             ConstructableEntity.prototype.initialize.apply(this, arguments);
+            this.attr('valuesContainer', this.attr('valuesContainer'));
         },
 
         getType: function () {
@@ -564,11 +575,11 @@ export let Enum = ConstructableEntity.define('Enum', {
 
             let sections = ConstructableEntity.prototype.sectionsMarkup.apply(this, arguments);
 
-            let v = ConstructableEntity.prototype.generateSectionMarkup.call(this, 'valuesContainer', 'Val', this.get('values'));
+            let v = ConstructableEntity.prototype.generateSectionMarkup.call(this, 'valuesContainer', 'Val', this.attr('values').values());
 
             if (v.children.length > 0 && !this.attr('hideValues')) {
-                sections.splice(0, 0, v);
-                this.get('valuesContainer').style.borderBottom = "solid 1px black";
+                sections.splice(1, 0, v);
+
             }
 
 
@@ -578,7 +589,7 @@ export let Enum = ConstructableEntity.define('Enum', {
 
         nbVisibleElements: function () {
             let nb = ConstructableEntity.prototype.nbVisibleElements.apply(this, arguments);
-            nb += this.get('values').length * (this.attr('hideVals') ? 0 : 1);
+            nb += this.attr('values').size * (this.attr('hideVals') ? 0 : 1);
             return nb;
         },
 
@@ -587,33 +598,29 @@ export let Enum = ConstructableEntity.define('Enum', {
         },
 
         addValue: function (value) {
-            this.attr('values').push(value);
+            if (value.id && this.attr('values').has(value.id))
+                this.attr('values').remove(value.id)
+            this.attr('values').set(value.name, value);
             this.updateMarkup();
         },
-        setValues: function (values) {
-            this.set('values', values);
-            this.updateMarkup();
-        },
-        removeValue: function (id) {
-            this.set('values', this.get('values').filter(value => value.id !== id));
+        removeValue: function (name) {
+            this.attr('values').delete(name);
             this.updateMarkup();
         },
         updateValue: function (value) {
-            let index = this.get('values').map(function (x) {
-                return x.id;
-            }).indexOf(value.id);
-
-            if (index !== -1) {
-                this.get('values')[index].update(value);
-                this.setInputValue('Val', value.id, value.toString());
+            if (this.attr('values').has(value.id)) {
+                this.removeValue(value.id);
+                this.addValue(value);
+                this.setInputValue('Val', value.name, value.toString());
             }
-
         },
     }
 );
 
 export let Class = ConstructableEntity.define('Class', {
-        isAbstract: false,
+        attrs: {
+            isAbstract: false,
+        }
     },
     {
         initialize: function () {
@@ -1494,8 +1501,10 @@ export class GryffiniumManager {
                 break;
             case ElementType.Parameter.name:
                 let parameter = new Parameter(command.id, command.name, command.type);
-                this.entities.get(command.parentId).getOperation(command.methodId).addParameter(parameter);
-                this.entities.get(command.parentId).update();
+                let parentEntity = this.entities.get(command.parentId);
+                let operation = parentEntity.getOperation(command.methodId);
+                operation.addParameter(parameter);
+                this.entities.get(command.parentId).setInputValue("Meth", operation.id, operation.toString());
                 break;
             case ElementType.Role.name:
                 let role = new Role(command.id, command.name, command.multiplicity, command.distanceName, command.offsetName, command.distanceMultiplicity, command.offsetMultiplicity);
@@ -1574,20 +1583,26 @@ export class GryffiniumManager {
                 this.entities.get(command.id).update(command);
                 break;
             case ElementType.Attribute.name:
-                this.entities.get(command.parentId).updateAttribute(command);
+                let a = new Attribute(command.id, command.name, command.type, command.visibility, command.isConstant, command.isStatic);
+                this.entities.get(command.parentId).updateAttribute(a);
                 break;
             case ElementType.Method.name:
-                this.entities.get(command.parentId).updateMethod(command);
+                let m = new Method(command.id, command.name, command.type, command.visibility, command.isAbstract, command.isStatic);
+                this.entities.get(command.parentId).updateMethod(m);
                 break;
             case ElementType.Constructor.name:
                 this.entities.get(command.parentId).updateConstructor(command);
                 break;
             case ElementType.Value.name:
-                this.entities.get(command.parentId).updateValue(command.oldValue, command.value);
+                let v = new Value(command.value, command.oldValue);
+                this.entities.get(command.parentId).updateValue(v);
                 break;
             case ElementType.Parameter.name:
-                this.entities.get(command.parentId).getOperation(command.methodId).updateParametersFromMessage(command);
-                this.entities.get(command.parentId).update();
+                let parameter = new Parameter(command.id, command.name, command.type);
+                let parentEntity = this.entities.get(command.parentId);
+                let operation = parentEntity.getOperation(command.methodId);
+                operation.updateParametersFromMessage(command);
+                this.entities.get(command.parentId).setInputValue("Meth", operation.id, operation.toString());
                 break
             case ElementType.Role.name:
                 this.entities.get(command.associationId).updateRole(command.id, command);
@@ -1595,10 +1610,10 @@ export class GryffiniumManager {
         }
     }
 
-    addAttributeOnSelectedElement() {
-        if (this.selectedElement) {
+    addAttributeOnElement(elem) {
+        if (elem) {
             this.sendMessage({
-                    parentId: this.selectedElement.getId(),
+                    parentId: elem.getId(),
                     name: "attribute",
                     type: "string",
                     visibility: "private",
@@ -1610,10 +1625,19 @@ export class GryffiniumManager {
         }
     }
 
-    addMethodOnSelectedElement() {
-        if (this.selectedElement) {
+
+    updateAttribute(update) {
+        this.sendMessage(update, 'ATTRIBUTE', 'UPDATE_COMMAND');
+    }
+
+    removeAttribute(attribute) {
+        this.sendMessage(attribute, 'ATTRIBUTE', 'REMOVE_COMMAND');
+    }
+
+    addMethodOnElement(elem) {
+        if (elem) {
             this.sendMessage({
-                    parentId: this.selectedElement.getId(),
+                    parentId: elem.getId(),
                     name: "method",
                     visibility: "public",
                     type: "void",
@@ -1625,10 +1649,61 @@ export class GryffiniumManager {
         }
     }
 
-    addConstructorOnSelectedElement() {
-        if (this.selectedElement) {
+    updateMethod(update) {
+
+        if (update.parameters) {
+            this.updateParamters(update);
+        }
+        this.sendMessage(update, 'METHOD', 'UPDATE_COMMAND');
+    }
+
+    updateParamters(update) {
+        let method = this.entities.get(update.parentId).getOperation(update.id);
+
+        for (let i = 0; i < Math.max(update.parameters.length, method.parameters.length); i++) {
+            let oldParameter = method.parameters[i];
+            let parameter = update.parameters[i];
+            if (oldParameter && parameter) {
+                this.sendMessage({
+                    parentId: update.parentId,
+                    methodId: update.id,
+                    id: oldParameter.id,
+                    name: parameter.name,
+                    type: parameter.type,
+                }, 'PARAMETER', 'UPDATE_COMMAND')
+            } else if (parameter) {
+                this.sendMessage({
+                    parentId: update.parentId,
+                    methodId: update.id,
+                    id: parameter.id,
+                    name: parameter.name,
+                    type: parameter.type,
+                }, 'PARAMETER', 'CREATE_COMMAND')
+            } else {
+                this.sendMessage({
+                    parentId: update.parentId,
+                    methodId: update.id,
+                    id: oldParameter.id,
+                }, 'PARAMETER', 'REMOVE_COMMAND')
+            }
+        }
+        update.parameters.forEach(parameter => {
+            if (method.parameters.find(p => p.id === parameter.id)) {
+
+            } else {
+
+            }
+        });
+    }
+
+    removeMethod(method) {
+        this.sendMessage(method, 'METHOD', 'REMOVE_COMMAND');
+    }
+
+    addConstructorOnElement(elem) {
+        if (elem) {
             this.sendMessage({
-                    parentId: this.selectedElement.getId(),
+                    parentId: elem.getId(),
                     visibility: "public",
                     type: "void",
                     isStatic: false,
@@ -1639,10 +1714,18 @@ export class GryffiniumManager {
         }
     }
 
-    addValueOnSelectedElement() {
-        if (this.selectedElement) {
+    updateConstructor(update) {
+        this.sendMessage(update, 'CONSTRUCTOR', 'UPDATE_COMMAND');
+    }
+
+    removeConstructor(constructor) {
+        this.sendMessage(constructor, 'CONSTRUCTOR', 'REMOVE_COMMAND');
+    }
+
+    addValueOnElement(elem) {
+        if (elem) {
             this.sendMessage({
-                    parentId: this.selectedElement.getId(),
+                    parentId: elem.getId(),
                     name: "value",
                 },
                 'VALUE',
@@ -1650,25 +1733,14 @@ export class GryffiniumManager {
         }
     }
 
-    onMessage(message) {
-        for (let command of message.commands) {
-            switch (command.commandType) {
-                case 'CHAT_MESSAGE_COMMAND':
-                    this.onChatMessage(command);
-                    break;
-                case 'SELECT_COMMAND':
-                case 'CREATE_COMMAND':
-                    return this.create(command);
-                    break;
-                case 'UPDATE_COMMAND':
-                    this.update(command);
-                    break;
-                case 'REMOVE_COMMAND':
-                    this.delete(command);
-                    break;
-            }
-        }
+    updateValue(update) {
+        this.sendMessage(update, 'VALUE', 'UPDATE_COMMAND');
     }
+
+    removeValue(value) {
+        this.sendMessage(value, 'VALUE', 'REMOVE_COMMAND');
+    }
+
 
     removeEntity(cell) {
         this.sendMessage({id: cell.getId()}, cell.getType(), 'REMOVE_COMMAND');
@@ -1764,7 +1836,6 @@ export class GryffiniumManager {
     }
 
 
-
 }
 
 //endregion
@@ -1818,18 +1889,40 @@ export class Visibility {
         return this.symbol;
     }
 
+    fullText() {
+        switch (this.symbol) {
+            case "+":
+                return "public";
+            case "-":
+                return "private";
+            case "#":
+                return "protected";
+            case "~":
+                return "package";
+        }
+    }
+
     static getVisibility(name) {
         switch (name) {
             case "public":
+            case "+":
+            case Visibility.Public:
                 return Visibility.Public;
             case "private":
+            case "-":
+            case Visibility.Private:
                 return Visibility.Private;
             case "protected":
+            case "#":
+            case Visibility.Protected:
                 return Visibility.Protected;
             case "package":
+            case "~":
+            case Visibility.Package:
                 return Visibility.Package;
         }
     }
+
 }
 
 export class Type {
@@ -1844,6 +1937,25 @@ export class Type {
 }
 
 export class Attribute {
+
+    static REGEX = /\s*([-+#~])\s*(\w+)\s*:\s*(\w+)/;
+
+    static fromString(text) {
+
+        let match = text.match(Attribute.REGEX);
+
+        if (match === null) {
+            throw new Error("Invalid attribute format");
+        }
+
+        let attribute = new Attribute();
+        attribute.visibility = Visibility.getVisibility(match[1]);
+        attribute.name = match[2];
+        attribute.type = match[3];
+
+        return attribute;
+    }
+
     constructor(id, name, type, visibility, isConstant, isStatic) {
         this.id = id;
         this.name = name;
@@ -1947,6 +2059,37 @@ export class Constructor {
 }
 
 export class Method {
+
+    static METHOD_REGEX = /\s*([-+#~])\s*(\w+)\s*\(([\S\s]*)\)\s*:\s*(\w+)/;
+    static PARAMS_REGEX = /((?:\s*(\w+)\s*:\s*(\w+)\s*)+)\s*,?\s*/g;
+
+    static fromString(text) {
+
+        let match = text.match(Method.METHOD_REGEX);
+
+        if (match === null) {
+            throw new Error("Invalid method format");
+        }
+
+        let method = new Method();
+        method.visibility = Visibility.getVisibility(match[1]);
+        method.name = match[2];
+        method.type = match[4];
+        if (match[3] !== "") {
+            let match_params = [...match[3].matchAll(Method.PARAMS_REGEX)];
+
+            let params = [];
+            if (match_params === []) {
+                throw new Error("Invalid parameters format");
+            }
+            for (let param of match_params) {
+                params.push(new Parameter(undefined, param[2], param[3]));
+            }
+            method.parameters = params;
+        }
+        return method;
+    }
+
     constructor(id, name, type, visibility, isAbstract, isStatic) {
         this.id = id;
         this.name = name;
@@ -1962,7 +2105,7 @@ export class Method {
     }
 
     toString() {
-        let result = this.visibility + " " + this.name + " : " + this.type;
+        let result = this.visibility + " " + this.name + this.paramsToString() + " : " + this.type;
         if (this.isAbstract || this.isStatic) {
             result += `{${this.isAbstract ? "abstract" : ''}${this.isConstant && this.isStatic ? ', ' : ''}${this.isStatic ? "static" : ""}}`;
         }
@@ -1978,6 +2121,7 @@ export class Method {
     }
 
     update(modification) {
+
         if (modification.id) {
             this.id = modification.id;
         }
@@ -2019,12 +2163,14 @@ export class Method {
 }
 
 export class Value {
-    constructor(name) {
+    constructor(name, oldValue) {
         this.name = name;
+        this.id = oldValue ? oldValue : name;
     }
 
     update(modification) {
         if (modification.name) {
+            this.id = this.name;
             this.name = modification.name;
         }
     }
@@ -2035,6 +2181,9 @@ export class Value {
 }
 
 export class Parameter {
+
+    REGEX = /(\w+)\s*:\s*(\w+)/;
+
     constructor(id, name, type) {
         this.id = id;
         this.name = name;

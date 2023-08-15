@@ -3,137 +3,30 @@
 @import java.net.InetAddress
 @(uuid: String, name: String)(implicit request: Request)
 
-    @main("Diagram") {
+@main("Diagram") {
 
-        @views.html.components.navbar("login-modal", "register-modal", "project-modal")
+    @views.html.components.navbar("login-modal", "register-modal", "project-modal")
 
-        @views.html.modals.chat("chat-modal", "list-message", "input-message", "button-send")
+    @views.html.modals.chat("chat-modal", "list-message", "input-message", "button-send")
 
-        @views.html.modals.project_list("project-modal")
+    @views.html.modals.project_list("project-modal")
 
-        @views.html.modals.project_creation("project-creation-modal")
+    @views.html.modals.project_creation("project-creation-modal")
 
 
-        <nav class="navbar noavbar-default">
-            <div class="card-header tab-card-header">
-                <ul class="nav nav-tabs card-header-tabs" role="tablist">
-                    <li class="nav-item">
-                        <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle nav-link" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa-solid fa-file-image"></i> Export
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="exportDropdown">
-                                <li><button class="dropdown-item" id="savesvg" type="button">Export as SVG</button></li>
-                                <li><button class="dropdown-item" id="savepng" type="button">Export as PNG</button></li>
-                            </ul>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-            <div class=" card-header tab-card-header">
-                <ul class="nav nav-tabs card-header-tabs" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link" id="selectClass" role="tab" aria-selected="false"
-                        data-toggle="tooltip" data-placement="top" title="Class"><i class="gryffinium-icon gryffinium-class"></i></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="selectEnum" role="tab" aria-selected="false"
-                        data-toggle="tooltip" data-placement="top" title="Enum"><i class="gryffinium-icon gryffinium-enum"></i></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="selectInterface" role="tab" aria-selected="false"
-                        data-toggle="tooltip" data-placement="top" title="Interface"><i class="gryffinium-icon gryffinium-interface"></i></a>
-                    </li>
-                </ul>
-            </div>
-            <div class=" card-header tab-card-header">
-                <ul class="nav nav-tabs card-header-tabs" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link" id="selectClass" role="tab" aria-selected="false"
-                        data-toggle="tooltip" data-placement="top" title="Class"><i class="gryffinium-icon gryffinium-class"></i></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="selectEnum" role="tab" aria-selected="false"
-                        data-toggle="tooltip" data-placement="top" title="Enum"><i class="gryffinium-icon gryffinium-enum"></i></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="selectInterface" role="tab" aria-selected="false"
-                        data-toggle="tooltip" data-placement="top" title="Interface"><i class="gryffinium-icon gryffinium-interface"></i></a>
-                    </li>
-                </ul>
-            </div>
-            <div class="card-header tab-card-header">
-                <ul class="nav nav-tabs card-header-tabs" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link" id="selectAssociationClass" role="tab" aria-selected="false"
-                        data-toggle="tooltip" data-placement="top" title="Association Class"><i class="gryffinium-icon gryffinium-association-class"></i></a>
-                    </li>
-                    <div class="vr"></div>
-                    <li class="nav-item">
-                        <a class="nav-link" id="selectGeneralization" role="tab" aria-selected="false"
-                        data-toggle="tooltip" data-placement="top" title="Generalization"><i class="gryffinium-icon gryffinium-generalization"></i></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="selectRealization" role="tab" aria-selected="false"
-                        data-toggle="tooltip" data-placement="top" title="Realization"><i class="gryffinium-icon gryffinium-realization"></i></a>
-                    </li>
-
-                    <div class="vr"></div>
-                    <li class="nav-item">
-                        <a class="nav-link active show" id="selectAssociation" role="tab" aria-selected="false"
-                        data-toggle="tooltip" data-placement="top" title="Association"><i class="gryffinium-icon gryffinium-icon-active gryffinium-association"></i></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="selectAggregation" role="tab" aria-selected="false"
-                        data-toggle="tooltip" data-placement="top" title="Aggregation"><i class="gryffinium-icon gryffinium-aggregation"></i></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="selectComposition" role="tab" aria-selected="false"
-                        data-toggle="tooltip" data-placement="top" title="Composition"><i class="gryffinium-icon gryffinium-composition"></i></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="selectMultiAssociation" role="tab" aria-selected="false"
-                        data-toggle="tooltip" data-placement="top" title="Multi association"><i class="gryffinium-icon gryffinium-multi-association"></i></a>
-                    </li>
-                    <div class="vr"></div>
-                    <div class="vr"></div>
-
-                    <li class="nav-item">
-                        <a class="nav-link" id="selectInnerClass" role="tab" aria-selected="false"
-                        data-toggle="tooltip" data-placement="top" title="Inner"><i class="gryffinium-icon gryffinium-inner"></i></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="selectDependency" role="tab" aria-selected="false"
-                        data-toggle="tooltip" data-placement="top" title="Dependency"><i class="gryffinium-icon gryffinium-dependency"></i></a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-        <datalist id="multiplicity-list">
-            <option >0</option>
-            <option >1</option>
-            <option >0..1</option>
-            <option >0..*</option>
-            <option >1..*</option>
-            <option >*</option>
-        </datalist>
-        <div id="diagram" draggable="false">
-            <div id="paper"></div>
-        </div>
-<<<<<<< HEAD
-        <div class=" card-header tab-card-header">
+    <nav class="navbar noavbar-default">
+        <div class="card-header tab-card-header">
             <ul class="nav nav-tabs card-header-tabs" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link" id="selectClass" role="tab" aria-selected="false"
-                    data-toggle="tooltip" data-placement="top" title="Class"><i class="gryffinium-icon gryffinium-class"></i></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="selectEnum" role="tab" aria-selected="false"
-                    data-toggle="tooltip" data-placement="top" title="Enum"><i class="gryffinium-icon gryffinium-enum"></i></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="selectInterface" role="tab" aria-selected="false"
-                    data-toggle="tooltip" data-placement="top" title="Interface"><i class="gryffinium-icon gryffinium-interface"></i></a>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle nav-link" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-file-image"></i> Export
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="exportDropdown">
+                            <li><button class="dropdown-item" id="savesvg" type="button">Export as SVG</button></li>
+                            <li><button class="dropdown-item" id="savepng" type="button">Export as PNG</button></li>
+                        </ul>
+                    </div>
                 </li>
             </ul>
         </div>
@@ -151,8 +44,26 @@
                     <a class="nav-link" id="selectInterface" role="tab" aria-selected="false"
                     data-toggle="tooltip" data-placement="top" title="Interface"><i class="gryffinium-icon gryffinium-interface"></i></a>
                 </li>
+                <div class="vr"></div>
+                <li class="nav-item">
+                    <a class="nav-link" id="addAttribute" role="tab" aria-selected="false"
+                    data-toggle="tooltip" data-placement="top" title="Add attribute"><i class="gryffinium-icon gryffinium-attribute"></i></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="addMethod" role="tab" aria-selected="false"
+                    data-toggle="tooltip" data-placement="top" title="Add method"><i class="gryffinium-icon gryffinium-method"></i></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="addConstructor" role="tab" aria-selected="false"
+                    data-toggle="tooltip" data-placement="top" title="Add constructor"><i class="gryffinium-icon gryffinium-constructor"></i></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="addValue" role="tab" aria-selected="false"
+                    data-toggle="tooltip" data-placement="top" title="Add value"><i class="gryffinium-icon gryffinium-value"></i></a>
+                </li>
             </ul>
         </div>
+
         <div class="card-header tab-card-header">
             <ul class="nav nav-tabs card-header-tabs" role="tablist">
                 <li class="nav-item">
@@ -170,6 +81,7 @@
                 </li>
 
                 <div class="vr"></div>
+
                 <li class="nav-item">
                     <a class="nav-link active show" id="selectAssociation" role="tab" aria-selected="false"
                     data-toggle="tooltip" data-placement="top" title="Association"><i class="gryffinium-icon gryffinium-icon-active gryffinium-association"></i></a>
@@ -187,7 +99,6 @@
                     data-toggle="tooltip" data-placement="top" title="Multi association"><i class="gryffinium-icon gryffinium-multi-association"></i></a>
                 </li>
                 <div class="vr"></div>
-                <div class="vr"></div>
 
                 <li class="nav-item">
                     <a class="nav-link" id="selectInnerClass" role="tab" aria-selected="false"
@@ -198,31 +109,53 @@
                     data-toggle="tooltip" data-placement="top" title="Dependency"><i class="gryffinium-icon gryffinium-dependency"></i></a>
                 </li>
             </ul>
-=======
+        </div>
         <div class="offcanvas offcanvas-bottom" tabindex="-1" id="modifier" aria-labelledby="modifier-title" data-bs-backdrop="false" style="background-color: #F2F2F2">
             <div class="offcanvas-header" id="modifier-header">
             </div>
             <div id="modifierBody" class="offcanvas-body small d-flex row justify-content-evenly row">
 
             </div>
->>>>>>> f595b1da8fba73ba3da1c455bf03ec57fd842e92
         </div>
         <span id="measure" style="display: none"></span>
-        </div>
-        <script type="module">
+    </nav>
+    <datalist id="multiplicity-list">
+        <option >0</option>
+        <option >1</option>
+        <option >0..1</option>
+        <option >0..*</option>
+        <option >1..*</option>
+        <option >*</option>
+    </datalist>
+    <div id="diagram" draggable="false">
+        <div id="paper"></div>
+    </div>
+    </div>
+    <script type="module">
 
             import {
                 ElementType,
                 BinaryAssociation,
-                GryffiniumManager
+                Aggregation,
+                Composition,
+                MultiAssociation,
+                Generalization,
+                Realization,
+                Dependency,
+                AssociationClass,
+                GryffiniumManager,
+                Attribute,
+                    Method,
+                    Constructor,
+                    Value,
                 //EntityView,
             } from "@routes.Assets.versioned("javascripts/gryffinium.uml.js")"
             import {
-            generateModifierInterface,
-            generateAttributesInterface,
-            generateMethodsInterface,
-            generateValuesInterface,
-            generateParametersInterface,
+                generateModifierInterface,
+                generateAttributesInterface,
+                generateMethodsInterface,
+                generateValuesInterface,
+                generateParametersInterface,
             } from "@routes.Assets.versioned("javascripts/interfaces.js")"
 
 
@@ -240,157 +173,124 @@
             //const elements = new Map();
 
             document.getElementById("savepng").addEventListener("click", function () {
-            exportToImage('png');
+                exportToImage('png');
             })
             document.getElementById("savesvg").addEventListener("click", function () {
-            exportToImage('svg');
+                exportToImage('svg');
             })
 
 
-            //region Tools
-            const resizeLGrip = new joint.elementTools.Button({
-                markup: [{
-                    tagName: 'rect',
-                    selector: 'button',
-                    attributes: {
-                        width: 10,
-                        height: 10,
-                        fill: '#777777',
-                        cursor: 'w-resize'
+            joint.elementTools.ResizeLGrip = joint.elementTools.Button.extend({
+                name: 'resizeLGrip',
+                options: {
+                    markup: [{
+                        tagName: 'rect',
+                        selector: 'button',
+                        attributes: {
+                            width: 10,
+                            height: 10,
+                            fill: '#777777',
+                            cursor: 'w-resize'
+                        }
+                    }],
+                    x: '0%',
+                    y: '50%',
+                    offset: {
+                        x: -5,
+                        y: -5
+                    },
+                    rotate: true,
+                    action: function (evt) {
+
+                        let elem = this.model;
+                        resizingStartPositions = (x, y) => {
+
+
+                            let coords = paper.snapToGrid(x, y);
+
+                            let deltaWidth = elem.getX() - coords.x;
+
+
+                            if (elem.getWidth() + deltaWidth <= 100)
+                                deltaWidth = 0;
+
+                            elem.setX(elem.getX() - deltaWidth);
+                            elem.setWidth(elem.getWidth() + deltaWidth);
+
+
+                            return {
+                                data: {
+                                    id: elem.getId(),
+                                    x: elem.getX(),
+                                    y: elem.getY(),
+                                    width: elem.getWidth(),
+                                    height: elem.getHeight(),
+                                },
+                                entity: elem,
+                            };
+                        }
                     }
-                }],
-                x: '0%',
-                y: '50%',
-                offset: {
-                    x: -5,
-                    y: -5
-                },
-                rotate: true,
-                action: function (evt) {
-
-                    let elem = this.model;
-                    resizingStartPositions = (x, y) => {
-
-
-                        let coords = paper.snapToGrid(x, y);
-
-                        let deltaWidth = elem.getX() - coords.x;
-
-
-                        if (elem.getWidth() + deltaWidth <= 100)
-                            deltaWidth = 0;
-
-                        elem.setX(elem.getX() - deltaWidth);
-                        elem.setWidth(elem.getWidth() + deltaWidth);
-
-
-                        return {
-                            data: {
-                                id: elem.getId(),
-                                x: elem.getX(),
-                                y: elem.getY(),
-                                width: elem.getWidth(),
-                                height: elem.getHeight(),
-                            },
-                            entity: elem,
-                        };
-                    }
-                }
-            });
-            const resizeRGrip = new joint.elementTools.Button({
-                markup: [{
-                    tagName: 'rect',
-                    selector: 'button',
-                    attributes: {
-                        width: 10,
-                        height: 10,
-                        fill: '#777777',
-                        cursor: 'e-resize'
-                    }
-                }],
-                x: '100%',
-                y: '50%',
-                offset: {
-                    x: -5,
-                    y: -5
-                },
-                rotate: true,
-                action: function (evt) {
-                    let elem = this.model;
-                    resizingStartPositions = (x, y) => {
-
-                        let coords = paper.snapToGrid(x, y);
-
-                        let deltaWidth = coords.x - (elem.getX() + elem.getWidth());
-
-
-                        elem.setWidth(elem.getWidth() + deltaWidth);
-
-                        return {
-                            data: {
-                                id: elem.getId(),
-                                x: elem.getX(),
-                                y: elem.getY(),
-                                width: elem.getWidth(),
-                                height: elem.getHeight(),
-                            },
-                            entity:elem,
-                        };
-
-
-                    }
-                }
-            });
-
-            const linkButton = new joint.elementTools.Connect({
-                x: '100%',
-                y: '0%',
-                offset: {x: -5, y: -5},
-                action: function (evt, _view, tool) {
-                    return tool.dragstart(evt);
                 }
             })
 
-            const multiAssociationToolsView = new joint.dia.ToolsView({
-                tools: [
-                    new joint.elementTools.Boundary(),
-                ]
+            joint.elementTools.ResizeRGrip = joint.elementTools.Button.extend({
+                name: 'resizeRGrip',
+                options: {
+                    markup: [{
+                        tagName: 'rect',
+                        selector: 'button',
+                        attributes: {
+                            width: 10,
+                            height: 10,
+                            fill: '#777777',
+                            cursor: 'e-resize'
+                        }
+                    }],
+                    x: '100%',
+                    y: '50%',
+                    offset: {
+                        x: -5,
+                        y: -5
+                    },
+                    rotate: true,
+                    action: function (evt) {
+                        let elem = this.model;
+                        resizingStartPositions = (x, y) => {
+
+                            let coords = paper.snapToGrid(x, y);
+
+                            let deltaWidth = coords.x - (elem.getX() + elem.getWidth());
+
+
+                            elem.setWidth(elem.getWidth() + deltaWidth);
+                            return {
+                                data: {
+                                    id: elem.getId(),
+                                    x: elem.getX(),
+                                    y: elem.getY(),
+                                    width: elem.getWidth(),
+                                    height: elem.getHeight(),
+                                },
+                                entity: elem,
+                            };
+
+
+                        }
+                    }
+                }
             })
 
-            const elementToolsView = new joint.dia.ToolsView({
-                tools: [
-                    new joint.elementTools.Boundary(),
-                    new joint.elementTools.Remove(),
-                    resizeLGrip,
-                    resizeRGrip,
-                    linkButton,
-                ]
-            });
-
-            const myTargetArrowhead = new joint.linkTools.TargetArrowhead();
-            const mySourceArrowhead = new joint.linkTools.SourceArrowhead();
-
-            myTargetArrowhead.el.setAttribute('d', 'M -20, 0 a 6,6 0 1,0 12, 0 a 6,6 0 1,0 -12,0')
-            myTargetArrowhead.el.setAttribute('stroke-width', '1')
-            mySourceArrowhead.el.setAttribute('d', 'M 0, 0 a 6,6 0 1,0 12, 0 a 6,6 0 1,0 -12,0')
-            mySourceArrowhead.el.setAttribute('stroke-width', '1')
-
-            const linkToolsView = new joint.dia.ToolsView({
-                tools: [
-                    new joint.linkTools.Vertices(),
-                    mySourceArrowhead, myTargetArrowhead,
-                    new joint.linkTools.Boundary(), new joint.linkTools.Remove(),
-                ]
-            });
-
-            const unaryToolsView = new joint.dia.ToolsView({
-                tools: [
-                    new joint.linkTools.Vertices(),
-                    new joint.linkTools.Boundary(), new joint.linkTools.Remove(),
-                ]
-            });
-
-            //endregion
+            joint.elementTools.LinkConnect = joint.elementTools.Connect.extend({
+                name: 'link-connect',
+                options: {
+                    x: '100%',
+                    y: '0%',
+                    offset: {x: -5, y: -5},
+                    action: function (evt, _view, tool) {
+                        return tool.dragstart(evt);
+                    }
+                }
+            })
 
             function setSelectedElement(sender, type) {
                 selectedEntityType = type;
@@ -404,19 +304,19 @@
                     activeElementType = sender;
 
 
-            activeElementType.classList.add("active");
-            activeElementType.classList.add("show");
-            activeElementType.children[0].classList.add("gryffinium-icon-active");
-            activeElementType.setAttribute("aria-selected", "true");
-            } else {
-            if (activeElementType !== undefined) {
-            activeElementType.classList.remove("active");
-            activeElementType.classList.remove("show");
-            activeElementType.children[0].classList.remove("gryffinium-icon-active");
-            activeElementType.setAttribute("aria-selected", "false");
-            }
-            activeElementType = undefined;
-            }
+                    activeElementType.classList.add("active");
+                    activeElementType.classList.add("show");
+                    activeElementType.children[0].classList.add("gryffinium-icon-active");
+                    activeElementType.setAttribute("aria-selected", "true");
+                } else {
+                    if (activeElementType !== undefined) {
+                        activeElementType.classList.remove("active");
+                        activeElementType.classList.remove("show");
+                        activeElementType.children[0].classList.remove("gryffinium-icon-active");
+                        activeElementType.setAttribute("aria-selected", "false");
+                    }
+                    activeElementType = undefined;
+                }
             }
 
             function setSelectedLink(sender, type) {
@@ -426,6 +326,7 @@
                     activeLinkType.classList.remove("show");
                     activeLinkType.setAttribute("aria-selected", "false");
                     activeLinkType.children[0].classList.remove("gryffinium-icon-active");
+                    paper.options.defaultLink = type;
                 }
                 activeLinkType = sender;
 
@@ -437,44 +338,46 @@
 
             }
 
+
             document.getElementById("selectClass").addEventListener("click", function () {
-            setSelectedElement(this, ElementType.Class);
+                setSelectedElement(this, ElementType.Class);
             });
             document.getElementById("selectEnum").addEventListener("click", function () {
-            setSelectedElement(this, ElementType.Enum);
+                setSelectedElement(this, ElementType.Enum);
             });
             document.getElementById("selectInterface").addEventListener("click", function () {
-            setSelectedElement(this, ElementType.Interface);
+                setSelectedElement(this, ElementType.Interface);
             });
 
             document.getElementById("selectAssociationClass").addEventListener("click", function () {
-                setSelectedLink(this, ElementType.AssociationClass);
+                setSelectedLink(this, new AssociationClass());
             });
 
 
             document.getElementById("selectAssociation").addEventListener("click", function () {
-                setSelectedLink(this, ElementType.BinaryAssociation);
+                setSelectedLink(this, new BinaryAssociation());
 
             });
 
             document.getElementById("selectAggregation").addEventListener("click", function () {
-                setSelectedLink(this, ElementType.Aggregation);
+                setSelectedLink(this, new Aggregation());
 
             });
 
             document.getElementById("selectComposition").addEventListener("click", function () {
-            setSelectedLink(this, ElementType.Composition);
+                setSelectedLink(this, new Composition());
             });
 
             document.getElementById("selectRealization").addEventListener("click", function () {
-            setSelectedLink(this, ElementType.Realization);
+                setSelectedLink(this, new Realization());
 
             });
 
             document.getElementById("selectGeneralization").addEventListener("click", function () {
-            setSelectedLink(this, ElementType.Generalization);
+                setSelectedLink(this, new Generalization());
 
             });
+
 
             /*document.getElementById("selectMultiAssociation").addEventListener("click", function () {
             // TODO : set selected type
@@ -508,11 +411,11 @@
             });*/
 
             document.getElementById("selectInnerClass").addEventListener("click", function () {
-            setSelectedLink(this, ElementType.Inner);
+                setSelectedLink(this, ElementType.Inner);
             });
 
             document.getElementById("selectDependency").addEventListener("click", function () {
-            setSelectedLink(this, ElementType.Dependency);
+                setSelectedLink(this, ElementType.Dependency);
             });
 
 
@@ -539,79 +442,130 @@
             existingTypes.appendChild(Boolean);
 
 
+            let btnAttribute = document.getElementById("addAttribute");
+            let btnMethod = document.getElementById("addMethod");
+            let btnConstructor = document.getElementById("addConstructor");
+            let btnValue = document.getElementById("addValue");
+
+            btnAttribute.addEventListener('click', function () {
+                if (selectedElements.length === 1)
+                    manager.addAttributeOnElement(selectedElements[0].model);
+            });
+
+            btnMethod.addEventListener('click', function () {
+                if (selectedElements.length === 1)
+                    manager.addMethodOnElement(selectedElements[0].model);
+            });
+
+            btnValue.addEventListener('click', function () {
+                if (selectedElements.length === 1)
+                    manager.addValueOnElement(selectedElements[0].model);
+            });
+
+            setInsideContentButtonsVisibility(false);
+
+            function setInsideContentButtonsVisibility(show, showValue, showConstructor) {
+                if (show) {
+                    btnAttribute.style.display = "block";
+                    btnMethod.style.display = "block";
+                    if(showConstructor)
+                        btnConstructor.style.display = "block";
+                    else
+                        btnConstructor.style.display = "none";
+
+                    if (showValue)
+                        btnValue.style.display = "block";
+                    else
+                        btnValue.style.display = "none";
+                } else {
+                    btnAttribute.style.display = "none";
+                    btnMethod.style.display = "none";
+                    btnConstructor.style.display = "none";
+                    btnValue.style.display = "none";
+                }
+            }
+
             let modifierOffCanvas = new bootstrap.Offcanvas(modifier);
 
 
-            let manager = new GryffiniumManager(document, receiveChatMessage, sendMessage);
+            let manager = new GryffiniumManager(onVerticesChange, receiveChatMessage, sendMessage);
 
             function sendMessage(data, entityType, type) {
-            socket.send(
-            JSON.stringify({
-            data: data,
-            type: type,
-            entityType: entityType
-            }));
+                socket.send(
+                        JSON.stringify({
+                            data: data,
+                            type: type,
+                            entityType: entityType
+                        }));
             }
 
             function receiveChatMessage(message) {
-            let row = document.createElement('div');
-            row.className = "row list-group-item bg-light";
-            row.className = "row list-group-item bg-light";
+                let row = document.createElement('div');
+                row.className = "row list-group-item bg-light";
+                row.className = "row list-group-item bg-light";
 
-            let div = document.createElement('div');
-            div.classList.add('col');
+                let div = document.createElement('div');
+                div.classList.add('col');
 
-            let sender = document.createElement('em');
-            sender.innerHTML = message.sender;
+                let sender = document.createElement('em');
+                sender.innerHTML = message.sender;
 
-            let content = document.createElement('div');
-            content.innerHTML = message.message;
+                let content = document.createElement('div');
+                content.innerHTML = message.message;
 
-            div.appendChild(sender);
-            div.appendChild(content);
-            row.appendChild(div);
+                div.appendChild(sender);
+                div.appendChild(content);
+                row.appendChild(div);
 
-            chat.appendChild(row);
+                chat.appendChild(row);
             }
 
             buttonSend.onclick = function () {
-            if (messageInput.value !== "") {
-            let command = {
-            'message': messageInput.value,
-            };
-            sendMessage(command, undefined, 'CHAT_MESSAGE_COMMAND');
-            messageInput.value = '';
-            }
+                if (messageInput.value !== "") {
+                    let command = {
+                        'message': messageInput.value,
+                    };
+                    sendMessage(command, undefined, 'CHAT_MESSAGE_COMMAND');
+                    messageInput.value = '';
+                }
             };
 
             socket.onopen = function () {
 
-            sendMessage({}, '', 'SELECT_COMMAND');
+                sendMessage({}, '', 'SELECT_COMMAND');
 
-            setInterval(function () {
-            sendMessage({}, '', 'PING_COMMAND');
-            }, 5000);
+                setInterval(function () {
+                    sendMessage({}, '', 'PING_COMMAND');
+                }, 5000);
 
                 socket.onmessage = function (event) {
                     let message = JSON.parse(event.data);
-                    for (let command of message.commands) {
-                        switch (command.commandType) {
-                            case 'CHAT_MESSAGE_COMMAND':
-                                receiveChatMessage(command);
-                                break;
-                            case 'SELECT_COMMAND':
-                            case 'CREATE_COMMAND':
-                                let elem = manager.create(command);
-                                if (elem) {
-                                    elem.addTo(graph);
-                                }
-                                break;
-                            case 'UPDATE_COMMAND':
-                                manager.update(command);
-                                break;
-                            case 'REMOVE_COMMAND':
-                                manager.delete(command);
-                                break;
+                    if (message.commandType === 'Error') {
+                        if (message.message !== null) {
+                            alert(message.message)
+                        }
+                    } else {
+                        for (let command of message.commands) {
+                            switch (command.commandType) {
+                                case 'CHAT_MESSAGE_COMMAND':
+                                    receiveChatMessage(command);
+                                    break;
+                                case 'SELECT_COMMAND':
+                                case 'CREATE_COMMAND':
+                                    let elem = manager.create(command);
+                                    if (elem) {
+                                        elem.addTo(graph);
+
+                                        addToolsBox(elem);
+                                    }
+                                    break;
+                                case 'UPDATE_COMMAND':
+                                    manager.update(command);
+                                    break;
+                                case 'REMOVE_COMMAND':
+                                    manager.delete(command);
+                                    break;
+                            }
                         }
                     }
                 };
@@ -666,28 +620,94 @@
                         joint.dia.ElementView.prototype.initialize.apply(this, arguments);
 
 
-            this.listenTo(this.model, 'uml-update', function () {
-            this.update();
-            this.resize();
-            });
+                        this.listenTo(this.model, 'uml-update', function () {
+                            this.update();
+                            this.resize();
+                        });
 
                     },
                     onChange: function (evt) {
                         let input = evt.target;
-                        if(input.attributes['joint-selector'].value === 'header'){
+                        if (input.attributes['joint-selector'].value === 'header') {
                             manager.updateEntity(this.model, {name: input.value});
+                        } else {
+                            let data = input.attributes['joint-selector'].value.split('_');
+                            let type = data[0];
+                            let id = data[1];
+                            switch (type) {
+                                case 'Attr':
+                                    if(input.value === "") {
+                                        manager.removeAttribute({id: id, parentId: this.model.getId()});
+                                        return;
+                                    }
+                                    let attribute = Attribute.fromString(input.value);
+                                    attribute.id = id;
+                                    manager.updateAttribute({
+                                        id: id,
+                                        parentId: this.model.getId(),
+                                        name: attribute.name,
+                                        type: attribute.type,
+                                        visibility: attribute.visibility.fullText(),
+                                    });
+                                    break;
+                                case 'Meth':
+                                    if(input.value === "") {
+                                        manager.removeMethod({id: id, parentId: this.model.getId()});
+                                        return;
+                                    }
+                                    let method = Method.fromString(input.value);
+                                    method.id = id;
+                                    manager.updateMethod({
+                                        id: id,
+                                        parentId: this.model.getId(),
+                                        name: method.name,
+                                        type: method.type,
+                                        visibility: method.visibility.fullText(),
+                                        parameters: method.parameters,
+                                    });
+                                    break;
+                                    case 'Cons':
+
+                                    if(input.value === "") {
+                                        manager.removeConstructor({id: id, parentId: this.model.getId()});
+                                        return;
+                                    }
+                                    let constructor = Constructor.fromString(input.value);
+                                    constructor.id = id;
+                                    manager.updateConstructor({
+                                        id: id,
+                                        parentId: this.model.getId(),
+                                        name: constructor.name,
+                                        visibility: constructor.visibility.fullText(),
+                                        parameters: constructor.parameters,
+                                    });
+
+                                        break;
+                                case 'Val':
+                                    if(input.value === "") {
+                                        manager.removeValue({id: id, parentId: this.model.getId()});
+                                        return;
+                                    }
+                                    manager.updateValue({
+                                        parentId: this.model.getId(),
+                                        value: input.value,
+                                        oldValue: id,
+                                    });
+                                    break;
+                            }
                         }
+
                     }
                 }),
                 linkView: joint.dia.LinkView.extend({
                     initialize: function () {
 
 
-            joint.dia.LinkView.prototype.initialize.apply(this, arguments);
+                        joint.dia.LinkView.prototype.initialize.apply(this, arguments);
 
-            this.listenTo(this.model, 'uml-update', function () {
-            this.update();
-            });
+                        this.listenTo(this.model, 'uml-update', function () {
+                            this.update();
+                        });
 
                     }
                 })
@@ -708,6 +728,58 @@
                 moving = cell;
             }
 
+            function addToolsBox(elem) {
+                let view = paper.findViewByModel(elem);
+
+                switch (elem.getType()) {
+                    case ElementType.Class.name:
+                    case ElementType.Interface.name:
+                    case ElementType.Enum.name:
+                        view.addTools(new joint.dia.ToolsView({
+                            tools: [
+                                new joint.elementTools.Boundary(),
+                                new joint.elementTools.Remove(),
+                                new joint.elementTools.ResizeLGrip(),
+                                new joint.elementTools.ResizeRGrip(),
+                                new joint.elementTools.LinkConnect(),
+                            ]
+                        }));
+                        break;
+                    case ElementType.Generalization.name:
+                    case ElementType.BinaryAssociation.name:
+                    case ElementType.Aggregation.name:
+                    case ElementType.Composition.name:
+                    case ElementType.Dependency.name:
+                    case ElementType.Inner.name:
+                        let sourceArrow = new joint.linkTools.SourceArrowhead();
+                        let targetArrow = new joint.linkTools.TargetArrowhead();
+                        targetArrow.el.setAttribute('stroke-width', '1')
+                        targetArrow.el.setAttribute('d', 'M -12, 0 a 6,6 0 1,0 12, 0 a 6,6 0 1,0 -12,0')
+                        sourceArrow.el.setAttribute('stroke-width', '1')
+                        sourceArrow.el.setAttribute('d', 'M 0, 0 a 6,6 0 1,0 12, 0 a 6,6 0 1,0 -12,0')
+                        view.addTools(new joint.dia.ToolsView({
+                            tools: [
+                                new joint.linkTools.Vertices(),
+                                sourceArrow,
+                                targetArrow,
+                                new joint.linkTools.Boundary(), new joint.linkTools.Remove(),
+                            ]
+                        }));
+                        break;
+                    case ElementType.UnaryAssociation.name:
+                        view.addTools(new joint.dia.ToolsView({
+                            tools: [
+                                new joint.linkTools.Vertices(),
+                                new joint.linkTools.Boundary(),
+                                new joint.linkTools.Remove(),
+                            ]
+                        }));
+                        break;
+
+                }
+
+                view.hideTools();
+            }
 
             function zoom(paper, evt, x, y, delta) {
                 evt.preventDefault();
@@ -757,11 +829,10 @@
             paper.on('blank:pointerdown', (event, x, y) => {
                 document.activeElement.blur();
                 if (event.button === 0 && selectedEntityType === undefined) {
-                    paper.removeTools();
-                    selectedElements.forEach((elementView) => {
-                        elementView.removeTools();
-                    });
+                    paper.hideTools();
+
                     selectedElements = [];
+                    setInsideContentButtonsVisibility(false);
                 } else if (event.button === 0 && !multiAssociationMode) {
                     manager.addEntity(selectedEntityType.name, x, y);
                     setSelectedElement(undefined);
@@ -781,19 +852,23 @@
                 autoWidth(elementView);
             });
             paper.on('element:mouseenter', (elementView) => {
-                elementView.addTools(elementToolsView);
+                elementView.showTools();
             });
             paper.on('element:mouseleave', (elementView) => {
                 if (!selectedElements.includes(elementView))
-                    elementView.removeTools();
+                    elementView.hideTools();
             });
 
             let selectedElements = [];
             paper.on('element:pointerdown', (elementView) => {
                 document.activeElement.blur();
                 // TODO Multi Association
-                elementView.addTools(elementToolsView);
+                elementView.showTools();
                 selectedElements.push(elementView);
+                if (selectedElements.length === 1) {
+                    setInsideContentButtonsVisibility(true, elementView.model.getType() === ElementType.Enum.name,
+                            elementView.model.getType() !== ElementType.Interface.name);
+                }
             });
 
             paper.on('link:connect', (linkView) => {
@@ -801,20 +876,24 @@
                 let targetId = linkView.model.get('target').id;
                 if (linkView.model.get('linkId') === undefined) {
                     manager.addLink(linkView.model.getType(), sourceId, targetId);
+                    linkView.model.remove();
                 } else {
                     manager.updateLink(linkView.model, {sourceId: sourceId, targetId: targetId});
                 }
             });
             paper.on('link:pointerup', (linkView) => {
-                if (linkView.model.getLabelsChanged() !== []) {
-                    manager.updateLinksLabels(linkView.model);
+                try {
+                    if (linkView.model.getLabelsChanged() !== []) {
+                        manager.updateLinksLabels(linkView.model);
+                    }
+                } catch (e) {
+                    //Ignore
                 }
             });
             paper.on('link:pointerdown', (linkView) => {
-                linkView.addTools(linkToolsView);
+                linkView.showTools();
                 selectedElements.push(linkView);
             });
-
 
 
             let resizingStartPositions = undefined;
@@ -870,7 +949,6 @@
                     movingVertices = null;
                 }
             });
-
 
 
             /*let resizeLGrip = new joint.elementTools.Button({
@@ -964,17 +1042,7 @@
             })
 
 
-            let elementToolsView = new joint.dia.ToolsView({
-            tools: [
-            new joint.elementTools.Boundary(),
-            new joint.elementTools.Remove(),
-            resizeLGrip,
-            resizeRGrip,
-            linkButton,
-
-
-            ]
-            });
+            let elementToolsView =
 
             let myTargetArrowhead = new joint.linkTools.TargetArrowhead();
             let mySourceArrowhead = new joint.linkTools.SourceArrowhead();
@@ -1000,55 +1068,54 @@
             });*/
 
 
-
             function download(href, name) {
-            let link = document.createElement('a');
-            link.download = name;
-            link.href = href;
-            link.click();
+                let link = document.createElement('a');
+                link.download = name;
+                link.href = href;
+                link.click();
             }
 
 
             function exportToImage(filetype) {
-            paper.removeTools();
-            let currentScale = paper.scale();
-            let currentTranslate = paper.translate();
-            paper.scale(1);
-            paper.translate(0, 0)
-            let {x, y, width, height} = paper.getContentArea();
-            let margin = 20;
-            let elem = document.getElementsByTagName('svg')[0];
-            elem.setAttribute('width', width + x + margin);
-            elem.setAttribute('height', height + y + margin);
-            let svgString = new XMLSerializer().serializeToString(elem);
-            let DOMURL = self.URL || self.webkitURL || self;
-            let svg = new Blob([svgString], {type: 'image/svg+xml;charset=utf-8'});
-            let url = DOMURL.createObjectURL(svg);
-            if (filetype === 'png') {
-            let canvas = document.createElement('canvas');
-            canvas.width = width + 2 * margin;
-            canvas.height = height + 2 * margin;
-            let ctx = canvas.getContext('2d');
-            let img = new Image();
-            img.onload = function () {
-            // draw it to the canvas
-            ctx.drawImage(this, -x + margin, -y + margin);
+                paper.hideTools();
+                let currentScale = paper.scale();
+                let currentTranslate = paper.translate();
+                paper.scale(1);
+                paper.translate(0, 0)
+                let {x, y, width, height} = paper.getContentArea();
+                let margin = 20;
+                let elem = document.getElementsByTagName('svg')[0];
+                elem.setAttribute('width', width + x + margin);
+                elem.setAttribute('height', height + y + margin);
+                let svgString = new XMLSerializer().serializeToString(elem);
+                let DOMURL = self.URL || self.webkitURL || self;
+                let svg = new Blob([svgString], {type: 'image/svg+xml;charset=utf-8'});
+                let url = DOMURL.createObjectURL(svg);
+                if (filetype === 'png') {
+                    let canvas = document.createElement('canvas');
+                    canvas.width = width + 2 * margin;
+                    canvas.height = height + 2 * margin;
+                    let ctx = canvas.getContext('2d');
+                    let img = new Image();
+                    img.onload = function () {
+                        // draw it to the canvas
+                        ctx.drawImage(this, -x + margin, -y + margin);
 
-            DOMURL.revokeObjectURL(url);
-            // now we can resolve the promise, passing the base64 url
-            download(canvas.toDataURL(), 'diagram.png');
-            };
+                        DOMURL.revokeObjectURL(url);
+                        // now we can resolve the promise, passing the base64 url
+                        download(canvas.toDataURL(), 'diagram.png');
+                    };
 
-            // load the image
-            img.src = url;
-            } else {
-            download(url, 'diagram.svg');
-            DOMURL.revokeObjectURL(url);
-            }
-            elem.setAttribute('height', '100%');
-            elem.setAttribute('width', '100%');
-            paper.translate(currentTranslate.tx, currentTranslate.ty);
-            paper.scale(currentScale.sx, currentScale.sy);
+                    // load the image
+                    img.src = url;
+                } else {
+                    download(url, 'diagram.svg');
+                    DOMURL.revokeObjectURL(url);
+                }
+                elem.setAttribute('height', '100%');
+                elem.setAttribute('width', '100%');
+                paper.translate(currentTranslate.tx, currentTranslate.ty);
+                paper.scale(currentScale.sx, currentScale.sy);
             }
 
             /*let tmp = new uml.MultiAssociation({
@@ -1065,5 +1132,5 @@
 
             tmp.addTo(graph);*/
 
-        </script>
-    }
+    </script>
+}

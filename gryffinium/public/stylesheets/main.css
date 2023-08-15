@@ -63,10 +63,27 @@
 
 .gryffinium-dependency {
     background-image: url("../images/dependency.svg");
+
 }
 
 .gryffinium-inner {
     background-image: url("../images/inner.svg");
+}
+
+.gryffinium-attribute{
+    background-image: url("../images/attribute.svg");
+}
+
+.gryffinium-method{
+    background-image: url("../images/function.svg");
+}
+
+.gryffinium-constructor{
+    background-image: url("../images/constructor.svg");
+}
+
+.gryffinium-value {
+    background-image: url("../images/value.svg");
 }
 
 .nav-link {
