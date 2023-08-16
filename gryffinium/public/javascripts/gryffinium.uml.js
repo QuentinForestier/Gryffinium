@@ -13,7 +13,7 @@ const standardInput = {
         overflow: 'hidden',
         whiteSpace: 'nowrap',
         textOverflow: 'ellipsis',
-        width: '95%',
+        width: '90%',
     },
     size: 8,
 }
@@ -141,7 +141,10 @@ const Entity = joint.dia.Element.define('Entity', {
             this.set('umlAttributes', new Map());
             this.set('methods', new Map());
 
+
             joint.dia.Element.prototype.initialize.apply(this, arguments);
+
+
             this.updateMarkup();
         },
         updateMarkup: function () {
@@ -264,10 +267,10 @@ const Entity = joint.dia.Element.define('Entity', {
             elements.push(this.getHeaderName());
 
             if (!this.get('hideAttrs'))
-                elements.concat(this.get('umlAttributes').values());
+                elements = elements.concat(Array.from(this.get('umlAttributes').values()));
 
             if (!this.get('hideMethods'))
-                elements.concat(this.get('methods').values());
+                elements = elements.concat(Array.from(this.get('methods').values()));
 
             return elements;
         },
@@ -282,17 +285,22 @@ const Entity = joint.dia.Element.define('Entity', {
         },
         autoWidth: function () {
             const span = document.getElementById('measure')
-            span.fontSize = fontSize
-            span.fontFamily = fontFamiliy
+            span.fontSize = fontSize;
+            span.fontFamily = fontFamiliy;
 
+            let count = 0;
             let maxLineLength = 0;
             this.getVisibleElements().forEach(function (elem) {
-
-                    span.innerText = elem;
-                    let lineSize = $(span).width() * 1.45;
-
+                    let lineSize = 0;
+                    span.innerText = elem.toString();
+                    if (count > 1) {
+                        lineSize = $(span).width() * 1.15;
+                    } else {
+                        lineSize = $(span).width() * 1.45;
+                    }
                     maxLineLength = Math.max(maxLineLength, lineSize)
                     maxLineLength = (Math.round(maxLineLength / 10) * 10)
+                    count++;
                 }
             );
 
@@ -478,7 +486,7 @@ let ConstructableEntity = Entity.define('ConstructableEntity',
         getVisibleElements: function () {
             let elements = Entity.prototype.getVisibleElements.apply(this, arguments);
             if (!this.get('hideMethods')) {
-                elements = elements.concat(this.get('constructors'));
+                elements = elements.concat(Array.from(this.get('constructors').values()));
             }
             return elements;
         },
@@ -704,7 +712,7 @@ let CustomLink = joint.dia.Link.define('CustomLink', {
         hasVerticesChanged: function () {
             return this.get('verticesChanged');
         },
-        updateFromMessage: function (message) {
+        update: function (message) {
 
             if (message.id) {
 
@@ -806,8 +814,8 @@ let LabeledLink = CustomLink.define('uml.LabeledLink', {
                 }
             })
         },
-        updateFromMessage: function (message) {
-            CustomLink.prototype.updateFromMessage.apply(this, arguments);
+        update: function (message) {
+            CustomLink.prototype.update.apply(this, arguments);
 
             if (message.distance) {
                 this.set('labelDistance', parseFloat(message.distance));
@@ -921,8 +929,8 @@ export let Association = LabeledLink.define('Association', {
                 });
             }
         },
-        updateFromMessage: function (message) {
-            LabeledLink.prototype.updateFromMessage.apply(this, arguments);
+        update: function (message) {
+            LabeledLink.prototype.update.apply(this, arguments);
 
             if (message.targetId) {
                 this.target({id: message.targetId});
@@ -1030,8 +1038,8 @@ export let BinaryAssociation = Association.define('BinaryAssociation', {
                 });
             }
         },
-        updateFromMessage: function (message) {
-            Association.prototype.updateFromMessage.call(this, message);
+        update: function (message) {
+            Association.prototype.update.call(this, message);
 
             if (message.isDirected !== null) {
                 this.set('isDirected', message.isDirected);
@@ -1190,7 +1198,7 @@ export let MultiAssociation = joint.shapes.standard.Rectangle.define('MultiAssoc
     getType: function () {
         return 'MULTI_ASSOCIATION';
     },
-    updateFromMessage: function (message) {
+    update: function (message) {
         if (message.x && message.y) {
             this.set('position', {x: message.x, y: message.y});
         }
@@ -1242,6 +1250,7 @@ export class GryffiniumManager {
                     height: command.height
                 });
                 elem.setEntityName(command.name);
+                elem.setWidth(command.width);
                 break
             case ElementType.Interface.name:
                 elem = new Interface({
@@ -1255,6 +1264,7 @@ export class GryffiniumManager {
                     height: command.height
                 });
                 elem.setEntityName(command.name);
+                elem.setWidth(command.width);
                 break
             case ElementType.Enum.name:
                 elem = new Enum({
@@ -1268,6 +1278,7 @@ export class GryffiniumManager {
                     height: command.height
                 });
                 elem.setEntityName(command.name);
+                elem.setWidth(command.width);
                 break
             case ElementType.AssociationClass.name:
                 elem = new SimpleLink({
@@ -1582,7 +1593,7 @@ export class GryffiniumManager {
                 this.entities.get(command.parentId).updateMethod(m);
                 break;
             case ElementType.Constructor.name:
-                let c = new Method(command.id, command.name,  command.visibility);
+                let c = new Method(command.id, command.name, command.visibility);
                 this.entities.get(command.parentId).updateConstructor(c);
                 break;
             case ElementType.Value.name:
@@ -1732,6 +1743,7 @@ export class GryffiniumManager {
 
 
     removeEntity(cell) {
+
         this.sendMessage({id: cell.getId()}, cell.getType(), 'REMOVE_COMMAND');
     }
 
@@ -1787,9 +1799,9 @@ export class GryffiniumManager {
 
     updateLink(link, update) {
         update.id = link.getId();
-        this.sendMessage({
+        this.sendMessage(
             update,
-        }, link.getType(), 'UPDATE_COMMAND');
+            link.getType(), 'UPDATE_COMMAND');
     }
 
 
@@ -1994,6 +2006,7 @@ export class Attribute {
 export class Constructor {
 
     static CONSTRUCTOR_REGEX = /\s*([-+#~])\s*(\w+)\s*\(([\S\s]*)\)\s*/;
+
     static fromString(text) {
 
         let match = text.match(Constructor.CONSTRUCTOR_REGEX);
@@ -2019,6 +2032,7 @@ export class Constructor {
         }
         return method;
     }
+
     constructor(id, name, visibility) {
         this.id = id;
         this.name = name;

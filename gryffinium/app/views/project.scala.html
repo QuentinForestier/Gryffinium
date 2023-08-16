@@ -141,13 +141,14 @@
                 MultiAssociation,
                 Generalization,
                 Realization,
+                    Inner,
                 Dependency,
                 AssociationClass,
                 GryffiniumManager,
                 Attribute,
-                    Method,
-                    Constructor,
-                    Value,
+                Method,
+                Constructor,
+                Value,
                 //EntityView,
             } from "@routes.Assets.versioned("javascripts/gryffinium.uml.js")"
             import {
@@ -217,6 +218,8 @@
                             elem.setX(elem.getX() - deltaWidth);
                             elem.setWidth(elem.getWidth() + deltaWidth);
 
+                            paper.findViewByModel(elem).hideTools();
+                            paper.findViewByModel(elem).showTools();
 
                             return {
                                 data: {
@@ -263,6 +266,9 @@
 
 
                             elem.setWidth(elem.getWidth() + deltaWidth);
+
+                            paper.findViewByModel(elem).hideTools();
+                            paper.findViewByModel(elem).showTools();
                             return {
                                 data: {
                                     id: elem.getId(),
@@ -411,12 +417,14 @@
             });*/
 
             document.getElementById("selectInnerClass").addEventListener("click", function () {
-                setSelectedLink(this, ElementType.Inner);
+                setSelectedLink(this, new Inner());
             });
 
             document.getElementById("selectDependency").addEventListener("click", function () {
-                setSelectedLink(this, ElementType.Dependency);
+                setSelectedLink(this, new Dependency());
             });
+
+
 
 
             let modifier = document.getElementById("modifier");
@@ -473,7 +481,7 @@
                 if (show) {
                     btnAttribute.style.display = "block";
                     btnMethod.style.display = "block";
-                    if(showConstructor)
+                    if (showConstructor)
                         btnConstructor.style.display = "block";
                     else
                         btnConstructor.style.display = "none";
@@ -617,7 +625,8 @@
                 linkPinning: false,
                 elementView: joint.dia.ElementView.extend({
                     events: {
-                        'change input': 'onChange'
+                        'change input': 'onChange',
+                        'focus input': 'onFocus'
                     },
                     initialize: function () {
 
@@ -641,7 +650,7 @@
                             let id = data[1];
                             switch (type) {
                                 case 'Attr':
-                                    if(input.value === "") {
+                                    if (input.value === "") {
                                         manager.removeAttribute({id: id, parentId: this.model.getId()});
                                         return;
                                     }
@@ -656,7 +665,7 @@
                                     });
                                     break;
                                 case 'Meth':
-                                    if(input.value === "") {
+                                    if (input.value === "") {
                                         manager.removeMethod({id: id, parentId: this.model.getId()});
                                         return;
                                     }
@@ -671,9 +680,9 @@
                                         parameters: method.parameters,
                                     });
                                     break;
-                                    case 'Const':
+                                case 'Const':
 
-                                    if(input.value === "") {
+                                    if (input.value === "") {
                                         manager.removeConstructor({id: id, parentId: this.model.getId()});
                                         return;
                                     }
@@ -683,14 +692,13 @@
                                     manager.updateConstructor({
                                         id: id,
                                         parentId: this.model.getId(),
-                                        name: constructor.name,
                                         visibility: constructor.visibility.fullText(),
                                         parameters: constructor.parameters,
                                     });
 
-                                        break;
+                                    break;
                                 case 'Val':
-                                    if(input.value === "") {
+                                    if (input.value === "") {
                                         manager.removeValue({id: id, parentId: this.model.getId()});
                                         return;
                                     }
@@ -703,6 +711,11 @@
                             }
                         }
 
+                    },
+                    onFocus: function (evt) {
+                        selectedElements = [];
+                        paper.hideTools();
+                        selectElement(this);
                     }
                 }),
                 linkView: joint.dia.LinkView.extend({
@@ -752,6 +765,7 @@
                         }));
                         break;
                     case ElementType.Generalization.name:
+                    case ElementType.Realization.name:
                     case ElementType.BinaryAssociation.name:
                     case ElementType.Aggregation.name:
                     case ElementType.Composition.name:
@@ -820,6 +834,22 @@
                         {
                             width: elementView.model.getWidth(),
                         });
+                elementView.hideTools();
+                elementView.showTools();
+            }
+
+            function selectElement(elementView) {
+                if(!multiSelectionsMode){
+                    selectedElements = [];
+                    paper.hideTools();
+                    setInsideContentButtonsVisibility(false);
+                }
+                elementView.showTools();
+                selectedElements.push(elementView);
+                if (selectedElements.length === 1) {
+                    setInsideContentButtonsVisibility(true, elementView.model.getType() === ElementType.Enum.name,
+                            elementView.model.getType() !== ElementType.Interface.name);
+                }
             }
 
             let movingVertices = undefined;
@@ -828,7 +858,16 @@
                 movingVertices = link;
             }
 
-            graph.on("remove", (cell) => manager.removeEntity(cell));
+            //graph.on("remove", (cell) => manager.removeEntity(cell));
+            graph.on('remove', (cell) => {
+                if (cell.isLink()) {
+                    if(cell.get('linkId'))
+                    manager.removeEntity(cell);
+                } else {
+                    manager.removeEntity(cell);
+                }
+            });
+
             graph.on('change:position', (cell) => move(cell));
 
             paper.on("blank:mousewheel", (evt, x, y, delta) => zoom(paper, evt, x, y, delta));
@@ -869,12 +908,7 @@
             paper.on('element:pointerdown', (elementView) => {
                 document.activeElement.blur();
                 // TODO Multi Association
-                elementView.showTools();
-                selectedElements.push(elementView);
-                if (selectedElements.length === 1) {
-                    setInsideContentButtonsVisibility(true, elementView.model.getType() === ElementType.Enum.name,
-                            elementView.model.getType() !== ElementType.Interface.name);
-                }
+                selectElement(elementView);
             });
 
             paper.on('link:connect', (linkView) => {
@@ -897,8 +931,7 @@
                 }
             });
             paper.on('link:pointerdown', (linkView) => {
-                linkView.showTools();
-                selectedElements.push(linkView);
+                selectElement(linkView);
             });
 
 
@@ -956,7 +989,41 @@
                 }
             });
 
+            document.addEventListener('keydown', (evt) => {
+                if (evt.key === 'Delete') {
+                    for (let i = 0; i < selectedElements.length; i++) {
+                        selectedElements[i].model.remove();
+                    }
+                    selectedElements = [];
+                    setInsideContentButtonsVisibility(false);
+                }
 
+                if (evt.key === 'Escape') {
+                    paper.hideTools();
+                    selectedElements = [];
+                    setInsideContentButtonsVisibility(false);
+                }
+
+                if (evt.key === 'a' && evt.ctrlKey) {
+                    let elements = graph.getElements();
+                    for (let i = 0; i < elements.length; i++) {
+                        selectElement(paper.findViewByModel(elements[i]));
+                    }
+                }
+
+               if(evt.ctrlKey){
+                   multiSelectionsMode = true;
+               }
+
+            });
+
+            document.addEventListener('keyup', (evt) => {
+                if(evt.ctrlKey){
+                    multiSelectionsMode = false;
+                }
+            });
+
+            let multiSelectionsMode = false;
             /*let resizeLGrip = new joint.elementTools.Button({
             markup: [{
             tagName: 'rect',
@@ -1124,19 +1191,7 @@
                 paper.scale(currentScale.sx, currentScale.sy);
             }
 
-            /*let tmp = new uml.MultiAssociation({
-            position: {
-            x: 100,
-            y: 100
-            },
-            size: {
-            width: 50,
-            height: 50
-            },
-            angle: 45
-            });
 
-            tmp.addTo(graph);*/
 
     </script>
 }
