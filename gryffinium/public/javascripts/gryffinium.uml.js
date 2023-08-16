@@ -175,15 +175,16 @@ const Entity = joint.dia.Element.define('Entity', {
             this.trigger('uml-update');
         },
 
-        generateSectionMarkup: function (name, type, list) {
+        generateSectionMarkup: function (name, generator, list) {
             let section = {
                 tagName: 'div',
                 selector: name,
                 children: [],
             }
+
             for (let val of list) {
 
-                let obj = this.generateInput(type, this.getId(), val);
+                let obj = generator(this, val);
 
                 section.children.push(obj.markup);
             }
@@ -194,24 +195,11 @@ const Entity = joint.dia.Element.define('Entity', {
 
 
             let sections = [
-                {
-                    tagName: 'div',
-                    selector: 'headerContainer',
-                    children: [
-                        {
-                            tagName: 'input',
-                            selector: 'header',
-                        },
-                        {
-                            tagName: 'div',
-                            selector: 'lock',
-                        }
-                    ]
-                }
+                this.entityMarkup(),
             ]
 
             let tmp = this.get('umlAttributes');
-            let a = this.generateSectionMarkup('attrsContainer', 'Attr', this.get('umlAttributes').values());
+            let a = this.generateSectionMarkup('attrsContainer', this.attributeMarkup, this.get('umlAttributes').values());
 
             if (a.children.length > 0 && !this.get('hideAttrs')) {
 
@@ -219,21 +207,13 @@ const Entity = joint.dia.Element.define('Entity', {
                 this.attr('attrsContainer').style.borderBottom = "solid 1px black";
             }
 
-            let m = this.generateSectionMarkup('methodsContainer', 'Meth', this.get('methods').values());
+            let m = this.generateSectionMarkup('methodsContainer', this.methodMarkup, this.get('methods').values());
 
             if (m.children.length > 0 && !this.get('hideMethods')) {
 
                 sections.push(m);
-                //this.attr()['methodsContainer'].style.borderBottom = "solid 1px black";
             }
 
-            // Add << >> title on entity if needed
-            if (this.getHeaderName() !== '')
-                sections[0].children.splice(0, 0, {
-                    tagName: 'p',
-                    selector: 'entityTag',
-                    textContent: this.getHeaderName(),
-                })
 
             return sections;
 
@@ -245,15 +225,203 @@ const Entity = joint.dia.Element.define('Entity', {
 
             return nb;
         },
-        generateInput: function (type, parent, data) {
+
+        entityMarkup: function () {
 
             let markup = {
-                tagName: 'input',
-                selector: type + "_" + data.id,
+                tagName: 'div',
+                selector: 'headerContainer',
+                children: [
+
+                    {
+                        tagName: 'input',
+                        selector: 'header',
+                    },
+
+                    {
+                        tagName: 'div',
+                        selector: 'lock',
+                    }
+                ]
+            };
+
+            if (this.getHeaderName() !== '') {
+                markup.children.splice(0, 0, {
+                    tagName: 'p',
+                    selector: 'entityTag',
+                    textContent: this.getHeaderName(),
+                })
+            }
+
+            return markup;
+
+        },
+        attributeMarkup: function (elem, attribute) {
+            let markup = {
+                tagName: 'div',
+
+                children: [{
+                    tagName: 'input',
+                    selector: "Attr_" + attribute.id,
+                    style: {
+                        textDecoration: attribute.isStatic ? 'underline' : 'none',
+                    },
+                    attributes: {
+                        value: attribute.toString(),
+                    }
+                },
+                    {
+                        tagName: 'div',
+                        selector: 'tooltip_Attr_' + attribute.id,
+                        style: {
+                            visibility: 'hidden',
+                            borderRadius: '6px',
+                            position: 'fixed',
+                            background: '#212529',
+                            color: '#fff',
+                            padding: '5px 5px',
+                            opacity: '0',
+                            transition: 'opacity 0.3s',
+                        },
+                        children: [
+                            {
+                                tagName: 'input',
+                                selector: 'Attr_' + attribute.id + '_isConstant',
+                                attributes: {
+                                    type: 'checkbox',
+                                    checked: attribute.isConstant,
+                                },
+
+                            },
+                            {
+                                tagName: 'label',
+                                style: {
+                                    marginLeft: '5px',
+                                },
+                                textContent: 'Constant',
+                            },
+                            {
+                                tagName: 'input',
+                                selector: 'Attr_' + attribute.id + '_isStatic',
+                                style: {
+                                    marginLeft: '10px',
+                                },
+                                attributes: {
+                                    type: 'checkbox',
+                                    checked: attribute.isStatic,
+                                },
+
+                            },
+                            {
+                                tagName: 'label',
+                                style: {
+                                    marginLeft: '5px',
+                                },
+                                textContent: 'Static',
+                            },
+                        ]
+                    }]
             };
 
             let attr = {...standardInput};
-            attr.value = data.toString();
+            // attr.value = data.toString();
+
+            elem.attr()["Attr_" + attribute.id] = attr;
+
+            return {attr, markup};
+        },
+        methodMarkup: function (elem, method) {
+            let markup = {
+                tagName: 'div',
+
+                children: [{
+                    tagName: 'input',
+                    style: {
+                        fontStyle: method.isAbstract ? 'italic' : 'normal',
+                        textDecoration: method.isStatic ? 'underline' : 'none',
+                    },
+                    selector: "Meth_" + method.id,
+                    attributes: {
+                        value: method.toString(),
+                    }
+                },
+                    {
+                        tagName: 'div',
+                        selector: 'tooltip_Meth_' + method.id,
+                        style: {
+                            visibility: 'hidden',
+                            borderRadius: '6px',
+                            position: 'fixed',
+                            background: '#212529',
+                            color: '#fff',
+                            padding: '5px 5px',
+                            opacity: '0',
+                            transition: 'opacity 0.3s',
+                        },
+                        children: [
+                            {
+                                tagName: 'input',
+                                selector: 'Meth_' + method.id + '_isAbstract',
+                                attributes: {
+                                    type: 'checkbox',
+                                    checked: method.isAbstract,
+                                },
+
+                            },
+                            {
+                                tagName: 'label',
+                                style: {
+                                    marginLeft: '5px',
+                                },
+                                textContent: 'Abstract',
+                            },
+                            {
+                                tagName: 'input',
+                                selector: 'Meth_' + method.id + '_isStatic',
+                                style: {
+                                    marginLeft: '10px',
+                                },
+                                attributes: {
+                                    type: 'checkbox',
+                                    checked: method.isStatic,
+                                },
+
+                            },
+                            {
+                                tagName: 'label',
+                                style: {
+                                    marginLeft: '5px',
+                                },
+                                textContent: 'Static',
+                            },
+                        ]
+                    }]
+            };
+
+            let attr = {...standardInput};
+
+            elem.attr()["Meth_" + method.id] = attr;
+
+            return {attr, markup};
+        },
+        generateInput: function (elem, parent, data) {
+
+
+            let markup = {
+                tagName: 'div',
+
+                children: [{
+                    tagName: 'input',
+                    selector: type + "_" + data.id,
+                    attributes: {
+                        value: data.toString(),
+                    }
+                },
+                ]
+            };
+
+            let attr = {...standardInput};
+            // attr.value = data.toString();
             attr.parent = parent;
 
             this.attr()[type + "_" + data.id] = attr;
@@ -274,8 +442,8 @@ const Entity = joint.dia.Element.define('Entity', {
 
             return elements;
         },
-        setWidth: function (width = 100, update = true) {
-            this.get('attrs').foreignObject.width = Math.max(width, 100);
+        setWidth: function (width = 160, update = true) {
+            this.get('attrs').foreignObject.width = Math.max(width, 160);
             this.get('attrs').header.style.width = '90%';
             if (update)
                 this.trigger('uml-update');
@@ -381,8 +549,13 @@ const Entity = joint.dia.Element.define('Entity', {
         updateAttribute: function (attribute) {
 
             if (this.get('umlAttributes').has(attribute.id)) {
-                this.get('umlAttributes').get(attribute.id).update(attribute);
-                this.setInputValue('Attr', attribute.id, attribute.toString());
+                let a = this.get('umlAttributes').get(attribute.id);
+                a.update(attribute);
+                this.setInputValue('Attr', a.id, a.toString());
+                this.attr('Attr_' + a.id + '_isStatic/checked', a.isStatic);
+                this.attr('Attr_' + a.id + '/style/textDecoration', a.isStatic ? 'underline' : 'none');
+
+                this.attr('Attr_' + a.id + '_isConstant/checked', a.isConstant);
             }
 
         },
@@ -402,8 +575,14 @@ const Entity = joint.dia.Element.define('Entity', {
         updateMethod: function (method) {
 
             if (this.get('methods').has(method.id)) {
-                this.get('methods').get(method.id).update(method);
-                this.setInputValue('Meth', method.id, this.get('methods').get(method.id).toString());
+
+                let m = this.get('methods').get(method.id)
+                m.update(method);
+                this.setInputValue('Meth', m.id, m.toString());
+                    this.attr('Meth_' + m.id + '_isStatic/checked', m.isStatic);
+                    this.attr('Meth_' + m.id + '/style/textDecoration', m.isStatic ? 'underline' : 'none');
+                    this.attr('Meth_' + m.id + '_isAbstract/checked', m.isAbstract);
+                    this.attr('Meth_' + m.id + '/style/fontStyle', m.isAbstract ? 'italic' : 'normal');
             }
 
         },
@@ -495,7 +674,7 @@ let ConstructableEntity = Entity.define('ConstructableEntity',
             let sections = Entity.prototype.sectionsMarkup.apply(this, arguments);
 
 
-            let c = Entity.prototype.generateSectionMarkup.call(this, 'methodsContainer', 'Const', this.get('constructors').values());
+            let c = Entity.prototype.generateSectionMarkup.call(this, 'methodsContainer', this.constructorMarkup, this.get('constructors').values());
             let methodEmpty = true;
             if (c.children.length > 0 && !this.get('hideMethods')) {
 
@@ -514,6 +693,26 @@ let ConstructableEntity = Entity.define('ConstructableEntity',
 
             return sections;
 
+        },
+        constructorMarkup: function (elem, constructor) {
+            let markup = {
+                tagName: 'div',
+
+                children: [{
+                    tagName: 'input',
+                    selector: "Const_" + constructor.id,
+                    attributes: {
+                        value: constructor.toString(),
+                    }
+                },
+                ]
+            };
+
+            let attr = {...standardInput};
+
+            elem.attr()["Const_" + constructor.id] = attr;
+
+            return {attr, markup};
         },
         addConstructor: function (constructor) {
             this.get('constructors').set(constructor.id, constructor);
@@ -576,7 +775,7 @@ export let Enum = ConstructableEntity.define('Enum', {
 
             let sections = ConstructableEntity.prototype.sectionsMarkup.apply(this, arguments);
 
-            let v = ConstructableEntity.prototype.generateSectionMarkup.call(this, 'valuesContainer', 'Val', this.get('values').values());
+            let v = ConstructableEntity.prototype.generateSectionMarkup.call(this, 'valuesContainer', this.valueMarkup, this.get('values').values());
 
             if (v.children.length > 0 && !this.get('hideVal')) {
                 sections.splice(1, 0, v);
@@ -597,7 +796,27 @@ export let Enum = ConstructableEntity.define('Enum', {
         getHeaderName: function () {
             return '<<Enum>>';
         },
+        valueMarkup: function (elem, value) {
+            let markup = {
+                tagName: 'div',
 
+                children: [{
+                    tagName: 'input',
+                    selector: "Val_" + value.id,
+                    attributes: {
+                        value: value.toString(),
+                    }
+                },
+                ]
+            };
+
+            let attr = {...standardInput};
+
+            elem.attr()["Val_" + value.id] = attr;
+
+            return {attr, markup};
+
+        },
         addValue: function (value) {
             if (value.id && this.get('values').has(value.id))
                 this.get('values').remove(value.id)
@@ -636,6 +855,47 @@ export let Class = ConstructableEntity.define('Class', {
             if (modification.isAbstract) {
                 //this.setIsAbstract(modification.isAbstract);
             }
+        },
+        entityMarkup: function () {
+
+            let markup = ConstructableEntity.prototype.entityMarkup.apply(this, arguments);
+            markup.children.push({
+                tagName: 'div',
+                selector: 'tooltip_header_' + this.getId(),
+                style: {
+                    visibility: 'hidden',
+                    borderRadius: '6px',
+                    position: 'fixed',
+                    background: '#212529',
+                    marginLeft: '20%',
+                    marginTop: '24px',
+                    color: '#fff',
+                    padding: '5px 5px',
+                    opacity: '0',
+                    transition: 'opacity 0.3s',
+                },
+                children: [
+                    {
+                        tagName: 'input',
+                        selector: 'header_' + this.getId() + '_isAbstract',
+                        attributes: {
+                            type: 'checkbox',
+                            checked: false,
+                        },
+
+                    },
+                    {
+                        tagName: 'label',
+                        textContent: 'Abstract',
+                        style: {
+                            marginLeft: '5px',
+                        }
+                    }]
+            });
+
+
+            return markup;
+
         },
     }
 );
@@ -1983,10 +2243,10 @@ export class Attribute {
         if (modification.visibility) {
             this.visibility = Visibility.getVisibility(modification.visibility);
         }
-        if (modification.isConstant) {
+        if (modification.isConstant !== undefined && modification.isConstant !== null) {
             this.isConstant = modification.isConstant;
         }
-        if (modification.isStatic) {
+        if (modification.isStatic !== undefined && modification.isStatic !== null) {
             this.isStatic = modification.isStatic;
         }
 
@@ -1995,11 +2255,7 @@ export class Attribute {
 
     toString() {
 
-        let result = this.visibility + " " + this.name + " : " + this.type;
-        if (this.isConstant || this.isStatic) {
-            result += `{${this.isConstant ? "const" : ''}${this.isConstant && this.isStatic ? ', ' : ''}${this.isStatic ? "static" : ""}}`;
-        }
-        return result;
+        return this.visibility + " " + this.name + " : " + this.type;
     }
 }
 
@@ -2135,11 +2391,7 @@ export class Method {
     }
 
     toString() {
-        let result = this.visibility + " " + this.name + this.paramsToString() + " : " + this.type;
-        if (this.isAbstract || this.isStatic) {
-            result += `{${this.isAbstract ? "abstract" : ''}${this.isConstant && this.isStatic ? ', ' : ''}${this.isStatic ? "static" : ""}}`;
-        }
-        return result;
+        return this.visibility + " " + this.name + this.paramsToString() + " : " + this.type;
     }
 
     paramsToString() {
@@ -2164,10 +2416,10 @@ export class Method {
         if (modification.visibility) {
             this.visibility = Visibility.getVisibility(modification.visibility);
         }
-        if (modification.isAbstract) {
+        if (modification.isAbstract !== undefined && modification.isAbstract !== null) {
             this.isAbstract = modification.isAbstract;
         }
-        if (modification.isStatic) {
+        if (modification.isStatic !== undefined && modification.isStatic !== null) {
             this.isStatic = modification.isStatic;
         }
     }

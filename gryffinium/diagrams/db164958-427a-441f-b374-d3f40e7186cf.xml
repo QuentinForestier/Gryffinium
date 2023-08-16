@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <classDiagram>
-    <entity xsi:type="Enum" height="100" id="0491d880-f13e-1004-8368-5d0c611f9a7a" visibility="PUBLIC" width="200" x="400" y="150" name="Enum1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    <entity xsi:type="Enum" height="100" id="0491d880-f13e-1004-8368-5d0c611f9a7a" visibility="PUBLIC" width="200" x="240" y="150" name="Enum1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <attribute static="false" visibility="PRIVATE" constant="false" id="66257df4-f13e-1004-8d26-1879fbe5ef0d" name="attribute" type="string"/>
+    </entity>
     <entity xsi:type="Interface" height="100" id="04962b88-f13e-1004-8368-5d0c611f9a7a" visibility="PUBLIC" width="200" x="1380" y="150" name="Interface1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
 </classDiagram>
