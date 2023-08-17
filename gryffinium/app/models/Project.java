@@ -169,6 +169,7 @@ public class Project extends Model
 
     public void close()
     {
+        autoSaveTimer.cancel();
         for (ProjectUser user : projectUsers)
         {
             user.disconnect();

@@ -168,6 +168,7 @@ public class ProjectUser extends Model
         if (actor != null)
         {
             actor.disconnect();
+            actor = null;
         }
     }
 

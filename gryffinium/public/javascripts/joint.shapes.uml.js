@@ -12,11 +12,23 @@ const fontSize = 15
 const umlColor = '#FFF7E1';
 const selectedUmlColor = '#bfb9a8';
 
+const standardInput = {
+    style: {
+        display: 'flex',
+        height: '100%',
+        border: 'none',
+        padding: 'none',
+        backgroundColor: umlColor,
+    },
+    size: 8,
+}
+
 
 this.joint = this.joint || {};
 this.joint.shapes = this.joint.shapes || {};
 (function (exports, ElementView_mjs, LinkView_mjs, Link_mjs, basic_mjs) {
         'use strict';
+
 
 
         let Class = basic_mjs.Generic.define('uml.Class', {
@@ -941,7 +953,7 @@ this.joint.shapes = this.joint.shapes || {};
 
         let AssociationClass = Association.define('uml.AssociationClass', {
             associatedClass: undefined,
-        },{
+        }, {
             getType: function () {
                 return 'ASSOCIATION_CLASS';
             }
@@ -950,7 +962,8 @@ this.joint.shapes = this.joint.shapes || {};
 
         let UnaryAssociation = Association.define('uml.UnaryAssociation', {
             parent: undefined,
-        }, {
+        },
+            {
             initialize: function () {
                 Association.prototype.initialize.apply(this, arguments);
 
@@ -1096,7 +1109,7 @@ this.joint.shapes = this.joint.shapes || {};
                 return 'MULTI_ASSOCIATION';
             },
             updateFromMessage: function (message) {
-                if(message.x && message.y) {
+                if (message.x && message.y) {
                     this.set('position', {x: message.x, y: message.y});
                 }
             }
@@ -1108,7 +1121,7 @@ this.joint.shapes = this.joint.shapes || {};
                     strokeDasharray: '5,5',
                 }
             }
-        },{});
+        }, {});
 
         exports.Abstract = Abstract;
         exports.AbstractView = AbstractView;

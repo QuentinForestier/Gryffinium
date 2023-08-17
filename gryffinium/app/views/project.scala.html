@@ -44,8 +44,26 @@
                     <a class="nav-link" id="selectInterface" role="tab" aria-selected="false"
                     data-toggle="tooltip" data-placement="top" title="Interface"><i class="gryffinium-icon gryffinium-interface"></i></a>
                 </li>
+                <div class="vr"></div>
+                <li class="nav-item">
+                    <a class="nav-link" id="addAttribute" role="tab" aria-selected="false"
+                    data-toggle="tooltip" data-placement="top" title="Add attribute"><i class="gryffinium-icon gryffinium-attribute"></i></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="addMethod" role="tab" aria-selected="false"
+                    data-toggle="tooltip" data-placement="top" title="Add method"><i class="gryffinium-icon gryffinium-method"></i></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="addConstructor" role="tab" aria-selected="false"
+                    data-toggle="tooltip" data-placement="top" title="Add constructor"><i class="gryffinium-icon gryffinium-constructor"></i></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="addValue" role="tab" aria-selected="false"
+                    data-toggle="tooltip" data-placement="top" title="Add value"><i class="gryffinium-icon gryffinium-value"></i></a>
+                </li>
             </ul>
         </div>
+
         <div class="card-header tab-card-header">
             <ul class="nav nav-tabs card-header-tabs" role="tablist">
                 <li class="nav-item">
@@ -63,6 +81,7 @@
                 </li>
 
                 <div class="vr"></div>
+
                 <li class="nav-item">
                     <a class="nav-link active show" id="selectAssociation" role="tab" aria-selected="false"
                     data-toggle="tooltip" data-placement="top" title="Association"><i class="gryffinium-icon gryffinium-icon-active gryffinium-association"></i></a>
@@ -79,8 +98,6 @@
                     <a class="nav-link" id="selectMultiAssociation" role="tab" aria-selected="false"
                     data-toggle="tooltip" data-placement="top" title="Multi association"><i class="gryffinium-icon gryffinium-multi-association"></i></a>
                 </li>
-
-                <div class="vr"></div>
                 <div class="vr"></div>
 
                 <li class="nav-item">
@@ -93,6 +110,14 @@
                 </li>
             </ul>
         </div>
+        <div class="offcanvas offcanvas-bottom" tabindex="-1" id="modifier" aria-labelledby="modifier-title" data-bs-backdrop="false" style="background-color: #F2F2F2">
+            <div class="offcanvas-header" id="modifier-header">
+            </div>
+            <div id="modifierBody" class="offcanvas-body small d-flex row justify-content-evenly row">
+
+            </div>
+        </div>
+        <span id="measure" style="display: none"></span>
     </nav>
     <datalist id="multiplicity-list">
         <option >0</option>
@@ -105,26 +130,26 @@
     <div id="diagram" draggable="false">
         <div id="paper"></div>
     </div>
-    <div class="offcanvas offcanvas-bottom" tabindex="-1" id="modifier" aria-labelledby="modifier-title" data-bs-backdrop="false" style="background-color: #F2F2F2">
-        <div class="offcanvas-header" id="modifier-header">
-        </div>
-        <div id="modifierBody" class="offcanvas-body small d-flex row justify-content-evenly row">
-
-        </div>
-    </div>
-    <span id="measure" style="display: none"></span>
     </div>
     <script type="module">
 
             import {
                 ElementType,
+                BinaryAssociation,
+                Aggregation,
+                Composition,
+                MultiAssociation,
+                Generalization,
+                Realization,
+                Inner,
+                Dependency,
+                AssociationClass,
+                GryffiniumManager,
                 Attribute,
                 Method,
-                Value,
                 Constructor,
-                Parameter,
-                Visibility,
-                Role
+                Value,
+                //EntityView,
             } from "@routes.Assets.versioned("javascripts/gryffinium.uml.js")"
             import {
                 generateModifierInterface,
@@ -144,10 +169,9 @@
 
             let activeElementType = undefined;
             let activeLinkType = document.getElementById("selectAssociation");
-            let selectMultiAssociationMode = false;
-            let selectedForMulti = [];
 
-            const elements = new Map();
+
+            //const elements = new Map();
 
             document.getElementById("savepng").addEventListener("click", function () {
                 exportToImage('png');
@@ -156,9 +180,127 @@
                 exportToImage('svg');
             })
 
+
+            joint.elementTools.ResizeLGrip = joint.elementTools.Button.extend({
+                name: 'resizeLGrip',
+                options: {
+                    markup: [{
+                        tagName: 'rect',
+                        selector: 'button',
+                        attributes: {
+                            width: 10,
+                            height: 10,
+                            fill: '#777777',
+                            cursor: 'w-resize'
+                        }
+                    }],
+                    x: '0%',
+                    y: '50%',
+                    offset: {
+                        x: -5,
+                        y: -5
+                    },
+                    rotate: true,
+                    action: function (evt) {
+
+                        let elem = this.model;
+                        resizingStartPositions = (x, y) => {
+
+
+                            let coords = paper.snapToGrid(x, y);
+
+                            let deltaWidth = elem.getX() - coords.x;
+
+
+                            if (elem.getWidth() + deltaWidth <= 100)
+                                deltaWidth = 0;
+
+                            elem.setX(elem.getX() - deltaWidth);
+                            elem.setWidth(elem.getWidth() + deltaWidth);
+
+                            paper.findViewByModel(elem).hideTools();
+                            paper.findViewByModel(elem).showTools();
+
+                            return {
+                                data: {
+                                    id: elem.getId(),
+                                    x: elem.getX(),
+                                    y: elem.getY(),
+                                    width: elem.getWidth(),
+                                    height: elem.getHeight(),
+                                },
+                                entity: elem,
+                            };
+                        }
+                    }
+                }
+            })
+
+            joint.elementTools.ResizeRGrip = joint.elementTools.Button.extend({
+                name: 'resizeRGrip',
+                options: {
+                    markup: [{
+                        tagName: 'rect',
+                        selector: 'button',
+                        attributes: {
+                            width: 10,
+                            height: 10,
+                            fill: '#777777',
+                            cursor: 'e-resize'
+                        }
+                    }],
+                    x: '100%',
+                    y: '50%',
+                    offset: {
+                        x: -5,
+                        y: -5
+                    },
+                    rotate: true,
+                    action: function (evt) {
+                        let elem = this.model;
+                        resizingStartPositions = (x, y) => {
+
+                            let coords = paper.snapToGrid(x, y);
+
+                            let deltaWidth = coords.x - (elem.getX() + elem.getWidth());
+
+
+                            elem.setWidth(elem.getWidth() + deltaWidth);
+
+                            paper.findViewByModel(elem).hideTools();
+                            paper.findViewByModel(elem).showTools();
+                            return {
+                                data: {
+                                    id: elem.getId(),
+                                    x: elem.getX(),
+                                    y: elem.getY(),
+                                    width: elem.getWidth(),
+                                    height: elem.getHeight(),
+                                },
+                                entity: elem,
+                            };
+
+
+                        }
+                    }
+                }
+            })
+
+            joint.elementTools.LinkConnect = joint.elementTools.Connect.extend({
+                name: 'link-connect',
+                options: {
+                    x: '100%',
+                    y: '0%',
+                    offset: {x: -5, y: -5},
+                    action: function (evt, _view, tool) {
+                        return tool.dragstart(evt);
+                    }
+                }
+            })
+
             function setSelectedElement(sender, type) {
+                selectedEntityType = type;
                 if (type !== undefined) {
-                    selectedType = type;
                     if (activeElementType !== undefined) {
                         activeElementType.classList.remove("active");
                         activeElementType.classList.remove("show");
@@ -166,6 +308,7 @@
                         activeElementType.children[0].classList.remove("gryffinium-icon-active");
                     }
                     activeElementType = sender;
+
 
                     activeElementType.classList.add("active");
                     activeElementType.classList.add("show");
@@ -179,112 +322,108 @@
                         activeElementType.setAttribute("aria-selected", "false");
                     }
                     activeElementType = undefined;
-                    selectedType = undefined;
                 }
             }
 
             function setSelectedLink(sender, type) {
-                if (type !== undefined) {
+                selectedAssociationType = type;
+                if (activeLinkType !== undefined) {
+                    activeLinkType.classList.remove("active");
+                    activeLinkType.classList.remove("show");
+                    activeLinkType.setAttribute("aria-selected", "false");
+                    activeLinkType.children[0].classList.remove("gryffinium-icon-active");
                     paper.options.defaultLink = type;
-                    if (activeLinkType !== undefined) {
-                        activeLinkType.classList.remove("active");
-                        activeLinkType.classList.remove("show");
-                        activeLinkType.setAttribute("aria-selected", "false");
-                        activeLinkType.children[0].classList.remove("gryffinium-icon-active");
-                    }
-                    activeLinkType = sender;
-
-                    activeLinkType.classList.add("active");
-                    activeLinkType.classList.add("show");
-                    activeLinkType.setAttribute("aria-selected", "true");
-                    activeLinkType.children[0].classList.add("gryffinium-icon-active");
-                } else {
-                    if (activeLinkType !== undefined) {
-                        activeLinkType.classList.remove("active");
-                        activeLinkType.classList.remove("show");
-                        activeLinkType.children[0].classList.remove("gryffinium-icon-active");
-                        activeLinkType.setAttribute("aria-selected", "false");
-                    }
-                    activeLinkType = undefined;
                 }
+                activeLinkType = sender;
+
+                activeLinkType.classList.add("active");
+                activeLinkType.classList.add("show");
+                activeLinkType.setAttribute("aria-selected", "true");
+                activeLinkType.children[0].classList.add("gryffinium-icon-active");
+
+
             }
 
+
             document.getElementById("selectClass").addEventListener("click", function () {
-                setSelectedElement(this, 'CLASS');
+                setSelectedElement(this, ElementType.Class);
             });
             document.getElementById("selectEnum").addEventListener("click", function () {
-                setSelectedElement(this, 'ENUM');
+                setSelectedElement(this, ElementType.Enum);
             });
             document.getElementById("selectInterface").addEventListener("click", function () {
-                setSelectedElement(this, 'INTERFACE');
+                setSelectedElement(this, ElementType.Interface);
             });
 
             document.getElementById("selectAssociationClass").addEventListener("click", function () {
-                setSelectedLink(this, new uml.AssociationClass());
+                setSelectedLink(this, new AssociationClass());
             });
 
 
             document.getElementById("selectAssociation").addEventListener("click", function () {
-                setSelectedLink(this, new uml.BinaryAssociation());
+                setSelectedLink(this, new BinaryAssociation());
+
             });
 
             document.getElementById("selectAggregation").addEventListener("click", function () {
-                setSelectedLink(this, new uml.Aggregation());
+                setSelectedLink(this, new Aggregation());
+
             });
 
             document.getElementById("selectComposition").addEventListener("click", function () {
-                setSelectedLink(this, new uml.Composition());
+                setSelectedLink(this, new Composition());
             });
 
             document.getElementById("selectRealization").addEventListener("click", function () {
-                setSelectedLink(this, new uml.Realization());
+                setSelectedLink(this, new Realization());
+
             });
 
             document.getElementById("selectGeneralization").addEventListener("click", function () {
-                setSelectedLink(this, new uml.Generalization());
+                setSelectedLink(this, new Generalization());
+
             });
 
-            document.getElementById("selectMultiAssociation").addEventListener("click", function () {
-                // TODO : set selected type
 
-                if (selectMultiAssociationMode) {
-                    let targets = [];
-                    let meanX = 0;
-                    let meanY = 0;
-                    for (let i = 0; i < selectedForMulti.length; i++) {
-                        targets.push(selectedForMulti[i].getId());
-                        meanX += selectedForMulti[i].get('position').x;
-                        meanY += selectedForMulti[i].get('position').y;
-                        selectedForMulti[i].selected(false);
-                    }
+            /*document.getElementById("selectMultiAssociation").addEventListener("click", function () {
+            // TODO : set selected type
 
-                    meanX /= selectedForMulti.length;
-                    meanY /= selectedForMulti.length;
+            if (selectMultiAssociationMode) {
+            let targets = [];
+            let meanX = 0;
+            let meanY = 0;
+            for (let i = 0; i < selectedForMulti.length; i++) {
+            targets.push(selectedForMulti[i].getId());
+            meanX += selectedForMulti[i].get('position').x;
+            meanY += selectedForMulti[i].get('position').y;
+            selectedForMulti[i].selected(false);
+            }
 
-                    sendMessage({
-                        targets,
-                        x: meanX,
-                        y: meanY,
-                    }, 'MULTI_ASSOCIATION', 'CREATE_COMMAND');
-                    this.innerHTML = '<i class="gryffinium-icon gryffinium-multi-association"></i>';
-                    selectMultiAssociationMode = false;
-                    selectedForMulti = [];
-                } else {
-                    this.innerHTML = '<i class="fa fa-check"></i>';
-                    selectMultiAssociationMode = true;
-                }
-            });
+            meanX /= selectedForMulti.length;
+            meanY /= selectedForMulti.length;
+
+            sendMessage({
+            targets,
+            x: meanX,
+            y: meanY,
+            }, 'MULTI_ASSOCIATION', 'CREATE_COMMAND');
+            this.innerHTML = '<i class="gryffinium-icon gryffinium-multi-association"></i>';
+            selectMultiAssociationMode = false;
+            selectedForMulti = [];
+            } else {
+            this.innerHTML = '<i class="fa fa-check"></i>';
+            selectMultiAssociationMode = true;
+            }
+            });*/
 
             document.getElementById("selectInnerClass").addEventListener("click", function () {
-                setSelectedLink(this, new uml.Inner());
+                setSelectedLink(this, new Inner());
             });
 
             document.getElementById("selectDependency").addEventListener("click", function () {
-                setSelectedLink(this, new uml.Dependency());
+                setSelectedLink(this, new Dependency());
             });
 
-
-            let selectedType = undefined;
 
             let modifier = document.getElementById("modifier");
             let modifierBody = document.getElementById("modifierBody");
@@ -308,16 +447,59 @@
             existingTypes.appendChild(Double);
             existingTypes.appendChild(Boolean);
 
-            let measureText = document.getElementById("measure");
 
-            let counter = 1;
+            let btnAttribute = document.getElementById("addAttribute");
+            let btnMethod = document.getElementById("addMethod");
+            let btnConstructor = document.getElementById("addConstructor");
+            let btnValue = document.getElementById("addValue");
 
-            let selectedElement = undefined;
+            btnAttribute.addEventListener('click', function () {
+                if (selectedElements.length === 1)
+                    manager.addAttributeOnElement(selectedElements[0].model);
+            });
 
-            let movingVertices = undefined;
+            btnMethod.addEventListener('click', function () {
+                if (selectedElements.length === 1)
+                    manager.addMethodOnElement(selectedElements[0].model);
+            });
+
+            btnValue.addEventListener('click', function () {
+                if (selectedElements.length === 1)
+                    manager.addValueOnElement(selectedElements[0].model);
+            });
+
+            btnConstructor.addEventListener('click', function () {
+                if (selectedElements.length === 1)
+                    manager.addConstructorOnElement(selectedElements[0].model);
+            });
+
+            setInsideContentButtonsVisibility(false);
+
+            function setInsideContentButtonsVisibility(show, showValue, showConstructor) {
+                if (show) {
+                    btnAttribute.style.display = "block";
+                    btnMethod.style.display = "block";
+                    if (showConstructor)
+                        btnConstructor.style.display = "block";
+                    else
+                        btnConstructor.style.display = "none";
+
+                    if (showValue)
+                        btnValue.style.display = "block";
+                    else
+                        btnValue.style.display = "none";
+                } else {
+                    btnAttribute.style.display = "none";
+                    btnMethod.style.display = "none";
+                    btnConstructor.style.display = "none";
+                    btnValue.style.display = "none";
+                }
+            }
 
             let modifierOffCanvas = new bootstrap.Offcanvas(modifier);
 
+
+            let manager = new GryffiniumManager(onVerticesChange, receiveChatMessage, sendMessage);
 
             function sendMessage(data, entityType, type) {
                 socket.send(
@@ -370,7 +552,7 @@
                 socket.onmessage = function (event) {
                     let message = JSON.parse(event.data);
                     if (message.commandType === 'Error') {
-                        if(message.message !== null) {
+                        if (message.message !== null) {
                             alert(message.message)
                         }
                     } else {
@@ -381,475 +563,35 @@
                                     break;
                                 case 'SELECT_COMMAND':
                                 case 'CREATE_COMMAND':
-                                    let elem = null;
-                                    let parent = null;
-                                    switch (command.elementType) {
-                                        case ElementType.Class.name:
-                                            elem = new uml.Class({
-                                                name: command.name,
-                                                position: {
-                                                    x: command.x,
-                                                    y: command.y
-                                                },
-                                                size: {
-                                                    width: command.width,
-                                                    height: command.height
-                                                },
-                                                id: command.id,
-                                                toolsBox: elementToolsView,
-                                            });
-                                            elem.setSizeAndPosition({width: command.width, height: command.height});
-                                            break;
-                                        case ElementType.Interface.name:
-                                            elem = new uml.Interface({
-                                                name: command.name,
-                                                position: {
-                                                    x: command.x,
-                                                    y: command.y
-                                                },
-                                                size: {
-                                                    width: command.width,
-                                                    height: command.height
-                                                },
-                                                id: command.id,
-                                                toolsBox: elementToolsView,
-                                            });
-                                            elem.setSizeAndPosition({width: command.width, height: command.height});
-                                            break;
-                                        case ElementType.Enum.name:
-                                            elem = new uml.Enum({
-                                                name: command.name,
-                                                position: {
-                                                    x: command.x,
-                                                    y: command.y
-                                                },
-                                                size: {
-                                                    width: command.width,
-                                                    height: command.height
-                                                },
-                                                id: command.id,
-                                                toolsBox: elementToolsView,
-                                            });
-                                            elem.setSizeAndPosition({width: command.width, height: command.height});
-                                            break;
-                                        case ElementType.AssociationClass.name:
-                                            elem = new uml.SimpleLink({
-                                                source: {id: command.classDto.id},
-                                                target: {id: elements.get(command.associationDto.id).get('id')},
-                                                toolsBox: undefined,
-                                            })
-                                            break;
-                                        case ElementType.Generalization.name:
-                                            elem = new uml.Generalization({
-                                                source: {
-                                                    id: command.sourceId,
-                                                    connectionPoints: {
-                                                        name: 'anchor',
-                                                        args: {
-                                                            align: 'top',
-                                                        }
-                                                    },
-                                                    anchor: {
-                                                        name: 'top',
-                                                    }
-                                                },
-                                                target: {
-                                                    id: command.targetId,
-                                                    anchor: {
-                                                        name: 'bottom'
-                                                    },
-                                                    connectionPoints: {
-                                                        name: 'anchor',
-                                                        args: {
-                                                            align: 'bottom',
-                                                        }
-                                                    },
-                                                },
-                                                router: {
-                                                    name: 'orthogonal',
-                                                },
-                                                linkId: command.id,
-                                                vertices: JSON.parse(command.vertices),
-                                                toolsBox: linkToolsView,
-                                            });
-                                            elem.on('change:vertices', function (link) {
-                                                movingVertices = link;
-                                            });
-                                            break;
-                                        case ElementType.Realization.name:
-                                            elem = new uml.Realization({
-                                                source: {
-                                                    id: command.sourceId,
-                                                    connectionPoints: {
-                                                        name: 'anchor',
-                                                        args: {
-                                                            align: 'top',
-                                                        }
-                                                    },
-                                                    anchor: {
-                                                        name: 'top',
-                                                    }
-                                                },
-                                                target: {
-                                                    id: command.targetId,
-                                                    anchor: {
-                                                        name: 'bottom'
-                                                    },
-                                                    connectionPoints: {
-                                                        name: 'anchor',
-                                                        args: {
-                                                            align: 'bottom',
-                                                        }
-                                                    },
-                                                },
-                                                router: {
-                                                    name: 'orthogonal',
-                                                },
-                                                linkId: command.id,
-                                                vertices: JSON.parse(command.vertices),
-                                                toolsBox: linkToolsView,
-                                            });
-                                            elem.on('change:vertices', function (link) {
-                                                movingVertices = link;
-                                            });
-                                            break;
-                                        case ElementType.BinaryAssociation.name:
-                                            elem = new uml.BinaryAssociation({
-                                                source: {id: command.sourceId,},
-                                                target: {id: command.targetId},
-                                                sourceRole: new Role(command.sourceRoleId, "", "*", 0.05,
-                                                        {x: 0, y: -10}, 0.05, {x: 0, y: 10}),
-                                                targetRole: new Role(command.targetRoleId, "", "*", 0.95,
-                                                        {x: 0, y: -10}, 0.95, {x: 0, y: 10}),
-                                                labelDistance: command.distance === null ? 0.5 : command.distance,
-                                                labelOffset: command.offset === null ? {
-                                                    x: 0,
-                                                    y: -10
-                                                } : JSON.parse(command.offset),
-                                                linkId: command.id,
-                                                isDirected: command.isDirected,
-                                                name: command.name,
-                                                vertices: JSON.parse(command.vertices),
-                                                toolsBox: linkToolsView,
-                                            });
+                                    let elem = manager.create(command);
+                                    if (elem) {
+                                        elem.addTo(graph);
 
-                                            elem.on('change:vertices', function (link) {
-                                                movingVertices = link;
-                                            });
-                                            break;
-                                        case ElementType.UnaryAssociation.name:
-                                            elem = new uml.UnaryAssociation({
-                                                source: {
-                                                    id: command.sourceId,
-                                                    anchor: {
-                                                        name: 'midSide'
-                                                    }
-                                                },
-                                                target: {id: command.targetId},
-                                                targetRole: new Role(command.targetRoleId, "", "*", 0.95,
-                                                        {x: 0, y: -10}, 0.95, {x: 0, y: 10}),
-                                                labelDistance: command.distance === null ? 0.5 : command.distance,
-                                                labelOffset: command.offset === null ? {
-                                                    x: 0,
-                                                    y: -10
-                                                } : JSON.parse(command.offset),
-                                                linkId: command.id,
-                                                name: "",
-                                                vertices: JSON.parse(command.vertices),
-                                                toolsBox: unaryToolsView
-                                            });
-
-
-                                            elem.on('change:vertices', function (link) {
-                                                movingVertices = link;
-                                            });
-                                            break;
-                                        case ElementType.Aggregation.name:
-                                            elem = new uml.Aggregation({
-                                                source: {id: command.sourceId},
-                                                target: {id: command.targetId},
-                                                sourceRole: new Role(command.sourceRoleId, "", "*", 0.05,
-                                                        {x: 0, y: -10}, 0.05, {x: 0, y: 10}),
-                                                targetRole: new Role(command.targetRoleId, "", "*", 0.95,
-                                                        {x: 0, y: -10}, 0.95, {x: 0, y: 10}),
-                                                labelDistance: command.distance === null ? 0.5 : command.distance,
-                                                labelOffset: command.offset === null ? {
-                                                    x: 0,
-                                                    y: -10
-                                                } : JSON.parse(command.offset),
-                                                linkId: command.id,
-                                                isDirected: command.isDirected,
-                                                name: command.name,
-                                                vertices: JSON.parse(command.vertices),
-                                                toolsBox: linkToolsView,
-                                            });
-                                            elem.on('change:vertices', function (link) {
-                                                movingVertices = link;
-                                            });
-                                            break;
-                                        case ElementType.Composition.name:
-                                            elem = new uml.Composition({
-                                                source: {id: command.sourceId},
-                                                target: {id: command.targetId},
-                                                sourceRole: new Role(command.sourceRoleId, "", "*", 0.05,
-                                                        {x: 0, y: -10}, 0.05, {x: 0, y: 10}),
-                                                targetRole: new Role(command.targetRoleId, "", "*", 0.95,
-                                                        {x: 0, y: -10}, 0.95, {x: 0, y: 10}),
-                                                labelDistance: command.distance === null ? 0.5 : command.distance,
-                                                labelOffset: command.offset === null ? {
-                                                    x: 0,
-                                                    y: -10
-                                                } : JSON.parse(command.offset),
-                                                linkId: command.id,
-                                                isDirected: command.isDirected,
-                                                name: command.name,
-                                                vertices: JSON.parse(command.vertices),
-                                                toolsBox: linkToolsView,
-                                            });
-                                            elem.on('change:vertices', function (link) {
-                                                movingVertices = link;
-                                            });
-                                            break;
-                                        case ElementType.MultiAssociation.name:
-
-                                            elem = new uml.MultiAssociation({
-                                                id: command.id,
-                                                position: {
-                                                    x: command.x,
-                                                    y: command.y
-                                                },
-                                                size: {
-                                                    width: 50,
-                                                    height: 50
-                                                },
-                                                angle: 45
-                                            });
-
-
-                                            break;
-                                        case ElementType.Inner.name:
-                                            elem = new uml.Inner({
-                                                source: {id: command.sourceId},
-                                                target: {id: command.targetId},
-                                                linkId: command.id,
-                                                vertices: JSON.parse(command.vertices),
-                                                toolsBox: linkToolsView,
-                                            });
-                                            elem.on('change:vertices', function (link) {
-                                                movingVertices = link;
-                                            });
-                                            break;
-                                        case ElementType.Dependency.name:
-                                            elem = new uml.Dependency({
-                                                source: {id: command.sourceId},
-                                                target: {id: command.targetId},
-                                                labelDistance: command.distance === null ? 0.5 : command.distance,
-                                                labelOffset: command.offset === null ? {
-                                                    x: 0,
-                                                    y: -10
-                                                } : JSON.parse(command.offset),
-                                                linkId: command.id,
-                                                name: command.name,
-                                                vertices: JSON.parse(command.vertices),
-                                                toolsBox: linkToolsView,
-                                            });
-                                            elem.on('change:vertices', function (link) {
-                                                movingVertices = link;
-                                            });
-                                            break;
-                                        case ElementType.Attribute.name:
-                                            let attribute = new Attribute(command.id, command.name, command.type, command.visibility.toLowerCase(), command.isConstant, command.isStatic);
-                                            parent = elements.get(command.parentId);
-                                            parent.addAttribute(attribute);
-                                            if (parent === selectedElement) {
-                                                generateAttributesInterface(document.getElementById("container-attributes"), selectedElement, sendMessage, true)
-                                            }
-                                            break;
-                                        case ElementType.Method.name:
-                                            let m = new Method(command.id, command.name, command.type, command.visibility.toLowerCase(), command.isAbstract, command.isStatic);
-                                            parent = elements.get(command.parentId);
-                                            parent.addMethod(m);
-                                            if (parent === selectedElement) {
-                                                generateMethodsInterface(document.getElementById("container-methods"), selectedElement, sendMessage, true)
-                                            }
-                                            break;
-                                        case ElementType.Constructor.name:
-                                            let constructor = new Constructor(command.id, command.name, command.visibility.toLowerCase());
-                                            parent = elements.get(command.parentId);
-                                            parent.addConstructor(constructor);
-                                            if (parent === selectedElement) {
-                                                generateMethodsInterface(document.getElementById("container-methods"), selectedElement, sendMessage, true)
-                                            }
-                                            break;
-                                        case ElementType.Value.name:
-                                            let value = new Value(command.value);
-                                            parent = elements.get(command.parentId);
-                                            parent.addValue(value);
-                                            if (parent === selectedElement) {
-                                                generateValuesInterface(document.getElementById("container-values"), selectedElement, sendMessage, true)
-                                            }
-                                            break;
-                                        case ElementType.Parameter.name:
-                                            let parameter = new Parameter(command.id, command.name, command.type);
-                                            elements.get(command.parentId).getOperation(command.methodId).addParameter(parameter);
-                                            elements.get(command.parentId).update();
-                                            if (elements.get(command.parentId) === selectedElement) {
-                                                generateParametersInterface(selectedElement, elements.get(command.parentId).getOperation(command.methodId), sendMessage)
-                                            }
-                                            break;
-                                        case ElementType.Role.name:
-                                            let role = new Role(command.id, command.name, command.multiplicity, command.distanceName, command.offsetName, command.distanceMultiplicity, command.offsetMultiplicity);
-                                            parent = elements.get(command.associationId);
-                                            parent.updateRole(command.id, role);
-
-                                            if (parent === selectedElement) {
-                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
-                                            }
-                                            break;
-                                    }
-                                    if (elem != null) {
-                                        elements.set(elem.getId(), elem);
-                                        graph.addCell(elem);
-
-
+                                        addToolsBox(elem);
                                     }
                                     break;
                                 case 'UPDATE_COMMAND':
-                                    switch (command.elementType) {
-                                        case ElementType.Class.name:
-                                        case ElementType.Interface.name:
-                                        case ElementType.Enum.name:
-                                        case ElementType.AssociationClass.name:
-                                        case ElementType.Generalization.name:
-                                        case ElementType.Realization.name:
-                                        case ElementType.BinaryAssociation.name:
-                                        case ElementType.Aggregation.name:
-                                        case ElementType.Composition.name:
-                                        case ElementType.Dependency.name:
-                                        case ElementType.Inner.name:
-                                        case ElementType.MultiAssociation.name:
-                                        case ElementType.UnaryAssociation.name:
-                                            if (command.visibility !== undefined) {
-                                                command.visibility = Visibility.getVisibility(command.visibility);
-                                            }
-                                            elements.get(command.id).updateFromMessage(command);
-                                            if (selectedElement === elements.get(command.id)) {
-                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
-                                            }
-
-                                            break;
-                                        case ElementType.Attribute.name:
-                                            elements.get(command.parentId).updateAttributesFromMessage(command);
-                                            if (selectedElement === elements.get(command.parentId)) {
-                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
-                                            }
-                                            break;
-                                        case ElementType.Method.name:
-                                            elements.get(command.parentId).updateMethodFromMessage(command);
-                                            if (selectedElement === elements.get(command.parentId)) {
-                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
-                                            }
-                                            break;
-                                        case ElementType.Constructor.name:
-                                            elements.get(command.parentId).updateConstructorsFromMessage(command);
-                                            if (selectedElement === elements.get(command.parentId)) {
-                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
-                                            }
-                                            break;
-                                        case ElementType.Value.name:
-                                            elements.get(command.parentId).updateValue(command.oldValue, command.value);
-                                            if (selectedElement === elements.get(command.parentId)) {
-                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
-                                            }
-                                            break;
-                                        case ElementType.Parameter.name:
-                                            elements.get(command.parentId).getOperation(command.methodId).updateParametersFromMessage(command);
-                                            elements.get(command.parentId).update();
-                                            if (selectedElement === elements.get(command.parentId)) {
-                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
-                                            }
-                                            break
-                                        case ElementType.Role.name:
-                                            elements.get(command.associationId).updateRole(command.id, command);
-                                            if (selectedElement === elements.get(command.associationId)) {
-                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
-                                            }
-                                            break;
-                                    }
+                                    manager.update(command);
                                     break;
                                 case 'REMOVE_COMMAND':
-                                    switch (command.elementType) {
-                                        case ElementType.Class.name:
-                                        case ElementType.Interface.name:
-                                        case ElementType.Enum.name:
-                                        case ElementType.Generalization.name:
-                                        case ElementType.BinaryAssociation.name:
-                                        case ElementType.Aggregation.name:
-                                        case ElementType.Composition.name:
-                                        case ElementType.Dependency.name:
-                                        case ElementType.Inner.name:
-                                        case ElementType.MultiAssociation.name:
-                                            let elem = elements.get(command.id);
-                                            if (elem !== undefined) {
-                                                elem.set('alreadyDeleted', true)
-                                                elem.remove();
-                                                elements.delete(elem.getId());
-                                            }
-                                            break;
-                                        case ElementType.AssociationClass.name:
-                                            // TODO AssociationClass
-                                            break;
-                                            // TODO MutliAssociation
-                                            break;
-                                        case ElementType.Attribute.name:
-                                            elements.get(command.parentId).removeAttribute(command.id);
-                                            if (selectedElement === elements.get(command.parentId)) {
-                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
-                                            }
-                                            break;
-                                        case ElementType.Method.name:
-                                            elements.get(command.parentId).removeMethod(command.id);
-                                            if (selectedElement === elements.get(command.parentId)) {
-                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
-                                            }
-                                            break;
-                                        case ElementType.Constructor.name:
-                                            elements.get(command.parentId).removeConstructor(command.id);
-                                            if (selectedElement === elements.get(command.parentId)) {
-                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
-                                            }
-                                            break;
-                                        case ElementType.Value.name:
-                                            elements.get(command.parentId).removeValue(command.value);
-                                            if (selectedElement === elements.get(command.parentId)) {
-                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
-                                            }
-                                            break;
-                                        case ElementType.Parameter.name:
-                                            elements.get(command.parentId).getOperation(command.methodId).removeParameter(command.id);
-                                            if (selectedElement === elements.get(command.parentId)) {
-                                                generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage, true);
-                                            }
-                                            break
-                                    }
+                                    manager.delete(command);
                                     break;
-
-
                             }
                         }
                     }
                 };
 
+
                 socket.onclose = function () {
                     console.log('WebSocket closed');
                 };
+
             }
 
-
-            let uml = joint.shapes.uml;
+            let blurActiveToolTips = undefined;
+            //let uml = joint.shapes.uml;
 
             let graph = new joint.dia.Graph();
-
             let paper = new joint.dia.Paper({
                 el: document.getElementById('paper'),
                 width: document.documentElement.clientWidth,
@@ -860,16 +602,14 @@
                 interactive: {
                     labelMove: true,
                 },
-                /*
-                Utile lorsque les éléments pourront être éditer sur le diagramme
-                guard: function(evt) {
+                guard: function (evt) {
                     return evt.target instanceof HTMLInputElement;
-                },*/
+                },
                 defaultConnector: {
                     name: 'jumpover',
                     size: 5,
                 },
-                defaultLink: new uml.BinaryAssociation(),
+                defaultLink: new BinaryAssociation(),
                 defaultAnchor: {
                     name: 'perpendicular',
                     args: {
@@ -881,17 +621,263 @@
                     name: 'connectionPerpendicular',
                 },
                 linkPinning: false,
+                elementView: joint.dia.ElementView.extend({
+                    events: {
+                        'change input': 'onChange',
+                        'focus input': 'onFocus',
+                        'blur input': 'onBlur',
+
+                    },
+                    initialize: function () {
+
+
+                        joint.dia.ElementView.prototype.initialize.apply(this, arguments);
+
+
+                        this.listenTo(this.model, 'uml-update', function () {
+                            this.update();
+                            this.resize();
+                        });
+
+                    },
+                    onChange: function (evt) {
+                        let input = evt.target;
+                        if (input.type === 'checkbox') {
+                            checkChange(this, input);
+                        }
+                        if (input.type === 'text') {
+                            textChange(this, input)
+                        }
+                    },
+                    onFocus: function (evt) {
+                        if(blurActiveToolTips){
+                            blurActiveToolTips();
+                            blurActiveToolTips = undefined;
+                        }
+                        let input = evt.target;
+                        let data = input.attributes['joint-selector'].value.split('_');
+                        let type = data[0];
+                        let id = data[1];
+
+                        if (type === 'header')
+                            id = this.model.getId();
+                        this.model.attr('tooltip_' + type + '_' + id, {style: {visibility: 'visible', opacity: 1}});
+                        selectedElements = [];
+                        paper.hideTools();
+                        selectElement(this);
+                    },
+                    onBlur: function (evt) {
+                        let input = evt.target;
+                        let data = input.attributes['joint-selector'].value.split('_');
+                        let type = data[0];
+                        let id = data[1];
+
+                        if (type === 'header')
+                            id = this.model.getId();
+                        let model = this.model;
+                        blurActiveToolTips = function() {
+                            model.attr('tooltip_' + type + '_' + id, {
+                                style: {
+                                    visibility: 'hidden',
+                                    opacity: 0
+                                }
+                            });
+                        }
+                    },
+                }),
+                linkView: joint.dia.LinkView.extend({
+                    initialize: function () {
+
+
+                        joint.dia.LinkView.prototype.initialize.apply(this, arguments);
+
+                        this.listenTo(this.model, 'uml-update', function () {
+                            this.update();
+                        });
+
+                    }
+                })
             });
 
-            graph.on("remove", function (cell) {
-                if (!cell.get('alreadyDeleted') && cell.getId()) {
-                    let cmd = cell.removeCommand();
-                    if (cmd !== null)
-                        sendMessage(cmd.data, cmd.entityType, cmd.type);
+
+            let multiAssociationMode = false;
+            let selectedEntityType = undefined;
+            let selectedAssociationType = undefined;
+
+            let moving = undefined;
+
+            function textChange(view, input) {
+                if (input.attributes['joint-selector'].value === 'header') {
+                    manager.updateEntity(view.model, {name: input.value});
+                } else {
+                    let data = input.attributes['joint-selector'].value.split('_');
+                    let type = data[0];
+                    let id = data[1];
+                    switch (type) {
+                        case 'Attr':
+                            if (input.value === "") {
+                                manager.removeAttribute({id: id, parentId: view.model.getId()});
+                                return;
+                            }
+                            let attribute = Attribute.fromString(input.value);
+                            attribute.id = id;
+                            manager.updateAttribute({
+                                id: id,
+                                parentId: view.model.getId(),
+                                name: attribute.name,
+                                type: attribute.type,
+                                visibility: attribute.visibility.fullText(),
+                            });
+                            break;
+                        case 'Meth':
+                            if (input.value === "") {
+                                manager.removeMethod({id: id, parentId: view.model.getId()});
+                                return;
+                            }
+                            let method = Method.fromString(input.value);
+                            method.id = id;
+                            manager.updateMethod({
+                                id: id,
+                                parentId: view.model.getId(),
+                                name: method.name,
+                                type: method.type,
+                                visibility: method.visibility.fullText(),
+                                parameters: method.parameters,
+                            });
+                            break;
+                        case 'Const':
+
+                            if (input.value === "") {
+                                manager.removeConstructor({id: id, parentId: view.model.getId()});
+                                return;
+                            }
+
+                            let constructor = Constructor.fromString(input.value);
+                            constructor.id = id;
+                            manager.updateConstructor({
+                                id: id,
+                                parentId: view.model.getId(),
+                                visibility: constructor.visibility.fullText(),
+                                parameters: constructor.parameters,
+                            });
+
+                            break;
+                        case 'Val':
+                            if (input.value === "") {
+                                manager.removeValue({id: id, parentId: view.model.getId()});
+                                return;
+                            }
+                            manager.updateValue({
+                                parentId: view.model.getId(),
+                                value: input.value,
+                                oldValue: id,
+                            });
+                            break;
+                    }
                 }
-            });
+            }
 
-            paper.on("blank:mousewheel", function (evt, x, y, delta) {
+            function checkChange(view, input) {
+                if (input.attributes['joint-selector'].value.includes('header')) {
+                    manager.updateEntity(view.model, {isAbstract: input.checked});
+                } else {
+                    let data = input.attributes['joint-selector'].value.split('_');
+                    let type = data[0];
+                    let id = data[1];
+                    let attr = data[2];
+                    switch (type) {
+                        case 'Attr':
+                            let attribute = view.model.getAttribute(id);
+                            manager.updateAttribute({
+                                id: id,
+                                parentId: view.model.getId(),
+                                isConstant: attr === 'isConstant' ? input.checked : undefined,
+                                isStatic: attr === 'isStatic' ? input.checked : undefined,
+                            });
+                            break;
+                        case 'Meth':
+                            let method = view.model.getMethod(id);
+                            if (attr === 'isAbstract') {
+                                manager.updateMethod({
+                                    id: id,
+                                    parentId: view.model.getId(),
+                                    isAbstract: input.checked,
+                                });
+                            } else {
+                                manager.updateMethod({
+                                    id: id,
+                                    parentId: view.model.getId(),
+                                    isStatic: attr === 'isStatic' ? input.checked : undefined,
+                                });
+                            }
+                            break;
+                    }
+                }
+            }
+
+            function move(cell) {
+                if (cell.get('position').x < 0)
+                    cell.set('position', {x: 0, y: cell.get('position').y});
+                if (cell.get('position').y < 0)
+                    cell.set('position', {x: cell.get('position').x, y: 0});
+                moving = cell;
+            }
+
+            function addToolsBox(elem) {
+                let view = paper.findViewByModel(elem);
+
+                switch (elem.getType()) {
+                    case ElementType.Class.name:
+                    case ElementType.Interface.name:
+                    case ElementType.Enum.name:
+                        view.addTools(new joint.dia.ToolsView({
+                            tools: [
+                                new joint.elementTools.Boundary(),
+                                new joint.elementTools.Remove(),
+                                new joint.elementTools.ResizeLGrip(),
+                                new joint.elementTools.ResizeRGrip(),
+                                new joint.elementTools.LinkConnect(),
+                            ]
+                        }));
+                        break;
+                    case ElementType.Generalization.name:
+                    case ElementType.Realization.name:
+                    case ElementType.BinaryAssociation.name:
+                    case ElementType.Aggregation.name:
+                    case ElementType.Composition.name:
+                    case ElementType.Dependency.name:
+                    case ElementType.Inner.name:
+                        let sourceArrow = new joint.linkTools.SourceArrowhead();
+                        let targetArrow = new joint.linkTools.TargetArrowhead();
+                        targetArrow.el.setAttribute('stroke-width', '1')
+                        targetArrow.el.setAttribute('d', 'M -12, 0 a 6,6 0 1,0 12, 0 a 6,6 0 1,0 -12,0')
+                        sourceArrow.el.setAttribute('stroke-width', '1')
+                        sourceArrow.el.setAttribute('d', 'M 0, 0 a 6,6 0 1,0 12, 0 a 6,6 0 1,0 -12,0')
+                        view.addTools(new joint.dia.ToolsView({
+                            tools: [
+                                new joint.linkTools.Vertices(),
+                                sourceArrow,
+                                targetArrow,
+                                new joint.linkTools.Boundary(), new joint.linkTools.Remove(),
+                            ]
+                        }));
+                        break;
+                    case ElementType.UnaryAssociation.name:
+                        view.addTools(new joint.dia.ToolsView({
+                            tools: [
+                                new joint.linkTools.Vertices(),
+                                new joint.linkTools.Boundary(),
+                                new joint.linkTools.Remove(),
+                            ]
+                        }));
+                        break;
+
+                }
+
+                view.hideTools();
+            }
+
+            function zoom(paper, evt, x, y, delta) {
                 evt.preventDefault();
                 const oldScale = paper.scale().sx;
                 const newScale = oldScale + 0.2 * delta * oldScale
@@ -906,133 +892,135 @@
                         ty = 0;
                     paper.translate(tx, ty);
                 }
-            });
+            }
 
-            let resizingStartPos = null;
-            let dragStartPosition = null;
-            let moving = null;
+            let dragStartPosition = undefined;
 
-            paper.on('blank:pointerdown', function (event, x, y) {
-                if (!selectMultiAssociationMode) {
-                    selectedElement = undefined;
-                    generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage);
-                    let scale = paper.scale();
-                    if (selectedType !== undefined) {
-                        sendMessage({
-                                    x: x - 100,
-                                    y: y - 50,
-                                    width: 200,
-                                    height: 100,
-                                },
-                                selectedType,
-                                'CREATE_COMMAND');
-                    } else if (event.button === 1) {
-                        dragStartPosition = {x: x * scale.sx, y: y * scale.sy};
-                    }
-                    setSelectedElement(activeElementType, undefined);
+            function startMoveCanvas(scale, x, y) {
+                dragStartPosition = {x: x * scale.sx, y: y * scale.sy};
+            }
+
+            function stopMoveCanvas() {
+                dragStartPosition = undefined;
+            }
+
+            function autoWidth(elementView) {
+                elementView.model.autoWidth();
+                manager.updateEntity(elementView.model,
+                        {
+                            width: elementView.model.getWidth(),
+                        });
+                elementView.hideTools();
+                elementView.showTools();
+            }
+
+            function selectElement(elementView) {
+
+                if (!multiSelectionsMode) {
+                    selectedElements = [];
+                    paper.hideTools();
+                    setInsideContentButtonsVisibility(false);
+                }
+                elementView.showTools();
+                selectedElements.push(elementView);
+                if (selectedElements.length === 1) {
+                    setInsideContentButtonsVisibility(true, elementView.model.getType() === ElementType.Enum.name,
+                            elementView.model.getType() !== ElementType.Interface.name);
+                } else {
+                    setInsideContentButtonsVisibility(false);
+                }
+            }
+
+            let movingVertices = undefined;
+
+            function onVerticesChange(link) {
+                movingVertices = link;
+            }
+
+            //graph.on("remove", (cell) => manager.removeEntity(cell));
+            graph.on('remove', (cell) => {
+                if (cell.isLink()) {
+                    if (cell.get('linkId'))
+                        manager.removeEntity(cell);
+                } else {
+                    manager.removeEntity(cell);
                 }
             });
 
+            graph.on('change:position', (cell) => move(cell));
 
-            paper.on('cell:pointerup blank:pointerup', function (cellView, evt, x, y) {
-                dragStartPosition = null;
-            });
-
-            paper.on('blank:pointerup', function (event, x, y) {
-                if (!selectMultiAssociationMode) {
-                    paper.removeTools();
+            paper.on("blank:mousewheel", (evt, x, y, delta) => zoom(paper, evt, x, y, delta));
+            paper.on('blank:pointerdown', (event, x, y) => {
+                document.activeElement.blur();
+                if (blurActiveToolTips) {
+                    blurActiveToolTips();
+                    blurActiveToolTips = undefined;
                 }
+
+                if (event.button === 0 && selectedEntityType === undefined) {
+                    paper.hideTools();
+
+                    selectedElements = [];
+                    setInsideContentButtonsVisibility(false);
+                } else if (event.button === 0 && !multiAssociationMode) {
+                    manager.addEntity(selectedEntityType.name, x, y);
+                    setSelectedElement(undefined);
+                }
+
+                if (event.button === 1) {
+                    startMoveCanvas(paper.scale(), x, y);
+                }
+
+
+            });
+            paper.on('cell:pointerup blank:pointerup', (event, x, y) => {
+                stopMoveCanvas();
             });
 
-            paper.on('element:pointerdblclick', function (elementView) {
-                elementView.model.trigger('change:autoresize')
-                sendMessage({
-                            id: elementView.model.getId(),
-                            width: elementView.model.getSize().width,
-                            height: elementView.model.getSize().height,
-                        },
-                        elementView.model.getType(), 'UPDATE_COMMAND');
-            })
+            paper.on('element:pointerdblclick', (elementView) => {
+                autoWidth(elementView);
+            });
+            paper.on('element:mouseenter', (elementView) => {
+                elementView.showTools();
+            });
+            paper.on('element:mouseleave', (elementView) => {
+                if (!selectedElements.includes(elementView))
+                    elementView.hideTools();
+            });
 
-            paper.on('link:connect', function (linkView) {
-                let source = elements.get(linkView.model.get('source').id);
-                let target = elements.get(linkView.model.get('target').id);
+            let selectedElements = [];
+            paper.on('element:pointerdown', (elementView) => {
+                document.activeElement.blur();
+                // TODO Multi Association
+                selectElement(elementView);
+            });
+
+            paper.on('link:connect', (linkView) => {
+                let sourceId = linkView.model.get('source').id;
+                let targetId = linkView.model.get('target').id;
                 if (linkView.model.get('linkId') === undefined) {
-                    if (linkView.model.getType() === "ASSOCIATION_CLASS") {
-                        let x = (Math.max(source.get('position').x, target.get('position').x) - Math.min(source.get('position').x, target.get('position').x)) / 2 + Math.min(source.getSize().width, target.getSize().width);
-                        let y = Math.min(source.get('position').y, target.get('position').y) - 150;
-
-                        sendMessage({
-                            classDto: {
-                                x: x,
-                                y: y,
-                                width: 200,
-                                height: 100,
-                            },
-                            associationDto: {
-                                sourceId: source.id,
-                                targetId: target.id,
-                                isDirected: false,
-                                name: linkView.model.getType(),
-                            }
-                        }, linkView.model.getType(), 'CREATE_COMMAND')
-                    } else {
-                        sendMessage({
-                            sourceId: source.id,
-                            targetId: target.id,
-                            isDirected: false,
-                            name: linkView.model.getType(),
-                        }, linkView.model.getType(), 'CREATE_COMMAND');
-                    }
+                    manager.addLink(linkView.model.getType(), sourceId, targetId);
                     linkView.model.remove();
                 } else {
-                    sendMessage({
-                        sourceId: source.id,
-                        targetId: target.id,
-                        id: linkView.model.get('linkId'),
-                    }, linkView.model.getType(), 'UPDATE_COMMAND');
+                    manager.updateLink(linkView.model, {sourceId: sourceId, targetId: targetId});
                 }
-
             });
-
-            let tmpcounter = 0;
-            paper.on('link:pointerup', function (linkView) {
-
+            paper.on('link:pointerup', (linkView) => {
                 try {
                     if (linkView.model.getLabelsChanged() !== []) {
-                        let indexes = linkView.model.get('labelsChanged');
-                        linkView.model.set('labelsChanged', []);
-                        for (let index of indexes) {
-                            if (index !== 0) {
-                                let roleIndex = Math.ceil(index / 2) - 1;
-                                let label = linkView.model.get('labels')[index];
-                                let role = roleIndex === 0 ? linkView.model.getTargetRole() : linkView.model.getSourceRole();
-                                sendMessage({
-                                    id: role.id,
-                                    distanceMultiplicity: index % 2 ? undefined : label.position.distance,
-                                    offsetMultiplicity: index % 2 ? undefined : JSON.stringify(label.position.offset),
-                                    distanceName: index % 2 ? label.position.distance : undefined,
-                                    offsetName: index % 2 ? JSON.stringify(label.position.offset) : undefined,
-                                    associationId: linkView.model.getId(),
-                                    sourceId: linkView.model.get('source').id,
-                                }, 'ROLE', 'UPDATE_COMMAND');
-                            } else {
-                                let label = linkView.model.get('labels')[0];
-                                sendMessage({
-                                    id: linkView.model.getId(),
-                                    distance: label.position.distance,
-                                    offset: JSON.stringify(label.position.offset),
-                                    sourceId: linkView.model.get('source').id,
-                                }, linkView.model.getType(), 'UPDATE_COMMAND');
-                            }
-                        }
+                        manager.updateLinksLabels(linkView.model);
                     }
                 } catch (e) {
-                    // Nothing to catch, just ignore it
+                    //Ignore
                 }
-            })
+            });
+            paper.on('link:pointerdown', (linkView) => {
+                selectElement(linkView);
+            });
 
-            document.getElementById('diagram').addEventListener('mousemove', function (evt) {
+
+            let resizingStartPositions = undefined;
+            document.getElementById('diagram').addEventListener('mousemove', (evt) => {
                 if (dragStartPosition) {
                     let newPosX = evt.offsetX - dragStartPosition.x;
                     let newPosY = evt.offsetY - dragStartPosition.y;
@@ -1045,249 +1033,82 @@
                     paper.translate(newPosX, newPosY);
                 }
 
-                if (resizingStartPos) {
-                    resizingStartPos(evt.offsetX, evt.offsetY);
+                if (resizingStartPositions) {
+
+                    resizingStartPositions(evt.clientX, evt.clientY);
                 }
             });
 
-            document.getElementById('diagram').addEventListener('mouseup', function (evt) {
+            document.getElementById('diagram').addEventListener('mouseup', (evt) => {
                 evt.preventDefault();
-                if (resizingStartPos) {
-                    let cmd = resizingStartPos(evt.offsetX, evt.offsetY);
-                    sendMessage(cmd.data, cmd.entityType, cmd.type);
+                if (resizingStartPositions) {
+                    let cmd = resizingStartPositions(evt.clientX, evt.clientY);
+                    manager.updateEntity(cmd.entity, cmd.data);
 
-                    resizingStartPos = null;
+                    resizingStartPositions = null;
                 }
+
                 if (moving) {
-                    sendMessage({
-                                id: moving.get('id'),
-                                x: moving.get('position').x,
-                                y: moving.get('position').y,
-                                width: moving.get('size').width,
-                                height: moving.get('size').height
-                            },
-                            moving.getType(),
-                            'UPDATE_COMMAND');
-                    let cellBBox = paper.findViewByModel(moving).getBBox();
-                    console.log('top left : {x : ' + cellBBox.x + ', y : ' + cellBBox.y + '}');
-                    console.log(`bottom right : {x : ${(cellBBox.x + cellBBox.width)}, y : ${(cellBBox.y + cellBBox.height)}}`);
-                    let paperBBox = paper.getContentArea();
-                    console.log('top left : {x : ' + paperBBox.x + ', y : ' + paperBBox.y + '}');
-                    console.log(`paper br : {x : ${(paperBBox.x + paperBBox.width)}, y : ${(paperBBox.y + paperBBox.height)}}`);
-                    console.log(paperBBox.width + ' ' + paperBBox.height);
+                    manager.updateEntity(moving, {
+                        id: moving.getId(),
+                        x: moving.getX(),
+                        y: moving.getY(),
+                        width: moving.getWidth(),
+                        height: moving.getHeight(),
+                    });
                     moving = null;
                 }
 
                 if (movingVertices) {
                     let view = paper.findViewByModel(movingVertices);
-                    sendMessage({
-                        id: movingVertices.getId(),
+
+                    manager.updateLink(movingVertices, {
+                        id: movingVertices.get('id'),
                         sourceId: movingVertices.get('source').id,
                         sourceAnchor: view.sourceAnchor,
                         targetAnchor: view.targetAnchor,
                         vertices: JSON.stringify(movingVertices.get('vertices')),
-                    }, movingVertices.getType(), 'UPDATE_COMMAND');
-                    movingVertices = undefined;
+                    });
+                    movingVertices = null;
                 }
             });
 
-
-            let resizeLGrip = new joint.elementTools.Button({
-                markup: [{
-                    tagName: 'rect',
-                    selector: 'button',
-                    attributes: {
-                        width: 10,
-                        height: 10,
-                        fill: '#777777',
-                        cursor: 'w-resize'
+            document.addEventListener('keydown', (evt) => {
+                if (evt.key === 'Delete') {
+                    for (let i = 0; i < selectedElements.length; i++) {
+                        selectedElements[i].model.remove();
                     }
-                }],
-                x: '0%',
-                y: '50%',
-                offset: {
-                    x: -5,
-                    y: -5
-                },
-                rotate: true,
-                action: function (evt) {
-                    let elem = this.model;
-                    resizingStartPos = function (x, y) {
+                    selectedElements = [];
+                    setInsideContentButtonsVisibility(false);
+                }
 
-                        let coords = paper.snapToGrid(x, y);
-                        let size = elem.attributes.size;
-                        let position = elem.attributes.position;
+                if (evt.key === 'Escape') {
+                    paper.hideTools();
+                    selectedElements = [];
+                    setInsideContentButtonsVisibility(false);
+                }
 
-                        let deltaWidth = position.x - coords.x;
-
-                        if (size.width + deltaWidth <= 100)
-                            deltaWidth = 0;
-
-                        return elem.setSizeAndPosition(
-                                {width: size.width + deltaWidth, height: elem.getHeight()},
-                                {x: position.x - deltaWidth, y: position.y});
+                if (evt.key === 'a' && evt.ctrlKey) {
+                    evt.preventDefault();
+                    let elements = graph.getElements();
+                    for (let i = 0; i < elements.length; i++) {
+                        selectElement(paper.findViewByModel(elements[i]));
                     }
                 }
+
+                if (evt.ctrlKey) {
+                    multiSelectionsMode = true;
+                }
+
             });
-            let resizeRGrip = new joint.elementTools.Button({
-                markup: [{
-                    tagName: 'rect',
-                    selector: 'button',
-                    attributes: {
-                        width: 10,
-                        height: 10,
-                        fill: '#777777',
-                        cursor: 'e-resize'
-                    }
-                }],
-                x: '100%',
-                y: '50%',
-                offset: {
-                    x: -5,
-                    y: -5
-                },
-                rotate: true,
-                action: function (evt) {
-                    let elem = this.model;
-                    resizingStartPos = function (x, y) {
-                        let size = elem.attributes.size;
-                        let position = elem.attributes.position;
 
-                        let coords = paper.snapToGrid(x, y);
-
-                        let deltaWidth = coords.x - (position.x + size.width);
-
-                        if (size.width + deltaWidth <= 100)
-                            deltaWidth = 0;
-
-                        return elem.setSizeAndPosition({width: size.width + deltaWidth, height: elem.getHeight()});
-
-                    }
+            document.addEventListener('keyup', (evt) => {
+                if (evt.ctrlKey) {
+                    multiSelectionsMode = false;
                 }
             });
 
-            let linkButton = new joint.elementTools.Connect({
-                x: '100%',
-                y: '0%',
-                offset: {x: -5, y: -5},
-                action: function (evt, _view, tool) {
-                    return tool.dragstart(evt);
-                }
-            })
-
-
-            let multiAssociationToolsView = new joint.dia.ToolsView({
-                tools: [
-                    new joint.elementTools.Boundary(),
-                ]
-            })
-
-
-            let elementToolsView = new joint.dia.ToolsView({
-                tools: [
-                    new joint.elementTools.Boundary(),
-                    new joint.elementTools.Remove(),
-                    resizeLGrip,
-                    resizeRGrip,
-                    linkButton,
-
-
-                ]
-            });
-
-            let myTargetArrowhead = new joint.linkTools.TargetArrowhead();
-            let mySourceArrowhead = new joint.linkTools.SourceArrowhead();
-
-            myTargetArrowhead.el.setAttribute('d', 'M -20, 0 a 6,6 0 1,0 12, 0 a 6,6 0 1,0 -12,0')
-            myTargetArrowhead.el.setAttribute('stroke-width', '1')
-            mySourceArrowhead.el.setAttribute('d', 'M 0, 0 a 6,6 0 1,0 12, 0 a 6,6 0 1,0 -12,0')
-            mySourceArrowhead.el.setAttribute('stroke-width', '1')
-
-            let linkToolsView = new joint.dia.ToolsView({
-                tools: [
-                    new joint.linkTools.Vertices(),
-                    mySourceArrowhead, myTargetArrowhead,
-                    new joint.linkTools.Boundary(), new joint.linkTools.Remove(),
-                ]
-            });
-
-            let unaryToolsView = new joint.dia.ToolsView({
-                tools: [
-                    new joint.linkTools.Vertices(),
-                    new joint.linkTools.Boundary(), new joint.linkTools.Remove(),
-                ]
-            });
-
-            paper.on('link:pointerdown', function (linkView) {
-                paper.removeTools();
-                linkView.addTools(linkView.model.get('toolsBox'));
-
-                if (selectedElement === linkView.model)
-                    return;
-                selectedElement = linkView.model;
-
-                if (selectedElement !== undefined && selectedElement.getId() !== undefined)
-                    generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage);
-
-            });
-
-            paper.on('element:mouseenter', function (elementView) {
-                if (!selectMultiAssociationMode) {
-                    paper.removeTools();
-                    elementView.addTools(elementView.model.get('toolsBox'));
-                }
-            });
-
-            paper.on('element:mouseleave', function (elementView) {
-                if (elementView.model !== selectedElement && !selectMultiAssociationMode) {
-                    paper.removeTools();
-                }
-            });
-
-            paper.on('element:pointerdown', function (elementView) {
-                if (selectMultiAssociationMode) {
-                    if (selectedForMulti.includes(elementView.model)) {
-                        selectedForMulti.splice(selectedForMulti.indexOf(elementView.model), 1);
-                        elementView.removeTools();
-                        elementView.model.selected(false);
-                    } else {
-                        selectedForMulti.push(elementView.model);
-                        elementView.model.selected(true);
-                    }
-
-                } else {
-                    paper.removeTools();
-                    elementView.addTools(elementView.model.get('toolsBox'));
-                    for (let text of document.getElementsByClassName("uml-class-name-text")) {
-                        for (let tspan of text.childNodes) {
-                            /*let object = document.createElement('foreignObject');
-                            text.append(object);
-                            let input = document.createElement('input');
-                            object.append(input);
-                            tspan.contentEditable = true;*/
-                            tspan.onclick = function (e) {
-                                console.log(e);
-                            };
-                        }
-                    }
-                    if (selectedElement === elementView.model)
-                        return;
-                    selectedElement = elementView.model;
-
-                    if (selectedElement !== undefined && selectedElement.getId() !== undefined)
-                        generateModifierInterface(modifierOffCanvas, modifierHeader, modifierBody, selectedElement, sendMessage);
-                }
-            });
-
-
-            graph.on('change:position', function (cell) {
-                if (cell.get('position').x < 0)
-                    cell.set('position', {x: 0, y: cell.get('position').y});
-                if (cell.get('position').y < 0)
-                    cell.set('position', {x: cell.get('position').x, y: 0});
-                moving = cell;
-
-            })
+            let multiSelectionsMode = false;
 
 
             function download(href, name) {
@@ -1299,7 +1120,7 @@
 
 
             function exportToImage(filetype) {
-                paper.removeTools();
+                paper.hideTools();
                 let currentScale = paper.scale();
                 let currentTranslate = paper.translate();
                 paper.scale(1);
@@ -1340,19 +1161,7 @@
                 paper.scale(currentScale.sx, currentScale.sy);
             }
 
-            /*let tmp = new uml.MultiAssociation({
-                position: {
-                    x: 100,
-                    y: 100
-                },
-                size: {
-                    width: 50,
-                    height: 50
-                },
-                angle: 45
-            });
 
-            tmp.addTo(graph);*/
 
     </script>
 }
