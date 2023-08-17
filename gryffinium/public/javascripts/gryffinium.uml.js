@@ -95,6 +95,7 @@ const Entity = joint.dia.Element.define('Entity', {
                     borderRadius: 100,
                     backgroundColor: 'blue',
                     border: 'solid 1px white',
+                    visibility: 'hidden',
                 }
             },
 
@@ -1853,7 +1854,7 @@ export class GryffiniumManager {
                 this.entities.get(command.parentId).updateMethod(m);
                 break;
             case ElementType.Constructor.name:
-                let c = new Method(command.id, command.name, command.visibility);
+                let c = new Constructor(command.id, command.name, command.visibility);
                 this.entities.get(command.parentId).updateConstructor(c);
                 break;
             case ElementType.Value.name:
